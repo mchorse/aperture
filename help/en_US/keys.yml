@@ -1,0 +1,45 @@
+# Keys localization
+key.aperture:
+    # Categories
+    misc: Blockbuster Misc.
+    camera: Blockbuster Camera
+    
+    camera_editor: Camera Editor
+    smooth_camera: Smooth camera
+
+    # Camera control
+    control: 
+        title: Camera Control
+        
+        stepUp: Step up
+        stepDown: Step down
+        stepLeft: Step left
+        stepRight: Step right
+        stepFront: Step front
+        stepBack: Step back
+        
+        rotateUp: Rotate up
+        rotateDown: Rotate down
+        rotateLeft: Rotate left
+        rotateRight: Rotate right
+    
+    # Roll controlling keys
+    roll:
+        add: Roll clockwise
+        reduce: Roll counter-clockwise
+        reset: Reset roll
+    
+    # Roll controlling keys
+    fov:
+        add: Increase FOV
+        reduce: Reduce FOV
+        reset: Reset FOV
+
+    # Profile management keys
+    profile:
+        title: Camera Profile
+
+        toggle: Toggle Camera Profile Rendering
+
+        start: Start Camera Profile
+        stop: Stop Camera Profile

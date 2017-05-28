@@ -1,0 +1,21 @@
+# GUI
+
+aperture.gui:
+    # General strings
+    done: Done
+    next: Next
+    previous: Previous
+    restore: Restore Default
+    reset: Reset
+    add: Add
+    edit: Edit
+    remove: Remove
+    detach: Detach
+    record: Record
+    pick: Pick morph...
+    duplicate: Duplicate
+    search: "Search:"
+    cancel: Cancel
+    break: Break
+    select: Select
+    ok: Ok

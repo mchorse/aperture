@@ -1,0 +1,5 @@
+aperture.success:
+    profile:
+        clear: {f}Currently used camera profile was cleared.
+        save: {f}Current camera profile was saved in file %s{f}.
+        load: {f}Camera profile was loaded from file %s{f}.

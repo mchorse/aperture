@@ -1,0 +1,158 @@
+package mchorse.aperture.client.gui.panels.modules;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
+import mchorse.aperture.client.gui.panels.IButtonListener;
+import mchorse.aperture.client.gui.panels.IGuiModule;
+import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+
+/**
+ * Path fixture interpolations GUI module
+ *
+ * This module is responsible for changing angle and/or position interpolation
+ * of the path fixture.
+ */
+public class GuiInterpModule implements IGuiModule
+{
+    public List<GuiButton> buttons = new ArrayList<GuiButton>();
+    public IButtonListener listener;
+
+    public GuiCirculate pos;
+    public GuiCirculate angle;
+
+    private Minecraft mc;
+
+    public GuiInterpModule(IButtonListener listener)
+    {
+        this.listener = listener;
+
+        this.pos = new GuiCirculate(-1, 0, 0, 0, 0);
+        this.angle = new GuiCirculate(-2, 0, 0, 0, 0);
+
+        this.pos.addLabel("Linear");
+        this.pos.addLabel("Cubic");
+        this.pos.addLabel("Hermite");
+
+        this.angle.addLabel("Linear");
+        this.angle.addLabel("Cubic");
+        this.angle.addLabel("Hermite");
+
+        this.mc = Minecraft.getMinecraft();
+        this.buttons.add(this.pos);
+        this.buttons.add(this.angle);
+    }
+
+    public void fill(PathFixture fixture)
+    {
+        this.pos.setValue(this.indexFromInterpType(fixture.interpolationPos));
+        this.angle.setValue(this.indexFromInterpType(fixture.interpolationAngle));
+    }
+
+    public void update(int x, int y, int w)
+    {
+        this.pos.width = this.angle.width = w;
+        this.pos.height = this.angle.height = 20;
+        this.pos.xPosition = this.angle.xPosition = x;
+
+        this.pos.yPosition = y;
+        this.angle.yPosition = y + 25;
+    }
+
+    /**
+     * Get the index of interpolation type
+     */
+    protected int indexFromInterpType(InterpolationType type)
+    {
+        if (type == InterpolationType.CUBIC)
+        {
+            return 1;
+        }
+
+        if (type == InterpolationType.HERMITE)
+        {
+            return 2;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Get interpolation type from an index
+     */
+    public InterpolationType typeFromIndex(int index)
+    {
+        if (index == 1)
+        {
+            return InterpolationType.CUBIC;
+        }
+
+        if (index == 2)
+        {
+            return InterpolationType.HERMITE;
+        }
+
+        return InterpolationType.LINEAR;
+    }
+
+    /**
+     * Mouse clicked
+     *
+     * This method is responsible for detecting which button was pressed and
+     * notification of the listener when it is pressed.
+     */
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        if (mouseButton == 0)
+        {
+            for (int i = 0; i < this.buttons.size(); ++i)
+            {
+                GuiButton button = this.buttons.get(i);
+
+                if (button.mousePressed(this.mc, mouseX, mouseY))
+                {
+                    button.playPressSound(this.mc.getSoundHandler());
+
+                    if (button instanceof GuiCirculate)
+                    {
+                        ((GuiCirculate) button).toggle();
+                    }
+
+                    if (this.listener != null)
+                    {
+                        this.listener.actionButtonPerformed(button);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int state)
+    {}
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode)
+    {}
+
+    /**
+     * Just draw the buttons
+     */
+    @Override
+    public void draw(int mouseX, int mouseY, float partialTicks)
+    {
+        this.pos.drawButton(this.mc, mouseX, mouseY);
+        this.angle.drawButton(this.mc, mouseX, mouseY);
+
+        FontRenderer font = this.mc.fontRendererObj;
+
+        font.drawStringWithShadow("Position", this.pos.xPosition + this.pos.width + 5, this.pos.yPosition + 6, 0xffffff);
+        font.drawStringWithShadow("Angle", this.angle.xPosition + this.angle.width + 5, this.angle.yPosition + 6, 0xffffff);
+    }
+}

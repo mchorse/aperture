@@ -1,0 +1,12 @@
+[
+    {
+        "modid": "aperture",
+        "name": "Aperture",
+        "description": "Enhanced camera mod",
+        "version": "${version}",
+        "mcversion": "${mcversion}",
+        "url": "https://github.com/mchorse/aperture",
+        "authorList": ["mchorse"],
+        "credits": "Badr"
+    }
+]
