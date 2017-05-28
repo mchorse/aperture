@@ -29,7 +29,9 @@ public class SubCommandCameraStart extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        ClientProxy.profileRunner.start();
+        int tick = args.length == 0 ? 0 : CommandBase.parseInt(args[0], 0);
+
+        ClientProxy.profileRunner.start(tick);
         L10n.info(sender, "profile.start");
     }
 }

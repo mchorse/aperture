@@ -446,7 +446,6 @@ public class ProfileRenderer
         GlStateManager.enableTexture2D();
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
-
     }
 
     /**

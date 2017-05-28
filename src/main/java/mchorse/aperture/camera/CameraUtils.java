@@ -214,8 +214,7 @@ public class CameraUtils
      * Turn a camera profile into JSON string
      * 
      * This method is also responsible for doing JSON prettifying, such as 
-     * making sure there are 4 spaces for indentation and cleaning up arrays 
-     * from whitespace junk. 
+     * making sure there are 4 spaces for indentation. 
      */
     public static String toJSON(CameraProfile profile)
     {
@@ -228,7 +227,6 @@ public class CameraUtils
         jsonWriter.setIndent("    ");
         gson.toJson(profile, CameraProfile.class, jsonWriter);
 
-        /* Prettify arrays */
-        return writer.toString().replaceAll("\\n\\s+(?=-?\\d|\\])", " ");
+        return writer.toString();
     }
 }

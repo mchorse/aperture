@@ -13,9 +13,9 @@ aperture.commands:
         
         start: 
             |
-                {l}{6}/{r}camera {8}start{r}
+                {l}{6}/{r}camera {8}start{r} {7}[tick]{r}
                 
-                {r}Starts a camera profile
+                {r}Starts a camera profile. Optionally starting from given {7}[tick]{r}.
         stop: 
             |
                 {l}{6}/{r}camera {8}stop{r}
