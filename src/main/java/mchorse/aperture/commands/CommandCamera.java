@@ -53,7 +53,6 @@ public class CommandCamera extends SubCommandBase
     public static void setProfile(CameraProfile profile)
     {
         CommandCamera.profile = profile;
-        CommandCamera.control.profile = profile;
         ClientProxy.profileRunner.setProfile(profile);
         ClientProxy.profileRenderer.setProfile(profile);
     }

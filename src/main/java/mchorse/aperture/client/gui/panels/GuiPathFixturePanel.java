@@ -10,6 +10,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
 import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -138,6 +139,15 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         y = this.area.y + 55;
 
         this.interp.update(x, y, 80);
+    }
+
+    @Override
+    protected void editFixture()
+    {
+        if (this.position != null)
+        {
+            this.position.set(Minecraft.getMinecraft().thePlayer);
+        }
     }
 
     @Override

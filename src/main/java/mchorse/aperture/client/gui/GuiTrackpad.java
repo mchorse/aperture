@@ -1,5 +1,7 @@
 package mchorse.aperture.client.gui;
 
+import org.lwjgl.input.Keyboard;
+
 import mchorse.aperture.utils.Rect;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -167,7 +169,18 @@ public class GuiTrackpad
 
             if (dx != 0 || dy != 0)
             {
-                float diff = ((int) Math.sqrt(dx * dx + dy * dy) - 3) * this.amplitude;
+                float amp = 1.0F;
+
+                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+                {
+                    amp = 5.0F;
+                }
+                else if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+                {
+                    amp = 0.2F;
+                }
+
+                float diff = ((int) Math.sqrt(dx * dx + dy * dy) - 3) * this.amplitude * amp;
                 float newValue = this.lastValue + (dy < 0 ? diff : -diff);
 
                 newValue = diff < 0 ? this.lastValue : Math.round(newValue * 1000F) / 1000F;

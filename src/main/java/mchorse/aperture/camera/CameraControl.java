@@ -1,7 +1,6 @@
 package mchorse.aperture.camera;
 
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.commands.CommandCamera;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,12 +18,6 @@ public class CameraControl
      * Roll of the camera
      */
     public float roll = 0;
-
-    /**
-     * Camera profile to edit. This field populated by
-     * {@link CommandCamera#setProfile(CameraProfile)}
-     */
-    public CameraProfile profile;
 
     /**
      * Add roll (it can be negative too)

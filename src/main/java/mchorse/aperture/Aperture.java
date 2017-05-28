@@ -7,14 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
- * <p>
  * Aperture camera mod
- * </p>
- * 
- * <p>
- * This camera mod allows users to create flexible and complex non-linear 
- * cameras.  
- * </p>
  */
 @Mod(modid = Aperture.MODID, name = Aperture.MODNAME, version = Aperture.VERSION, guiFactory = Aperture.GUI_FACTORY)
 public class Aperture

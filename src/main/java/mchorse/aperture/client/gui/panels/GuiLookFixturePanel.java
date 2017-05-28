@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiTargetModule;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -77,6 +78,12 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
         y = this.area.y + 50;
 
         this.target.update(x, y);
+    }
+
+    @Override
+    protected void editFixture()
+    {
+        this.fixture.position.set(Minecraft.getMinecraft().thePlayer);
     }
 
     @Override

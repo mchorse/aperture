@@ -339,8 +339,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.sync = new GuiCheckBox(-4, x, y, "Sync", this.syncing);
         this.sync.packedFGColour = 0xffffff;
 
-        this.add = new GuiButton(50, 0, this.height - 20, 20, 20, "+");
-        this.remove = new GuiButton(51, this.width - 20, this.height - 20, 20, 20, "-");
+        this.add = new GuiButton(50, 10, this.height - 20, 20, 20, "+");
+        this.remove = new GuiButton(51, this.width - 30, this.height - 20, 20, 20, "-");
 
         this.buttonList.add(this.toNextFixture);
         this.buttonList.add(this.nextFrame);
@@ -357,9 +357,9 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         /* Setup areas of widgets */
         this.scrub.area.set(10, 27, this.width - 20, 20);
-        this.fixtures.area.set(30, this.height - 20, this.width - 60, 20);
+        this.fixtures.area.set(35, this.height - 20, this.width - 70, 20);
         this.fixtures.updateScroll();
-        this.popup.update(0, this.height - 122, 62, 102);
+        this.popup.update(10, this.height - 121, 62, 102);
 
         if (this.fixturePanel != null)
         {
