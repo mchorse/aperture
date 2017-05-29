@@ -74,6 +74,11 @@ public class GuiCameraFixtures
         this.index--;
     }
 
+    public void setIndex(int index)
+    {
+        this.index = index;
+    }
+
     /**
      * This method is responsible for initiating dragging sequence, if the click
      * happened inside of this widget's area

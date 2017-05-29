@@ -117,7 +117,7 @@ echo "\n\n";
 /** Starting the script */
 $here = __DIR__;
 $target = "$here/../help";
-$langs = realpath("$here/../src/main/resources/assets/blockbuster/lang");
+$langs = realpath("$here/../src/main/resources/assets/aperture/lang");
 $files = scandir($target);
 $files = array_slice($files, 2);
 

@@ -91,7 +91,7 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     }
 
     @Override
-    protected void editFixture()
+    public void editFixture()
     {
         this.fixture.start.set(Minecraft.getMinecraft().thePlayer);
     }

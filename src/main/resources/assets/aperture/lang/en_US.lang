@@ -22,9 +22,10 @@ aperture.commands.camera.path.remove=§l§6/§rcamera path §8remove§r §7<inde
 aperture.commands.camera.roll=§l§6/§rcamera §8roll§r §7[roll]§r\n\n§rSet or get client's camera §7[roll]§r (rotation across §7Z-axis§r).
 aperture.commands.camera.rotate=§l§6/§rcamera §8rotate§r §7[yaw] [pitch]§r\n\n§rSet camera's angle based on absolute or relative values. You can set absolute angle of the camera by specifying plain floating point numbers §6/camera §8rotate §790 90§r. Or you can provide a relative value by using §7+§r or §7-§r signs §6/camera §8rotate §7+0.5 -0.5§r.
 aperture.commands.camera.save=§l§6/§rcamera §8save§r §7[filename]§r\n\n§rSave camera profile to a file. If the file isn't specified, then this camera profile will be saved to the file that previously was saved or loaded
-aperture.commands.camera.start=§l§6/§rcamera §8start§r\n\n§rStarts a camera profile
+aperture.commands.camera.start=§l§6/§rcamera §8start§r §7[tick]§r\n\n§rStarts a camera profile. Optionally starting from given §7[tick]§r.
 aperture.commands.camera.step=§l§6/§rcamera §8step§r §7[x] [y] [z]§r\n\n§rSet camera's position based on absolute or relative values. You can set absolute position of the camera by specifying plain floating point numbers §6/camera §8step §70 4 0§r. Or you can provide a relative value by using §7+§r or §7-§r signs §6/camera §8step §7+0 +0.1 +0§r. It works similar to §6/tp§r command.
 aperture.commands.camera.stop=§l§6/§rcamera §8stop§r\n\n§rStops currently running camera profile
+aperture.commands.load_chunks=§l§6/§rload_chunks\n\nThis command loads all chunks in render distance. It might take a while
 
 # config.yml
 aperture.config.camera.camera_duration=Default fixture duration
@@ -37,15 +38,18 @@ aperture.config.camera.camera_rotate_factor=Camera rotate factor
 aperture.config.camera.camera_smooth_clamp=Clip camera's pitch
 aperture.config.camera.camera_spectator=Switch to specator
 aperture.config.camera.camera_step_factor=Camera step factor
-aperture.config.camera.smooth.fov_friction=FOV friction
-aperture.config.camera.smooth.fov_speed=FOV speed
-aperture.config.camera.smooth.mouse_x_friction=Mouse Y friction
-aperture.config.camera.smooth.mouse_y_friction=Mouse Y friction
-aperture.config.camera.smooth.roll_friction=Roll friction
-aperture.config.camera.smooth.roll_speed=Roll speed
-aperture.config.camera.smooth.smooth_enabled=Smooth camera enabled
-aperture.config.camera.smooth.title=Smooth camera
 aperture.config.camera.title=Camera
+aperture.config.camera.tooltip=General camera options
+aperture.config.smooth.camera_smooth_clamp=Limit pitch
+aperture.config.smooth.fov_friction=FOV friction
+aperture.config.smooth.fov_speed=FOV speed
+aperture.config.smooth.mouse_x_friction=Mouse Y friction
+aperture.config.smooth.mouse_y_friction=Mouse Y friction
+aperture.config.smooth.roll_friction=Roll friction
+aperture.config.smooth.roll_speed=Roll speed
+aperture.config.smooth.smooth_enabled=Smooth camera enabled
+aperture.config.smooth.title=Smooth camera
+aperture.config.smooth.tooltip=Smooth camera options
 
 # error.yml
 aperture.error.commands.load_chunks=Couldn't load all generated chunks in render distance! See logs for detailed error.
@@ -54,42 +58,25 @@ aperture.error.fixture.few_args=§fYou passed not enough arguments for this comm
 aperture.error.fixture.no_entity=§fYou should look at any entity to add this fixture!
 aperture.error.fixture.wrong_type=§fCamera fixture by type %s§f doesn't exist!
 aperture.error.profile.cant_load=§fCan't load camera profile by file name %s§f.
+aperture.error.profile.cant_move=§fCan't move fixture at %s§f to %s§f, because one of the indices is out of range!
 aperture.error.profile.cant_save=§fCan't save camera profile by file name %s§f.
 aperture.error.profile.empty_filename=§fThis camera profile has empty filename! In current situation, specify the §7[filename]§f argument, please.
 aperture.error.profile.move_no_path_point=§fPath fixture at index %s§f has no point at index %s§f or at index %s§f!
-aperture.error.profile.no_path_point=§fPath fixture at index %s§f has no point at index %s§f!
+aperture.error.profile.no_path_point=§fPath fixture at index %s§f, has no point at index %s§f!
 aperture.error.profile.not_exists=§fThere's no camera fixture at %s§f index in current camera profile!
 aperture.error.profile.not_path=§fFixture at index %s§f isn't a path fixture!
 
 # gui.yml
-aperture.gui.actor.attached=Attached to actor
-aperture.gui.actor.default=Default
-aperture.gui.actor.filename=Recording ID
-aperture.gui.actor.invincible=Can be killed?
-aperture.gui.actor.invisible=Is visible?
-aperture.gui.actor.name=Name
-aperture.gui.actor.title=Actor Configuration
 aperture.gui.add=Add
 aperture.gui.break=Break
 aperture.gui.cancel=Cancel
-aperture.gui.confirm.description=Director block at (§7%s§f, §7%s§f, §7%s§f) contains total of §7%s§f replays. Are you sure you want to destroy this director block? Those replays will be §cremoved§r §lpermanently§r.
-aperture.gui.confirm.title=Confirm Breaking Director Block
 aperture.gui.detach=Detach
-aperture.gui.director.add=Add a replay...
-aperture.gui.director.no_cast=No replays!
-aperture.gui.director.title=Director Block
 aperture.gui.done=Done
 aperture.gui.duplicate=Duplicate
 aperture.gui.edit=Edit
 aperture.gui.next=Next
 aperture.gui.ok=Ok
 aperture.gui.pick=Pick morph...
-aperture.gui.playback.camera_mode=Camera mode
-aperture.gui.playback.load_profile=Load and play
-aperture.gui.playback.nothing=Do nothing
-aperture.gui.playback.play=Play only
-aperture.gui.playback.profile=Profile filename
-aperture.gui.playback.title=Playback configuration
 aperture.gui.previous=Previous
 aperture.gui.record=Record
 aperture.gui.remove=Remove
@@ -99,18 +86,33 @@ aperture.gui.search=Search:
 aperture.gui.select=Select
 
 # info.yml
+aperture.info.actor.playing=§fThis actor already plays!
 aperture.info.camera.duration.fixture=§fCamera fixture at index %s§f runs for %s§f ticks.
 aperture.info.camera.duration.profile=§fCamera profile runs for %s§f ticks and has %s§f camera fixtures.
 aperture.info.camera.fov=§fYour field-of-view is %s§f degrees.
 aperture.info.camera.roll=§fYour roll is %s§f degrees.
 aperture.info.commands.load_chunks=§fLoaded all generated chunks in render distance.
+aperture.info.commands.replace_texture=§fTexture %s§f was replaced with texture %s§f.
+aperture.info.commands.restore_texture=§fTexture %s§f was restored to its original state.
+aperture.info.director.already_registered=§fThis actor is already registered by this director block!
+aperture.info.metamorph=§fYou're using Metamorph %s§f. It is recommended to update to Metamorph %s§f as it's the main version which was tested with current version of Blockbuster mod. Thank you for attention!
+aperture.info.models.loaded=§fReceived %s§f custom models and %s§f skins from server.
 aperture.info.profile.loaded=§fCamera profile by name %s§f is already loaded!
 aperture.info.profile.new=§fCreated new camera profile with filename %s§f.
 aperture.info.profile.start=§fCurrent camera profile was started.
 aperture.info.profile.stop=§fCurrently running camera profile was stopped.
+aperture.info.record.action=§fAction at %s§f tick is %s§f at index %s§f with data: %s
+aperture.info.record.info=§fInformation about the player recording named %s§f:\n\n§7*§f Recording version: %s\n§7*§f Length of recording in ticks: %s\n§7*§f Frame delay: %s\n§7*§f Ticks before unload: %s
+aperture.info.record.search_action=§fFound action at %s§f tick at index %s§f.
+aperture.info.record.search_action_data=§fFound action at %s§f tick at index %s§f with data: %s
+aperture.info.record.search_type=§fSearch for action with type %s§f:
+aperture.info.recording.dead=§fStopped recording %s§f, because player's dead.
+aperture.info.recording.message=§fTo start recording an actor %s§f, %s§f!
+aperture.info.recording.recording=%s§f is already being recorded to.
 
 # keys.yml
-key.aperture.camera=Camera Roll & FOV
+key.aperture.camera=Aperture Roll & FOV
+key.aperture.camera_editor=Camera Editor
 key.aperture.control.rotateDown=Rotate down
 key.aperture.control.rotateLeft=Rotate left
 key.aperture.control.rotateRight=Rotate right
@@ -121,24 +123,19 @@ key.aperture.control.stepFront=Step front
 key.aperture.control.stepLeft=Step left
 key.aperture.control.stepRight=Step right
 key.aperture.control.stepUp=Step up
-key.aperture.control.title=Camera control
+key.aperture.control.title=Camera Control
 key.aperture.fov.add=Increase FOV
 key.aperture.fov.reduce=Reduce FOV
 key.aperture.fov.reset=Reset FOV
-key.aperture.misc=Aperture Misc.
+key.aperture.misc=Aperture
 key.aperture.profile.start=Start Camera Profile
 key.aperture.profile.stop=Stop Camera Profile
-key.aperture.profile.title=Camera profile
+key.aperture.profile.title=Camera Profile
 key.aperture.profile.toggle=Toggle Camera Profile Rendering
 key.aperture.roll.add=Roll clockwise
 key.aperture.roll.reduce=Roll counter-clockwise
 key.aperture.roll.reset=Reset roll
 key.aperture.smooth_camera=Smooth camera
-key.aperture.camera_editor=Camera editor
-
-# misc.yml
-aperture.no=No
-aperture.yes=Yes
 
 # success.yml
 aperture.success.profile.clear=§fCurrently used camera profile was cleared.

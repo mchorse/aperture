@@ -90,7 +90,7 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     }
 
     @Override
-    protected void editFixture()
+    public void editFixture()
     {
         this.fixture.position.set(Minecraft.getMinecraft().thePlayer);
     }

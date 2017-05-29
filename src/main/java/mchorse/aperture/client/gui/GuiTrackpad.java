@@ -124,6 +124,11 @@ public class GuiTrackpad
 
         if (!this.text.isFocused() && this.area.isInside(mouseX, mouseY))
         {
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
+            {
+                this.setValueAndNotify(Math.round(this.value));
+            }
+
             this.dragging = true;
             this.lastX = mouseX;
             this.lastY = mouseY;

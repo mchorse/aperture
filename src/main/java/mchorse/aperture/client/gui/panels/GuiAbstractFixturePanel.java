@@ -8,7 +8,6 @@ import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.utils.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -21,6 +20,8 @@ import net.minecraft.client.gui.GuiTextField;
  */
 public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> implements IFixturePanel<T>, ITrackpadListener, GuiResponder
 {
+    private Minecraft mc = Minecraft.getMinecraft();
+
     /**
      * Currently editing camera fixture
      */
@@ -34,7 +35,6 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     /* GUI fields */
     public GuiTextField name;
     public GuiTrackpad duration;
-    public GuiButton edit;
 
     /* Dynamic height which can be modified by subclasses */
     public int height = 140;
@@ -48,8 +48,6 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         this.duration.title = "Duration";
         this.duration.amplitude = 1.0F;
         this.duration.min = 1;
-
-        this.edit = new GuiButton(0, 0, 0, "Edit");
 
         this.font = font;
     }
@@ -123,11 +121,6 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         this.name.width = 98;
         this.name.height = 18;
 
-        this.edit.xPosition = x + 105;
-        this.edit.yPosition = y;
-        this.edit.width = 40;
-        this.edit.height = 20;
-
         this.duration.update(x, y + 25, 100, 20);
 
         this.editor = (GuiCameraEditor) screen;
@@ -145,14 +138,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     {
         this.name.mouseClicked(mouseX, mouseY, mouseButton);
         this.duration.mouseClicked(mouseX, mouseY, mouseButton);
-
-        if (this.edit.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY))
-        {
-            this.editFixture();
-        }
     }
 
-    protected void editFixture()
+    public void editFixture()
     {}
 
     @Override
@@ -166,7 +154,6 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     {
         this.name.drawTextBox();
         this.duration.draw(mouseX, mouseY, partialTicks);
-        this.edit.drawButton(Minecraft.getMinecraft(), mouseX, mouseY);
 
         if (!this.name.isFocused())
         {

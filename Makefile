@@ -8,7 +8,7 @@ copy_assets:
 	cp ./LICENSE.md ./src/main/resources/LICENSE.md
 
 build_lang:
-	mkdir -p src/main/resources/assets/blockbuster/lang
+	mkdir -p src/main/resources/assets/aperture/lang
 	php php/help.php
 
 check: build_lang

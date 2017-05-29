@@ -18,6 +18,7 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraFixtures.IFixturePicker;
 import mchorse.aperture.client.gui.GuiFixturesPopup.IFixtureSelector;
 import mchorse.aperture.client.gui.GuiPlaybackScrub.IScrubListener;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
@@ -83,6 +84,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private boolean playing = false;
 
+    /**
+     * Whether things on the screen are visible 
+     */
+    private boolean visible = true;
+
     /* GUI fields */
 
     /**
@@ -95,6 +101,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
     public GuiButton toPrevFixture;
     public GuiButton toNextFixture;
+
+    public GuiButton moveForward;
+    public GuiButton moveBackward;
+
+    public GuiButton copyPosition;
+    public GuiButton moveDuration;
 
     /* Camera options */
     public GuiCheckBox minema;
@@ -226,6 +238,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.profile = profile;
         this.scrub.setProfile(profile);
         this.fixtures.setProfile(profile);
+        this.fixturePanel = null;
     }
 
     /**
@@ -234,6 +247,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     public void updateCameraEditor(EntityPlayer player)
     {
         this.updateValues();
+        this.syncing = false;
+        this.visible = true;
     }
 
     public CameraProfile getProfile()
@@ -313,6 +328,15 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         x -= w;
         this.toPrevFixture = new GuiTextureButton(4, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(80, 0).setActiveTexPos(80, 16);
 
+        x -= w + 10;
+        this.moveForward = new GuiTextureButton(5, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(0, 32).setActiveTexPos(0, 48);
+        x -= w;
+        this.moveDuration = new GuiTextureButton(6, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(48, 32).setActiveTexPos(48, 48);
+        x -= w;
+        this.copyPosition = new GuiTextureButton(7, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(32, 32).setActiveTexPos(32, 48);
+        x -= w;
+        this.moveBackward = new GuiTextureButton(8, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(16, 32).setActiveTexPos(16, 48);
+
         this.updatePlauseButton();
 
         x = 10;
@@ -347,6 +371,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.buttonList.add(this.plause);
         this.buttonList.add(this.prevFrame);
         this.buttonList.add(this.toPrevFixture);
+
+        this.buttonList.add(this.moveForward);
+        this.buttonList.add(this.moveDuration);
+        this.buttonList.add(this.copyPosition);
+        this.buttonList.add(this.moveBackward);
 
         this.buttonList.add(this.spectator);
         this.buttonList.add(this.renderPath);
@@ -417,6 +446,37 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         else if (id == 4)
         {
             this.jumpToPrevFixture();
+        }
+        else if (id == 5 || id == 8)
+        {
+            /* Move fixture forward or backward */
+            CameraProfile profile = this.profile;
+            int index = this.fixtures.getIndex();
+            int to = index + (id == 8 ? -1 : 1);
+
+            profile.move(index, to);
+
+            if (profile.has(to))
+            {
+                this.fixtures.setIndex(to);
+            }
+        }
+        else if (id == 6 && this.fixturePanel != null)
+        {
+            /* Move duration to the scrub location */
+            AbstractFixture fixture = this.profile.get(this.fixtures.getIndex());
+            long offset = this.profile.calculateOffset(fixture);
+
+            if (this.scrub.value > offset)
+            {
+                fixture.setDuration(this.scrub.value - offset);
+                this.updateValues();
+                this.fixturePanel.select(fixture);
+            }
+        }
+        else if (id == 7 && this.fixturePanel != null)
+        {
+            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
         }
 
         if (id == 50)
@@ -504,6 +564,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
+        if (keyCode == 59)
+        {
+            this.visible = !this.visible;
+        }
+
+        if (!this.visible)
+        {
+            return;
+        }
+
         if (this.fixturePanel != null)
         {
             this.fixturePanel.keyTyped(typedChar, keyCode);
@@ -527,6 +597,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
+        if (!this.visible)
+        {
+            return;
+        }
+
         this.popup.mouseClicked(mouseX, mouseY, mouseButton);
 
         if (this.popup.visible && this.popup.area.isInside(mouseX, mouseY))
@@ -548,7 +623,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state)
     {
-        if (this.popup.visible && this.popup.area.isInside(mouseX, mouseY))
+        if (!this.visible || this.popup.visible && this.popup.area.isInside(mouseX, mouseY))
         {
             return;
         }
@@ -570,6 +645,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        if (!this.visible)
+        {
+            return;
+        }
+
         int x = this.width - 10 - 20 * 5;
         int y = 5;
 
@@ -578,6 +658,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.drawHorizontalLine(x, x + 99, y + 19, 0xff000000);
         this.drawVerticalLine(x, y, y + 19, 0xff000000);
         this.drawVerticalLine(x + 99, y, y + 19, 0xff000000);
+
+        Gui.drawRect(x - 90, y, x - 10, y + 20, 0x88000000);
+        this.drawHorizontalLine(x - 90, x - 10, y, 0xff000000);
+        this.drawHorizontalLine(x - 90, x - 10, y + 19, 0xff000000);
+        this.drawVerticalLine(x - 90, y, y + 19, 0xff000000);
+        this.drawVerticalLine(x - 10, y, y + 19, 0xff000000);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 

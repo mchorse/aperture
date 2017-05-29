@@ -74,7 +74,7 @@ public class KeyboardHandler
     {
         /* Key categories */
         String camera = "key.aperture.camera";
-        String profile = "key.aperture.profile";
+        String profile = "key.aperture.profile.title";
         String control = "key.aperture.control.title";
         String misc = "key.aperture.misc";
 

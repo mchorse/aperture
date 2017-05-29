@@ -142,7 +142,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
-    protected void editFixture()
+    public void editFixture()
     {
         if (this.position != null)
         {

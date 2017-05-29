@@ -1,15 +1,15 @@
 # Keys localization
 key.aperture:
     # Categories
-    misc: Blockbuster Misc.
-    camera: Blockbuster Camera
+    misc: Aperture
+    camera: Aperture Roll & FOV
     
     camera_editor: Camera Editor
     smooth_camera: Smooth camera
 
     # Camera control
     control: 
-        title: Camera Control
+        title: Aperture Control
         
         stepUp: Step up
         stepDown: Step down
@@ -37,7 +37,7 @@ key.aperture:
 
     # Profile management keys
     profile:
-        title: Camera Profile
+        title: Aperture Cameras
 
         toggle: Toggle Camera Profile Rendering
 
