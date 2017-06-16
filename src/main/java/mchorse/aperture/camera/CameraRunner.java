@@ -32,6 +32,7 @@ public class CameraRunner
     protected CameraProfile profile;
     protected Position position = new Position(0, 0, 0, 0, 0);
 
+    /* Used by camera renderer */
     public float yaw = 0.0F;
     public float pitch = 0.0F;
 
@@ -162,6 +163,10 @@ public class CameraRunner
         }
         else
         {
+            float prevX = this.position.point.x;
+            float prevY = this.position.point.y;
+            float prevZ = this.position.point.z;
+
             this.profile.applyProfile(progress, event.renderTickTime, this.position);
 
             EntityPlayer player = this.mc.thePlayer;
@@ -175,9 +180,28 @@ public class CameraRunner
             /* Fighting with Optifine disappearing entities bug */
             double y = point.y + Math.sin(progress) * 0.000000001 + 0.000000001;
 
-            player.setLocationAndAngles(point.x, y, point.z, angle.yaw, angle.pitch);
-            player.setPositionAndRotation(point.x, y, point.z, angle.yaw, angle.pitch);
-            player.motionX = player.motionY = player.motionZ = 0;
+            /* Velocity simulation (useful for recording the player) */
+            if (Aperture.proxy.config.camera_simulate_velocity)
+            {
+                if (this.ticks == 0)
+                {
+                    this.setPlayerPosition(player, point.x, y, point.z, angle);
+                }
+                else
+                {
+                    this.setPlayerPosition(player, player.posX, player.posY, player.posZ, angle);
+                }
+
+                player.motionX = this.position.point.x - prevX;
+                player.motionY = this.position.point.y - prevY;
+                player.motionZ = this.position.point.z - prevZ;
+            }
+            else
+            {
+                this.setPlayerPosition(player, point.x, y, point.z, angle);
+
+                player.motionX = player.motionY = player.motionZ = 0;
+            }
 
             this.yaw = angle.yaw;
             this.pitch = angle.pitch;
@@ -187,6 +211,27 @@ public class CameraRunner
                 player.setSneaking(false);
             }
         }
+    }
+
+    /**
+     * Set player position
+     * 
+     * This method is responsible for setting player's position and rotation. 
+     * Why are these two methods invoked? Good question. 
+     * 
+     * {@link EntityPlayer#setLocationAndAngles(double, double, double, float, float)} 
+     * updates some client side values such as lastTick* and prevPos* values, 
+     * which makes the transition between two distant cameras, seamless, meanwhile 
+     * {@link EntityPlayer#setPositionAndRotation(double, double, double, float, float)} 
+     * is responsible for fixing/clamping player's rotation.
+     * 
+     * By using only one of these methods wouldn't guarantee supreme quality of 
+     * the camera animation.
+     */
+    public void setPlayerPosition(EntityPlayer player, double x, double y, double z, Angle angle)
+    {
+        player.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
+        player.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
     }
 
     /**

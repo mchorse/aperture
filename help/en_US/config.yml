@@ -15,6 +15,7 @@ aperture.config:
         camera_smooth_clamp: Clip camera's pitch
         camera_path_default_interp: Default path interpolation
         camera_command_name: Camera command name
+        camera_simulate_velocity: Velocity simulation
         
     smooth:
         title: Smooth camera
