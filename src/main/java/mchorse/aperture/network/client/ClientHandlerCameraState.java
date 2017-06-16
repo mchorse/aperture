@@ -20,11 +20,11 @@ public class ClientHandlerCameraState extends ClientMessageHandler<PacketCameraS
     {
         if (message.toPlay)
         {
-            ClientProxy.profileRunner.start();
+            ClientProxy.runner.start();
         }
         else
         {
-            ClientProxy.profileRunner.stop();
+            ClientProxy.runner.stop();
         }
     }
 }

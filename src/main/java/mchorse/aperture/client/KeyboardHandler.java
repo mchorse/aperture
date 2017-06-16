@@ -183,7 +183,7 @@ public class KeyboardHandler
 
         if (this.smoothCamera.isPressed())
         {
-            SmoothCamera camera = ClientProxy.profileRenderer.smooth;
+            SmoothCamera camera = ClientProxy.renderer.smooth;
             Property enabled = Aperture.proxy.forge.getCategory("smooth").get("smooth_enabled");
 
             enabled.set(!enabled.getBoolean());
@@ -207,17 +207,17 @@ public class KeyboardHandler
 
         if (this.toggleRender.isPressed())
         {
-            ClientProxy.profileRenderer.toggleRender();
+            ClientProxy.renderer.toggleRender();
         }
 
         /* Starting stopping */
         if (this.startRunning.isPressed())
         {
-            ClientProxy.profileRunner.start();
+            ClientProxy.runner.start();
         }
         else if (this.stopRunning.isPressed())
         {
-            ClientProxy.profileRunner.stop();
+            ClientProxy.runner.stop();
         }
 
         if (this.resetRoll.isPressed())
@@ -242,7 +242,7 @@ public class KeyboardHandler
         /* Camera control keys handling */
         if (player != null)
         {
-            if (!ClientProxy.profileRenderer.smooth.enabled)
+            if (!ClientProxy.renderer.smooth.enabled)
             {
                 CameraControl control = CommandCamera.getControl();
 

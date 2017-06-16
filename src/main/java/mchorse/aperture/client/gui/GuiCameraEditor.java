@@ -356,7 +356,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.spectator.packedFGColour = 0xffffff;
         x += this.spectator.width + 5;
 
-        this.renderPath = new GuiCheckBox(-3, x, y, "Show path", ClientProxy.profileRenderer.render);
+        this.renderPath = new GuiCheckBox(-3, x, y, "Show path", ClientProxy.renderer.render);
         this.renderPath.packedFGColour = 0xffffff;
         x += this.renderPath.width + 5;
 
@@ -525,8 +525,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == -3)
         {
-            ClientProxy.profileRenderer.toggleRender();
-            this.renderPath.setIsChecked(ClientProxy.profileRenderer.render);
+            ClientProxy.renderer.toggleRender();
+            this.renderPath.setIsChecked(ClientProxy.renderer.render);
         }
         else if (id == -4)
         {

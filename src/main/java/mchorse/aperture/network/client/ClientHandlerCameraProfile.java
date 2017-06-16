@@ -31,7 +31,7 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
 
         if (message.play)
         {
-            ClientProxy.profileRunner.start();
+            ClientProxy.runner.start();
         }
 
         L10n.success(player, "profile.load", message.filename);

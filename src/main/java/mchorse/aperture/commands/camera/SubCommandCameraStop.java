@@ -29,7 +29,7 @@ public class SubCommandCameraStop extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        ClientProxy.profileRunner.stop();
+        ClientProxy.runner.stop();
         L10n.info(sender, "profile.stop");
     }
 }

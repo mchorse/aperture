@@ -41,7 +41,7 @@ public class SubCommandCameraRotate extends CommandBase
         player.setPositionAndRotation(player.posX, player.posY, player.posZ, (float) x, (float) y);
         player.setVelocity(0, 0, 0);
 
-        ClientProxy.profileRenderer.smooth.set((float) x, (float) y);
+        ClientProxy.renderer.smooth.set((float) x, (float) y);
     }
 
     /**

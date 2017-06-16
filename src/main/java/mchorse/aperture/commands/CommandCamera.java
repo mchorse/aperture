@@ -1,5 +1,6 @@
 package mchorse.aperture.commands;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
@@ -53,8 +54,8 @@ public class CommandCamera extends SubCommandBase
     public static void setProfile(CameraProfile profile)
     {
         CommandCamera.profile = profile;
-        ClientProxy.profileRunner.setProfile(profile);
-        ClientProxy.profileRenderer.setProfile(profile);
+        ClientProxy.runner.setProfile(profile);
+        ClientProxy.renderer.setProfile(profile);
     }
 
     public static void reset()
@@ -106,7 +107,7 @@ public class CommandCamera extends SubCommandBase
     @Override
     public String getCommandName()
     {
-        return "camera";
+        return Aperture.proxy.config.camera_command_name;
     }
 
     @Override

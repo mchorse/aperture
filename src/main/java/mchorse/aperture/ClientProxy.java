@@ -2,6 +2,7 @@ package mchorse.aperture;
 
 import java.io.File;
 
+import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.CameraRunner;
 import mchorse.aperture.client.KeyboardHandler;
@@ -26,10 +27,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-    public static CameraRunner profileRunner = new CameraRunner();
-    public static CameraRenderer profileRenderer = new CameraRenderer();
+    public static CameraRenderer renderer = new CameraRenderer();
+    public static CameraRunner runner = new CameraRunner();
+    public static CameraControl control = new CameraControl();
+
     public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
+
     public static File config;
     public static File cameras;
 
@@ -56,14 +60,14 @@ public class ClientProxy extends CommonProxy
     @Override
     public void load(FMLInitializationEvent event)
     {
-        cameraEditor = new GuiCameraEditor(profileRunner);
+        cameraEditor = new GuiCameraEditor(runner);
 
         super.load(event);
 
         /* Event listeners */
         MinecraftForge.EVENT_BUS.register(new RenderingHandler());
         MinecraftForge.EVENT_BUS.register(keys = new KeyboardHandler());
-        MinecraftForge.EVENT_BUS.register(profileRenderer);
+        MinecraftForge.EVENT_BUS.register(renderer);
 
         /* Client commands */
         ClientCommandHandler.instance.registerCommand(new CommandCamera());
@@ -79,14 +83,14 @@ public class ClientProxy extends CommonProxy
         String smooth = "smooth";
         String prefix = "aperture.config.smooth.";
 
-        profileRenderer.roll.friction = config.getFloat("roll_friction", smooth, 0.985F, 0.0F, 0.99999F, "Roll acceleration friction (how fast it slows down)", prefix + "roll_friction");
-        profileRenderer.fov.friction = config.getFloat("fov_friction", smooth, 0.985F, 0.0F, 0.99999F, "FOV acceleration friction (how fast it slows down)", prefix + "fov_friction");
+        renderer.roll.friction = config.getFloat("roll_friction", smooth, 0.985F, 0.0F, 0.99999F, "Roll acceleration friction (how fast it slows down)", prefix + "roll_friction");
+        renderer.fov.friction = config.getFloat("fov_friction", smooth, 0.985F, 0.0F, 0.99999F, "FOV acceleration friction (how fast it slows down)", prefix + "fov_friction");
 
-        profileRenderer.roll.factor = config.getFloat("roll_speed", smooth, 0.01F, 0.0F, 10.0F, "Roll acceleration speed", prefix + "roll_speed");
-        profileRenderer.fov.factor = config.getFloat("fov_speed", smooth, 0.075F, 0.0F, 10.0F, "FOV acceleration speed", prefix + "fov_speed");
+        renderer.roll.factor = config.getFloat("roll_speed", smooth, 0.01F, 0.0F, 10.0F, "Roll acceleration speed", prefix + "roll_speed");
+        renderer.fov.factor = config.getFloat("fov_speed", smooth, 0.075F, 0.0F, 10.0F, "FOV acceleration speed", prefix + "fov_speed");
 
-        profileRenderer.smooth.enabled = config.getBoolean("smooth_enabled", smooth, false, "Enable smooth camera", prefix + "smooth_enabled");
-        profileRenderer.smooth.fricX = config.getFloat("mouse_x_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse X friction", prefix + "mouse_x_friction");
-        profileRenderer.smooth.fricY = config.getFloat("mouse_y_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse Y friction", prefix + "mouse_y_friction");
+        renderer.smooth.enabled = config.getBoolean("smooth_enabled", smooth, false, "Enable smooth camera", prefix + "smooth_enabled");
+        renderer.smooth.fricX = config.getFloat("mouse_x_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse X friction", prefix + "mouse_x_friction");
+        renderer.smooth.fricY = config.getFloat("mouse_y_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse Y friction", prefix + "mouse_y_friction");
     }
 }

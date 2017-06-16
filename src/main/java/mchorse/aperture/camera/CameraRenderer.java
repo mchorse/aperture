@@ -74,7 +74,7 @@ public class CameraRenderer
     @SubscribeEvent
     public void onCameraOrient(EntityViewRenderEvent.CameraSetup event)
     {
-        CameraRunner runner = ClientProxy.profileRunner;
+        CameraRunner runner = ClientProxy.runner;
 
         float ticks = (float) event.getRenderPartialTicks();
 
@@ -139,7 +139,7 @@ public class CameraRenderer
     @SubscribeEvent
     public void onPlayerTick(PlayerTickEvent event)
     {
-        SmoothCamera camera = ClientProxy.profileRenderer.smooth;
+        SmoothCamera camera = ClientProxy.renderer.smooth;
         EntityPlayer player = this.mc.thePlayer;
 
         if (event.side == Side.CLIENT && event.player == player && camera.enabled)
@@ -173,7 +173,7 @@ public class CameraRenderer
         boolean badProfile = this.profile == null || this.profile.getCount() < 1;
 
         if (!this.render) return;
-        if (ClientProxy.profileRunner.isRunning()) return;
+        if (ClientProxy.runner.isRunning()) return;
         if (badProfile) return;
 
         Position prev = new Position(0, 0, 0, 0, 0);

@@ -45,9 +45,9 @@ public class RenderingHandler
 
         List<String> list = event.getLeft();
 
-        if (ClientProxy.profileRunner.isRunning())
+        if (ClientProxy.runner.isRunning())
         {
-            list.add("Camera ticks " + ClientProxy.profileRunner.getTicks());
+            list.add("Camera ticks " + ClientProxy.runner.getTicks());
         }
     }
 }

@@ -66,6 +66,11 @@ public class ApertureConfig
      */
     public String camera_path_default_interp;
 
+    /**
+     * Allows you to rebind /camera command's name (if you want to type less) 
+     */
+    public String camera_command_name;
+
     /* Non conifg option stuff */
 
     /**
@@ -81,8 +86,6 @@ public class ApertureConfig
 
     /**
      * Reload config values
-     *
-     * Pretty dense code, am I right?
      */
     public void reload()
     {
@@ -99,6 +102,15 @@ public class ApertureConfig
         this.camera_rotate_factor = this.config.getFloat("camera_rotate_factor", camera, 0.1F, 0, 10, "Camera rotate factor for rotate keys", prefix + "camera_rotate_factor");
         this.camera_minema = this.config.getBoolean("camera_minema", camera, false, "Activate Minema recording on camera start and deactivate on camera stop", prefix + "camera_minema");
         this.camera_path_default_interp = this.config.getString("camera_path_default_interp", camera, "linear", "Default interpolation method for path fixture", prefix + "camera_path_default_interp");
+        this.camera_command_name = this.config.getString("camera_command_name", camera, "camera", "Allows you to rebind camera command's name (requires game reload to take effect)", prefix + "camera_command_name");
+
+        /* Processing camera command name */
+        this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");
+
+        if (this.camera_command_name.isEmpty())
+        {
+            this.camera_command_name = "camera";
+        }
 
         /* Smooth camera */
         this.camera_smooth_clamp = this.config.getBoolean("camera_smooth_clamp", "smooth", true, "Clip smooth camera's pitch between -90 and 90 degrees range?", "aperture.config.smooth.camera_smooth_clamp");

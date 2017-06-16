@@ -37,7 +37,7 @@ public class CameraControl
      */
     public void setRoll(float value)
     {
-        ClientProxy.profileRenderer.roll.reset(value);
+        ClientProxy.renderer.roll.reset(value);
         this.roll = value;
     }
 
@@ -54,7 +54,7 @@ public class CameraControl
      */
     public void setFOV(float value)
     {
-        ClientProxy.profileRenderer.fov.reset(value);
+        ClientProxy.renderer.fov.reset(value);
         Minecraft.getMinecraft().gameSettings.fovSetting = value;
     }
 
