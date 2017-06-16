@@ -7,8 +7,8 @@ import java.util.Map;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.CameraRunner;
+import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
@@ -511,14 +511,14 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         if (id == -1)
         {
-            Property prop = Aperture.proxy.forge.getCategory("").get("camera_minema");
+            Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_minema");
 
             prop.set(this.minema.isChecked());
             save = true;
         }
         else if (id == -2)
         {
-            Property prop = Aperture.proxy.forge.getCategory("").get("camera_spectator");
+            Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_spectator");
 
             prop.set(this.spectator.isChecked());
             save = true;
