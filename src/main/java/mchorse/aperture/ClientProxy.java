@@ -2,9 +2,9 @@ package mchorse.aperture;
 
 import java.io.File;
 
-import mchorse.aperture.camera.ProfileRunner;
+import mchorse.aperture.camera.CameraRenderer;
+import mchorse.aperture.camera.CameraRunner;
 import mchorse.aperture.client.KeyboardHandler;
-import mchorse.aperture.client.ProfileRenderer;
 import mchorse.aperture.client.RenderingHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.commands.CommandCamera;
@@ -26,11 +26,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-    public static ProfileRunner profileRunner = new ProfileRunner();
-    public static ProfileRenderer profileRenderer = new ProfileRenderer();
+    public static CameraRunner profileRunner = new CameraRunner();
+    public static CameraRenderer profileRenderer = new CameraRenderer();
     public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
     public static File config;
+    public static File cameras;
 
     /**
      * Register mod items, blocks, tile entites and entities, load item,
@@ -43,6 +44,8 @@ public class ClientProxy extends CommonProxy
         path = path.substring(0, path.length() - 4);
 
         config = new File(path);
+        cameras = new File(path + "/aperture/cameras/");
+
         super.preLoad(event);
     }
 

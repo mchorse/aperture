@@ -1,8 +1,8 @@
 package mchorse.aperture.client.gui;
 
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.client.ProfileRenderer;
 import mchorse.aperture.utils.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -135,7 +135,7 @@ public class GuiPlaybackScrub
 
         for (AbstractFixture fixture : this.profile.getAll())
         {
-            ProfileRenderer.Color color = ProfileRenderer.fromFixture(fixture);
+            CameraRenderer.Color color = CameraRenderer.fromFixture(fixture);
 
             float ff = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
             float fb = (float) (pos - this.min) / (float) (this.max - this.min);

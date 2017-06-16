@@ -7,8 +7,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.Interpolations;
 import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.smooth.Interpolations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;

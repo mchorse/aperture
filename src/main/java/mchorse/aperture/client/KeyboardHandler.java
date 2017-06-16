@@ -6,7 +6,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.SmoothCamera;
+import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.client.Minecraft;

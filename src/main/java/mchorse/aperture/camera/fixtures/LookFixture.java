@@ -3,8 +3,8 @@ package mchorse.aperture.camera.fixtures;
 import com.google.gson.annotations.Expose;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.Interpolations;
 import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.smooth.Interpolations;
 import mchorse.aperture.utils.EntitySelector;
 import mchorse.aperture.utils.EntityUtils;
 import net.minecraft.client.Minecraft;

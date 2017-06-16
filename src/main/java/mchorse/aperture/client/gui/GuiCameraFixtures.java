@@ -3,8 +3,8 @@ package mchorse.aperture.client.gui;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.client.ProfileRenderer;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.utils.Rect;
 import net.minecraft.client.Minecraft;
@@ -181,7 +181,7 @@ public class GuiCameraFixtures
                 continue;
             }
 
-            int hex = 0xff000000 + ProfileRenderer.fromFixture(fixture).hex;
+            int hex = 0xff000000 + CameraRenderer.fromFixture(fixture).hex;
 
             int s = this.area.h;
             int x = this.area.x + s * i - (int) this.scroll;
@@ -209,7 +209,7 @@ public class GuiCameraFixtures
         if (this.index != -1 && this.index >= 0 && this.index < i)
         {
             int j = this.index;
-            int hex = 0xff000000 + ProfileRenderer.fromFixture(this.profile.get(j)).hex;
+            int hex = 0xff000000 + CameraRenderer.fromFixture(this.profile.get(j)).hex;
 
             int s = this.area.h;
             int xx = this.area.x + s * j - (int) this.scroll;

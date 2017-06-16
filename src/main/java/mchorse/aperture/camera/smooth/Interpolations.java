@@ -1,4 +1,4 @@
-package mchorse.aperture.camera;
+package mchorse.aperture.camera.smooth;
 
 import net.minecraft.util.math.MathHelper;
 

@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * fixture camera transformations on player).
  */
 @SideOnly(Side.CLIENT)
-public class ProfileRunner
+public class CameraRunner
 {
     private Minecraft mc = Minecraft.getMinecraft();
     private float fov = -1;

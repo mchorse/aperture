@@ -1,4 +1,4 @@
-package mchorse.aperture.camera;
+package mchorse.aperture.camera.smooth;
 
 import mchorse.aperture.Aperture;
 import net.minecraft.entity.player.EntityPlayer;

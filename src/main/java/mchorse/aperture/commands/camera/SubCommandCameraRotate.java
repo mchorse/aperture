@@ -2,6 +2,7 @@ package mchorse.aperture.commands.camera;
 
 import com.google.common.primitives.Doubles;
 
+import mchorse.aperture.ClientProxy;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -39,6 +40,8 @@ public class SubCommandCameraRotate extends CommandBase
 
         player.setPositionAndRotation(player.posX, player.posY, player.posZ, (float) x, (float) y);
         player.setVelocity(0, 0, 0);
+
+        ClientProxy.profileRenderer.smooth.set((float) x, (float) y);
     }
 
     /**
@@ -50,12 +53,11 @@ public class SubCommandCameraRotate extends CommandBase
     public static double parseRelativeDouble(String input, double base) throws CommandException
     {
         String first = input.substring(0, 1);
-        boolean plus = first.equals("+");
-        boolean minus = first.equals("-");
+        boolean relative = first.equals("~");
 
         try
         {
-            if (plus || minus)
+            if (relative)
             {
                 input = input.substring(1);
             }
@@ -67,12 +69,7 @@ public class SubCommandCameraRotate extends CommandBase
                 throw new NumberInvalidException("commands.generic.num.invalid", input);
             }
 
-            if (plus || minus)
-            {
-                number = plus ? base + number : (minus ? base - number : number);
-            }
-
-            return number;
+            return relative ? base + number : number;
         }
         catch (NumberFormatException var3)
         {
@@ -89,24 +86,18 @@ public class SubCommandCameraRotate extends CommandBase
     public static long parseRelativeLong(String input, long base) throws CommandException
     {
         String first = input.substring(0, 1);
-        boolean plus = first.equals("+");
-        boolean minus = first.equals("-");
+        boolean relative = first.equals("~");
 
         try
         {
-            if (plus || minus)
+            if (relative)
             {
                 input = input.substring(1);
             }
 
             long number = Long.parseLong(input);
 
-            if (plus || minus)
-            {
-                number = plus ? base + number : (minus ? base - number : number);
-            }
-
-            return number;
+            return relative ? base + number : number;
         }
         catch (NumberFormatException var3)
         {

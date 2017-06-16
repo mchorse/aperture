@@ -1,4 +1,4 @@
-package mchorse.aperture.client;
+package mchorse.aperture.camera;
 
 import java.util.List;
 
@@ -6,16 +6,14 @@ import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.Filter;
-import mchorse.aperture.camera.Position;
-import mchorse.aperture.camera.ProfileRunner;
-import mchorse.aperture.camera.SmoothCamera;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.smooth.Filter;
+import mchorse.aperture.camera.smooth.SmoothCamera;
+import mchorse.aperture.client.KeyboardHandler;
 import mchorse.aperture.commands.CommandCamera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,7 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * This class is responsible for rendering current loaded profile.
  */
 @SideOnly(Side.CLIENT)
-public class ProfileRenderer
+public class CameraRenderer
 {
     /**
      * Background texture for a fixture rendering.
@@ -76,7 +74,7 @@ public class ProfileRenderer
     @SubscribeEvent
     public void onCameraOrient(EntityViewRenderEvent.CameraSetup event)
     {
-        ProfileRunner runner = ClientProxy.profileRunner;
+        CameraRunner runner = ClientProxy.profileRunner;
 
         float ticks = (float) event.getRenderPartialTicks();
 
@@ -453,14 +451,14 @@ public class ProfileRenderer
      *
      * Don't forget about instanceof thing with order and extend.
      */
-    public static ProfileRenderer.Color fromFixture(AbstractFixture fixture)
+    public static CameraRenderer.Color fromFixture(AbstractFixture fixture)
     {
-        if (fixture instanceof PathFixture) return ProfileRenderer.Color.PATH;
-        else if (fixture instanceof FollowFixture) return ProfileRenderer.Color.FOLLOW;
-        else if (fixture instanceof LookFixture) return ProfileRenderer.Color.LOOK;
-        else if (fixture instanceof CircularFixture) return ProfileRenderer.Color.CIRCULAR;
+        if (fixture instanceof PathFixture) return CameraRenderer.Color.PATH;
+        else if (fixture instanceof FollowFixture) return CameraRenderer.Color.FOLLOW;
+        else if (fixture instanceof LookFixture) return CameraRenderer.Color.LOOK;
+        else if (fixture instanceof CircularFixture) return CameraRenderer.Color.CIRCULAR;
 
-        return ProfileRenderer.Color.IDLE;
+        return CameraRenderer.Color.IDLE;
     }
 
     /**

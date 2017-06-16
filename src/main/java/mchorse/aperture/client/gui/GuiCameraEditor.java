@@ -8,7 +8,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.Position;
-import mchorse.aperture.camera.ProfileRunner;
+import mchorse.aperture.camera.CameraRunner;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
@@ -71,7 +71,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     /**
      * Profile runner
      */
-    private ProfileRunner runner;
+    private CameraRunner runner;
 
     /**
      * Whether cameras are sync'd every render tick. Usable for target based
@@ -212,7 +212,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     /**
      * Initialize the camera editor with a camera profile.
      */
-    public GuiCameraEditor(ProfileRunner runner)
+    public GuiCameraEditor(CameraRunner runner)
     {
         this.runner = runner;
 
