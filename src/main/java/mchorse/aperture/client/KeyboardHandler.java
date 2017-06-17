@@ -5,16 +5,13 @@ import org.lwjgl.input.Keyboard;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
-import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.smooth.SmoothCamera;
-import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -141,7 +138,7 @@ public class KeyboardHandler
     @SubscribeEvent
     public void onUserLogOut(ClientDisconnectionFromServerEvent event)
     {
-        CommandCamera.reset();
+        ClientProxy.control.reset();
     }
 
     /**
@@ -164,17 +161,6 @@ public class KeyboardHandler
         /* Misc. */
         if (this.cameraEditor.isPressed())
         {
-            CameraProfile profile = CommandCamera.getProfile();
-
-            if (ClientProxy.cameraEditor.getProfile() != profile)
-            {
-                ClientProxy.cameraEditor.setProfile(profile);
-            }
-
-            GuiIngameForge.renderHotbar = false;
-            GuiIngameForge.renderCrosshairs = false;
-            Minecraft.getMinecraft().gameSettings.hideGUI = true;
-
             ClientProxy.cameraEditor.updateCameraEditor(player);
 
             player.setVelocity(0, 0, 0);
@@ -203,7 +189,7 @@ public class KeyboardHandler
      */
     private void handleCameraBindings(EntityPlayer player) throws CommandException
     {
-        CameraControl control = CommandCamera.getControl();
+        CameraControl control = ClientProxy.control;
 
         if (this.toggleRender.isPressed())
         {
@@ -213,7 +199,7 @@ public class KeyboardHandler
         /* Starting stopping */
         if (this.startRunning.isPressed())
         {
-            ClientProxy.runner.start();
+            ClientProxy.runner.start(ClientProxy.control.currentProfile);
         }
         else if (this.stopRunning.isPressed())
         {
@@ -244,7 +230,7 @@ public class KeyboardHandler
         {
             if (!ClientProxy.renderer.smooth.enabled)
             {
-                CameraControl control = CommandCamera.getControl();
+                CameraControl control = ClientProxy.control;
 
                 /* Roll key handling */
                 if (this.addRoll.isKeyDown())

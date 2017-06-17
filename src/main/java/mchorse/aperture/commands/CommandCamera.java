@@ -1,20 +1,19 @@
 package mchorse.aperture.commands;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.ClientProxy;
-import mchorse.aperture.camera.CameraControl;
-import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.commands.camera.SubCommandCameraClear;
-import mchorse.aperture.commands.camera.SubCommandCameraDefault;
-import mchorse.aperture.commands.camera.SubCommandCameraFOV;
+import mchorse.aperture.commands.camera.SubCommandCameraClose;
+import mchorse.aperture.commands.camera.SubCommandCameraList;
 import mchorse.aperture.commands.camera.SubCommandCameraLoad;
 import mchorse.aperture.commands.camera.SubCommandCameraNew;
-import mchorse.aperture.commands.camera.SubCommandCameraRoll;
-import mchorse.aperture.commands.camera.SubCommandCameraRotate;
 import mchorse.aperture.commands.camera.SubCommandCameraSave;
 import mchorse.aperture.commands.camera.SubCommandCameraStart;
-import mchorse.aperture.commands.camera.SubCommandCameraStep;
 import mchorse.aperture.commands.camera.SubCommandCameraStop;
+import mchorse.aperture.commands.camera.control.SubCommandCameraDefault;
+import mchorse.aperture.commands.camera.control.SubCommandCameraFOV;
+import mchorse.aperture.commands.camera.control.SubCommandCameraRoll;
+import mchorse.aperture.commands.camera.control.SubCommandCameraRotate;
+import mchorse.aperture.commands.camera.control.SubCommandCameraStep;
 import mchorse.aperture.commands.fixture.SubCommandFixtureAdd;
 import mchorse.aperture.commands.fixture.SubCommandFixtureDuration;
 import mchorse.aperture.commands.fixture.SubCommandFixtureEdit;
@@ -38,36 +37,6 @@ import mchorse.aperture.commands.fixture.SubCommandFixtureRemove;
  */
 public class CommandCamera extends SubCommandBase
 {
-    private static CameraProfile profile;
-    private static CameraControl control = new CameraControl();
-
-    public static CameraProfile getProfile()
-    {
-        return profile;
-    }
-
-    public static CameraControl getControl()
-    {
-        return control;
-    }
-
-    public static void setProfile(CameraProfile profile)
-    {
-        CommandCamera.profile = profile;
-        ClientProxy.runner.setProfile(profile);
-        ClientProxy.renderer.setProfile(profile);
-    }
-
-    public static void reset()
-    {
-        setProfile(new CameraProfile(""));
-    }
-
-    static
-    {
-        reset();
-    }
-
     /**
      * Camera's command constructor
      *
@@ -86,6 +55,8 @@ public class CommandCamera extends SubCommandBase
 
         /* Profile */
         this.add(new SubCommandCameraClear());
+        this.add(new SubCommandCameraList());
+        this.add(new SubCommandCameraClose());
 
         /* Camera control */
         this.add(new SubCommandCameraStep());
@@ -97,11 +68,11 @@ public class CommandCamera extends SubCommandBase
         /* Fixture editing */
         this.add(new SubCommandFixtureAdd());
         this.add(new SubCommandFixtureEdit());
-        this.add(new SubCommandFixtureMove());
         this.add(new SubCommandFixtureRemove());
+        this.add(new SubCommandFixtureMove());
+        this.add(new SubCommandFixtureGoto());
         this.add(new SubCommandFixtureDuration());
         this.add(new SubCommandFixturePath());
-        this.add(new SubCommandFixtureGoto());
     }
 
     @Override
@@ -113,6 +84,6 @@ public class CommandCamera extends SubCommandBase
     @Override
     protected String getHelp()
     {
-        return "blockbuster.commands.camera.help";
+        return "aperture.commands.camera.help";
     }
 }

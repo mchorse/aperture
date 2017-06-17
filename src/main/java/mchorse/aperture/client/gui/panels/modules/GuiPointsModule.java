@@ -86,7 +86,7 @@ public class GuiPointsModule implements IGuiModule
             if (dy < 20)
             {
                 /* Add a point based on player attributes */
-                this.path.addPoint(new Position(Minecraft.getMinecraft().thePlayer));
+                this.path.addPoint(new Position(Minecraft.getMinecraft().thePlayer), this.index + 1);
                 this.scrollSize = this.path.getCount() * 20;
             }
             else if (dy > this.area.h - 20 && size > 1)

@@ -1,44 +1,44 @@
-package mchorse.aperture.commands.camera;
+package mchorse.aperture.commands.camera.control;
 
-import mchorse.aperture.commands.CommandCamera;
+import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.utils.L10n;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
 /**
- * Camera's sub-command /camera fov
+ * Camera's sub-command /camera roll
  *
- * This command is responsible for setting and getting fov of this client.
+ * This command is responsible for setting and getting roll of this client.
  */
-public class SubCommandCameraFOV extends CommandBase
+public class SubCommandCameraRoll extends CommandBase
 {
     @Override
     public String getCommandName()
     {
-        return "fov";
+        return "roll";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "aperture.commands.camera.fov";
+        return "aperture.commands.camera.roll";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        CameraControl control = ClientProxy.control;
 
         if (args.length == 0)
         {
-            L10n.info(sender, "camera.fov", mc.gameSettings.fovSetting);
+            L10n.info(sender, "camera.roll", control.roll);
         }
         else
         {
-            CommandCamera.getControl().setFOV((float) CommandBase.parseDouble(args[0]));
+            control.setRoll((float) CommandBase.parseDouble(args[0]));
         }
     }
 }

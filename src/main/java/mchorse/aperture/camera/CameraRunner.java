@@ -1,7 +1,7 @@
 package mchorse.aperture.camera;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.commands.CommandCamera;
+import mchorse.aperture.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -65,7 +65,7 @@ public class CameraRunner
 
     /* Playback methods (start/stop) */
 
-    public void toggle(long ticks)
+    public void toggle(CameraProfile profile, long ticks)
     {
         if (this.isRunning)
         {
@@ -73,13 +73,16 @@ public class CameraRunner
         }
         else
         {
-            this.start(ticks);
+            this.start(profile, ticks);
         }
     }
 
-    public void start()
+    /**
+     * Start the profile runner from the first tick 
+     */
+    public void start(CameraProfile profile)
     {
-        this.start(0);
+        this.start(profile, 0);
     }
 
     /**
@@ -87,9 +90,11 @@ public class CameraRunner
      * important values before starting the run (like setting duration, and
      * reseting ticks).
      */
-    public void start(long start)
+    public void start(CameraProfile profile, long start)
     {
-        if (this.profile.getCount() == 0)
+        this.profile = profile;
+
+        if (this.profile == null || this.profile.getCount() == 0)
         {
             return;
         }
@@ -141,8 +146,9 @@ public class CameraRunner
         }
 
         this.isRunning = false;
+        this.profile = null;
 
-        CommandCamera.getControl().resetRoll();
+        ClientProxy.control.resetRoll();
     }
 
     /**
@@ -153,7 +159,10 @@ public class CameraRunner
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event)
     {
-        if (event.phase == Phase.START) return;
+        if (event.phase == Phase.START || this.profile == null)
+        {
+            return;
+        }
 
         long progress = Math.min(this.ticks, this.duration);
 
@@ -175,7 +184,7 @@ public class CameraRunner
 
             /* Setting up the camera */
             this.mc.gameSettings.fovSetting = angle.fov;
-            CommandCamera.getControl().roll = angle.roll;
+            ClientProxy.control.roll = angle.roll;
 
             /* Fighting with Optifine disappearing entities bug */
             double y = point.y + Math.sin(progress) * 0.000000001 + 0.000000001;

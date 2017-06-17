@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 
+import mchorse.aperture.camera.destination.AbstractDestination;
+import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.network.Dispatcher;
-import mchorse.aperture.network.common.PacketCameraProfile;
 
 /**
  * Camera profile class
@@ -25,23 +25,31 @@ public class CameraProfile
     protected List<AbstractFixture> fixtures = new ArrayList<AbstractFixture>();
 
     /**
-     * Filename of this camera profile (if empty, means new or unsaved)
+     * Where the camera profile is stored. Needs only on the client 
      */
-    protected String filename = "";
+    protected AbstractDestination destination;
 
-    public CameraProfile(String filename)
+    public long lastTimeModified;
+
+    public CameraProfile()
     {
-        this.filename = filename;
+        this.updateLastTimeModified();
     }
 
-    public String getFilename()
+    public CameraProfile(AbstractDestination destination)
     {
-        return this.filename;
+        this();
+        this.destination = destination;
     }
 
-    public void setFilename(String filename)
+    public AbstractDestination getDestination()
     {
-        this.filename = filename;
+        return this.destination;
+    }
+
+    public void setDestination(AbstractDestination destination)
+    {
+        this.destination = destination;
     }
 
     /**
@@ -57,6 +65,11 @@ public class CameraProfile
         }
 
         return duration;
+    }
+
+    public void updateLastTimeModified()
+    {
+        this.lastTimeModified = System.currentTimeMillis();
     }
 
     /**
@@ -171,6 +184,7 @@ public class CameraProfile
     public void add(AbstractFixture fixture)
     {
         this.fixtures.add(fixture);
+        this.updateLastTimeModified();
     }
 
     /**
@@ -182,6 +196,8 @@ public class CameraProfile
         {
             this.fixtures.add(to, this.fixtures.remove(from));
         }
+
+        this.updateLastTimeModified();
     }
 
     /**
@@ -195,6 +211,8 @@ public class CameraProfile
         {
             this.fixtures.remove(index);
         }
+
+        this.updateLastTimeModified();
     }
 
     /**
@@ -203,6 +221,7 @@ public class CameraProfile
     public void reset()
     {
         this.fixtures.clear();
+        this.updateLastTimeModified();
     }
 
     /**
@@ -237,16 +256,16 @@ public class CameraProfile
         fixture.applyFixture((float) progress / fixture.getDuration(), partialTicks, position);
     }
 
-    /**
-     * Save camera profile on the server
-     */
-    public void save()
+    @Override
+    public String toString()
     {
-        if (this.fixtures.size() == 0)
+        String description = "Camera: " + this.getCount() + " fixtures, " + this.getDuration() + " ticks.";
+
+        if (this.destination != null)
         {
-            return;
+            description += (this.destination instanceof ClientDestination ? " Local" : " Server") + " profile \"" + this.destination.getFilename() + "\"";
         }
 
-        Dispatcher.sendToServer(new PacketCameraProfile(this.filename, CameraUtils.toJSON(this)));
+        return description;
     }
 }

@@ -2,8 +2,8 @@ package mchorse.aperture.commands.fixture;
 
 import java.util.List;
 
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -44,7 +44,7 @@ public class SubCommandFixtureAdd extends CommandBase
 
         try
         {
-            CommandCamera.getProfile().add(AbstractFixture.fromCommand(args, (EntityPlayer) sender));
+            ClientProxy.control.currentProfile.add(AbstractFixture.fromCommand(args, (EntityPlayer) sender));
         }
         catch (CommandException e)
         {

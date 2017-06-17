@@ -3,6 +3,7 @@ package mchorse.aperture.network.client;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraUtils;
+import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.utils.L10n;
@@ -26,12 +27,13 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
     {
         CameraProfile profile = CameraUtils.cameraJSONBuilder(false).fromJson(message.profile, CameraProfile.class);
 
-        profile.setFilename(message.filename);
-        CommandCamera.setProfile(profile);
+        profile.setDestination(new ServerDestination(message.filename));
+
+        ClientProxy.control.addProfile(profile);
 
         if (message.play)
         {
-            ClientProxy.runner.start();
+            ClientProxy.runner.start(ClientProxy.control.currentProfile);
         }
 
         L10n.success(player, "profile.load", message.filename);

@@ -1,7 +1,7 @@
 package mchorse.aperture.camera;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import mchorse.aperture.ClientProxy;
 import net.minecraft.client.Minecraft;
@@ -18,19 +18,34 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CameraControl
 {
     /**
-     * Roll of the camera
-     */
-    public float roll = 0;
-
-    /**
      * Currently stored camera profiles 
      */
-    public Map<String, CameraProfile> profiles = new HashMap<String, CameraProfile>();
+    public List<CameraProfile> profiles = new ArrayList<CameraProfile>();
 
     /**
      * Currently rendered/editing camera profile
      */
     public CameraProfile currentProfile;
+
+    /**
+     * Roll of the camera
+     */
+    public float roll = 0;
+
+    /**
+     * Reset camera profiles 
+     */
+    public void reset()
+    {
+        this.profiles.clear();
+        this.currentProfile = null;
+    }
+
+    public void addProfile(CameraProfile profile)
+    {
+        this.profiles.add(profile);
+        this.currentProfile = profile;
+    }
 
     /**
      * Add roll (it can be negative too)

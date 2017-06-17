@@ -1,6 +1,6 @@
-package mchorse.aperture.commands.camera;
+package mchorse.aperture.commands.camera.control;
 
-import mchorse.aperture.commands.CommandCamera;
+import mchorse.aperture.ClientProxy;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -29,7 +29,7 @@ public class SubCommandCameraDefault extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        CommandCamera.getControl().resetRoll();
-        CommandCamera.getControl().resetFOV();
+        ClientProxy.control.resetRoll();
+        ClientProxy.control.resetFOV();
     }
 }

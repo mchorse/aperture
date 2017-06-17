@@ -1,4 +1,4 @@
-package mchorse.aperture.commands.camera;
+package mchorse.aperture.commands.camera.control;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

@@ -1,6 +1,7 @@
 package mchorse.aperture.commands.fixture;
 
-import mchorse.aperture.commands.CommandCamera;
+import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -36,15 +37,16 @@ public class SubCommandFixtureRemove extends CommandBase
             throw new WrongUsageException(this.getCommandUsage(sender));
         }
 
+        CameraProfile profile = ClientProxy.control.currentProfile;
         int index = CommandBase.parseInt(args[0]);
 
-        if (!CommandCamera.getProfile().has(index))
+        if (!profile.has(index))
         {
             L10n.error(sender, "profile.not_exists", index);
         }
         else
         {
-            CommandCamera.getProfile().remove(index);
+            profile.remove(index);
         }
     }
 }

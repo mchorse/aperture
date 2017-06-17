@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.CameraRenderer.Color;
+import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
@@ -78,6 +78,11 @@ public class GuiFixturesPopup
         this.look.yPosition = y + 1 + bh * 2;
         this.follow.yPosition = y + 1 + bh * 3;
         this.circular.yPosition = y + 1 + bh * 4;
+    }
+
+    public boolean isInside(int x, int y)
+    {
+        return this.visible && this.area.isInside(x, y);
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)

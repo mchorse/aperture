@@ -1,4 +1,4 @@
-package mchorse.aperture.commands.camera;
+package mchorse.aperture.commands.camera.control;
 
 import com.google.common.primitives.Doubles;
 

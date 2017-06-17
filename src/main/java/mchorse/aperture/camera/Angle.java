@@ -3,7 +3,7 @@ package mchorse.aperture.camera;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 
-import mchorse.aperture.commands.CommandCamera;
+import mchorse.aperture.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -54,7 +54,7 @@ public class Angle
     {
         float fov = Minecraft.getMinecraft().gameSettings.fovSetting;
 
-        this.set(player.rotationYaw, player.rotationPitch, CommandCamera.getControl().roll, fov);
+        this.set(player.rotationYaw, player.rotationPitch, ClientProxy.control.roll, fov);
     }
 
     @Override

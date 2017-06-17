@@ -1,7 +1,7 @@
 package mchorse.aperture.commands.fixture;
 
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.SubCommandBase;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
@@ -42,7 +42,7 @@ public class SubCommandFixtureEdit extends CommandBase
             throw new WrongUsageException(this.getCommandUsage(sender));
         }
 
-        CameraProfile profile = CommandCamera.getProfile();
+        CameraProfile profile = ClientProxy.control.currentProfile;
         int index = CommandBase.parseInt(args[0]);
 
         if (!profile.has(index))

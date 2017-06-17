@@ -1,9 +1,9 @@
 package mchorse.aperture.commands.fixture;
 
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.commands.CommandCamera;
-import mchorse.aperture.commands.camera.SubCommandCameraRotate;
+import mchorse.aperture.commands.camera.control.SubCommandCameraRotate;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -33,7 +33,7 @@ public class SubCommandFixtureDuration extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        CameraProfile profile = CommandCamera.getProfile();
+        CameraProfile profile = ClientProxy.control.currentProfile;
 
         if (args.length == 0)
         {

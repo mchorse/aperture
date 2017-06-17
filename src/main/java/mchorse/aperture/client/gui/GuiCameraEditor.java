@@ -18,6 +18,7 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraFixtures.IFixturePicker;
 import mchorse.aperture.client.gui.GuiFixturesPopup.IFixtureSelector;
 import mchorse.aperture.client.gui.GuiPlaybackScrub.IScrubListener;
+import mchorse.aperture.client.gui.GuiProfilesManager.IProfileListener;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
@@ -26,7 +27,6 @@ import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.IFixturePanel;
 import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
-import mchorse.aperture.commands.CommandCamera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -49,7 +49,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * includes should be able to allow the
  */
 @SideOnly(Side.CLIENT)
-public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixturePicker, IFixtureSelector
+public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixturePicker, IFixtureSelector, IProfileListener
 {
     /**
      * Camera editor texture
@@ -122,6 +122,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     public GuiButton remove;
     public GuiCameraFixtures fixtures;
     public GuiFixturesPopup popup;
+    public GuiProfilesManager profiles;
 
     /**
      * Current fixture panel to display
@@ -210,15 +211,26 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     }
 
     /**
+     * Camera profile was selected from the profile manager 
+     */
+    @Override
+    public void selectProfile(CameraProfile profile)
+    {
+        ClientProxy.control.currentProfile = profile;
+
+        this.setProfile(profile);
+    }
+
+    /**
      * Initialize the camera editor with a camera profile.
      */
     public GuiCameraEditor(CameraRunner runner)
     {
         this.runner = runner;
-
         this.scrub = new GuiPlaybackScrub(this, null);
         this.fixtures = new GuiCameraFixtures(this, null);
         this.popup = new GuiFixturesPopup(this);
+        this.profiles = new GuiProfilesManager(this);
     }
 
     /**
@@ -235,17 +247,36 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public void setProfile(CameraProfile profile)
     {
+        boolean isOldSame = this.profile == profile;
+
         this.profile = profile;
         this.scrub.setProfile(profile);
         this.fixtures.setProfile(profile);
-        this.fixturePanel = null;
+        this.profiles.init();
+
+        if (!isOldSame)
+        {
+            this.fixturePanel = null;
+        }
+
+        if (this.profile == null)
+        {
+            this.profiles.visible = true;
+        }
     }
 
     /**
-     * Update the state of director
+     * Update the state of camera editor (should be invoked upon opening this 
+     * screen)
      */
     public void updateCameraEditor(EntityPlayer player)
     {
+        this.setProfile(ClientProxy.control.currentProfile);
+
+        GuiIngameForge.renderHotbar = false;
+        GuiIngameForge.renderCrosshairs = false;
+        Minecraft.getMinecraft().gameSettings.hideGUI = true;
+
         this.updateValues();
         this.syncing = false;
         this.visible = true;
@@ -283,7 +314,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.profile.applyProfile(tick, ticks, pos);
 
         pos.apply(player);
-        CommandCamera.getControl().setRollAndFOV(pos.angle.roll, pos.angle.fov);
+        ClientProxy.control.setRollAndFOV(pos.angle.roll, pos.angle.fov);
     }
 
     /**
@@ -291,9 +322,17 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public void updateValues()
     {
-        this.scrub.max = (int) this.profile.getDuration();
-        this.scrub.setValue(this.scrub.value);
-        this.fixtures.updateScroll();
+        if (this.profile != null)
+        {
+            this.scrub.max = (int) this.profile.getDuration();
+            this.scrub.setValue(this.scrub.value);
+            this.fixtures.updateScroll();
+        }
+        else
+        {
+            this.scrub.max = 0;
+            this.scrub.setValue(0);
+        }
     }
 
     /**
@@ -363,7 +402,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.sync = new GuiCheckBox(-4, x, y, "Sync", this.syncing);
         this.sync.packedFGColour = 0xffffff;
 
-        this.add = new GuiButton(50, 10, this.height - 20, 20, 20, "+");
+        this.add = new GuiButton(50, this.width - 50, this.height - 20, 20, 20, "+");
         this.remove = new GuiButton(51, this.width - 30, this.height - 20, 20, 20, "-");
 
         this.buttonList.add(this.toNextFixture);
@@ -386,14 +425,17 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         /* Setup areas of widgets */
         this.scrub.area.set(10, 27, this.width - 20, 20);
-        this.fixtures.area.set(35, this.height - 20, this.width - 70, 20);
+        this.fixtures.area.set(10, this.height - 20, this.width - 60, 20);
         this.fixtures.updateScroll();
-        this.popup.update(10, this.height - 121, 62, 102);
+        this.popup.update(width / 2 - 32, height / 2 - 51, 62, 102);
 
         if (this.fixturePanel != null)
         {
             this.fixturePanel.update(this);
         }
+
+        this.profiles.update(width / 2 - 80, 55, 160, this.height - 85);
+        this.profiles.visible = true;
     }
 
     /**
@@ -425,7 +467,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 2)
         {
-            this.runner.toggle(this.scrub.value);
+            this.runner.toggle(this.profile, this.scrub.value);
             this.updatePlauseButton();
 
             this.playing = this.runner.isRunning();
@@ -569,16 +611,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.visible = !this.visible;
         }
 
-        if (!this.visible)
-        {
-            return;
-        }
-
-        if (this.fixturePanel != null)
-        {
-            this.fixturePanel.keyTyped(typedChar, keyCode);
-        }
-
         if (keyCode == 1)
         {
             GuiIngameForge.renderHotbar = true;
@@ -592,12 +624,36 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                 this.mc.setIngameFocus();
             }
         }
+
+        if (!this.visible)
+        {
+            return;
+        }
+
+        this.profiles.keyTyped(typedChar, keyCode);
+
+        if (this.profile == null)
+        {
+            return;
+        }
+
+        if (this.fixturePanel != null)
+        {
+            this.fixturePanel.keyTyped(typedChar, keyCode);
+        }
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         if (!this.visible)
+        {
+            return;
+        }
+
+        this.profiles.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (this.profile == null || this.profiles.isInside(mouseX, mouseY))
         {
             return;
         }
@@ -623,7 +679,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state)
     {
-        if (!this.visible || this.popup.visible && this.popup.area.isInside(mouseX, mouseY))
+        if (!this.visible || this.profile == null)
+        {
+            return;
+        }
+
+        if (this.popup.isInside(mouseX, mouseY) || this.profiles.isInside(mouseX, mouseY))
         {
             return;
         }
@@ -647,62 +708,65 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     {
         if (!this.visible)
         {
+            /* Little tip for the users who don't know what they did */
+            this.fontRendererObj.drawStringWithShadow("Press F1 to show GUI again...", 5, this.height - 12, 0xffffff);
+
             return;
         }
 
-        int x = this.width - 10 - 20 * 5;
-        int y = 5;
-
-        Gui.drawRect(x, y, x + 100, y + 20, 0x88000000);
-        this.drawHorizontalLine(x, x + 99, y, 0xff000000);
-        this.drawHorizontalLine(x, x + 99, y + 19, 0xff000000);
-        this.drawVerticalLine(x, y, y + 19, 0xff000000);
-        this.drawVerticalLine(x + 99, y, y + 19, 0xff000000);
-
-        Gui.drawRect(x - 90, y, x - 10, y + 20, 0x88000000);
-        this.drawHorizontalLine(x - 90, x - 10, y, 0xff000000);
-        this.drawHorizontalLine(x - 90, x - 10, y + 19, 0xff000000);
-        this.drawVerticalLine(x - 90, y, y + 19, 0xff000000);
-        this.drawVerticalLine(x - 10, y, y + 19, 0xff000000);
-
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
-        /* Sync the player on current tick */
-        if (this.syncing)
+        if (this.profile != null)
         {
-            this.updatePlayerCurrently(0.0F);
+            int x = this.width - 10 - 20 * 5;
+            int y = 5;
+
+            Gui.drawRect(x, y, x + 100, y + 20, 0x88000000);
+            this.drawHorizontalLine(x, x + 99, y, 0xff000000);
+            this.drawHorizontalLine(x, x + 99, y + 19, 0xff000000);
+            this.drawVerticalLine(x, y, y + 19, 0xff000000);
+            this.drawVerticalLine(x + 99, y, y + 19, 0xff000000);
+
+            Gui.drawRect(x - 90, y, x - 10, y + 20, 0x88000000);
+            this.drawHorizontalLine(x - 90, x - 10, y, 0xff000000);
+            this.drawHorizontalLine(x - 90, x - 10, y + 19, 0xff000000);
+            this.drawVerticalLine(x - 90, y, y + 19, 0xff000000);
+            this.drawVerticalLine(x - 10, y, y + 19, 0xff000000);
+
+            super.drawScreen(mouseX, mouseY, partialTicks);
+
+            /* Sync the player on current tick */
+            if (this.syncing)
+            {
+                this.updatePlayerCurrently(0.0F);
+            }
+
+            boolean running = this.runner.isRunning();
+
+            if (running)
+            {
+                this.scrub.value = (int) this.runner.getTicks();
+                this.scrub.value = MathHelper.clamp_int(this.scrub.value, 0, this.scrub.max);
+            }
+
+            if (!running && this.playing)
+            {
+                this.updatePlauseButton();
+
+                /* TODO: Implement hook to pause director */
+                this.playing = false;
+            }
+
+            /* Draw widgets */
+            this.scrub.draw(mouseX, mouseY, partialTicks);
+            this.fixtures.draw(mouseX, mouseY, partialTicks);
+
+            if (this.fixturePanel != null)
+            {
+                this.fixturePanel.draw(mouseX, mouseY, partialTicks);
+            }
+
+            this.popup.draw(mouseX, mouseY, partialTicks);
         }
 
-        boolean running = this.runner.isRunning();
-
-        if (running)
-        {
-            this.scrub.value = (int) this.runner.getTicks();
-            this.scrub.value = MathHelper.clamp_int(this.scrub.value, 0, this.scrub.max);
-        }
-
-        if (!running && this.playing)
-        {
-            this.updatePlauseButton();
-            /* TODO: Implement hook to pause director */
-            this.playing = false;
-        }
-
-        /* Draw widgets */
-        this.scrub.draw(mouseX, mouseY, partialTicks);
-        this.fixtures.draw(mouseX, mouseY, partialTicks);
-
-        /* Draw the start and end of the camera profile */
-        String label = String.valueOf(this.profile.getDuration());
-        int width = this.fontRendererObj.getStringWidth(label);
-
-        if (this.fixturePanel != null)
-        {
-            this.fixturePanel.draw(mouseX, mouseY, partialTicks);
-        }
-
-        this.fontRendererObj.drawStringWithShadow("0", 10, 50, 0xffffffff);
-        this.fontRendererObj.drawStringWithShadow(label, this.width - 10 - width, 50, 0xffffffff);
-        this.popup.draw(mouseX, mouseY, partialTicks);
+        this.profiles.draw(mouseX, mouseY, partialTicks);
     }
 }

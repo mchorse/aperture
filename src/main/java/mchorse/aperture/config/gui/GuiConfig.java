@@ -35,6 +35,7 @@ public class GuiConfig extends net.minecraftforge.fml.client.config.GuiConfig
         for (String name : Aperture.proxy.forge.getCategoryNames())
         {
             ConfigCategory category = Aperture.proxy.forge.getCategory(name);
+
             category.setLanguageKey("aperture.config." + name + ".title");
             category.setComment(I18n.format("aperture.config.category." + name + ".tooltip"));
 

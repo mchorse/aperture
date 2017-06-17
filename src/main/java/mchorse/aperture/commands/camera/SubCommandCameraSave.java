@@ -1,7 +1,8 @@
 package mchorse.aperture.commands.camera;
 
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.commands.CommandCamera;
+import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -32,17 +33,22 @@ public class SubCommandCameraSave extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        CameraProfile profile = CommandCamera.getProfile();
-        String filename = args.length == 0 ? profile.getFilename() : args[0];
+        CameraProfile profile = ClientProxy.control.currentProfile;
 
-        if (filename.isEmpty())
+        if (profile != null)
         {
-            L10n.error(sender, "profile.empty_filename");
-        }
-        else
-        {
-            profile.setFilename(filename);
-            profile.save();
+            AbstractDestination destination = profile.getDestination();
+            String filename = args.length == 0 ? destination.getFilename() : args[0];
+
+            if (filename.isEmpty())
+            {
+                L10n.error(sender, "profile.empty_filename");
+            }
+            else
+            {
+                destination.setFilename(filename);
+                destination.save(profile);
+            }
         }
     }
 }

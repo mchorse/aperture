@@ -14,7 +14,6 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
-import mchorse.aperture.commands.CommandCamera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -103,11 +102,11 @@ public class CameraRenderer
             /* Roll and FOV */
             if (this.roll.acc != 0.0F)
             {
-                CommandCamera.getControl().roll = this.roll.interpolate(ticks);
+                ClientProxy.control.roll = this.roll.interpolate(ticks);
             }
             else
             {
-                this.roll.set(CommandCamera.getControl().roll);
+                this.roll.set(ClientProxy.control.roll);
             }
 
             if (this.fov.acc != 0.0F)
@@ -123,7 +122,7 @@ public class CameraRenderer
             }
         }
 
-        float roll = CommandCamera.getControl().roll;
+        float roll = ClientProxy.control.roll;
 
         if (roll == 0)
         {
@@ -170,7 +169,9 @@ public class CameraRenderer
     @SubscribeEvent
     public void onLastRender(RenderWorldLastEvent event)
     {
-        boolean badProfile = this.profile == null || this.profile.getCount() < 1;
+        CameraProfile profile = ClientProxy.control.currentProfile;
+
+        boolean badProfile = profile == null || profile.getCount() < 1;
 
         if (!this.render) return;
         if (ClientProxy.runner.isRunning()) return;
@@ -192,7 +193,7 @@ public class CameraRenderer
 
         int i = 0;
 
-        for (AbstractFixture fixture : this.profile.getAll())
+        for (AbstractFixture fixture : profile.getAll())
         {
             fixture.applyFixture(0, 0.0F, prev);
             fixture.applyFixture(1, 0.0F, next);

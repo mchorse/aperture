@@ -51,8 +51,12 @@ public class GuiCameraFixtures
     public void setProfile(CameraProfile profile)
     {
         this.profile = profile;
-        this.updateScroll();
-        this.index = -1;
+
+        if (this.profile != null)
+        {
+            this.updateScroll();
+            this.index = -1;
+        }
     }
 
     /**
@@ -60,8 +64,11 @@ public class GuiCameraFixtures
      */
     public void updateScroll()
     {
-        this.scrollSize = this.area.h * this.profile.getCount();
-        this.scroll = this.scrollSize > this.area.w ? MathHelper.clamp_float(this.scroll, 0, this.scrollSize - this.area.w) : 0;
+        if (this.profile != null)
+        {
+            this.scrollSize = this.area.h * this.profile.getCount();
+            this.scroll = this.scrollSize > this.area.w ? MathHelper.clamp_float(this.scroll, 0, this.scrollSize - this.area.w) : 0;
+        }
     }
 
     public int getIndex()

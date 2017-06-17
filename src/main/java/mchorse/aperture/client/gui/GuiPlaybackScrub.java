@@ -50,7 +50,8 @@ public class GuiPlaybackScrub
     public void setProfile(CameraProfile profile)
     {
         this.profile = profile;
-        this.max = (int) profile.getDuration();
+
+        this.max = profile == null ? 0 : (int) profile.getDuration();
         this.value = MathHelper.clamp_int(this.value, this.min, this.max);
     }
 
@@ -125,7 +126,7 @@ public class GuiPlaybackScrub
         GuiUtils.drawContinuousTexturedBox(VANILLA_BUTTONS, x, y, 0, 46, w, h, 200, 20, 1, 1, 1, 1, 0);
 
         /* Calculate tick marker position and tick label width */
-        String label = String.valueOf(this.value);
+        String label = String.valueOf(this.value + "/" + this.max);
         float f = (float) (this.value - this.min) / (float) (this.max - this.min);
         int tx = x + 1 + (int) ((w - 4) * f);
         int width = this.font.getStringWidth(label) + 4;

@@ -1,6 +1,6 @@
 package mchorse.aperture.commands.camera;
 
-import mchorse.aperture.commands.CommandCamera;
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketCameraReset;
 import mchorse.aperture.utils.L10n;
@@ -32,7 +32,10 @@ public class SubCommandCameraClear extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        CommandCamera.getProfile().reset();
+        if (ClientProxy.control.currentProfile != null)
+        {
+            ClientProxy.control.currentProfile.reset();
+        }
 
         Dispatcher.sendToServer(new PacketCameraReset());
         L10n.success(sender, "profile.clear");
