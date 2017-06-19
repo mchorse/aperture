@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.input.Mouse;
+
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
@@ -663,6 +665,19 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             this.fixturePanel.keyTyped(typedChar, keyCode);
         }
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException
+    {
+        super.handleMouseInput();
+
+        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+
+        int scroll = -Mouse.getEventDWheel();
+
+        this.profiles.mouseScroll(x, y, scroll);
     }
 
     @Override

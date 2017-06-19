@@ -1,11 +1,22 @@
 package mchorse.aperture.client.gui;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.client.gui.panels.IGuiModule;
+import mchorse.aperture.client.gui.utils.GuiUtils;
+import mchorse.aperture.network.Dispatcher;
+import mchorse.aperture.network.common.PacketRequestCameraProfiles;
 import mchorse.aperture.utils.Rect;
 import mchorse.aperture.utils.ScrollArea;
 import net.minecraft.client.Minecraft;
@@ -25,10 +36,12 @@ public class GuiProfilesManager implements IGuiModule
     private Minecraft mc = Minecraft.getMinecraft();
 
     public Rect rect = new Rect();
-    public ScrollArea scroll = new ScrollArea(16);
-    public IProfileListener listener;
+    public ScrollArea scrollLoaded = new ScrollArea(20);
+    public ScrollArea scrollLoad = new ScrollArea(20);
+    public GuiCameraEditor editor;
     public boolean visible;
     public boolean showLoaded = true;
+    public List<AbstractDestination> destToLoad = new ArrayList<AbstractDestination>();
 
     public GuiButton quit;
     public GuiButton loaded;
@@ -37,9 +50,9 @@ public class GuiProfilesManager implements IGuiModule
 
     public GuiTextField name;
 
-    public GuiProfilesManager(IProfileListener listener)
+    public GuiProfilesManager(GuiCameraEditor editor)
     {
-        this.listener = listener;
+        this.editor = editor;
 
         /* TODO: extract strings */
         this.quit = new GuiButton(0, 0, 0, "X");
@@ -52,15 +65,26 @@ public class GuiProfilesManager implements IGuiModule
 
     public void init()
     {
+        this.destToLoad.clear();
 
+        for (File file : ClientProxy.cameras.listFiles(new JSONFileFilter()))
+        {
+            String filename = file.getName();
+
+            filename = filename.substring(0, filename.lastIndexOf(".json"));
+
+            this.destToLoad.add(new ClientDestination(filename));
+        }
+
+        Dispatcher.sendToServer(new PacketRequestCameraProfiles());
     }
 
     public void update(int x, int y, int w, int h)
     {
         this.rect.set(x, y, w, h);
-        this.scroll.set(x + 5, y + 30, w - 10, h - 60);
-        this.scroll.scrollItemSize = 20;
-        this.scroll.setSize(ClientProxy.control.profiles.size());
+        this.scrollLoad.set(x + 5, y + 30, w - 10, h - 60);
+        this.scrollLoaded.set(x + 5, y + 30, w - 10, h - 60);
+        this.scrollLoaded.setSize(ClientProxy.control.profiles.size());
 
         int span = (w - 35) / 2;
 
@@ -127,46 +151,69 @@ public class GuiProfilesManager implements IGuiModule
             CameraProfile profile = new CameraProfile(new ServerDestination(this.name.getText()));
             ClientProxy.control.addProfile(profile);
 
-            this.listener.selectProfile(profile);
+            this.editor.selectProfile(profile);
 
             this.name.setText("");
             this.name.setCursorPositionZero();
         }
 
-        if (this.scroll.isInside(mouseX, mouseY))
+        if (this.scrollLoaded.isInside(mouseX, mouseY))
         {
-            int index = this.scroll.getIndex(mouseX, mouseY);
-
-            if (index >= 0)
+            if (this.showLoaded)
             {
-                boolean isReverse = mouseX - this.scroll.x >= this.scroll.w - 60;
-                boolean isX = mouseX - this.scroll.x >= this.scroll.w - 40;
-                boolean isArrow = mouseX - this.scroll.x >= this.scroll.w - 20;
+                int index = this.scrollLoaded.getIndex(mouseX, mouseY);
 
-                if (isArrow)
+                if (index >= 0)
                 {
-                    this.listener.selectProfile(ClientProxy.control.profiles.get(index));
+                    boolean isReverse = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 40;
+                    boolean isX = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 20;
+
+                    if (isX)
+                    {
+                        ClientProxy.control.profiles.remove(index);
+                        ClientProxy.control.currentProfile = null;
+
+                        this.scrollLoaded.setSize(ClientProxy.control.profiles.size());
+                        this.editor.selectProfile(null);
+                    }
+                    else if (isReverse)
+                    {
+                        CameraProfile profile = ClientProxy.control.profiles.get(index);
+
+                        AbstractDestination dest = profile.getDestination();
+                        String filename = dest.getFilename();
+                        AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
+
+                        profile.setDestination(newDest);
+                    }
+                    else
+                    {
+                        this.editor.selectProfile(ClientProxy.control.profiles.get(index));
+                    }
                 }
-                else if (isX)
-                {
-                    ClientProxy.control.profiles.remove(index);
-                    ClientProxy.control.currentProfile = null;
+            }
+            else
+            {
+                int index = this.scrollLoad.getIndex(mouseX, mouseY);
 
-                    this.scroll.setSize(ClientProxy.control.profiles.size());
-                    this.listener.selectProfile(null);
-                }
-                else if (isReverse && ClientProxy.control.currentProfile != null)
+                if (index >= 0)
                 {
-                    AbstractDestination dest = ClientProxy.control.currentProfile.getDestination();
-                    String filename = dest.getFilename();
-                    AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
-
-                    ClientProxy.control.currentProfile.setDestination(newDest);
+                    this.destToLoad.get(index).reload();
                 }
             }
         }
 
         this.name.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    public void mouseScroll(int mouseX, int mouseY, int scroll)
+    {
+        ScrollArea area = this.showLoaded ? this.scrollLoaded : this.scrollLoad;
+
+        if (area.isInside(mouseX, mouseY))
+        {
+            area.scrollBy(scroll);
+        }
     }
 
     @Override
@@ -193,7 +240,7 @@ public class GuiProfilesManager implements IGuiModule
         }
 
         Gui.drawRect(this.rect.x, this.rect.y, this.rect.x + this.rect.w, this.rect.y + this.rect.h, 0x88000000);
-        Gui.drawRect(this.scroll.x, this.scroll.y, this.scroll.x + this.scroll.w, this.scroll.y + this.scroll.h, 0x88000000);
+        Gui.drawRect(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.x + this.scrollLoaded.w, this.scrollLoaded.y + this.scrollLoaded.h, 0x88000000);
 
         this.quit.drawButton(mc, mouseX, mouseY);
         this.loaded.drawButton(mc, mouseX, mouseY);
@@ -202,25 +249,34 @@ public class GuiProfilesManager implements IGuiModule
 
         this.name.drawTextBox();
 
+        GuiUtils.scissor(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.w, this.scrollLoaded.h, this.editor.width, this.editor.height);
+
         this.drawScrollArea(mouseX, mouseY);
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     private void drawScrollArea(int mouseX, int mouseY)
     {
-        int x = this.scroll.x;
-        int y = this.scroll.y - this.scroll.scroll;
-        int w = this.scroll.w;
+        CameraControl control = ClientProxy.control;
 
         if (this.showLoaded)
         {
-            for (CameraProfile profile : ClientProxy.control.profiles)
+            this.scrollLoaded.setSize(control.profiles.size());
+
+            int x = this.scrollLoaded.x;
+            int y = this.scrollLoaded.y - this.scrollLoaded.scroll;
+            int w = this.scrollLoaded.w;
+
+            for (CameraProfile profile : control.profiles)
             {
                 AbstractDestination dest = profile.getDestination();
-                boolean hovered = this.scroll.isInside(mouseX, mouseY) && mouseY >= y && mouseY < y + this.scroll.scrollItemSize;
+                boolean hovered = this.scrollLoaded.isInside(mouseX, mouseY) && mouseY >= y && mouseY < y + this.scrollLoaded.scrollItemSize;
+                boolean current = control.currentProfile != null ? dest.equals(control.currentProfile.getDestination()) : false;
 
-                if (hovered)
+                if (hovered || current)
                 {
-                    Gui.drawRect(x, y, x + w, y + this.scroll.scrollItemSize, 0x88000000);
+                    Gui.drawRect(x, y, x + w, y + this.scrollLoaded.scrollItemSize, current ? 0x880088ff : 0x88000000);
                 }
 
                 this.mc.fontRendererObj.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
@@ -228,32 +284,68 @@ public class GuiProfilesManager implements IGuiModule
 
                 if (hovered)
                 {
-                    boolean isArrow = mouseX >= x + w - 20;
-                    boolean isX = mouseX >= x + w - 40 && mouseX < x + w - 20;
-                    boolean isReverse = mouseX >= x + w - 60 && mouseX < x + w - 40;
+                    boolean isX = mouseX >= x + w - 20;
+                    boolean isReverse = mouseX >= x + w - 40 && mouseX < x + w - 20;
 
                     GlStateManager.color(1, 1, 1, 1);
-                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 80, 32 + (isArrow ? 0 : 16), 16, 16, 256, 256);
-                    Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 64, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
+                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 64, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
 
                     if (dest instanceof ClientDestination)
                     {
-                        Gui.drawModalRectWithCustomSizedTexture(x + w - 58, y + 2, 112, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 112, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
                     }
                     else
                     {
-                        Gui.drawModalRectWithCustomSizedTexture(x + w - 58, y + 2, 128, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 128, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
                     }
                 }
 
                 Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 64 + (dest instanceof ClientDestination ? 16 : 0), 64, 16, 16, 256, 256);
 
-                y += this.scroll.scrollItemSize;
+                y += this.scrollLoaded.scrollItemSize;
             }
         }
         else
         {
-            /* TODO: Draw things */
+            int x = this.scrollLoad.x;
+            int y = this.scrollLoad.y - this.scrollLoad.scroll;
+            int w = this.scrollLoad.w;
+
+            for (AbstractDestination dest : this.destToLoad)
+            {
+                boolean hovered = this.scrollLoad.isInside(mouseX, mouseY) && mouseY >= y && mouseY < y + this.scrollLoad.scrollItemSize;
+                boolean current = control.currentProfile != null ? dest.equals(control.currentProfile.getDestination()) : false;
+
+                if (hovered || current)
+                {
+                    Gui.drawRect(x, y, x + w, y + this.scrollLoaded.scrollItemSize, current ? 0x880088ff : 0x88000000);
+                }
+
+                this.mc.fontRendererObj.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
+                this.mc.renderEngine.bindTexture(GuiCameraEditor.EDITOR_TEXTURE);
+
+                if (hovered)
+                {
+                    GlStateManager.color(1, 1, 1, 1);
+                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 96, 64, 16, 16, 256, 256);
+                }
+
+                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 64 + (dest instanceof ClientDestination ? 16 : 0), 64, 16, 16, 256, 256);
+
+                y += this.scrollLoad.scrollItemSize;
+            }
+        }
+
+        ScrollArea area = this.showLoaded ? this.scrollLoaded : this.scrollLoad;
+
+        if (area.scrollSize > area.h)
+        {
+            int mh = area.h - 4;
+            int x = area.x + area.w - 4;
+            int h = (int) (((area.scrollSize - area.h) / (float) area.h) * mh);
+            int y = area.y + (int) (area.scroll / (float) (area.scrollSize - area.h) * (mh - h)) + 2;
+
+            Gui.drawRect(x, y, x + 2, y + h, 0x88ffffff);
         }
     }
 
@@ -264,5 +356,14 @@ public class GuiProfilesManager implements IGuiModule
     public static interface IProfileListener
     {
         public void selectProfile(CameraProfile profile);
+    }
+
+    public static class JSONFileFilter implements FileFilter
+    {
+        @Override
+        public boolean accept(File file)
+        {
+            return file.isFile() && file.getName().endsWith(".json");
+        }
     }
 }

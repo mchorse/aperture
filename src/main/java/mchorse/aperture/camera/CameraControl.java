@@ -1,6 +1,7 @@
 package mchorse.aperture.camera;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import mchorse.aperture.ClientProxy;
@@ -45,6 +46,23 @@ public class CameraControl
     {
         this.profiles.add(profile);
         this.currentProfile = profile;
+    }
+
+    public void insertProfile(CameraProfile newProfile)
+    {
+        Iterator<CameraProfile> it = this.profiles.iterator();
+
+        while (it.hasNext())
+        {
+            CameraProfile profile = it.next();
+
+            if (profile.getDestination().equals(newProfile.getDestination()))
+            {
+                it.remove();
+            }
+        }
+
+        this.profiles.add(newProfile);
     }
 
     /**

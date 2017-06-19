@@ -68,7 +68,7 @@ public class CameraUtils
 
         builder.excludeFieldsWithoutExposeAnnotation();
 
-        /* Serializers and deserializers */
+        /* Serializer and deserializer */
         AbstractFixtureAdapter fixtureAdapter = new AbstractFixtureAdapter();
 
         builder.registerTypeAdapter(AbstractFixture.class, fixtureAdapter);

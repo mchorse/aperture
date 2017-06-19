@@ -1,6 +1,5 @@
 package mchorse.aperture.camera.destination;
 
-import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
 
 /**
@@ -28,6 +27,17 @@ public abstract class AbstractDestination
         this.filename = filename;
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof AbstractDestination)
+        {
+            return this.filename.equals(((AbstractDestination) obj).getFilename());
+        }
+
+        return super.equals(obj);
+    }
+
     /**
      * Save given camera profile
      */
@@ -36,5 +46,5 @@ public abstract class AbstractDestination
     /**
      * Reload camera profile 
      */
-    public abstract void reload(CameraControl control, CameraProfile profile);
+    public abstract void reload();
 }

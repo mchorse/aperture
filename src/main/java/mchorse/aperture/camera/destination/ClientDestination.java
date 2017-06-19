@@ -1,12 +1,10 @@
 package mchorse.aperture.camera.destination;
 
 import java.io.File;
-import java.util.Iterator;
 
 import org.apache.commons.io.FileUtils;
 
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraUtils;
 
@@ -20,6 +18,12 @@ public class ClientDestination extends AbstractDestination
     public ClientDestination(String filename)
     {
         super(filename);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        return super.equals(obj) && obj instanceof ClientDestination;
     }
 
     @Override
@@ -38,17 +42,15 @@ public class ClientDestination extends AbstractDestination
     }
 
     @Override
-    public void reload(CameraControl control, CameraProfile profile)
+    public void reload()
     {
         try
         {
-            FileUtils.readFileToString(new File(ClientProxy.cameras, this.filename + ".json"));
-            Iterator<CameraProfile> it = control.profiles.iterator();
+            String json = FileUtils.readFileToString(new File(ClientProxy.cameras, this.filename + ".json"));
+            CameraProfile newProfile = CameraUtils.cameraJSONBuilder(false).fromJson(json, CameraProfile.class);
 
-            while (it.hasNext())
-            {
-                CameraProfile old = it.next();
-            }
+            newProfile.setDestination(this);
+            ClientProxy.control.insertProfile(newProfile);
         }
         catch (Exception e)
         {
