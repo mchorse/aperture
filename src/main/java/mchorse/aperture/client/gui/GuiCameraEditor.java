@@ -108,6 +108,9 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     public GuiButton copyPosition;
     public GuiButton moveDuration;
 
+    public GuiButton save;
+    public GuiButton manager;
+
     /* Camera options */
     public GuiCheckBox minema;
     public GuiCheckBox spectator;
@@ -372,6 +375,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         x -= w;
         this.moveDuration = new GuiTextureButton(6, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(48, 32).setActiveTexPos(48, 48);
         x -= w;
+        this.save = new GuiTextureButton(9, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(96, 32).setActiveTexPos(96, 48);
+        x -= w;
+        this.manager = new GuiTextureButton(10, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(96, 0).setActiveTexPos(96, 16);
+        x -= w;
         this.copyPosition = new GuiTextureButton(7, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(32, 32).setActiveTexPos(32, 48);
         x -= w;
         this.moveBackward = new GuiTextureButton(8, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(16, 32).setActiveTexPos(16, 48);
@@ -416,6 +423,9 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.buttonList.add(this.copyPosition);
         this.buttonList.add(this.moveBackward);
 
+        this.buttonList.add(this.save);
+        this.buttonList.add(this.manager);
+
         this.buttonList.add(this.spectator);
         this.buttonList.add(this.renderPath);
         this.buttonList.add(this.sync);
@@ -434,8 +444,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.fixturePanel.update(this);
         }
 
-        this.profiles.update(width / 2 - 80, 55, 160, this.height - 85);
-        this.profiles.visible = true;
+        this.profiles.update(width / 2 - 80, 55, 160, this.height - 80);
+
+        if (this.profile == null)
+        {
+            this.profiles.visible = true;
+        }
     }
 
     /**
@@ -519,6 +533,14 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         else if (id == 7 && this.fixturePanel != null)
         {
             ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
+        }
+        else if (id == 9 && this.profile != null)
+        {
+            this.profile.save();
+        }
+        else if (id == 10)
+        {
+            this.profiles.visible = true;
         }
 
         if (id == 50)
@@ -651,10 +673,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             return;
         }
 
-        this.profiles.mouseClicked(mouseX, mouseY, mouseButton);
-
         if (this.profile == null || this.profiles.isInside(mouseX, mouseY))
         {
+            this.profiles.mouseClicked(mouseX, mouseY, mouseButton);
+
             return;
         }
 
@@ -720,16 +742,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             int y = 5;
 
             Gui.drawRect(x, y, x + 100, y + 20, 0x88000000);
-            this.drawHorizontalLine(x, x + 99, y, 0xff000000);
-            this.drawHorizontalLine(x, x + 99, y + 19, 0xff000000);
-            this.drawVerticalLine(x, y, y + 19, 0xff000000);
-            this.drawVerticalLine(x + 99, y, y + 19, 0xff000000);
+            this.drawOutline(x, y, 99, 19);
 
-            Gui.drawRect(x - 90, y, x - 10, y + 20, 0x88000000);
-            this.drawHorizontalLine(x - 90, x - 10, y, 0xff000000);
-            this.drawHorizontalLine(x - 90, x - 10, y + 19, 0xff000000);
-            this.drawVerticalLine(x - 90, y, y + 19, 0xff000000);
-            this.drawVerticalLine(x - 10, y, y + 19, 0xff000000);
+            Gui.drawRect(x - 130, y, x - 10, y + 20, 0x88000000);
+            this.drawOutline(x - 130, y, 120, 19);
 
             super.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -768,5 +784,13 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
 
         this.profiles.draw(mouseX, mouseY, partialTicks);
+    }
+
+    private void drawOutline(int x, int y, int w, int h)
+    {
+        this.drawHorizontalLine(x, x + w, y, 0xff000000);
+        this.drawHorizontalLine(x, x + w, y + 19, 0xff000000);
+        this.drawVerticalLine(x, y, y + h, 0xff000000);
+        this.drawVerticalLine(x + w, y, y + h, 0xff000000);
     }
 }

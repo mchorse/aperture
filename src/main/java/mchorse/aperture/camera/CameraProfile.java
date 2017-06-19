@@ -256,6 +256,14 @@ public class CameraProfile
         fixture.applyFixture((float) progress / fixture.getDuration(), partialTicks, position);
     }
 
+    public void save()
+    {
+        if (this.destination != null)
+        {
+            this.destination.save(this);
+        }
+    }
+
     @Override
     public String toString()
     {

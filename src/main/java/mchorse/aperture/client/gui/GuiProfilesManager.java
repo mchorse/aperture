@@ -139,7 +139,7 @@ public class GuiProfilesManager implements IGuiModule
 
             if (index >= 0)
             {
-                boolean isSave = mouseX - this.scroll.x >= this.scroll.w - 60;
+                boolean isReverse = mouseX - this.scroll.x >= this.scroll.w - 60;
                 boolean isX = mouseX - this.scroll.x >= this.scroll.w - 40;
                 boolean isArrow = mouseX - this.scroll.x >= this.scroll.w - 20;
 
@@ -155,9 +155,13 @@ public class GuiProfilesManager implements IGuiModule
                     this.scroll.setSize(ClientProxy.control.profiles.size());
                     this.listener.selectProfile(null);
                 }
-                else if (isSave && ClientProxy.control.currentProfile != null)
+                else if (isReverse && ClientProxy.control.currentProfile != null)
                 {
-                    ClientProxy.control.currentProfile.getDestination().save(ClientProxy.control.currentProfile);
+                    AbstractDestination dest = ClientProxy.control.currentProfile.getDestination();
+                    String filename = dest.getFilename();
+                    AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
+
+                    ClientProxy.control.currentProfile.setDestination(newDest);
                 }
             }
         }
@@ -226,12 +230,20 @@ public class GuiProfilesManager implements IGuiModule
                 {
                     boolean isArrow = mouseX >= x + w - 20;
                     boolean isX = mouseX >= x + w - 40 && mouseX < x + w - 20;
-                    boolean isSave = mouseX >= x + w - 60 && mouseX < x + w - 40;
+                    boolean isReverse = mouseX >= x + w - 60 && mouseX < x + w - 40;
 
                     GlStateManager.color(1, 1, 1, 1);
                     Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 80, 32 + (isArrow ? 0 : 16), 16, 16, 256, 256);
                     Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 64, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
-                    Gui.drawModalRectWithCustomSizedTexture(x + w - 58, y + 2, 96, 32 + (isSave ? 0 : 16), 16, 16, 256, 256);
+
+                    if (dest instanceof ClientDestination)
+                    {
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 58, y + 2, 112, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                    }
+                    else
+                    {
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 58, y + 2, 128, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                    }
                 }
 
                 Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 64 + (dest instanceof ClientDestination ? 16 : 0), 64, 16, 16, 256, 256);
