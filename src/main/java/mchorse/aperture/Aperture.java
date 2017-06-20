@@ -7,7 +7,15 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
- * Aperture camera mod
+ * Main entry point of Aperture
+ * 
+ * This mod allows people to create Minecraft cinematics. It provides tools for 
+ * managing camera profiles and camera fixtures withing camera profiles via 
+ * command line (chat commands) or GUI (camera editor).
+ * 
+ * This mod provides a lot of tools related to camera.
+ * 
+ * TODO: describe differences
  */
 @Mod(modid = Aperture.MODID, name = Aperture.MODNAME, version = Aperture.VERSION, guiFactory = Aperture.GUI_FACTORY)
 public class Aperture
