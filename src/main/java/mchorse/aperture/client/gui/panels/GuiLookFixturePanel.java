@@ -84,6 +84,8 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
     public void editFixture()
     {
         this.fixture.position.set(Minecraft.getMinecraft().thePlayer);
+
+        super.editFixture();
     }
 
     @Override

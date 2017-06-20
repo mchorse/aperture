@@ -23,19 +23,19 @@ aperture.commands:
                 {r}Stops currently running camera profile
         new: 
             |
-                {l}{6}/{r}camera {8}new{r} {7}<filename>{r}
+                {l}{6}/{r}camera {8}new{r} {7}<client|server> <filename>{r}
                 
-                {r}Creates a new camera profile in current session with given <filename>
+                {r}Creates a new camera profile in current session with given {7}<filename>{r} with destination either on the {7}client{r} or the {7}server{r}.
         load: 
             |
-                {l}{6}/{r}camera {8}load{r} {7}<filename>{r}
+                {l}{6}/{r}camera {8}load{r} {7}<client|server> <filename>{r}
                 
-                {r}Load camera profile
+                {r}Load a camera profile from the {7}client{r} or the {7}server{r} with named {7}<filename>{r}.
         save: 
             |
                 {l}{6}/{r}camera {8}save{r} {7}[filename]{r}
                 
-                {r}Save camera profile to a file. If the file isn't specified, then this camera profile will be saved to the file that previously was saved or loaded
+                {r}Save camera profile to a file. If the {7}[filename]{r} isn't specified, then this camera profile will be saved to the file that previously was saved or loaded.
         clear: 
             |
                 {l}{6}/{r}camera {8}clear{r}

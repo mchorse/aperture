@@ -28,6 +28,7 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
         CameraProfile profile = CameraUtils.cameraJSONBuilder(false).fromJson(message.profile, CameraProfile.class);
 
         profile.setDestination(new ServerDestination(message.filename));
+        profile.dirty = false;
 
         ClientProxy.control.addProfile(profile);
 

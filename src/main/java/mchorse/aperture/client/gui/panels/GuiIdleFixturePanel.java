@@ -35,6 +35,8 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     {
         if (trackpad == this.point.x)
         {
+            System.out.println("Value: " + value);
+
             this.fixture.position.point.x = trackpad.value;
         }
         else if (trackpad == this.point.y)
@@ -93,6 +95,8 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     public void editFixture()
     {
         this.fixture.position.set(Minecraft.getMinecraft().thePlayer);
+
+        super.editFixture();
     }
 
     @Override

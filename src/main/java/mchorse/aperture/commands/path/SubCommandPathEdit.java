@@ -67,5 +67,6 @@ public class SubCommandPathEdit extends CommandBase
         }
 
         path.editPoint(new Position((EntityPlayer) sender), point);
+        profile.dirty();
     }
 }

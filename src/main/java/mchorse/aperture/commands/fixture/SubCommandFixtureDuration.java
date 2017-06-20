@@ -66,5 +66,6 @@ public class SubCommandFixtureDuration extends CommandBase
         }
 
         fixture.setDuration(duration);
+        profile.dirty();
     }
 }

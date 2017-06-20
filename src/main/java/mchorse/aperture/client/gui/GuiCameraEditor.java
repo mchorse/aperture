@@ -9,6 +9,7 @@ import org.lwjgl.input.Mouse;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.CameraProfile.ICameraListener;
 import mchorse.aperture.camera.CameraRunner;
 import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -51,7 +52,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * includes should be able to allow the
  */
 @SideOnly(Side.CLIENT)
-public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixturePicker, IFixtureSelector, IProfileListener
+public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixturePicker, IFixtureSelector, IProfileListener, ICameraListener
 {
     /**
      * Camera editor texture
@@ -87,7 +88,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     private boolean playing = false;
 
     /**
-     * Whether things on the screen are visible 
+     * Whether things on the screen are visible (usable for previewing camera 
+     * profile playback in the camera editor without exiting it) 
      */
     private boolean visible = true;
 
@@ -110,7 +112,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     public GuiButton copyPosition;
     public GuiButton moveDuration;
 
-    public GuiButton save;
+    public GuiTextureButton save;
     public GuiButton manager;
 
     /* Camera options */
@@ -223,7 +225,28 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     {
         ClientProxy.control.currentProfile = profile;
 
+        if (profile != null)
+        {
+            profile.listener = this;
+        }
+
+        this.cameraProfileWasChanged(profile);
         this.setProfile(profile);
+        this.pickCameraFixture(null);
+    }
+
+    @Override
+    public void cameraProfileWasChanged(CameraProfile profile)
+    {
+        boolean dirty = profile == null ? false : profile.dirty;
+
+        int x = dirty ? 112 : 96;
+        int y = dirty ? 64 : 32;
+
+        if (this.save != null)
+        {
+            this.save.setTexPos(x, y).setActiveTexPos(x, y + 16);
+        }
     }
 
     /**
@@ -276,7 +299,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public void updateCameraEditor(EntityPlayer player)
     {
-        this.setProfile(ClientProxy.control.currentProfile);
+        this.selectProfile(ClientProxy.control.currentProfile);
 
         GuiIngameForge.renderHotbar = false;
         GuiIngameForge.renderCrosshairs = false;
@@ -341,6 +364,17 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     }
 
     /**
+     * Makes camera profile as dirty as possible 
+     */
+    public void updateProfile()
+    {
+        if (this.profile != null)
+        {
+            this.profile.dirty();
+        }
+    }
+
+    /**
      * This GUI shouldn't pause the game, because camera runs on the world's
      * update loop.
      */
@@ -373,18 +407,19 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.toPrevFixture = new GuiTextureButton(4, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(80, 0).setActiveTexPos(80, 16);
 
         x -= w + 10;
+        this.save = new GuiTextureButton(9, x + 2, y + 2, EDITOR_TEXTURE);
+        x -= w;
+        this.manager = new GuiTextureButton(10, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(96, 0).setActiveTexPos(96, 16);
+        x -= w;
         this.moveForward = new GuiTextureButton(5, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(0, 32).setActiveTexPos(0, 48);
         x -= w;
         this.moveDuration = new GuiTextureButton(6, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(48, 32).setActiveTexPos(48, 48);
-        x -= w;
-        this.save = new GuiTextureButton(9, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(96, 32).setActiveTexPos(96, 48);
-        x -= w;
-        this.manager = new GuiTextureButton(10, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(96, 0).setActiveTexPos(96, 16);
         x -= w;
         this.copyPosition = new GuiTextureButton(7, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(32, 32).setActiveTexPos(32, 48);
         x -= w;
         this.moveBackward = new GuiTextureButton(8, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(16, 32).setActiveTexPos(16, 48);
 
+        this.cameraProfileWasChanged(this.profile);
         this.updatePlauseButton();
 
         x = 10;
@@ -528,6 +563,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (this.scrub.value > offset)
             {
                 fixture.setDuration(this.scrub.value - offset);
+                this.updateProfile();
+
                 this.updateValues();
                 this.fixturePanel.select(fixture);
             }

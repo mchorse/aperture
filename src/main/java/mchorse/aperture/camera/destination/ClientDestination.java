@@ -31,7 +31,7 @@ public class ClientDestination extends AbstractDestination
     {
         try
         {
-            FileUtils.write(new File(ClientProxy.cameras, this.filename + ".json"), CameraUtils.toJSON(profile));
+            FileUtils.write(new File(ClientProxy.getClientCameras(), this.filename + ".json"), CameraUtils.toJSON(profile));
 
             /* TODO: inform user about success */
         }
@@ -46,11 +46,14 @@ public class ClientDestination extends AbstractDestination
     {
         try
         {
-            String json = FileUtils.readFileToString(new File(ClientProxy.cameras, this.filename + ".json"));
+            String json = FileUtils.readFileToString(new File(ClientProxy.getClientCameras(), this.filename + ".json"));
             CameraProfile newProfile = CameraUtils.cameraJSONBuilder(false).fromJson(json, CameraProfile.class);
 
             newProfile.setDestination(this);
+            newProfile.dirty = false;
             ClientProxy.control.insertProfile(newProfile);
+
+            /* TODO: inform user about success */
         }
         catch (Exception e)
         {

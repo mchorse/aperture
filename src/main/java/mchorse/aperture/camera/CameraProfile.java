@@ -29,16 +29,15 @@ public class CameraProfile
      */
     protected AbstractDestination destination;
 
-    public long lastTimeModified;
+    /**
+     * Whether camera profile was modified
+     */
+    public boolean dirty;
 
-    public CameraProfile()
-    {
-        this.updateLastTimeModified();
-    }
+    public ICameraListener listener;
 
     public CameraProfile(AbstractDestination destination)
     {
-        this();
         this.destination = destination;
     }
 
@@ -50,6 +49,7 @@ public class CameraProfile
     public void setDestination(AbstractDestination destination)
     {
         this.destination = destination;
+        this.dirty();
     }
 
     /**
@@ -67,9 +67,14 @@ public class CameraProfile
         return duration;
     }
 
-    public void updateLastTimeModified()
+    public void dirty()
     {
-        this.lastTimeModified = System.currentTimeMillis();
+        this.dirty = true;
+
+        if (this.listener != null)
+        {
+            this.listener.cameraProfileWasChanged(this);
+        }
     }
 
     /**
@@ -184,7 +189,7 @@ public class CameraProfile
     public void add(AbstractFixture fixture)
     {
         this.fixtures.add(fixture);
-        this.updateLastTimeModified();
+        this.dirty();
     }
 
     /**
@@ -197,7 +202,7 @@ public class CameraProfile
             this.fixtures.add(to, this.fixtures.remove(from));
         }
 
-        this.updateLastTimeModified();
+        this.dirty();
     }
 
     /**
@@ -210,9 +215,8 @@ public class CameraProfile
         if (size != 0 && index >= 0 && index < size)
         {
             this.fixtures.remove(index);
+            this.dirty();
         }
-
-        this.updateLastTimeModified();
     }
 
     /**
@@ -221,7 +225,7 @@ public class CameraProfile
     public void reset()
     {
         this.fixtures.clear();
-        this.updateLastTimeModified();
+        this.dirty();
     }
 
     /**
@@ -262,6 +266,13 @@ public class CameraProfile
         {
             this.destination.save(this);
         }
+
+        this.dirty = false;
+
+        if (this.listener != null)
+        {
+            this.listener.cameraProfileWasChanged(this);
+        }
     }
 
     @Override
@@ -275,5 +286,10 @@ public class CameraProfile
         }
 
         return description;
+    }
+
+    public static interface ICameraListener
+    {
+        public void cameraProfileWasChanged(CameraProfile profile);
     }
 }

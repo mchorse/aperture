@@ -115,11 +115,11 @@ public class CameraUtils
      * This method also checks if player has same named camera profile, and if
      * it's expired (server has newer version), send him new one.
      */
-    public static void sendProfileToPlayer(String filename, EntityPlayerMP player, boolean play)
+    public static void sendProfileToPlayer(String filename, EntityPlayerMP player, boolean play, boolean force)
     {
         try
         {
-            if (playerHasProfile(player, filename, play))
+            if (force && playerHasProfile(player, filename, play))
             {
                 return;
             }

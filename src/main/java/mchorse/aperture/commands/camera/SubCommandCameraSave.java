@@ -47,7 +47,8 @@ public class SubCommandCameraSave extends CommandBase
             else
             {
                 destination.setFilename(filename);
-                destination.save(profile);
+
+                profile.save();
             }
         }
     }

@@ -84,6 +84,8 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
 
             this.fixture.position.point.set(x, y, z);
         }
+
+        super.editFixture();
     }
 
     @Override

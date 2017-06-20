@@ -65,5 +65,6 @@ public class SubCommandPathRemove extends CommandBase
         }
 
         path.removePoint(point);
+        profile.dirty();
     }
 }

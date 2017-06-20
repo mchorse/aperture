@@ -45,7 +45,7 @@ public class CapabilityHandler
 
         if (recording != null && recording.hasProfile())
         {
-            CameraUtils.sendProfileToPlayer(recording.currentProfile(), (EntityPlayerMP) player, false);
+            CameraUtils.sendProfileToPlayer(recording.currentProfile(), (EntityPlayerMP) player, false, true);
 
             recording.setCurrentProfileTimestamp(System.currentTimeMillis());
         }

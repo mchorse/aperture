@@ -52,5 +52,6 @@ public class SubCommandFixtureEdit extends CommandBase
         }
 
         profile.get(index).edit(SubCommandBase.dropFirstArgument(args), (EntityPlayer) sender);
+        profile.dirty();
     }
 }

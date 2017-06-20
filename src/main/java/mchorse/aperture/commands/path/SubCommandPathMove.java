@@ -67,5 +67,6 @@ public class SubCommandPathMove extends CommandBase
         }
 
         path.movePoint(from, to);
+        profile.dirty();
     }
 }

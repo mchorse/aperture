@@ -10,6 +10,8 @@ import mchorse.aperture.client.RenderingHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -36,6 +38,40 @@ public class ClientProxy extends CommonProxy
 
     public static File config;
     public static File cameras;
+
+    /**
+     * Get client cameras storage location
+     * 
+     * This method returns File pointer to a folder where client side camera 
+     * profiles are stored. This method will return {@code null} if it was 
+     * invoked when the game is in the main menu.
+     */
+    public static File getClientCameras()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        ServerData data = mc.getCurrentServerData();
+
+        File file = null;
+
+        if (data != null)
+        {
+            /* Removing port, because this will distort the folder name */
+            file = new File(cameras, data.serverIP.replaceAll(":[\\w]{1,5}$", ""));
+        }
+        else if (mc.isSingleplayer())
+        {
+            file = new File(cameras, mc.getIntegratedServer().getWorldName());
+        }
+
+        if (file != null)
+        {
+            file.mkdirs();
+
+            return file;
+        }
+
+        return null;
+    }
 
     /**
      * Register mod items, blocks, tile entites and entities, load item,

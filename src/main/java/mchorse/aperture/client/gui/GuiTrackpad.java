@@ -67,12 +67,12 @@ public class GuiTrackpad
      */
     public void setValueAndNotify(float value)
     {
+        this.setValue(value);
+
         if (this.listener != null)
         {
             this.listener.setTrackpadValue(this, value);
         }
-
-        this.setValue(value);
     }
 
     /**

@@ -33,6 +33,6 @@ public class ServerDestination extends AbstractDestination
     @Override
     public void reload()
     {
-        Dispatcher.sendToServer(new PacketLoadCameraProfile(this.filename));
+        Dispatcher.sendToServer(new PacketLoadCameraProfile(this.filename, true));
     }
 }

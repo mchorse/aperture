@@ -78,6 +78,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         }
 
         this.editor.updateValues();
+        this.editor.updateProfile();
     }
 
     @Override
@@ -89,6 +90,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         }
 
         this.editor.updatePlayerCurrently(0.0F);
+        this.editor.updateProfile();
     }
 
     protected void updateDuration(long value)
@@ -141,7 +143,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     }
 
     public void editFixture()
-    {}
+    {
+        this.editor.updateProfile();
+    }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)

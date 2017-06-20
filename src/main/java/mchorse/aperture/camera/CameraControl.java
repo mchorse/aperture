@@ -38,13 +38,22 @@ public class CameraControl
      */
     public void reset()
     {
+        /* Saving dirty camera profiles */
+        for (CameraProfile profile : this.profiles)
+        {
+            if (profile.dirty)
+            {
+                profile.save();
+            }
+        }
+
         this.profiles.clear();
         this.currentProfile = null;
     }
 
     public void addProfile(CameraProfile profile)
     {
-        this.profiles.add(profile);
+        this.insertProfile(profile);
         this.currentProfile = profile;
     }
 

@@ -67,7 +67,7 @@ public class GuiProfilesManager implements IGuiModule
     {
         this.destToLoad.clear();
 
-        for (File file : ClientProxy.cameras.listFiles(new JSONFileFilter()))
+        for (File file : ClientProxy.getClientCameras().listFiles(new JSONFileFilter()))
         {
             String filename = file.getName();
 
@@ -135,7 +135,7 @@ public class GuiProfilesManager implements IGuiModule
             return;
         }
 
-        if (this.quit.mousePressed(mc, mouseX, mouseY))
+        if (this.quit.mousePressed(mc, mouseX, mouseY) && this.editor.getProfile() != null)
         {
             this.visible = false;
         }
@@ -188,7 +188,10 @@ public class GuiProfilesManager implements IGuiModule
                     }
                     else
                     {
-                        this.editor.selectProfile(ClientProxy.control.profiles.get(index));
+                        if (index >= 0 && index < ClientProxy.control.profiles.size())
+                        {
+                            this.editor.selectProfile(ClientProxy.control.profiles.get(index));
+                        }
                     }
                 }
             }
