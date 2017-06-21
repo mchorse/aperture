@@ -119,7 +119,7 @@ public class CameraUtils
     {
         try
         {
-            if (force && playerHasProfile(player, filename, play))
+            if (!force && playerHasProfile(player, filename, play))
             {
                 return;
             }

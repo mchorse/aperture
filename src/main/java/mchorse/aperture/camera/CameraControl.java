@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.destination.AbstractDestination;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -72,6 +73,26 @@ public class CameraControl
         }
 
         this.profiles.add(newProfile);
+    }
+
+    /**
+     * Does camera profile has similar destination 
+     */
+    public boolean hasSimilar(AbstractDestination destination)
+    {
+        Iterator<CameraProfile> it = this.profiles.iterator();
+
+        while (it.hasNext())
+        {
+            CameraProfile profile = it.next();
+
+            if (profile.getDestination().equals(destination))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

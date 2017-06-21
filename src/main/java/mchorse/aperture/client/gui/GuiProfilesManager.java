@@ -184,7 +184,10 @@ public class GuiProfilesManager implements IGuiModule
                         String filename = dest.getFilename();
                         AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
 
-                        profile.setDestination(newDest);
+                        if (!ClientProxy.control.hasSimilar(newDest))
+                        {
+                            profile.setDestination(newDest);
+                        }
                     }
                     else
                     {
