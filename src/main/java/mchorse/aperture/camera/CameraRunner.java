@@ -103,17 +103,17 @@ public class CameraRunner
         {
             if (Aperture.proxy.config.camera_spectator)
             {
-                this.mc.thePlayer.sendChatMessage("/gamemode 3");
+                this.mc.player.sendChatMessage("/gamemode 3");
             }
 
             /* Currently Minema supports client side /minema command which
              * record video */
             if (Aperture.proxy.config.camera_minema)
             {
-                ClientCommandHandler.instance.executeCommand(this.mc.thePlayer, "/minema enable");
+                ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
             }
 
-            this.position.set(this.mc.thePlayer);
+            this.position.set(this.mc.player);
 
             this.fov = this.mc.gameSettings.fovSetting;
             MinecraftForge.EVENT_BUS.register(this);
@@ -133,12 +133,12 @@ public class CameraRunner
         {
             if (Aperture.proxy.config.camera_spectator)
             {
-                this.mc.thePlayer.sendChatMessage("/gamemode 1");
+                this.mc.player.sendChatMessage("/gamemode 1");
             }
 
             if (Aperture.proxy.config.camera_minema)
             {
-                ClientCommandHandler.instance.executeCommand(this.mc.thePlayer, "/minema disable");
+                ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema disable");
             }
 
             this.mc.gameSettings.fovSetting = this.fov;
@@ -178,7 +178,7 @@ public class CameraRunner
 
             this.profile.applyProfile(progress, event.renderTickTime, this.position);
 
-            EntityPlayer player = this.mc.thePlayer;
+            EntityPlayer player = this.mc.player;
             Point point = this.position.point;
             Angle angle = this.position.angle;
 
@@ -249,7 +249,7 @@ public class CameraRunner
     @SubscribeEvent
     public void onPlayerTick(PlayerTickEvent event)
     {
-        if (event.side == Side.CLIENT && event.player == this.mc.thePlayer && event.phase == Phase.START)
+        if (event.side == Side.CLIENT && event.player == this.mc.player && event.phase == Phase.START)
         {
             this.ticks++;
         }

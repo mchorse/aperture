@@ -41,7 +41,7 @@ public class SmoothCamera
 
         if (Aperture.proxy.config.camera_smooth_clamp)
         {
-            this.pitch = MathHelper.clamp_float(this.pitch, -90, 90);
+            this.pitch = MathHelper.clamp(this.pitch, -90, 90);
         }
 
         this.x.update(this.yaw);

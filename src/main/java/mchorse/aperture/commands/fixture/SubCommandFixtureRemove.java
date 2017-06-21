@@ -18,13 +18,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandFixtureRemove extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "remove";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.fixture.remove";
     }
@@ -34,7 +34,7 @@ public class SubCommandFixtureRemove extends CommandBase
     {
         if (args.length < 1)
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         CameraProfile profile = ClientProxy.control.currentProfile;

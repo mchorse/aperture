@@ -22,13 +22,13 @@ import net.minecraft.util.math.BlockPos;
 public class SubCommandCameraNew extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "new";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.new";
     }
@@ -38,7 +38,7 @@ public class SubCommandCameraNew extends CommandBase
     {
         if (args.length < 2)
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         String filename = args[1];
@@ -48,13 +48,13 @@ public class SubCommandCameraNew extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             return getListOfStringsMatchingLastWord(args, "client", "server");
         }
 
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return super.getTabCompletions(server, sender, args, pos);
     }
 }

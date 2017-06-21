@@ -116,7 +116,7 @@ public class GuiFixturesPopup
     private void actionPerformed(GuiButton button)
     {
         AbstractFixture fixture = null;
-        EntityPlayer player = this.mc.thePlayer;
+        EntityPlayer player = this.mc.player;
         long duration = Aperture.proxy.config.camera_duration;
 
         if (button == this.idle)

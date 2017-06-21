@@ -19,13 +19,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandCameraRotate extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "rotate";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.rotate";
     }

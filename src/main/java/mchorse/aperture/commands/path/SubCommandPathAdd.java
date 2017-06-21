@@ -21,13 +21,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandPathAdd extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "add";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.path.add";
     }
@@ -37,7 +37,7 @@ public class SubCommandPathAdd extends CommandBase
     {
         if (args.length < 1)
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         CameraProfile profile = ClientProxy.control.currentProfile;

@@ -76,7 +76,7 @@ public class CommandCamera extends SubCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return Aperture.proxy.config.camera_command_name;
     }

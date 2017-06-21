@@ -147,7 +147,7 @@ public class KeyboardHandler
     @SubscribeEvent
     public void onKey(InputEvent.KeyInputEvent event)
     {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
 
         try
         {
@@ -223,7 +223,7 @@ public class KeyboardHandler
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event)
     {
-        EntityPlayer player = this.mc.thePlayer;
+        EntityPlayer player = this.mc.player;
 
         /* Camera control keys handling */
         if (player != null)

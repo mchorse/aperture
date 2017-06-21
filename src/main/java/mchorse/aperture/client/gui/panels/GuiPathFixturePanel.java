@@ -146,7 +146,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     {
         if (this.position != null)
         {
-            this.position.set(Minecraft.getMinecraft().thePlayer);
+            this.position.set(Minecraft.getMinecraft().player);
 
             super.editFixture();
         }

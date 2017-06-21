@@ -16,13 +16,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandCameraFOV extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fov";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.fov";
     }

@@ -19,13 +19,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandCameraSave extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "save";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.save";
     }

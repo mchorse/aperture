@@ -44,7 +44,7 @@ public class LookFixture extends IdleFixture
 
     public void setTarget(String target)
     {
-        this.entity = EntityUtils.entityByUUID(Minecraft.getMinecraft().theWorld, target);
+        this.entity = EntityUtils.entityByUUID(Minecraft.getMinecraft().world, target);
         this.target = target;
     }
 
@@ -90,7 +90,7 @@ public class LookFixture extends IdleFixture
         double dX = x - this.position.point.x;
         double dY = y - this.position.point.y;
         double dZ = z - this.position.point.z;
-        double horizontalDistance = MathHelper.sqrt_double(dX * dX + dZ * dZ);
+        double horizontalDistance = MathHelper.sqrt(dX * dX + dZ * dZ);
 
         float yaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
         float pitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));
@@ -120,7 +120,7 @@ public class LookFixture extends IdleFixture
             double dX = x - this.position.point.x;
             double dY = y - this.position.point.y;
             double dZ = z - this.position.point.z;
-            double horizontalDistance = MathHelper.sqrt_double(dX * dX + dZ * dZ);
+            double horizontalDistance = MathHelper.sqrt(dX * dX + dZ * dZ);
 
             this.oldYaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
             this.oldPitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));
@@ -136,14 +136,14 @@ public class LookFixture extends IdleFixture
 
         if (this.selector != null && !this.selector.isEmpty())
         {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
 
-            this.entity = EntitySelector.matchOneEntity(player, player.worldObj, this.selector, Entity.class);
+            this.entity = EntitySelector.matchOneEntity(player, player.world, this.selector, Entity.class);
         }
 
         if (this.entity == null && this.target != null && !this.target.isEmpty())
         {
-            this.entity = EntityUtils.entityByUUID(Minecraft.getMinecraft().theWorld, this.target);
+            this.entity = EntityUtils.entityByUUID(Minecraft.getMinecraft().world, this.target);
         }
     }
 

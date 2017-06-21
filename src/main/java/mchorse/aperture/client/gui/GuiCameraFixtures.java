@@ -67,7 +67,7 @@ public class GuiCameraFixtures
         if (this.profile != null)
         {
             this.scrollSize = this.area.h * this.profile.getCount();
-            this.scroll = this.scrollSize > this.area.w ? MathHelper.clamp_float(this.scroll, 0, this.scrollSize - this.area.w) : 0;
+            this.scroll = this.scrollSize > this.area.w ? MathHelper.clamp(this.scroll, 0, this.scrollSize - this.area.w) : 0;
         }
     }
 
@@ -154,7 +154,7 @@ public class GuiCameraFixtures
             if (this.scrollSize > this.area.w)
             {
                 this.scroll += this.prevScroll - mouseX;
-                this.scroll = MathHelper.clamp_float(this.scroll, 0, this.scrollSize - this.area.w);
+                this.scroll = MathHelper.clamp(this.scroll, 0, this.scrollSize - this.area.w);
 
                 this.prevScroll = mouseX;
             }
@@ -166,7 +166,7 @@ public class GuiCameraFixtures
         {
             this.acc *= 0.94F;
             this.scroll += this.acc;
-            this.scroll = MathHelper.clamp_float(this.scroll, 0, this.scrollSize - this.area.w);
+            this.scroll = MathHelper.clamp(this.scroll, 0, this.scrollSize - this.area.w);
 
             if (Math.abs(this.acc) < 0.0005F)
             {

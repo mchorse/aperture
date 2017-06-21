@@ -52,7 +52,7 @@ public class GuiPlaybackScrub
         this.profile = profile;
 
         this.max = profile == null ? 0 : (int) profile.getDuration();
-        this.value = MathHelper.clamp_int(this.value, this.min, this.max);
+        this.value = MathHelper.clamp(this.value, this.min, this.max);
     }
 
     /**
@@ -64,7 +64,7 @@ public class GuiPlaybackScrub
         int old = this.value;
 
         this.value = value;
-        this.value = MathHelper.clamp_int(this.value, this.min, this.max);
+        this.value = MathHelper.clamp(this.value, this.min, this.max);
 
         if (this.value != old && this.listener != null)
         {

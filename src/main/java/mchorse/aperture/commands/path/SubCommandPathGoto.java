@@ -24,13 +24,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandPathGoto extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "goto";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.path.goto";
     }
@@ -40,7 +40,7 @@ public class SubCommandPathGoto extends CommandBase
     {
         if (args.length < 2)
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         EntityPlayer player = (EntityPlayer) sender;

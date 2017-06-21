@@ -91,7 +91,7 @@ public class CameraRenderer
             event.setYaw(-180 + yaw);
             event.setPitch(-pitch);
 
-            EntityPlayer player = this.mc.thePlayer;
+            EntityPlayer player = this.mc.player;
 
             player.rotationYaw = yaw;
             player.rotationPitch = -pitch;
@@ -112,7 +112,7 @@ public class CameraRenderer
             if (this.fov.acc != 0.0F)
             {
                 this.fov.interpolate(ticks);
-                this.fov.value = MathHelper.clamp_float(this.fov.value, 0.0001F, 179.9999F);
+                this.fov.value = MathHelper.clamp(this.fov.value, 0.0001F, 179.9999F);
 
                 this.mc.gameSettings.fovSetting = this.fov.value;
             }
@@ -139,7 +139,7 @@ public class CameraRenderer
     public void onPlayerTick(PlayerTickEvent event)
     {
         SmoothCamera camera = ClientProxy.renderer.smooth;
-        EntityPlayer player = this.mc.thePlayer;
+        EntityPlayer player = this.mc.player;
 
         if (event.side == Side.CLIENT && event.player == player && camera.enabled)
         {
@@ -150,7 +150,7 @@ public class CameraRenderer
             float dy = this.mc.mouseHelper.deltaY * finalSensetivity * 0.15F;
 
             /* Updating smooth camera */
-            camera.update(this.mc.thePlayer, dx, dy);
+            camera.update(this.mc.player, dx, dy);
 
             /* Roll and FOV acceleration */
             KeyboardHandler keys = ClientProxy.keys;
@@ -180,7 +180,7 @@ public class CameraRenderer
         Position prev = new Position(0, 0, 0, 0, 0);
         Position next = new Position(0, 0, 0, 0, 0);
 
-        EntityPlayer player = this.mc.thePlayer;
+        EntityPlayer player = this.mc.player;
         float ticks = event.getPartialTicks();
 
         this.playerX = player.prevPosX + (player.posX - player.prevPosX) * ticks;
@@ -281,7 +281,7 @@ public class CameraRenderer
         double z = position.point.z - this.playerZ;
 
         GL11.glNormal3f(0, 1, 0);
-        GlStateManager.translate(x, y + this.mc.thePlayer.eyeHeight, z);
+        GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
         GlStateManager.rotate(-this.mc.getRenderManager().playerViewY, 0, 1, 0);
         GlStateManager.rotate(this.mc.getRenderManager().playerViewX, 1, 0, 0);
 
@@ -361,7 +361,7 @@ public class CameraRenderer
         double z = pos.point.z - this.playerZ;
 
         GL11.glNormal3f(0, 1, 0);
-        GlStateManager.translate(x, y + this.mc.thePlayer.eyeHeight, z);
+        GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
         GlStateManager.rotate(-this.mc.getRenderManager().playerViewY, 0, 1, 0);
         GlStateManager.rotate(this.mc.getRenderManager().playerViewX, 1, 0, 0);
 
@@ -433,7 +433,7 @@ public class CameraRenderer
 
         VertexBuffer vb = Tessellator.getInstance().getBuffer();
 
-        vb.setTranslation(x, y + this.mc.thePlayer.eyeHeight, z);
+        vb.setTranslation(x, y + this.mc.player.eyeHeight, z);
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
         vb.pos(next.point.x - prev.point.x, next.point.y - prev.point.y, next.point.z - prev.point.z).endVertex();
         vb.pos(0, 0, 0).endVertex();

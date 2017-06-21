@@ -20,13 +20,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandPathMove extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "move";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.path.move";
     }
@@ -36,7 +36,7 @@ public class SubCommandPathMove extends CommandBase
     {
         if (args.length < 3)
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         CameraProfile profile = ClientProxy.control.currentProfile;

@@ -23,13 +23,13 @@ import net.minecraft.server.MinecraftServer;
 public class CommandLoadChunks extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "load_chunks";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.load_chunks";
     }
@@ -39,7 +39,7 @@ public class CommandLoadChunks extends CommandBase
     {
         if (args.length > 0)
         {
-            L10n.send(sender, this.getCommandUsage(sender));
+            L10n.send(sender, this.getUsage(sender));
 
             return;
         }

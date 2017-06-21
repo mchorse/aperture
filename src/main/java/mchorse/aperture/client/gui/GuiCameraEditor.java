@@ -336,7 +336,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         tick = tick < 0 ? 0 : tick;
         tick = tick > duration ? duration : tick;
 
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
         Position pos = new Position(player);
 
         this.profile.applyProfile(tick, ticks, pos);
@@ -812,7 +812,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (running)
             {
                 this.scrub.value = (int) this.runner.getTicks();
-                this.scrub.value = MathHelper.clamp_int(this.scrub.value, 0, this.scrub.max);
+                this.scrub.value = MathHelper.clamp(this.scrub.value, 0, this.scrub.max);
             }
 
             if (!running && this.playing)

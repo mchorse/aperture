@@ -86,7 +86,7 @@ public class GuiPointsModule implements IGuiModule
             if (dy < 20)
             {
                 /* Add a point based on player attributes */
-                this.path.addPoint(new Position(Minecraft.getMinecraft().thePlayer), this.index + 1);
+                this.path.addPoint(new Position(Minecraft.getMinecraft().player), this.index + 1);
                 this.scrollSize = this.path.getCount() * 20;
             }
             else if (dy > this.area.h - 20 && size > 1)
@@ -97,7 +97,7 @@ public class GuiPointsModule implements IGuiModule
 
                 if (this.scrollSize > this.area.h - 40)
                 {
-                    this.scroll = MathHelper.clamp_float(this.scroll, 0, this.scrollSize - (this.area.h - 40));
+                    this.scroll = MathHelper.clamp(this.scroll, 0, this.scrollSize - (this.area.h - 40));
                 }
                 else
                 {
@@ -178,7 +178,7 @@ public class GuiPointsModule implements IGuiModule
             if (this.scrollSize > this.area.h - 40)
             {
                 this.scroll += this.lastY - mouseY;
-                this.scroll = MathHelper.clamp_float(this.scroll, 0, this.scrollSize - (this.area.h - 40));
+                this.scroll = MathHelper.clamp(this.scroll, 0, this.scrollSize - (this.area.h - 40));
 
                 this.lastY = mouseY;
             }

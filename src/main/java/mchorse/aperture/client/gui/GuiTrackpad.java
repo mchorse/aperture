@@ -54,7 +54,7 @@ public class GuiTrackpad
     public void setValue(float value)
     {
         value = Math.round(value * 1000F) / 1000F;
-        value = MathHelper.clamp_float(value, this.min, this.max);
+        value = MathHelper.clamp(value, this.min, this.max);
 
         this.value = value;
         this.text.setText(String.valueOf(value));
@@ -192,7 +192,7 @@ public class GuiTrackpad
 
                 if (this.value != newValue)
                 {
-                    this.setValueAndNotify(MathHelper.clamp_float(newValue, this.min, this.max));
+                    this.setValueAndNotify(MathHelper.clamp(newValue, this.min, this.max));
                 }
             }
 

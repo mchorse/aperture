@@ -19,13 +19,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandFixtureGoto extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "goto";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.goto";
     }
@@ -35,7 +35,7 @@ public class SubCommandFixtureGoto extends CommandBase
     {
         if (args.length < 1)
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         EntityPlayer player = (EntityPlayer) sender;

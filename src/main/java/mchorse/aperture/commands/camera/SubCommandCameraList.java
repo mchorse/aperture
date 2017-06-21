@@ -17,13 +17,13 @@ import net.minecraft.util.text.TextComponentString;
 public class SubCommandCameraList extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "list";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.list";
     }
@@ -36,7 +36,7 @@ public class SubCommandCameraList extends CommandBase
         /* TODO: extract strings */
         if (control.profiles.isEmpty())
         {
-            sender.addChatMessage(new TextComponentString("No camera profiles"));
+            sender.sendMessage(new TextComponentString("No camera profiles"));
         }
 
         String text = "";
@@ -48,6 +48,6 @@ public class SubCommandCameraList extends CommandBase
             text += "- " + (current ? "§7" : "") + profile.toString() + "§r\n";
         }
 
-        sender.addChatMessage(new TextComponentString(text.trim()));
+        sender.sendMessage(new TextComponentString(text.trim()));
     }
 }

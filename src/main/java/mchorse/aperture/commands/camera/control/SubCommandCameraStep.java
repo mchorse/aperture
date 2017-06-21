@@ -16,13 +16,13 @@ import net.minecraft.server.MinecraftServer;
 public class SubCommandCameraStep extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "step";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.step";
     }

@@ -30,7 +30,7 @@ public abstract class McCommandBase extends CommandBase
     {
         if (args.length < this.getRequiredArgs())
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         try

@@ -73,7 +73,7 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     @Override
     public void editFixture()
     {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
         Entity mob = ((FollowFixture) this.fixture).getTarget();
 
         if (mob != null)
