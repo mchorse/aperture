@@ -223,6 +223,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     public void selectProfile(CameraProfile profile)
     {
+        if (profile == this.profile)
+        {
+            return;
+        }
+
         ClientProxy.control.currentProfile = profile;
 
         if (profile != null)
@@ -230,8 +235,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             profile.listener = this;
         }
 
-        this.cameraProfileWasChanged(profile);
         this.setProfile(profile);
+        this.cameraProfileWasChanged(profile);
         this.pickCameraFixture(null);
     }
 
@@ -280,7 +285,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.profile = profile;
         this.scrub.setProfile(profile);
         this.fixtures.setProfile(profile);
-        this.profiles.init();
 
         if (!isOldSame)
         {
@@ -300,6 +304,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     public void updateCameraEditor(EntityPlayer player)
     {
         this.selectProfile(ClientProxy.control.currentProfile);
+        this.profiles.init();
 
         GuiIngameForge.renderHotbar = false;
         GuiIngameForge.renderCrosshairs = false;
