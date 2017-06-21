@@ -51,7 +51,7 @@ public class ClientDestination extends AbstractDestination
 
             newProfile.setDestination(this);
             newProfile.dirty = false;
-            ClientProxy.control.insertProfile(newProfile);
+            ClientProxy.control.addProfile(newProfile);
 
             /* TODO: inform user about success */
         }

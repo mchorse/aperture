@@ -199,7 +199,7 @@ public class GuiProfilesManager implements IGuiModule
             {
                 int index = this.scrollLoad.getIndex(mouseX, mouseY);
 
-                if (index >= 0)
+                if (index >= 0 && index < this.destToLoad.size())
                 {
                     this.destToLoad.get(index).reload();
                 }
