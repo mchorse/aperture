@@ -3,7 +3,6 @@ package mchorse.aperture.client.gui;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -185,19 +184,10 @@ public class GuiProfilesManager implements IGuiModule
                         String filename = dest.getFilename();
                         AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
 
-                        Iterator<CameraProfile> it = ClientProxy.control.profiles.iterator();
-
-                        while (it.hasNext())
+                        if (!ClientProxy.control.hasSimilar(newDest))
                         {
-                            CameraProfile camera = it.next();
-
-                            if (camera.getDestination().equals(newDest))
-                            {
-                                return;
-                            }
+                            profile.setDestination(newDest);
                         }
-
-                        profile.setDestination(newDest);
                     }
                     else
                     {
