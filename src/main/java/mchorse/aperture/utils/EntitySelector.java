@@ -685,10 +685,4 @@ public class EntitySelector
             return map;
         }
     }
-
-    public static Entity matchOneEntity(EntityPlayer player, World world, String selector, Class<Entity> class1)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }
