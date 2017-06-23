@@ -10,6 +10,7 @@ import mchorse.aperture.utils.EntityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
@@ -22,9 +23,6 @@ import net.minecraft.util.math.MathHelper;
 public class LookFixture extends IdleFixture
 {
     protected Entity entity;
-
-    @Expose
-    public String target = "";
 
     @Expose
     public String selector = "";
@@ -42,12 +40,6 @@ public class LookFixture extends IdleFixture
         return this.entity;
     }
 
-    public void setTarget(String target)
-    {
-        this.entity = EntityUtils.entityByUUID(Minecraft.getMinecraft().theWorld, target);
-        this.target = target;
-    }
-
     @Override
     public void edit(String[] args, EntityPlayer player) throws CommandException
     {
@@ -63,7 +55,7 @@ public class LookFixture extends IdleFixture
         if ((this.entity == null || this.entity.isDead) && target != null)
         {
             this.entity = target;
-            this.target = target.getUniqueID().toString();
+            this.selector = "@e[type=" + EntityList.getEntityString(target) + "]";
         }
     }
 
@@ -138,12 +130,7 @@ public class LookFixture extends IdleFixture
         {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-            this.entity = EntitySelector.matchOneEntity(player, player.worldObj, this.selector, Entity.class);
-        }
-
-        if (this.entity == null && this.target != null && !this.target.isEmpty())
-        {
-            this.entity = EntityUtils.entityByUUID(Minecraft.getMinecraft().theWorld, this.target);
+            this.entity = EntitySelector.matchOneEntity(player, this.selector, Entity.class);
         }
     }
 

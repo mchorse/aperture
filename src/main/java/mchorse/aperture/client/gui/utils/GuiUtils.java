@@ -134,4 +134,12 @@ public class GuiUtils
         GL11.glScissor(xx, yy, ww, hh);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
     }
+
+    public static void drawOutline(int x, int y, int w, int h, int color)
+    {
+        Gui.drawRect(x, y, x + w, y + 1, color);
+        Gui.drawRect(x, y + 19, x + w, y + 20, color);
+        Gui.drawRect(x, y, x + 1, y + h, color);
+        Gui.drawRect(x + w, y, x + w + 1, y + h, color);
+    }
 }

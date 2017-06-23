@@ -245,7 +245,7 @@ public class GuiProfilesManager implements IGuiModule
             return;
         }
 
-        Gui.drawRect(this.rect.x, this.rect.y, this.rect.x + this.rect.w, this.rect.y + this.rect.h, 0x88000000);
+        Gui.drawRect(this.rect.x, this.rect.y, this.rect.x + this.rect.w, this.rect.y + this.rect.h, 0xaa000000);
         Gui.drawRect(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.x + this.scrollLoaded.w, this.scrollLoaded.y + this.scrollLoaded.h, 0x88000000);
 
         this.quit.drawButton(mc, mouseX, mouseY);
@@ -294,19 +294,19 @@ public class GuiProfilesManager implements IGuiModule
                     boolean isReverse = mouseX >= x + w - 40 && mouseX < x + w - 20;
 
                     GlStateManager.color(1, 1, 1, 1);
-                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 64, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
+                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 32, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
 
                     if (dest instanceof ClientDestination)
                     {
-                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 112, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 0, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
                     }
                     else
                     {
-                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 128, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 16, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
                     }
                 }
 
-                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 64 + (dest instanceof ClientDestination ? 16 : 0), 64, 16, 16, 256, 256);
+                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 0 + (dest instanceof ClientDestination ? 16 : 0), 32, 16, 16, 256, 256);
 
                 y += this.scrollLoaded.scrollItemSize;
             }
@@ -330,13 +330,14 @@ public class GuiProfilesManager implements IGuiModule
                 this.mc.fontRendererObj.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
                 this.mc.renderEngine.bindTexture(GuiCameraEditor.EDITOR_TEXTURE);
 
+                GlStateManager.color(1, 1, 1, 1);
+
                 if (hovered)
                 {
-                    GlStateManager.color(1, 1, 1, 1);
-                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 96, 64, 16, 16, 256, 256);
+                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 48, 32, 16, 16, 256, 256);
                 }
 
-                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 64 + (dest instanceof ClientDestination ? 16 : 0), 64, 16, 16, 256, 256);
+                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 0 + (dest instanceof ClientDestination ? 16 : 0), 32, 16, 16, 256, 256);
 
                 y += this.scrollLoad.scrollItemSize;
             }

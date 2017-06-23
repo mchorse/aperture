@@ -9,7 +9,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.config.GuiUtils;
 
 /**
  * GUI playback scrub
@@ -30,6 +29,7 @@ public class GuiPlaybackScrub
     public int value;
     public int min;
     public int max;
+    public int index;
 
     public IScrubListener listener;
     public CameraProfile profile;
@@ -50,6 +50,7 @@ public class GuiPlaybackScrub
     public void setProfile(CameraProfile profile)
     {
         this.profile = profile;
+        this.index = -1;
 
         this.max = profile == null ? 0 : (int) profile.getDuration();
         this.value = MathHelper.clamp_int(this.value, this.min, this.max);
@@ -91,8 +92,27 @@ public class GuiPlaybackScrub
     {
         if (this.area.isInside(mouseX, mouseY))
         {
-            this.scrubbing = true;
-            this.setValue(this.calcValueFromMouse(mouseX));
+            if (mouseButton == 0)
+            {
+                this.scrubbing = true;
+                this.setValue(this.calcValueFromMouse(mouseX));
+            }
+            else if (mouseButton == 1 && this.profile != null)
+            {
+                /* Select camera fixture */
+                GuiCameraEditor editor = (GuiCameraEditor) this.listener;
+                AbstractFixture fixture = this.profile.atTick(this.calcValueFromMouse(mouseX));
+                int index = this.profile.getAll().indexOf(fixture);
+
+                if (this.index == index)
+                {
+                    fixture = null;
+                    index = -1;
+                }
+
+                editor.pickCameraFixture(fixture);
+                this.index = index;
+            }
         }
     }
 
@@ -123,7 +143,7 @@ public class GuiPlaybackScrub
         int h = this.area.h;
 
         /* Draw background */
-        GuiUtils.drawContinuousTexturedBox(VANILLA_BUTTONS, x, y, 0, 46, w, h, 200, 20, 1, 1, 1, 1, 0);
+        Gui.drawRect(x, y + h - 1, x + w, y + h, 0xffffffff);
 
         /* Calculate tick marker position and tick label width */
         String label = String.valueOf(this.value + "/" + this.max);
@@ -133,17 +153,19 @@ public class GuiPlaybackScrub
 
         /* Draw fixtures */
         int pos = 0;
+        int i = 0;
 
         for (AbstractFixture fixture : this.profile.getAll())
         {
             CameraRenderer.Color color = CameraRenderer.fromFixture(fixture);
 
+            boolean selected = i == this.index;
             float ff = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
             float fb = (float) (pos - this.min) / (float) (this.max - this.min);
             int fx = x + 1 + (int) ((w - 3) * ff);
             int fbx = x + 1 + (int) ((w - 3) * fb);
 
-            Gui.drawRect(fbx + 1, y + 2, fx, y + h - 2, 0x44000000 + color.hex);
+            Gui.drawRect(fbx + 1, y + 15, fx, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color.hex);
             Gui.drawRect(fx, y + 1, fx + 1, y + h - 1, 0xff000000 + color.hex);
 
             String name = fixture.getName();
@@ -151,18 +173,20 @@ public class GuiPlaybackScrub
             if (!name.isEmpty())
             {
                 int lw = this.font.getStringWidth(name);
+                int textColor = selected ? 16777120 : 0xffffff;
 
                 if (lw + 4 < fx - fbx)
                 {
-                    this.font.drawStringWithShadow(name, fbx + 4, y + 7, 0xffffff);
+                    this.font.drawStringWithShadow(name, fbx + 4, y + 6, textColor);
                 }
                 else
                 {
-                    this.font.drawStringWithShadow("...", fbx + 4, y + 7, 0xffffff);
+                    this.font.drawStringWithShadow("...", fbx + 4, y + 6, textColor);
                 }
             }
 
             pos += fixture.getDuration();
+            i++;
         }
 
         /* Draw the marker */

@@ -25,7 +25,7 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
         super(font);
 
         this.point = new GuiPointModule(this, font);
-        this.target = new GuiTargetModule(this, font, -1, -2);
+        this.target = new GuiTargetModule(this, font, -1);
     }
 
     @Override
@@ -51,10 +51,6 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
     public void setEntryValue(int id, String value)
     {
         if (id == -1)
-        {
-            this.fixture.target = value;
-        }
-        else if (id == -2)
         {
             this.fixture.selector = value;
         }

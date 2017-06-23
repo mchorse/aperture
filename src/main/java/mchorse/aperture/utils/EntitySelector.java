@@ -54,15 +54,16 @@ public class EntitySelector
     private static final Set<String> WORLD_BINDING_ARGS = Sets.newHashSet(new String[] {"x", "y", "z", "dx", "dy", "dz", "rm", "r"});
 
     @Nullable
-    public static <T extends Entity> T matchOneEntity(ICommandSender sender, World world, String token, Class<? extends T> targetClass)
+    public static <T extends Entity> T matchOneEntity(ICommandSender sender, String token, Class<? extends T> targetClass)
     {
-        List<T> list = matchEntities(sender, world, token, targetClass);
+        List<T> list = matchEntities(sender, token, targetClass);
         return (T) (list.size() >= 1 ? (Entity) list.get(0) : null);
     }
 
-    public static <T extends Entity> List<T> matchEntities(ICommandSender sender, World world, String token, Class<? extends T> targetClass)
+    public static <T extends Entity> List<T> matchEntities(ICommandSender sender, String token, Class<? extends T> targetClass)
     {
         Matcher matcher = TOKEN_PATTERN.matcher(token);
+        World world = sender.getEntityWorld();
 
         if (matcher.matches() && sender.canCommandSenderUseCommand(1, "@"))
         {
