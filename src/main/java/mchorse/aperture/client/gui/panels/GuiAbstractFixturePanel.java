@@ -113,7 +113,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     @Override
     public void update(GuiScreen screen)
     {
-        this.area.set(10, 30, screen.width - 20, this.height);
+        this.area.set(10, screen.height / 2 - this.height / 2, screen.width - 20, this.height);
 
         int x = this.area.x;
         int y = this.area.y;

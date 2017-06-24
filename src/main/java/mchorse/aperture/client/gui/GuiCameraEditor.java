@@ -1,9 +1,7 @@
 package mchorse.aperture.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.input.Mouse;
@@ -87,6 +85,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      * fixtures only
      */
     public boolean syncing;
+
+    public Map<Integer, String> tooltips = new HashMap<Integer, String>();
 
     /* GUI fields */
 
@@ -249,6 +249,24 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.popup = new GuiFixturesPopup(this);
         this.profiles = new GuiProfilesManager(this);
         this.config = new GuiCameraConfig(this);
+
+        /* Initiating tooltips */
+        this.tooltips.put(0, "Jump to next fixture");
+        this.tooltips.put(1, "Jump to next frame");
+        this.tooltips.put(2, "Play/pause");
+        this.tooltips.put(3, "Jump to previous frame");
+        this.tooltips.put(4, "Jump to previous fixture");
+
+        this.tooltips.put(5, "Move fixture forward");
+        this.tooltips.put(6, "Move duration to the cursor");
+        this.tooltips.put(7, "Copy player's position");
+        this.tooltips.put(8, "Move fixture backward");
+
+        this.tooltips.put(9, "Save camera profile");
+        this.tooltips.put(10, "Show camera profiles");
+        this.tooltips.put(11, "Show camera editor options");
+        this.tooltips.put(50, "Add fixture");
+        this.tooltips.put(51, "Remove selected fixture");
     }
 
     /**
@@ -782,5 +800,33 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         this.config.draw(mouseX, mouseY, partialTicks);
         this.profiles.draw(mouseX, mouseY, partialTicks);
+
+        for (GuiButton button : this.buttonList)
+        {
+            String label = this.tooltips.get(button.id);
+
+            if (label != null && mouseX >= button.xPosition && mouseY >= button.yPosition && mouseX < button.xPosition + button.width && mouseY < button.yPosition + button.height)
+            {
+                this.drawTooltip(label, button.xPosition, button.yPosition + button.height + 6);
+            }
+        }
+    }
+
+    private void drawTooltip(String label, int x, int y)
+    {
+        int width = this.fontRendererObj.getStringWidth(label);
+
+        if (x + width + 4 > this.width)
+        {
+            x = this.width - (width + 4);
+        }
+
+        if (x - 4 < 4)
+        {
+            x = 4;
+        }
+
+        Gui.drawRect(x - 3, y - 3, x + width + 3, y + this.fontRendererObj.FONT_HEIGHT + 3, 0xaa000000);
+        this.fontRendererObj.drawStringWithShadow(label, x, y, 0xffffff);
     }
 }

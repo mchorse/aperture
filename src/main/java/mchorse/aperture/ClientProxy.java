@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
+    /* Camera stuff */
     public static CameraRenderer renderer = new CameraRenderer();
     public static CameraRunner runner = new CameraRunner();
     public static CameraControl control = new CameraControl();
@@ -36,6 +37,7 @@ public class ClientProxy extends CommonProxy
     public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
 
+    /* Files */
     public static File config;
     public static File cameras;
 
