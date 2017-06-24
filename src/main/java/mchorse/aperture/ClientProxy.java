@@ -23,8 +23,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Client proxy
  *
- * This class is responsible for registering item models, block models, entity
- * renders and injecting actor skin resource pack.
+ * This class is responsible for registering client side event handlers, client 
+ * commands, storing camera related stuff, and "proxify" everything related to 
+ * client side.
  */
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy

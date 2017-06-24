@@ -3,7 +3,7 @@ package mchorse.aperture.client.gui;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -23,7 +23,7 @@ public class GuiPlaybackScrub
     public static final ResourceLocation VANILLA_BUTTONS = new ResourceLocation("textures/gui/widgets.png");
 
     /* Box of the scrub */
-    public Rect area = new Rect();
+    public Area area = new Area();
 
     public boolean scrubbing;
     public int value;

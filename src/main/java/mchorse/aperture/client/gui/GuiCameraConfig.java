@@ -5,7 +5,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.panels.IButtonListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;
 import mchorse.aperture.client.gui.widgets.GuiButtonList;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Loader;
 
 public class GuiCameraConfig implements IGuiModule, IButtonListener
 {
-    public Rect area = new Rect();
+    public Area area = new Area();
     public GuiButtonList buttons;
     public boolean visible;
 

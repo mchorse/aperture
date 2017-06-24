@@ -7,7 +7,7 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.IGuiModule;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -29,7 +29,7 @@ public class GuiPointsModule implements IGuiModule
     public IPointPicker picker;
 
     /* GUI */
-    public Rect area = new Rect();
+    public Area area = new Area();
     public FontRenderer font;
     public GuiScreen screen;
 

@@ -11,6 +11,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  */
 public class CameraProfileChangedEvent extends Event
 {
+    /**
+     * Changed camera profile. 
+     * 
+     * Technically this camera profile can be substituted, but I'm not sure how 
+     * this application can be useful. 
+     */
     public CameraProfile profile;
 
     public CameraProfileChangedEvent(CameraProfile profile)

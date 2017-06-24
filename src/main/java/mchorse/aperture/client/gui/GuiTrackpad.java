@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui;
 
 import org.lwjgl.input.Keyboard;
 
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiTextField;
@@ -20,7 +20,7 @@ public class GuiTrackpad
 {
     private FontRenderer font;
     public GuiTextField text;
-    public Rect area = new Rect();
+    public Area area = new Area();
 
     public String title = "";
     public float value;

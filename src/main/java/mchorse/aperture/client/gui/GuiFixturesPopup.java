@@ -12,7 +12,7 @@ import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class GuiFixturesPopup
 {
-    public Rect area = new Rect();
+    public Area area = new Area();
     public boolean visible;
 
     public IFixtureSelector selector;

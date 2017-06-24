@@ -5,7 +5,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
@@ -28,7 +28,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     public T fixture;
 
     /* Stuff */
-    public Rect area = new Rect();
+    public Area area = new Area();
     public FontRenderer font;
     public GuiCameraEditor editor;
 
