@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.widgets.buttons;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,5 +44,21 @@ public class GuiCirculate extends GuiButton
     public void toggle()
     {
         this.setValue(this.value + 1);
+    }
+
+    /**
+     * Toggle the value if the button was pressed 
+     */
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
+    {
+        boolean pressed = super.mousePressed(mc, mouseX, mouseY);
+
+        if (pressed)
+        {
+            this.toggle();
+        }
+
+        return pressed;
     }
 }

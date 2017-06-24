@@ -6,8 +6,11 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.smooth.SmoothCamera;
+import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.events.CameraProfileChangedEvent;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -305,6 +308,24 @@ public class KeyboardHandler
                 player.setPositionAndRotation(x, y, z, yaw, pitch);
                 player.setVelocity(0, 0, 0);
             }
+        }
+    }
+
+    /* Camera profile handlers */
+
+    /**
+     * When camera profile is getting modified, this event is getting invoked
+     * 
+     * Works only on the client
+     */
+    @SubscribeEvent
+    public void onCameraProfileChanged(CameraProfileChangedEvent event)
+    {
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+
+        if (screen instanceof GuiCameraEditor)
+        {
+            ((GuiCameraEditor) screen).cameraProfileWasChanged(event.profile);
         }
     }
 }

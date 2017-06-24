@@ -1,16 +1,13 @@
 package mchorse.aperture.client.gui.panels.modules;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
 import mchorse.aperture.client.gui.panels.IButtonListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;
+import mchorse.aperture.client.gui.widgets.GuiButtonList;
 import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 
 /**
  * Path fixture interpolations GUI module
@@ -20,8 +17,7 @@ import net.minecraft.client.gui.GuiButton;
  */
 public class GuiInterpModule implements IGuiModule
 {
-    public List<GuiButton> buttons = new ArrayList<GuiButton>();
-    public IButtonListener listener;
+    public GuiButtonList buttons;
 
     public GuiCirculate pos;
     public GuiCirculate angle;
@@ -30,7 +26,7 @@ public class GuiInterpModule implements IGuiModule
 
     public GuiInterpModule(IButtonListener listener)
     {
-        this.listener = listener;
+        this.buttons = new GuiButtonList(Minecraft.getMinecraft(), listener);
 
         this.pos = new GuiCirculate(-1, 0, 0, 0, 0);
         this.angle = new GuiCirculate(-2, 0, 0, 0, 0);
@@ -109,28 +105,7 @@ public class GuiInterpModule implements IGuiModule
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (mouseButton == 0)
-        {
-            for (int i = 0; i < this.buttons.size(); ++i)
-            {
-                GuiButton button = this.buttons.get(i);
-
-                if (button.mousePressed(this.mc, mouseX, mouseY))
-                {
-                    button.playPressSound(this.mc.getSoundHandler());
-
-                    if (button instanceof GuiCirculate)
-                    {
-                        ((GuiCirculate) button).toggle();
-                    }
-
-                    if (this.listener != null)
-                    {
-                        this.listener.actionButtonPerformed(button);
-                    }
-                }
-            }
-        }
+        this.buttons.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -147,8 +122,7 @@ public class GuiInterpModule implements IGuiModule
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
-        this.pos.drawButton(this.mc, mouseX, mouseY);
-        this.angle.drawButton(this.mc, mouseX, mouseY);
+        this.buttons.draw(mouseX, mouseY);
 
         FontRenderer font = this.mc.fontRendererObj;
 

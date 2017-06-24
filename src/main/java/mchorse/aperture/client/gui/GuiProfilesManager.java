@@ -365,6 +365,9 @@ public class GuiProfilesManager implements IGuiModule
         public void selectProfile(CameraProfile profile);
     }
 
+    /**
+     * JSON file filter 
+     */
     public static class JSONFileFilter implements FileFilter
     {
         @Override

@@ -122,7 +122,7 @@ public class LookFixture extends IdleFixture
     /**
      * Try finding entity based on entity selector or target's UUID
      */
-    protected void tryFindingEntity()
+    public void tryFindingEntity()
     {
         this.entity = null;
 

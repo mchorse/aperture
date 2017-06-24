@@ -20,7 +20,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
- *
+ * Fixtures popup
+ * 
+ * Allows to select the type of camera fixture the user wants to create.
  */
 public class GuiFixturesPopup
 {
@@ -158,7 +160,7 @@ public class GuiFixturesPopup
 
         if (fixture != null && this.selector != null)
         {
-            this.selector.selectFixture(fixture);
+            this.selector.createFixture(fixture);
         }
     }
 
@@ -236,6 +238,6 @@ public class GuiFixturesPopup
 
     public static interface IFixtureSelector
     {
-        public void selectFixture(AbstractFixture fixture);
+        public void createFixture(AbstractFixture fixture);
     }
 }

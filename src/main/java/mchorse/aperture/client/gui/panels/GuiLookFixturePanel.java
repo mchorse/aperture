@@ -53,6 +53,7 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
         if (id == -1)
         {
             this.fixture.selector = value;
+            this.fixture.tryFindingEntity();
         }
 
         super.setEntryValue(id, value);
