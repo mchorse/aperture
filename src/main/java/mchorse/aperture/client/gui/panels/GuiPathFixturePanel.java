@@ -120,6 +120,10 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     public void update(GuiScreen screen)
     {
+        boolean height = screen.height - 60 > 200;
+
+        this.height = height ? 200 : 100;
+
         super.update(screen);
 
         int x = this.area.x + this.area.w;
@@ -127,11 +131,18 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.points.update(screen, x - 20, y, 100);
 
-        x -= 30;
+        x -= 110;
 
         this.point.update(x, y);
 
-        x -= 80 * 2 + 10;
+        if (height)
+        {
+            y += 110;
+        }
+        else
+        {
+            x -= 80 + 10;
+        }
 
         this.angle.update(x, y);
 
@@ -187,8 +198,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Position", this.area.x + this.area.w - 70, this.area.y + this.area.h - 14, 0xffffffff);
-        this.editor.drawCenteredString(this.font, "Angle", this.area.x + this.area.w - 160, this.area.y + this.area.h - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Position", this.point.z.area.x + this.point.z.area.w / 2, this.point.z.area.y + this.point.z.area.h + 6, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Angle", this.angle.fov.area.x + this.angle.fov.area.w / 2, this.angle.fov.area.y + this.angle.fov.area.h + 6, 0xffffffff);
 
         this.point.draw(mouseX, mouseY, partialTicks);
         this.angle.draw(mouseX, mouseY, partialTicks);

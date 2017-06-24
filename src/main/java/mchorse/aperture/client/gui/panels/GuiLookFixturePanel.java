@@ -26,6 +26,7 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
 
         this.point = new GuiPointModule(this, font);
         this.target = new GuiTargetModule(this, font, -1);
+        this.height = 100;
     }
 
     @Override
@@ -62,11 +63,9 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
     @Override
     public void update(GuiScreen screen)
     {
-        this.height = 100;
-
         super.update(screen);
 
-        int x = this.area.x + this.area.w;
+        int x = this.area.x + this.area.w - 80;
         int y = this.area.y;
 
         this.point.update(x, y);
@@ -125,7 +124,7 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Position", this.area.x + this.area.w - 40, this.area.y + this.area.h - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Position", this.point.z.area.x + this.point.z.area.w / 2, this.point.z.area.y + this.point.z.area.h + 6, 0xffffffff);
 
         this.point.draw(mouseX, mouseY, partialTicks);
         this.target.draw(mouseX, mouseY, partialTicks);
