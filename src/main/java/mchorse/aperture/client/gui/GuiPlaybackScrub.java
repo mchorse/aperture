@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -100,17 +101,12 @@ public class GuiPlaybackScrub
             else if (mouseButton == 1 && this.profile != null)
             {
                 /* Select camera fixture */
+                int tick = this.calcValueFromMouse(mouseX);
                 GuiCameraEditor editor = (GuiCameraEditor) this.listener;
-                AbstractFixture fixture = this.profile.atTick(this.calcValueFromMouse(mouseX));
+                AbstractFixture fixture = this.profile.atTick(tick);
                 int index = this.profile.getAll().indexOf(fixture);
 
-                if (this.index == index)
-                {
-                    fixture = null;
-                    index = -1;
-                }
-
-                editor.pickCameraFixture(fixture);
+                editor.pickCameraFixture(fixture, tick - this.profile.calculateOffset(fixture));
                 this.index = index;
             }
         }
@@ -169,6 +165,24 @@ public class GuiPlaybackScrub
             Gui.drawRect(fx, y + 1, fx + 1, y + h - 1, 0xff000000 + color.hex);
 
             String name = fixture.getName();
+
+            if (fixture instanceof PathFixture)
+            {
+                PathFixture path = (PathFixture) fixture;
+                int c = path.getCount() - 1;
+
+                if (c > 0)
+                {
+                    int fract = (fx - fbx) / c;
+
+                    for (int j = 1; j < c; j++)
+                    {
+                        int px = fbx + fract * j;
+
+                        Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+                    }
+                }
+            }
 
             if (!name.isEmpty())
             {

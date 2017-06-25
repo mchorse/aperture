@@ -33,6 +33,14 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
         this.buttons = new GuiButtonList(Minecraft.getMinecraft(), this);
     }
 
+    /**
+     * Is mouse pointer inside 
+     */
+    public boolean isInside(int x, int y)
+    {
+        return this.visible && this.area.isInside(x, y);
+    }
+
     public void update(int x, int y, int w, int h)
     {
         this.area.set(x, y, w, h);

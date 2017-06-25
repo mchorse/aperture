@@ -17,6 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -37,6 +38,12 @@ public class ClientProxy extends CommonProxy
 
     public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
+
+    /**
+     * Event bus for handling camera editor events (I don't want to spam a lot 
+     * of events in the main event bus). 
+     */
+    public static EventBus EVENT_BUS = new EventBus();
 
     /* Files */
     public static File config;

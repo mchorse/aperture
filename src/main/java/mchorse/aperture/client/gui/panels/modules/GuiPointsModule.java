@@ -5,14 +5,19 @@ import org.lwjgl.opengl.GL11;
 import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
+import mchorse.aperture.client.gui.panels.IButtonListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.utils.Area;
+import mchorse.aperture.client.gui.widgets.GuiButtonList;
+import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.aperture.utils.ScrollArea;
+import mchorse.aperture.utils.ScrollArea.ScrollDirection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * Points GUI module
@@ -22,22 +27,21 @@ import net.minecraft.util.math.MathHelper;
  *
  * TODO: Add mouse scrolling
  */
-public class GuiPointsModule implements IGuiModule
+public class GuiPointsModule implements IGuiModule, IButtonListener
 {
     /* Input */
     public PathFixture path;
     public IPointPicker picker;
 
     /* GUI */
-    public Area area = new Area();
+    public ScrollArea area = new ScrollArea(20);
     public FontRenderer font;
     public GuiScreen screen;
+    public GuiButtonList buttons;
 
     /* Scrolling variables */
-    private int timer;
     private boolean dragging;
-    private float scroll;
-    private int scrollSize;
+    private int timer;
     private int lastY;
 
     /**
@@ -45,10 +49,60 @@ public class GuiPointsModule implements IGuiModule
      */
     public int index = 0;
 
-    public GuiPointsModule(IPointPicker picker, FontRenderer font)
+    public GuiPointsModule(GuiPathFixturePanel picker, FontRenderer font)
     {
         this.picker = picker;
         this.font = font;
+
+        this.buttons = new GuiButtonList(Minecraft.getMinecraft(), this);
+        this.buttons.add(new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(160, 0).setActiveTexPos(160, 16));
+        this.buttons.add(new GuiTextureButton(1, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16));
+
+        this.buttons.add(new GuiTextureButton(2, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(240, 0).setActiveTexPos(240, 16));
+        this.buttons.add(new GuiTextureButton(3, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(144, 0).setActiveTexPos(144, 16));
+
+        this.area.direction = ScrollDirection.HORIZONTAL;
+    }
+
+    @Override
+    public void actionButtonPerformed(GuiButton button)
+    {
+        int size = this.path.getCount();
+
+        if (button.id == 0 && this.index > 0)
+        {
+            /* Move point backward */
+            this.path.movePoint(this.index, this.index - 1);
+            this.index--;
+        }
+        else if (button.id == 1)
+        {
+            /* Add a point based on player attributes */
+            this.path.addPoint(new Position(Minecraft.getMinecraft().thePlayer), this.index + 1);
+            this.area.setSize(this.path.getCount());
+            this.index++;
+
+            if (this.picker != null)
+            {
+                this.picker.pickPoint(this, this.index);
+            }
+        }
+        else if (button.id == 2 && size > 1)
+        {
+            /* Remove a point and update scroll */
+            this.path.removePoint(this.index);
+            this.area.setSize(size - 1);
+            this.area.clamp();
+            this.index--;
+        }
+        else if (button.id == 3 && this.index < size - 1)
+        {
+            /* Move point forward */
+            this.path.movePoint(this.index, this.index + 1);
+            this.index++;
+        }
+
+        /* TODO: make camera profile dirty */
     }
 
     /**
@@ -59,14 +113,20 @@ public class GuiPointsModule implements IGuiModule
     {
         this.path = path;
         this.index = 0;
-        this.scroll = 0;
-        this.scrollSize = path.getCount() * 20;
+        this.area.scrollTo(0);
+        this.area.setSize(path.getCount());
     }
 
-    public void update(GuiScreen screen, int x, int y, int h)
+    public void update(GuiScreen screen, int x, int y, int w, int h)
     {
         this.screen = screen;
-        this.area.set(x, y, 20, h);
+        this.area.set(x, y, w, h);
+
+        GuiUtils.setSize(this.buttons.buttons.get(0), x - 38, y + 2, 16, 16);
+        GuiUtils.setSize(this.buttons.buttons.get(2), x - 18, y + 2, 16, 16);
+
+        GuiUtils.setSize(this.buttons.buttons.get(1), x + w + 2, y + 2, 16, 16);
+        GuiUtils.setSize(this.buttons.buttons.get(3), x + w + 22, y + 2, 16, 16);
     }
 
     /**
@@ -80,38 +140,32 @@ public class GuiPointsModule implements IGuiModule
     {
         if (this.area.isInside(mouseX, mouseY))
         {
-            int dy = mouseY - this.area.y;
-            int size = this.path.getCount();
-
-            if (dy < 20)
-            {
-                /* Add a point based on player attributes */
-                this.path.addPoint(new Position(Minecraft.getMinecraft().thePlayer), this.index + 1);
-                this.scrollSize = this.path.getCount() * 20;
-            }
-            else if (dy > this.area.h - 20 && size > 1)
-            {
-                /* Remove a point and update scroll */
-                this.path.removePoint(this.index);
-                this.scrollSize = (size - 1) * 20;
-
-                if (this.scrollSize > this.area.h - 40)
-                {
-                    this.scroll = MathHelper.clamp_float(this.scroll, 0, this.scrollSize - (this.area.h - 40));
-                }
-                else
-                {
-                    this.scroll = 0.0F;
-                }
-            }
-            else
+            if (mouseButton == 0)
             {
                 /* Initiate dragging */
                 this.dragging = true;
-                this.lastY = mouseY;
+                this.lastY = mouseX;
                 this.timer = 0;
             }
+            else if (mouseButton == 1)
+            {
+                int index = this.area.getIndex(mouseX, mouseY);
+                int size = this.path.getCount();
+
+                if (index >= 0 && index < size)
+                {
+                    /* Pick a point */
+                    this.index = index;
+
+                    if (this.picker != null)
+                    {
+                        this.picker.pickPoint(this, index);
+                    }
+                }
+            }
         }
+
+        this.buttons.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     /**
@@ -126,8 +180,7 @@ public class GuiPointsModule implements IGuiModule
     {
         if (this.dragging && this.timer < 6)
         {
-            int dy = mouseY - this.area.y - 20 + (int) this.scroll;
-            int index = dy / 20;
+            int index = this.area.getIndex(mouseX, mouseY);
             int size = this.path.getCount();
 
             if (index == this.index)
@@ -175,12 +228,11 @@ public class GuiPointsModule implements IGuiModule
         /* Scroll this view */
         if (this.dragging)
         {
-            if (this.scrollSize > this.area.h - 40)
+            if (this.area.scrollSize > this.area.w)
             {
-                this.scroll += this.lastY - mouseY;
-                this.scroll = MathHelper.clamp_float(this.scroll, 0, this.scrollSize - (this.area.h - 40));
+                this.area.scrollBy(this.lastY - mouseX);
 
-                this.lastY = mouseY;
+                this.lastY = mouseX;
             }
 
             this.timer++;
@@ -192,34 +244,36 @@ public class GuiPointsModule implements IGuiModule
 
         /* Draw background and buttons */
         Gui.drawRect(x, y, x + this.area.w, y + this.area.h, 0x88000000);
-        GuiUtils.scissor(this.area.x, this.area.y + 20, 20, this.area.h - 40, this.screen.width, this.screen.height);
+        GuiUtils.scissor(this.area.x, this.area.y, this.area.w, this.area.h, this.screen.width, this.screen.height);
 
         for (int i = 0; i < c; i++)
         {
             String label = String.valueOf(i);
-            int yy = this.area.y + 20 + i * 20 - (int) this.scroll;
+            int xx = this.area.x + i * this.area.scrollItemSize - (int) this.area.scroll;
             int w = this.font.getStringWidth(label);
 
-            Gui.drawRect(x, yy, x + 20, yy + 20, this.index == i ? 0xffdd2280 : 0xffff2280);
-            Gui.drawRect(x, yy + 19, x + 20, yy + 20, 0x22000000);
-            this.font.drawStringWithShadow(label, x + 10 - w / 2, yy + 6, 0xffffff);
+            Gui.drawRect(xx, y, xx + 20, y + 20, this.index == i ? 0xffdd2280 : 0xffff2280);
+            Gui.drawRect(xx + 19, y, xx + 20, y + 20, 0x22000000);
+            this.font.drawStringWithShadow(label, xx + 10 - w / 2, y + 6, 0xffffff);
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-        if (this.scroll > 0 && this.scrollSize >= this.area.h - 40)
+        if (this.area.scroll > 0 && this.area.scrollSize >= this.area.w - 40)
         {
-            Gui.drawRect(x, y + 20, x + this.area.w, y + 22, 0x88000000);
+            Gui.drawRect(x, y, x + 2, y + this.area.h, 0x88000000);
         }
 
-        if (this.scroll < this.scrollSize - (this.area.h - 40) && this.scrollSize >= this.area.h - 40)
+        if (this.area.scroll < this.area.scrollSize - this.area.w && this.area.scrollSize >= this.area.w)
         {
-            Gui.drawRect(x, y + this.area.h - 22, x + this.area.w, y + this.area.h - 20, 0x88000000);
+            Gui.drawRect(x + this.area.w - 2, y, x + this.area.w, y + this.area.h, 0x88000000);
         }
 
-        /* Draw add and remove buttons */
-        this.font.drawStringWithShadow("+", x + 7, y + 7, 0xffffff);
-        this.font.drawStringWithShadow("-", x + 7, y + this.area.h - 13, 0xffffff);
+        this.buttons.draw(mouseX, mouseY);
+
+        String label = "Path Points";
+        int w = this.font.getStringWidth(label);
+        this.font.drawStringWithShadow(label, this.area.x + this.area.w / 2 - w / 2, this.area.y - 14, 0xffffff);
     }
 
     /**

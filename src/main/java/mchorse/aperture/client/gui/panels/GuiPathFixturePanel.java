@@ -102,19 +102,27 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
-    public void select(PathFixture fixture)
+    public void select(PathFixture fixture, long duration)
     {
-        super.select(fixture);
+        super.select(fixture, duration);
 
-        Position pos = fixture.getPoint(0);
+        int index = (int) ((duration / (float) fixture.getDuration()) * fixture.getCount());
+        Position pos = fixture.getPoint(index);
 
-        this.points.index = 0;
         this.position = pos;
 
         this.point.fill(pos.point);
         this.angle.fill(pos.angle);
         this.points.fill(fixture);
         this.interp.fill(fixture);
+
+        this.points.index = index;
+    }
+
+    @Override
+    public long currentOffset()
+    {
+        return super.currentOffset() + (long) ((this.points.index / (float) (this.fixture.getCount() - 1)) * this.fixture.getDuration());
     }
 
     @Override
@@ -126,12 +134,10 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         super.update(screen);
 
-        int x = this.area.x + this.area.w;
-        int y = this.area.y;
+        int x = this.area.x + this.area.w - 80;
+        int y = this.area.y + 10;
 
-        this.points.update(screen, x - 20, y, 100);
-
-        x -= 110;
+        this.points.update(screen, screen.width / 2 - 45, screen.height - 50, 90, 20);
 
         this.point.update(x, y);
 
@@ -147,7 +153,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle.update(x, y);
 
         x = this.area.x;
-        y = this.area.y + 55;
+        y = this.area.y + 60;
 
         this.interp.update(x, y, 80);
     }
@@ -198,8 +204,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Position", this.point.z.area.x + this.point.z.area.w / 2, this.point.z.area.y + this.point.z.area.h + 6, 0xffffffff);
-        this.editor.drawCenteredString(this.font, "Angle", this.angle.fov.area.x + this.angle.fov.area.w / 2, this.angle.fov.area.y + this.angle.fov.area.h + 6, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Position", this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Angle", this.angle.yaw.area.x + this.angle.yaw.area.w / 2, this.angle.yaw.area.y - 14, 0xffffffff);
 
         this.point.draw(mouseX, mouseY, partialTicks);
         this.angle.draw(mouseX, mouseY, partialTicks);

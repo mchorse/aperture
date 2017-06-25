@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -141,5 +143,21 @@ public class GuiUtils
         Gui.drawRect(x, y + 19, x + w, y + 20, color);
         Gui.drawRect(x, y, x + 1, y + h, color);
         Gui.drawRect(x + w, y, x + w + 1, y + h, color);
+    }
+
+    public static void setSize(GuiButton button, int x, int y, int w, int h)
+    {
+        button.xPosition = x;
+        button.yPosition = y;
+        button.width = w;
+        button.height = h;
+    }
+
+    public static void setSize(GuiTextField field, int x, int y, int w, int h)
+    {
+        field.xPosition = x + 1;
+        field.yPosition = y + 1;
+        field.width = w - 2;
+        field.height = h - 2;
     }
 }

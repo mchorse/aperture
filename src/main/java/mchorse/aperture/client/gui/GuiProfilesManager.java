@@ -86,11 +86,11 @@ public class GuiProfilesManager implements IGuiModule
 
         int span = (w - 12) / 2;
 
-        this.setSize(this.loaded, x + 5, y + 5, span, 20);
-        this.setSize(this.load, x + span + 7, y + 5, span, 20);
+        GuiUtils.setSize(this.loaded, x + 5, y + 5, span, 20);
+        GuiUtils.setSize(this.load, x + span + 7, y + 5, span, 20);
 
-        this.setSize(this.add, x + w - 45, y + h - 25, 40, 20);
-        this.setSize(this.name, x + 5, y + h - 25, w - 55, 20);
+        GuiUtils.setSize(this.add, x + w - 45, y + h - 25, 40, 20);
+        GuiUtils.setSize(this.name, x + 5, y + h - 25, w - 55, 20);
         this.updateButtons();
     }
 
@@ -98,22 +98,6 @@ public class GuiProfilesManager implements IGuiModule
     {
         this.loaded.enabled = !this.showLoaded;
         this.load.enabled = this.showLoaded;
-    }
-
-    private void setSize(GuiButton button, int x, int y, int w, int h)
-    {
-        button.xPosition = x;
-        button.yPosition = y;
-        button.width = w;
-        button.height = h;
-    }
-
-    private void setSize(GuiTextField field, int x, int y, int w, int h)
-    {
-        field.xPosition = x + 1;
-        field.yPosition = y + 1;
-        field.width = w - 2;
-        field.height = h - 2;
     }
 
     /**

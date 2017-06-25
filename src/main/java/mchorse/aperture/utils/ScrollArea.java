@@ -85,10 +85,24 @@ public class ScrollArea extends Area
             return -1;
         }
 
-        y -= this.y;
-        y += this.scroll;
+        int axis = 0;
 
-        int index = y / this.scrollItemSize;
+        if (this.direction == ScrollDirection.VERTICAL)
+        {
+            y -= this.y;
+            y += this.scroll;
+
+            axis = y;
+        }
+        else
+        {
+            x -= this.x;
+            x += this.scroll;
+
+            axis = x;
+        }
+
+        int index = axis / this.scrollItemSize;
 
         return index > this.scrollSize / this.scrollItemSize ? -1 : index;
     }

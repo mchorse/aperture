@@ -52,9 +52,9 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     }
 
     @Override
-    public void select(LookFixture fixture)
+    public void select(LookFixture fixture, long duration)
     {
-        super.select(fixture);
+        super.select(fixture, duration);
 
         this.angle.fill(fixture.position.angle);
     }
@@ -69,7 +69,7 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
         super.update(screen);
 
         int x = this.area.x + this.area.w - 80;
-        int y = this.area.y;
+        int y = this.area.y + 10;
 
         if (height)
         {
@@ -130,7 +130,7 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Angle", this.angle.fov.area.x + this.angle.fov.area.w / 2, this.angle.fov.area.y + this.angle.fov.area.h + 6, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Angle", this.angle.yaw.area.x + this.angle.yaw.area.w / 2, this.angle.yaw.area.y - 14, 0xffffffff);
 
         this.angle.draw(mouseX, mouseY, partialTicks);
     }

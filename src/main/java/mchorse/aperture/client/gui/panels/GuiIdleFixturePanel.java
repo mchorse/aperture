@@ -66,9 +66,9 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     }
 
     @Override
-    public void select(IdleFixture fixture)
+    public void select(IdleFixture fixture, long duration)
     {
-        super.select(fixture);
+        super.select(fixture, duration);
 
         this.point.fill(fixture.position.point);
         this.angle.fill(fixture.position.angle);
@@ -84,7 +84,7 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
         super.update(screen);
 
         int x = this.area.x + this.area.w - 80;
-        int y = this.area.y;
+        int y = this.area.y + 10;
 
         this.point.update(x, y);
 
@@ -140,8 +140,8 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Position", this.point.z.area.x + this.point.z.area.w / 2, this.point.z.area.y + this.point.z.area.h + 6, 0xffffffff);
-        this.editor.drawCenteredString(this.font, "Angle", this.angle.fov.area.x + this.angle.fov.area.w / 2, this.angle.fov.area.y + this.angle.fov.area.h + 6, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Position", this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Angle", this.angle.yaw.area.x + this.angle.yaw.area.w / 2, this.angle.yaw.area.y - 14, 0xffffffff);
 
         this.point.draw(mouseX, mouseY, partialTicks);
         this.angle.draw(mouseX, mouseY, partialTicks);

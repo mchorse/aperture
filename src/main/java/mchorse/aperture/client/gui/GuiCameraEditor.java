@@ -27,6 +27,8 @@ import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.IFixturePanel;
 import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.aperture.events.CameraEditorPlaybackStateEvent;
+import mchorse.aperture.events.CameraEditorScrubbedEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -153,7 +155,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.runner.setTicks(value);
         }
 
-        /* TODO: Implement hook */
+        ClientProxy.EVENT_BUS.post(new CameraEditorScrubbedEvent(this.runner.isRunning(), this.scrub.value));
     }
 
     /**
@@ -163,7 +165,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      * turn then will allow to edit properties of the camera fixture
      */
     @SuppressWarnings("unchecked")
-    public void pickCameraFixture(AbstractFixture fixture)
+    public void pickCameraFixture(AbstractFixture fixture, long duration)
     {
         if (fixture == null)
         {
@@ -175,14 +177,14 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             if (panel != null)
             {
-                panel.select(fixture);
+                panel.select(fixture, duration);
                 panel.update(this);
 
                 this.fixturePanel = panel;
 
                 if (this.syncing)
                 {
-                    this.scrub.setValue((int) this.profile.calculateOffset(fixture));
+                    this.scrub.setValue((int) panel.currentOffset());
                 }
 
                 this.scrub.index = this.profile.getAll().indexOf(fixture);
@@ -204,7 +206,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             this.profile.add(fixture);
             this.updateValues();
-            this.pickCameraFixture(fixture);
+            this.pickCameraFixture(fixture, 0);
         }
     }
 
@@ -223,7 +225,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         this.setProfile(profile);
         this.cameraProfileWasChanged(profile);
-        this.pickCameraFixture(null);
+        this.pickCameraFixture(null, 0);
     }
 
     public void cameraProfileWasChanged(CameraProfile profile)
@@ -501,14 +503,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             this.playing = this.runner.isRunning();
 
-            if (this.playing)
-            {
-                /* TODO: Implement hook to start playing director */
-            }
-            else
-            {
-                /* TODO: Implement hook to pause director */
-            }
+            ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(this.playing, this.scrub.value));
         }
         else if (id == 3)
         {
@@ -544,7 +539,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                 this.updateProfile();
 
                 this.updateValues();
-                this.fixturePanel.select(fixture);
+                this.fixturePanel.select(fixture, 0);
             }
         }
         else if (id == 7 && this.fixturePanel != null)
@@ -583,11 +578,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
                 if (this.scrub.index >= 0)
                 {
-                    this.pickCameraFixture(this.profile.get(this.scrub.index));
+                    this.pickCameraFixture(this.profile.get(this.scrub.index), 0);
                 }
                 else
                 {
-                    this.pickCameraFixture(null);
+                    this.pickCameraFixture(null, 0);
                 }
 
                 this.updateValues();
@@ -685,7 +680,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         this.config.mouseClicked(mouseX, mouseY, mouseButton);
 
-        if (this.config.visible && this.config.area.isInside(mouseX, mouseY))
+        if (this.config.isInside(mouseX, mouseY))
         {
             return;
         }
@@ -715,7 +710,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             return;
         }
 
-        if (this.config.visible && this.config.area.isInside(mouseX, mouseY))
+        if (this.config.isInside(mouseX, mouseY))
         {
             return;
         }
@@ -783,7 +778,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             {
                 this.updatePlauseButton();
 
-                /* TODO: Implement hook to pause director */
+                ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(false, this.scrub.value));
                 this.playing = false;
             }
 
