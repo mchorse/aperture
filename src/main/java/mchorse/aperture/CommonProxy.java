@@ -3,9 +3,9 @@ package mchorse.aperture;
 import java.io.File;
 
 import mchorse.aperture.capabilities.CapabilityHandler;
-import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.CameraStorage;
+import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.config.ApertureConfig;
 import mchorse.aperture.network.Dispatcher;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,9 +17,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 /**
  * Common proxy
  *
- * This class is responsible for registering items, blocks, entities,
- * capabilities and event listeners on both sides (that's why it's a common
- * proxy).
+ * This class is responsible for configuration, capabilities, event listeners 
+ * and packet dispatcher.
  */
 public class CommonProxy
 {

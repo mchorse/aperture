@@ -8,6 +8,8 @@ import com.google.gson.annotations.Expose;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.events.CameraProfileChangedEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Camera profile class
@@ -33,8 +35,6 @@ public class CameraProfile
      * Whether camera profile was modified
      */
     public boolean dirty;
-
-    public ICameraListener listener;
 
     public CameraProfile(AbstractDestination destination)
     {
@@ -69,12 +69,17 @@ public class CameraProfile
 
     public void dirty()
     {
-        this.dirty = true;
+        this.setDirty(true);
+    }
 
-        if (this.listener != null)
-        {
-            this.listener.cameraProfileWasChanged(this);
-        }
+    /**
+     * Set camera profile dirty and also post an event 
+     */
+    public void setDirty(boolean dirty)
+    {
+        this.dirty = dirty;
+
+        MinecraftForge.EVENT_BUS.post(new CameraProfileChangedEvent(this));
     }
 
     /**
@@ -267,12 +272,7 @@ public class CameraProfile
             this.destination.save(this);
         }
 
-        this.dirty = false;
-
-        if (this.listener != null)
-        {
-            this.listener.cameraProfileWasChanged(this);
-        }
+        this.setDirty(false);
     }
 
     @Override

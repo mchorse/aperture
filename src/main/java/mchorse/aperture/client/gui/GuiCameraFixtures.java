@@ -6,7 +6,7 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -33,7 +33,7 @@ public class GuiCameraFixtures
 
     public CameraProfile profile;
     public IFixturePicker picker;
-    public Rect area = new Rect();
+    public Area area = new Area();
     public FontRenderer font;
     public GuiCameraEditor editor;
 

@@ -67,9 +67,9 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     }
 
     @Override
-    public void select(CircularFixture fixture)
+    public void select(CircularFixture fixture, long duration)
     {
-        super.select(fixture);
+        super.select(fixture, duration);
 
         this.point.fill(fixture.start);
         this.circular.fill(fixture);
@@ -78,14 +78,25 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     @Override
     public void update(GuiScreen screen)
     {
+        boolean height = screen.height - 60 > 200;
+
+        this.height = height ? 200 : 100;
+
         super.update(screen);
 
-        int x = this.area.x + this.area.w;
-        int y = this.area.y;
+        int x = this.area.x + this.area.w - 80;
+        int y = this.area.y + 10;
 
         this.point.update(x, y);
 
-        x -= 80 * 2 + 10;
+        if (height)
+        {
+            y += 110;
+        }
+        else
+        {
+            x -= 80 + 10;
+        }
 
         this.circular.update(x, y);
     }
@@ -130,8 +141,8 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Position", this.area.x + this.area.w - 40, this.area.y + this.area.h - 14, 0xffffffff);
-        this.editor.drawCenteredString(this.font, "Circle", this.area.x + this.area.w - 130, this.area.y + this.area.h - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Position", this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, "Circle", this.circular.offset.area.x + this.circular.offset.area.w / 2, this.circular.offset.area.y - 14, 0xffffffff);
 
         this.point.draw(mouseX, mouseY, partialTicks);
         this.circular.draw(mouseX, mouseY, partialTicks);

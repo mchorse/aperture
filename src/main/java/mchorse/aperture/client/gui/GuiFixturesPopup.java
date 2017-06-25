@@ -12,7 +12,7 @@ import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -20,11 +20,13 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
- *
+ * Fixtures popup
+ * 
+ * Allows to select the type of camera fixture the user wants to create.
  */
 public class GuiFixturesPopup
 {
-    public Rect area = new Rect();
+    public Area area = new Area();
     public boolean visible;
 
     public IFixtureSelector selector;
@@ -158,7 +160,7 @@ public class GuiFixturesPopup
 
         if (fixture != null && this.selector != null)
         {
-            this.selector.selectFixture(fixture);
+            this.selector.createFixture(fixture);
         }
     }
 
@@ -236,6 +238,6 @@ public class GuiFixturesPopup
 
     public static interface IFixtureSelector
     {
-        public void selectFixture(AbstractFixture fixture);
+        public void createFixture(AbstractFixture fixture);
     }
 }

@@ -5,7 +5,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
@@ -28,7 +28,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     public T fixture;
 
     /* Stuff */
-    public Rect area = new Rect();
+    public Area area = new Area();
     public FontRenderer font;
     public GuiCameraEditor editor;
 
@@ -100,7 +100,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     }
 
     @Override
-    public void select(T fixture)
+    public void select(T fixture, long duration)
     {
         this.fixture = fixture;
 
@@ -111,12 +111,18 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     }
 
     @Override
+    public long currentOffset()
+    {
+        return this.editor.getProfile().calculateOffset(this.fixture);
+    }
+
+    @Override
     public void update(GuiScreen screen)
     {
-        this.area.set(10, 52, screen.width - 20, this.height);
+        this.area.set(10, screen.height / 2 - this.height / 2, screen.width - 20, this.height);
 
         int x = this.area.x;
-        int y = this.area.y;
+        int y = this.area.y + 10;
 
         this.name.xPosition = x + 1;
         this.name.yPosition = y + 1;

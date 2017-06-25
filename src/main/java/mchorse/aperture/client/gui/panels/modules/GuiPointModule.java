@@ -40,9 +40,9 @@ public class GuiPointModule implements IGuiModule
 
     public void update(int x, int y)
     {
-        this.x.update(x - 80, y, 80, 20);
-        this.y.update(x - 80, y + 30, 80, 20);
-        this.z.update(x - 80, y + 60, 80, 20);
+        this.x.update(x, y, 80, 20);
+        this.y.update(x, y + 30, 80, 20);
+        this.z.update(x, y + 60, 80, 20);
     }
 
     @Override

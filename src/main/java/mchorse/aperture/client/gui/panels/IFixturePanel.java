@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.fixtures.PathFixture;
 import net.minecraft.client.gui.GuiScreen;
 
 /**
@@ -17,7 +18,7 @@ public interface IFixturePanel<T extends AbstractFixture> extends IGuiModule
      * This method will be responsible for selecting a camera fixture, needed
      * for filling up the fields with needed information.
      */
-    public void select(T fixture);
+    public void select(T fixture, long duration);
 
     /**
      * Update this panel
@@ -26,4 +27,11 @@ public interface IFixturePanel<T extends AbstractFixture> extends IGuiModule
      * {@link GuiScreen}.
      */
     public void update(GuiScreen screen);
+
+    /**
+     * Return offset for current fixture editing state
+     * 
+     * Useful mostly for composite camera fixtures like {@link PathFixture}.
+     */
+    public long currentOffset();
 }

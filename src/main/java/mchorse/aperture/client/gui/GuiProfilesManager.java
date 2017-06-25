@@ -17,7 +17,7 @@ import mchorse.aperture.client.gui.panels.IGuiModule;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketRequestCameraProfiles;
-import mchorse.aperture.utils.Rect;
+import mchorse.aperture.utils.Area;
 import mchorse.aperture.utils.ScrollArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -35,7 +35,7 @@ public class GuiProfilesManager implements IGuiModule
 {
     private Minecraft mc = Minecraft.getMinecraft();
 
-    public Rect rect = new Rect();
+    public Area rect = new Area();
     public ScrollArea scrollLoaded = new ScrollArea(20);
     public ScrollArea scrollLoad = new ScrollArea(20);
     public GuiCameraEditor editor;
@@ -43,7 +43,6 @@ public class GuiProfilesManager implements IGuiModule
     public boolean showLoaded = true;
     public List<AbstractDestination> destToLoad = new ArrayList<AbstractDestination>();
 
-    public GuiButton quit;
     public GuiButton loaded;
     public GuiButton load;
     public GuiButton add;
@@ -55,7 +54,6 @@ public class GuiProfilesManager implements IGuiModule
         this.editor = editor;
 
         /* TODO: extract strings */
-        this.quit = new GuiButton(0, 0, 0, "X");
         this.loaded = new GuiButton(1, 0, 0, "Loaded");
         this.load = new GuiButton(2, 0, 0, "Load");
         this.add = new GuiButton(3, 0, 0, "New");
@@ -86,14 +84,13 @@ public class GuiProfilesManager implements IGuiModule
         this.scrollLoaded.set(x + 5, y + 30, w - 10, h - 60);
         this.scrollLoaded.setSize(ClientProxy.control.profiles.size());
 
-        int span = (w - 35) / 2;
+        int span = (w - 12) / 2;
 
-        this.setSize(this.quit, x + w - 25, y + 5, 20, 20);
-        this.setSize(this.loaded, x + 5, y + 5, span, 20);
-        this.setSize(this.load, x + 5 + span, y + 5, span, 20);
+        GuiUtils.setSize(this.loaded, x + 5, y + 5, span, 20);
+        GuiUtils.setSize(this.load, x + span + 7, y + 5, span, 20);
 
-        this.setSize(this.add, x + w - 45, y + h - 25, 40, 20);
-        this.setSize(this.name, x + 5, y + h - 25, w - 55, 20);
+        GuiUtils.setSize(this.add, x + w - 45, y + h - 25, 40, 20);
+        GuiUtils.setSize(this.name, x + 5, y + h - 25, w - 55, 20);
         this.updateButtons();
     }
 
@@ -101,22 +98,6 @@ public class GuiProfilesManager implements IGuiModule
     {
         this.loaded.enabled = !this.showLoaded;
         this.load.enabled = this.showLoaded;
-    }
-
-    private void setSize(GuiButton button, int x, int y, int w, int h)
-    {
-        button.xPosition = x;
-        button.yPosition = y;
-        button.width = w;
-        button.height = h;
-    }
-
-    private void setSize(GuiTextField field, int x, int y, int w, int h)
-    {
-        field.xPosition = x + 1;
-        field.yPosition = y + 1;
-        field.width = w - 2;
-        field.height = h - 2;
     }
 
     /**
@@ -133,11 +114,6 @@ public class GuiProfilesManager implements IGuiModule
         if (!this.visible)
         {
             return;
-        }
-
-        if (this.quit.mousePressed(mc, mouseX, mouseY) && this.editor.getProfile() != null)
-        {
-            this.visible = false;
         }
 
         if (this.load.mousePressed(mc, mouseX, mouseY) || this.loaded.mousePressed(mc, mouseX, mouseY))
@@ -245,10 +221,9 @@ public class GuiProfilesManager implements IGuiModule
             return;
         }
 
-        Gui.drawRect(this.rect.x, this.rect.y, this.rect.x + this.rect.w, this.rect.y + this.rect.h, 0x88000000);
+        Gui.drawRect(this.rect.x, this.rect.y, this.rect.x + this.rect.w, this.rect.y + this.rect.h, 0xaa000000);
         Gui.drawRect(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.x + this.scrollLoaded.w, this.scrollLoaded.y + this.scrollLoaded.h, 0x88000000);
 
-        this.quit.drawButton(mc, mouseX, mouseY);
         this.loaded.drawButton(mc, mouseX, mouseY);
         this.load.drawButton(mc, mouseX, mouseY);
         this.add.drawButton(mc, mouseX, mouseY);
@@ -294,19 +269,19 @@ public class GuiProfilesManager implements IGuiModule
                     boolean isReverse = mouseX >= x + w - 40 && mouseX < x + w - 20;
 
                     GlStateManager.color(1, 1, 1, 1);
-                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 64, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
+                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 32, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
 
                     if (dest instanceof ClientDestination)
                     {
-                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 112, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 0, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
                     }
                     else
                     {
-                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 128, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
+                        Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 16, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
                     }
                 }
 
-                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 64 + (dest instanceof ClientDestination ? 16 : 0), 64, 16, 16, 256, 256);
+                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 0 + (dest instanceof ClientDestination ? 16 : 0), 32, 16, 16, 256, 256);
 
                 y += this.scrollLoaded.scrollItemSize;
             }
@@ -330,13 +305,14 @@ public class GuiProfilesManager implements IGuiModule
                 this.mc.fontRendererObj.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
                 this.mc.renderEngine.bindTexture(GuiCameraEditor.EDITOR_TEXTURE);
 
+                GlStateManager.color(1, 1, 1, 1);
+
                 if (hovered)
                 {
-                    GlStateManager.color(1, 1, 1, 1);
-                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 96, 64, 16, 16, 256, 256);
+                    Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 48, 32, 16, 16, 256, 256);
                 }
 
-                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 64 + (dest instanceof ClientDestination ? 16 : 0), 64, 16, 16, 256, 256);
+                Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 0 + (dest instanceof ClientDestination ? 16 : 0), 32, 16, 16, 256, 256);
 
                 y += this.scrollLoad.scrollItemSize;
             }
@@ -364,6 +340,9 @@ public class GuiProfilesManager implements IGuiModule
         public void selectProfile(CameraProfile profile);
     }
 
+    /**
+     * JSON file filter 
+     */
     public static class JSONFileFilter implements FileFilter
     {
         @Override

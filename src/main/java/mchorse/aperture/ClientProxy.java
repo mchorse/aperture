@@ -17,18 +17,21 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Client proxy
  *
- * This class is responsible for registering item models, block models, entity
- * renders and injecting actor skin resource pack.
+ * This class is responsible for registering client side event handlers, client 
+ * commands, storing camera related stuff, and "proxify" everything related to 
+ * client side.
  */
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
+    /* Camera stuff */
     public static CameraRenderer renderer = new CameraRenderer();
     public static CameraRunner runner = new CameraRunner();
     public static CameraControl control = new CameraControl();
@@ -36,6 +39,13 @@ public class ClientProxy extends CommonProxy
     public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
 
+    /**
+     * Event bus for handling camera editor events (I don't want to spam a lot 
+     * of events in the main event bus). 
+     */
+    public static EventBus EVENT_BUS = new EventBus();
+
+    /* Files */
     public static File config;
     public static File cameras;
 

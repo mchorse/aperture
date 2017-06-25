@@ -5,7 +5,7 @@ package mchorse.aperture.utils;
  *
  * Used in GUI for rendering and locating cursor inside of the box purposes.
  */
-public class Rect
+public class Area
 {
     /**
      * X position coordinate of the box
