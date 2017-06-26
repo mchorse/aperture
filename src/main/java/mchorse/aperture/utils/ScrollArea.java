@@ -108,6 +108,21 @@ public class ScrollArea extends Area
     }
 
     /**
+     * Calculates scroll bar's height 
+     */
+    public int getScrollBar(int size)
+    {
+        int maxSize = this.direction == ScrollDirection.VERTICAL ? this.h : this.w;
+
+        if (this.scrollSize < size)
+        {
+            return 0;
+        }
+
+        return (int) ((1.0F - ((this.scrollSize - maxSize) / (float) this.scrollSize)) * size);
+    }
+
+    /**
      * Scroll direction 
      */
     public static enum ScrollDirection

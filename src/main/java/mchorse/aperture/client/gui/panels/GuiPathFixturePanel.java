@@ -122,7 +122,14 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     public long currentOffset()
     {
-        return super.currentOffset() + (long) ((this.points.index / (float) (this.fixture.getCount() - 1)) * this.fixture.getDuration());
+        long point = (long) ((this.points.index / (float) (this.fixture.getCount() - 1)) * (this.fixture.getDuration()));
+
+        if (point == this.fixture.getDuration())
+        {
+            point--;
+        }
+
+        return super.currentOffset() + point;
     }
 
     @Override
