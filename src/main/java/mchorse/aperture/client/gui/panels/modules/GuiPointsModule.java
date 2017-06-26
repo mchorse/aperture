@@ -24,8 +24,6 @@ import net.minecraft.client.gui.GuiScreen;
  *
  * This module is responsible for displaying "buttons" for picking up path
  * fixture's points, and also an ability to add or remove them.
- *
- * TODO: Add mouse scrolling
  */
 public class GuiPointsModule implements IGuiModule, IButtonListener
 {
@@ -41,7 +39,6 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
 
     /* Scrolling variables */
     private boolean dragging;
-    private int timer;
     private int lastY;
 
     /**
@@ -79,8 +76,10 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
         {
             /* Add a point based on player attributes */
             this.path.addPoint(new Position(Minecraft.getMinecraft().thePlayer), this.index + 1);
-            this.area.setSize(this.path.getCount());
+
             this.index++;
+            this.area.setSize(this.path.getCount());
+            this.area.scrollTo((int) (this.index / (float) this.path.getCount() * this.area.scrollSize));
 
             if (this.picker != null)
             {
@@ -91,9 +90,15 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
         {
             /* Remove a point and update scroll */
             this.path.removePoint(this.index);
-            this.area.setSize(size - 1);
-            this.area.clamp();
+
             this.index--;
+            this.area.setSize(size - 1);
+            this.area.scrollTo((int) (this.index / (float) this.path.getCount() * this.area.scrollSize));
+
+            if (this.picker != null)
+            {
+                this.picker.pickPoint(this, this.index);
+            }
         }
         else if (button.id == 3 && this.index < size - 1)
         {
@@ -140,14 +145,13 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     {
         if (this.area.isInside(mouseX, mouseY))
         {
-            if (mouseButton == 0)
+            if (mouseButton == 1)
             {
                 /* Initiate dragging */
                 this.dragging = true;
                 this.lastY = mouseX;
-                this.timer = 0;
             }
-            else if (mouseButton == 1)
+            else if (mouseButton == 0)
             {
                 int index = this.area.getIndex(mouseX, mouseY);
                 int size = this.path.getCount();
@@ -178,37 +182,6 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
-        if (this.dragging && this.timer < 6)
-        {
-            int index = this.area.getIndex(mouseX, mouseY);
-            int size = this.path.getCount();
-
-            if (index == this.index)
-            {
-                /* Go to the path point */
-                GuiCameraEditor editor = (GuiCameraEditor) this.screen;
-                int pos = (int) editor.getProfile().calculateOffset(this.path);
-                int increment = (int) ((this.index / (float) (size - 1)) * this.path.getDuration());
-
-                if (increment > 0)
-                {
-                    increment -= 1;
-                }
-
-                editor.scrub.setValue(pos + increment);
-            }
-            else if (index >= 0 && index < size)
-            {
-                /* Pick a point */
-                this.index = index;
-
-                if (this.picker != null)
-                {
-                    this.picker.pickPoint(this, index);
-                }
-            }
-        }
-
         this.dragging = false;
     }
 
@@ -226,16 +199,11 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
         /* Scroll this view */
-        if (this.dragging)
+        if (this.dragging && this.area.scrollSize > this.area.w)
         {
-            if (this.area.scrollSize > this.area.w)
-            {
-                this.area.scrollBy(this.lastY - mouseX);
+            this.area.scrollBy(this.lastY - mouseX);
 
-                this.lastY = mouseX;
-            }
-
-            this.timer++;
+            this.lastY = mouseX;
         }
 
         int x = this.area.x;
@@ -259,14 +227,27 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
+        /* Display scroll bar */
+        int mw = this.area.w;
+        int scroll = this.area.getScrollBar(mw);
+
+        if (scroll != 0)
+        {
+            int bx = this.area.x + (int) (this.area.scroll / (float) (this.area.scrollSize - this.area.w) * (mw - scroll));
+            int by = y + this.area.h + 2;
+
+            Gui.drawRect(bx, by, bx + scroll, by + 2, 0x88000000);
+        }
+
+        /* Overlay "shadows" for informing the user that  */
         if (this.area.scroll > 0 && this.area.scrollSize >= this.area.w - 40)
         {
-            Gui.drawRect(x, y, x + 2, y + this.area.h, 0x88000000);
+            GuiUtils.drawHorizontalGradientRect(x, y, x + 4, y + this.area.h, 0x88000000, 0x0, 0);
         }
 
         if (this.area.scroll < this.area.scrollSize - this.area.w && this.area.scrollSize >= this.area.w)
         {
-            Gui.drawRect(x + this.area.w - 2, y, x + this.area.w, y + this.area.h, 0x88000000);
+            GuiUtils.drawHorizontalGradientRect(x + this.area.w - 4, y, x + this.area.w, y + this.area.h, 0x0, 0x88000000, 0);
         }
 
         this.buttons.draw(mouseX, mouseY);
