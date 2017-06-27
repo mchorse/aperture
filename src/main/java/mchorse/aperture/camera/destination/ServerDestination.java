@@ -5,6 +5,7 @@ import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketLoadCameraProfile;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Server destination
@@ -31,8 +32,14 @@ public class ServerDestination extends AbstractDestination
     }
 
     @Override
-    public void reload()
+    public void load()
     {
         Dispatcher.sendToServer(new PacketLoadCameraProfile(this.filename, true));
+    }
+
+    @Override
+    public ResourceLocation toResourceLocation()
+    {
+        return new ResourceLocation("server", this.filename);
     }
 }

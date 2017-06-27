@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraUtils;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Client destination
@@ -42,7 +43,7 @@ public class ClientDestination extends AbstractDestination
     }
 
     @Override
-    public void reload()
+    public void load()
     {
         try
         {
@@ -59,5 +60,11 @@ public class ClientDestination extends AbstractDestination
         {
             /* TODO: inform user about error */
         }
+    }
+
+    @Override
+    public ResourceLocation toResourceLocation()
+    {
+        return new ResourceLocation("client", this.filename);
     }
 }

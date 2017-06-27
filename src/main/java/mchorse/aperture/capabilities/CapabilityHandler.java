@@ -41,13 +41,13 @@ public class CapabilityHandler
     public void playerLogsIn(PlayerLoggedInEvent event)
     {
         EntityPlayer player = event.player;
-        ICamera recording = Camera.get(player);
+        ICamera camera = Camera.get(player);
 
-        if (recording != null && recording.hasProfile())
+        if (camera != null && camera.hasProfile())
         {
-            CameraUtils.sendProfileToPlayer(recording.currentProfile(), (EntityPlayerMP) player, false, true);
+            CameraUtils.sendProfileToPlayer(camera.currentProfile(), (EntityPlayerMP) player, false, true);
 
-            recording.setCurrentProfileTimestamp(System.currentTimeMillis());
+            camera.setCurrentProfileTimestamp(System.currentTimeMillis());
         }
     }
 }

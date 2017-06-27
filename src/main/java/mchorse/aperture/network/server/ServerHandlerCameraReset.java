@@ -1,7 +1,7 @@
 package mchorse.aperture.network.server;
 
-import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.capabilities.camera.Camera;
+import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.common.PacketCameraReset;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -15,9 +15,9 @@ public class ServerHandlerCameraReset extends ServerMessageHandler<PacketCameraR
     @Override
     public void run(EntityPlayerMP player, PacketCameraReset message)
     {
-        ICamera recording = Camera.get(player);
+        ICamera camera = Camera.get(player);
 
-        recording.setCurrentProfile("");
-        recording.setCurrentProfileTimestamp(-1);
+        camera.setCurrentProfile("");
+        camera.setCurrentProfileTimestamp(-1);
     }
 }

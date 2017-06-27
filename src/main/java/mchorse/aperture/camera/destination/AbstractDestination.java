@@ -1,6 +1,7 @@
 package mchorse.aperture.camera.destination;
 
 import mchorse.aperture.camera.CameraProfile;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Abstract destination class
@@ -11,6 +12,19 @@ import mchorse.aperture.camera.CameraProfile;
 public abstract class AbstractDestination
 {
     protected String filename;
+
+    /**
+     * Create destination from resource location
+     */
+    public static AbstractDestination fromResourceLocation(ResourceLocation resource)
+    {
+        if (resource.getResourceDomain().equals("client"))
+        {
+            return new ClientDestination(resource.getResourcePath());
+        }
+
+        return new ServerDestination(resource.getResourcePath());
+    }
 
     public AbstractDestination(String filename)
     {
@@ -46,5 +60,10 @@ public abstract class AbstractDestination
     /**
      * Reload camera profile 
      */
-    public abstract void reload();
+    public abstract void load();
+
+    /**
+     * Create a resource location out of destination 
+     */
+    public abstract ResourceLocation toResourceLocation();
 }

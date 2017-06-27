@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -186,28 +184,6 @@ public class CameraUtils
         }
 
         return true;
-    }
-
-    /**
-     * Gets all camera profiles names. This is used for playback GUI's tab 
-     * completion thingy.
-     */
-    public static List<String> listProfiles()
-    {
-        File file = new File(DimensionManager.getCurrentSaveRootDirectory() + "/aperture/cameras");
-        List<String> files = new ArrayList<String>();
-
-        file.mkdirs();
-
-        for (String filename : file.list())
-        {
-            if (filename.endsWith(".json"))
-            {
-                files.add(filename.substring(0, filename.lastIndexOf(".json")));
-            }
-        }
-
-        return files;
     }
 
     /**
