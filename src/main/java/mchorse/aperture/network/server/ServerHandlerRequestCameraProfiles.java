@@ -11,6 +11,6 @@ public class ServerHandlerRequestCameraProfiles extends ServerMessageHandler<Pac
     @Override
     public void run(EntityPlayerMP player, PacketRequestCameraProfiles message)
     {
-        Dispatcher.sendTo(new PacketCameraProfileList(CameraAPI.listServerProfiles()), player);
+        Dispatcher.sendTo(new PacketCameraProfileList(CameraAPI.getServerProfiles()), player);
     }
 }

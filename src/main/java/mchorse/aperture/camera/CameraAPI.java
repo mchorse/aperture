@@ -47,6 +47,14 @@ public class CameraAPI
     }
 
     /**
+     * Server side code to start playing current camera profile that player has
+     */
+    public static void playCurrentProfile(EntityPlayerMP player)
+    {
+        Dispatcher.sendTo(new PacketCameraState(true), player);
+    }
+
+    /**
      * Get a list of camera profile names on the client side (from the config) 
      */
     @SideOnly(Side.CLIENT)
@@ -69,7 +77,7 @@ public class CameraAPI
      * Get a list of camera profile names on the server side (from world save 
      * aperture/cameras folder).
      */
-    public static List<String> listServerProfiles()
+    public static List<String> getServerProfiles()
     {
         File file = new File(DimensionManager.getCurrentSaveRootDirectory() + "/aperture/cameras");
         List<String> files = new ArrayList<String>();
