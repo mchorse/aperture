@@ -48,6 +48,8 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
         x += 4;
         y += 4;
 
+        this.buttons.clear();
+
         /* Don't show that if Minema mod isn't present */
         if (Loader.isModLoaded("minema"))
         {
@@ -69,7 +71,6 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
         this.sync = new GuiCheckBox(-4, x, y, "Sync", this.editor.syncing);
         this.sync.packedFGColour = 0xffffff;
 
-        this.buttons.clear();
         this.buttons.add(this.spectator);
         this.buttons.add(this.renderPath);
         this.buttons.add(this.sync);

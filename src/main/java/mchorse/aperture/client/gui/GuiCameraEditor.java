@@ -371,7 +371,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else
         {
-            this.scrub.max = 0;
+            this.scrub.max = this.maxScrub;
             this.scrub.setValue(0);
         }
     }
