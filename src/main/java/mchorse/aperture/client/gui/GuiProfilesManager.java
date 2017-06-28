@@ -1,13 +1,12 @@
 package mchorse.aperture.client.gui;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraAPI;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.destination.AbstractDestination;
@@ -65,12 +64,8 @@ public class GuiProfilesManager implements IGuiModule
     {
         this.destToLoad.clear();
 
-        for (File file : ClientProxy.getClientCameras().listFiles(new JSONFileFilter()))
+        for (String filename : CameraAPI.getClientProfiles())
         {
-            String filename = file.getName();
-
-            filename = filename.substring(0, filename.lastIndexOf(".json"));
-
             this.destToLoad.add(new ClientDestination(filename));
         }
 
@@ -180,7 +175,7 @@ public class GuiProfilesManager implements IGuiModule
 
                 if (index >= 0 && index < this.destToLoad.size())
                 {
-                    this.destToLoad.get(index).reload();
+                    this.destToLoad.get(index).load();
                 }
             }
         }
@@ -338,17 +333,5 @@ public class GuiProfilesManager implements IGuiModule
     public static interface IProfileListener
     {
         public void selectProfile(CameraProfile profile);
-    }
-
-    /**
-     * JSON file filter 
-     */
-    public static class JSONFileFilter implements FileFilter
-    {
-        @Override
-        public boolean accept(File file)
-        {
-            return file.isFile() && file.getName().endsWith(".json");
-        }
     }
 }

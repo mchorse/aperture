@@ -47,7 +47,7 @@ public class SubCommandCameraLoad extends CommandBase
         }
         else
         {
-            new ClientDestination(args[1]).reload();
+            new ClientDestination(args[1]).load();
         }
     }
 

@@ -159,7 +159,14 @@ public class CameraRunner
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event)
     {
-        if (event.phase == Phase.START || this.profile == null)
+        if (this.profile == null)
+        {
+            this.stop();
+
+            return;
+        }
+
+        if (event.phase == Phase.START)
         {
             return;
         }

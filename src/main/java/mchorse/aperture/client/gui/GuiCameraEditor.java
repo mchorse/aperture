@@ -88,6 +88,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public boolean syncing;
 
+    /**
+     * Maximum scrub duration
+     */
+    public int maxScrub = 0;
+
     public Map<Integer, String> tooltips = new HashMap<Integer, String>();
 
     /* GUI fields */
@@ -314,7 +319,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         GuiIngameForge.renderCrosshairs = false;
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
 
-        this.updateValues();
+        this.maxScrub = 0;
         this.syncing = false;
         this.visible = true;
     }
@@ -361,12 +366,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     {
         if (this.profile != null)
         {
-            this.scrub.max = (int) this.profile.getDuration();
+            this.scrub.max = Math.max((int) this.profile.getDuration(), this.maxScrub);
             this.scrub.setValue(this.scrub.value);
         }
         else
         {
-            this.scrub.max = 0;
+            this.scrub.max = this.maxScrub;
             this.scrub.setValue(0);
         }
     }
@@ -467,6 +472,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         this.profiles.update(width - 160, 20, 160, this.height - 80);
         this.profiles.visible = this.profile == null;
+
+        this.updateValues();
     }
 
     /**

@@ -45,6 +45,7 @@ public class SubCommandCameraList extends CommandBase
         {
             boolean current = profile == control.currentProfile;
 
+            /* TODO: refactor */
             text += "- " + (current ? "§7" : "") + profile.toString() + "§r\n";
         }
 

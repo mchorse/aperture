@@ -35,6 +35,21 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+artifacts {
+    archives deobfJar
+    archives sourcesJar
+}
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
