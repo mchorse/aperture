@@ -131,8 +131,8 @@ public class KeyboardHandler
         ClientRegistry.registerKeyBinding(this.rotateRight);
 
         /* Misc */
-        this.cameraEditor = new KeyBinding("key.aperture.camera_editor", Keyboard.KEY_NONE, misc);
-        this.smoothCamera = new KeyBinding("key.aperture.smooth_camera", Keyboard.KEY_NONE, misc);
+        this.cameraEditor = new KeyBinding("key.aperture.camera_editor", Keyboard.KEY_C, misc);
+        this.smoothCamera = new KeyBinding("key.aperture.smooth_camera", Keyboard.KEY_MINUS, misc);
 
         ClientRegistry.registerKeyBinding(this.cameraEditor);
         ClientRegistry.registerKeyBinding(this.smoothCamera);
