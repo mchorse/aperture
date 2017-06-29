@@ -225,6 +225,11 @@ public class GuiProfilesManager implements IGuiModule
 
         this.name.drawTextBox();
 
+        if (!this.name.isFocused() && this.name.getText().isEmpty())
+        {
+            this.mc.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.profiles.tooltip"), this.name.xPosition + 4, this.name.yPosition + 5, 0xaaaaaa);
+        }
+
         GuiUtils.scissor(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.w, this.scrollLoaded.h, this.editor.width, this.editor.height);
 
         this.drawScrollArea(mouseX, mouseY);

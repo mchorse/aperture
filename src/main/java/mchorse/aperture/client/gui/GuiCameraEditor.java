@@ -271,7 +271,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.tooltips.put(8, I18n.format("aperture.gui.tooltips.move_down"));
 
         this.tooltips.put(9, I18n.format("aperture.gui.tooltips.save"));
-        this.tooltips.put(10, I18n.format("aperture.gui.tooltips.profile"));
+        this.tooltips.put(10, I18n.format("aperture.gui.tooltips.profiles"));
         this.tooltips.put(11, I18n.format("aperture.gui.tooltips.config"));
         this.tooltips.put(50, I18n.format("aperture.gui.tooltips.add"));
         this.tooltips.put(51, I18n.format("aperture.gui.tooltips.remove"));
@@ -321,7 +321,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
 
         this.maxScrub = 0;
-        this.syncing = false;
         this.visible = true;
     }
 
@@ -470,9 +469,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
 
         this.config.update(width - 180, 20, 160, this.height - 80);
-
         this.profiles.update(width - 160, 20, 160, this.height - 80);
-        this.profiles.visible = this.profile == null;
+
+        if (this.profile == null)
+        {
+            this.profiles.visible = true;
+        }
 
         this.updateValues();
     }

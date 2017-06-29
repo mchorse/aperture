@@ -30,7 +30,7 @@ public class GuiCircularModule implements IGuiModule
 
         this.offset.title = I18n.format("aperture.gui.panels.offset");
         this.pitch.title = I18n.format("aperture.gui.panels.pitch");
-        this.circles.title = I18n.format("aperture.gui.panels.cicles");
+        this.circles.title = I18n.format("aperture.gui.panels.circles");
         this.distance.title = I18n.format("aperture.gui.panels.distance");
     }
 
