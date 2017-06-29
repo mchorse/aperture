@@ -8,6 +8,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Circular fixture panel
@@ -141,8 +142,8 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Position", this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
-        this.editor.drawCenteredString(this.font, "Circle", this.circular.offset.area.x + this.circular.offset.area.w / 2, this.circular.offset.area.y - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.circle"), this.circular.offset.area.x + this.circular.offset.area.w / 2, this.circular.offset.area.y - 14, 0xffffffff);
 
         this.point.draw(mouseX, mouseY, partialTicks);
         this.circular.draw(mouseX, mouseY, partialTicks);

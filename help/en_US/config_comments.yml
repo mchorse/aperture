@@ -1,0 +1,27 @@
+# Config strings
+aperture.config.comments:
+    camera:
+        camera_duration_step: What is default step to use when adding or reducing duration of the camera fixture (in ticks)
+        camera_duration: What is default duration of the camera fixture (in ticks)
+        camera_interpolate_target: Interpolate target based camera fixtures (follow and look) outcome
+        camera_interpolate_target_value: Interpolation value for target based camera fixture interpolation
+        camera_spectator: Switch to spectator mode when starting camera playback
+        camera_step_factor: Camera step factor for step keys
+        camera_rotate_factor: Camera rotate factor for rotate keys
+        camera_minema: Activate Minema recording on camera start and deactivate on camera stop
+        camera_path_default_interp: Default interpolation method for path fixture
+        camera_command_name: Allows you to rebind camera command's name (requires game reload to take effect)
+        camera_simulate_velocity: Simulate player's velocity during camera playback (see legs in perspective)
+        
+    smooth:
+        camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range? WUB WUB WUB
+        
+        roll_speed: Roll acceleration speed
+        roll_friction: Roll acceleration friction (how fast it slows down)
+        
+        fov_speed: FOV acceleration speed
+        fov_friction: FOV acceleration friction (how fast it slows down)
+        
+        smooth_enabled: Enable smooth camera. WUB WUB WUB
+        mouse_x_friction: Smooth mouse X friction
+        mouse_y_friction: Smooth mouse Y friction

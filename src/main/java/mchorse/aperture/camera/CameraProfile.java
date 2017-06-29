@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 
 import mchorse.aperture.camera.destination.AbstractDestination;
-import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.events.CameraProfileChangedEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -265,6 +264,9 @@ public class CameraProfile
         fixture.applyFixture((float) progress / fixture.getDuration(), partialTicks, position);
     }
 
+    /**
+     * Save camera profile based on destination 
+     */
     public void save()
     {
         if (this.destination != null)
@@ -273,23 +275,5 @@ public class CameraProfile
         }
 
         this.setDirty(false);
-    }
-
-    @Override
-    public String toString()
-    {
-        String description = "Camera: " + this.getCount() + " fixtures, " + this.getDuration() + " ticks.";
-
-        if (this.destination != null)
-        {
-            description += (this.destination instanceof ClientDestination ? " Local" : " Server") + " profile \"" + this.destination.getFilename() + "\"";
-        }
-
-        return description;
-    }
-
-    public static interface ICameraListener
-    {
-        public void cameraProfileWasChanged(CameraProfile profile);
     }
 }

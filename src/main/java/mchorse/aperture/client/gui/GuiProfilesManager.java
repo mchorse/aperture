@@ -23,6 +23,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Camera profile manager GUI
@@ -52,10 +53,9 @@ public class GuiProfilesManager implements IGuiModule
     {
         this.editor = editor;
 
-        /* TODO: extract strings */
-        this.loaded = new GuiButton(1, 0, 0, "Loaded");
-        this.load = new GuiButton(2, 0, 0, "Load");
-        this.add = new GuiButton(3, 0, 0, "New");
+        this.loaded = new GuiButton(1, 0, 0, I18n.format("aperture.gui.profiles.loaded"));
+        this.load = new GuiButton(2, 0, 0, I18n.format("aperture.gui.profiles.load"));
+        this.add = new GuiButton(3, 0, 0, I18n.format("aperture.gui.profiles.new"));
 
         this.name = new GuiTextField(0, this.mc.fontRendererObj, 0, 0, 0, 0);
     }
@@ -224,6 +224,11 @@ public class GuiProfilesManager implements IGuiModule
         this.add.drawButton(mc, mouseX, mouseY);
 
         this.name.drawTextBox();
+
+        if (!this.name.isFocused() && this.name.getText().isEmpty())
+        {
+            this.mc.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.profiles.tooltip"), this.name.xPosition + 4, this.name.yPosition + 5, 0xaaaaaa);
+        }
 
         GuiUtils.scissor(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.w, this.scrollLoaded.h, this.editor.width, this.editor.height);
 

@@ -38,7 +38,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
      * Hash map of fixtures types mapped to corresponding class. I think this
      * code should be moved to the AbstractFixture class.
      */
-    public static Map<String, Class<? extends AbstractFixture>> TYPES = new HashMap<String, Class<? extends AbstractFixture>>();
+    public static final Map<String, Class<? extends AbstractFixture>> TYPES = new HashMap<String, Class<? extends AbstractFixture>>();
 
     static
     {
@@ -61,7 +61,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     {
         JsonObject object = json.getAsJsonObject();
         String type = object.get("type").getAsString();
-        AbstractFixture fixture = this.gson.fromJson(json, this.TYPES.get(type));
+        AbstractFixture fixture = this.gson.fromJson(json, TYPES.get(type));
 
         fixture.fromJSON(object);
 
@@ -81,7 +81,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         JsonObject object = (JsonObject) this.gson.toJsonTree(src);
 
         src.toJSON(object);
-        object.addProperty("type", getKeyByValue(this.TYPES, src.getClass()));
+        object.addProperty("type", getKeyByValue(TYPES, src.getClass()));
 
         return object;
     }

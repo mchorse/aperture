@@ -7,6 +7,8 @@ import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
+import mchorse.aperture.utils.L10n;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -66,6 +68,6 @@ public class SubCommandCameraClose extends CommandBase
             }
         }
 
-        /* TODO: inform user */
+        L10n.info(sender, "profile.closed", filename, I18n.format("aperture.misc." + (isServer ? "server" : "client")));
     }
 }

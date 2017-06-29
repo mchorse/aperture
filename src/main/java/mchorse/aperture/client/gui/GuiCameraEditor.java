@@ -34,6 +34,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -258,22 +259,22 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.config = new GuiCameraConfig(this);
 
         /* Initiating tooltips */
-        this.tooltips.put(0, "Jump to next fixture");
-        this.tooltips.put(1, "Jump to next frame");
-        this.tooltips.put(2, "Play/pause");
-        this.tooltips.put(3, "Jump to previous frame");
-        this.tooltips.put(4, "Jump to previous fixture");
+        this.tooltips.put(0, I18n.format("aperture.gui.tooltips.jump_next_fixture"));
+        this.tooltips.put(1, I18n.format("aperture.gui.tooltips.jump_next_frame"));
+        this.tooltips.put(2, I18n.format("aperture.gui.tooltips.plause"));
+        this.tooltips.put(3, I18n.format("aperture.gui.tooltips.jump_prev_frame"));
+        this.tooltips.put(4, I18n.format("aperture.gui.tooltips.jump_prev_fixture"));
 
-        this.tooltips.put(5, "Move fixture forward");
-        this.tooltips.put(6, "Move duration to the cursor");
-        this.tooltips.put(7, "Copy player's position");
-        this.tooltips.put(8, "Move fixture backward");
+        this.tooltips.put(5, I18n.format("aperture.gui.tooltips.move_up"));
+        this.tooltips.put(6, I18n.format("aperture.gui.tooltips.move_duration"));
+        this.tooltips.put(7, I18n.format("aperture.gui.tooltips.copy_position"));
+        this.tooltips.put(8, I18n.format("aperture.gui.tooltips.move_down"));
 
-        this.tooltips.put(9, "Save camera profile");
-        this.tooltips.put(10, "Show camera profiles");
-        this.tooltips.put(11, "Show camera editor options");
-        this.tooltips.put(50, "Add fixture");
-        this.tooltips.put(51, "Remove selected fixture");
+        this.tooltips.put(9, I18n.format("aperture.gui.tooltips.save"));
+        this.tooltips.put(10, I18n.format("aperture.gui.tooltips.profiles"));
+        this.tooltips.put(11, I18n.format("aperture.gui.tooltips.config"));
+        this.tooltips.put(50, I18n.format("aperture.gui.tooltips.add"));
+        this.tooltips.put(51, I18n.format("aperture.gui.tooltips.remove"));
     }
 
     /**
@@ -320,7 +321,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
 
         this.maxScrub = 0;
-        this.syncing = false;
         this.visible = true;
     }
 
@@ -469,9 +469,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
 
         this.config.update(width - 180, 20, 160, this.height - 80);
-
         this.profiles.update(width - 160, 20, 160, this.height - 80);
-        this.profiles.visible = this.profile == null;
+
+        if (this.profile == null)
+        {
+            this.profiles.visible = true;
+        }
 
         this.updateValues();
     }
@@ -746,7 +749,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (!this.visible)
         {
             /* Little tip for the users who don't know what they did */
-            this.fontRendererObj.drawStringWithShadow("Press F1 to show GUI again...", 5, this.height - 12, 0xffffff);
+            this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
 
             return;
         }

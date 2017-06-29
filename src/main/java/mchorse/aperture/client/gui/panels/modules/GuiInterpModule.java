@@ -8,6 +8,7 @@ import mchorse.aperture.client.gui.widgets.GuiButtonList;
 import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Path fixture interpolations GUI module
@@ -31,13 +32,13 @@ public class GuiInterpModule implements IGuiModule
         this.pos = new GuiCirculate(-1, 0, 0, 0, 0);
         this.angle = new GuiCirculate(-2, 0, 0, 0, 0);
 
-        this.pos.addLabel("Linear");
-        this.pos.addLabel("Cubic");
-        this.pos.addLabel("Hermite");
+        this.pos.addLabel(I18n.format("aperture.gui.panels.interps.linear"));
+        this.pos.addLabel(I18n.format("aperture.gui.panels.interps.cubic"));
+        this.pos.addLabel(I18n.format("aperture.gui.panels.interps.hermite"));
 
-        this.angle.addLabel("Linear");
-        this.angle.addLabel("Cubic");
-        this.angle.addLabel("Hermite");
+        this.angle.addLabel(I18n.format("aperture.gui.panels.interps.linear"));
+        this.angle.addLabel(I18n.format("aperture.gui.panels.interps.cubic"));
+        this.angle.addLabel(I18n.format("aperture.gui.panels.interps.hermite"));
 
         this.mc = Minecraft.getMinecraft();
         this.buttons.add(this.pos);
@@ -126,7 +127,7 @@ public class GuiInterpModule implements IGuiModule
 
         FontRenderer font = this.mc.fontRendererObj;
 
-        font.drawStringWithShadow("Position", this.pos.xPosition + this.pos.width + 5, this.pos.yPosition + 6, 0xffffff);
-        font.drawStringWithShadow("Angle", this.angle.xPosition + this.angle.width + 5, this.angle.yPosition + 6, 0xffffff);
+        font.drawStringWithShadow(I18n.format("aperture.gui.panels.position"), this.pos.xPosition + this.pos.width + 5, this.pos.yPosition + 6, 0xffffff);
+        font.drawStringWithShadow(I18n.format("aperture.gui.panels.angle"), this.angle.xPosition + this.angle.width + 5, this.angle.yPosition + 6, 0xffffff);
     }
 }

@@ -12,17 +12,17 @@ Its all features are frame based, meaning this camera mod would work perfectly w
 
 General features which were included in the first release. Following features are included:
 
-* Camera editor
+* Camera editor – a GUI that allows you to edit camera profiles easier using specially designed GUI
 * Camera profile fixtures rendering
 * Lots of config options
-* Different camera blocks (called camera fixtures)
+* Different camera fixtures
     * Idle fixture – static camera
     * Path fixture – animating camera using path points
-    * Look fixture – stationary camera fixture which looks on an entity specified by UUID or entity selector
-    * Follow fixture – stationary camera fixture which sticks to an entity specified by UUID or entity selector
+    * Look fixture – stationary camera fixture which looks on an entity specified by entity selector
+    * Follow fixture – stationary camera fixture which sticks to an entity specified by entity selector
     * Circular fixture – camera which makes a circle around given point
 * Key bindings for positioning and rotating your player 
-* Smooth camera, Minema-friendly vanilla cinematic camera alternative
+* Smooth camera (vanilla cinematic camera alternative which is Minema-friendly)
 
 #### Commands
 
@@ -33,6 +33,8 @@ Includes lots of commands for managing camera profile, camera fixtures, configur
     * `/camera save` – saves camera profile
     * `/camera load` – loads camera profile
     * `/camera clear` – removes all fixtures from camera profile
+    * `/camera list` – lists all camera profiles which are loaded
+    * `/camera close` – removes camera profile from the list of currently loaded camera profiles
 * Commands for managing camera fixtures within camera profile
     * `/camera add` – adds a camera fixture to camera profile
     * `/camera edit` – edits a camera fixture
@@ -54,3 +56,5 @@ Includes lots of commands for managing camera profile, camera fixtures, configur
     * `/camera path remove` – remove a path point
     * `/camera path move` – move a path point
     * `/camera path goto` – set player's position and rotation based on a point in a path fixture
+
+These are only for legacy purposes. If you don't want to use these, totally cool, camera editor way convenient and time saving than using commands.

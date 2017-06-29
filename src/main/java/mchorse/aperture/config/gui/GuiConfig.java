@@ -7,7 +7,6 @@ import mchorse.aperture.Aperture;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,13 +40,13 @@ public class GuiConfig extends net.minecraftforge.fml.client.config.GuiConfig
 
             if (name.indexOf(".") == -1 && !name.equals("camera"))
             {
-                elements.add(new ConfigElement(category));
+                elements.add(new TranslatedConfigElement(category));
             }
         }
 
         for (Property prop : Aperture.proxy.forge.getCategory("camera").getOrderedValues())
         {
-            elements.add(new ConfigElement(prop));
+            elements.add(new TranslatedConfigElement(prop));
         }
 
         return elements;

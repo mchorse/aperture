@@ -9,6 +9,7 @@ import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.common.Loader;
@@ -53,22 +54,22 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
         /* Don't show that if Minema mod isn't present */
         if (Loader.isModLoaded("minema"))
         {
-            this.minema = new GuiCheckBox(-1, x, y, "Minema", Aperture.proxy.config.camera_minema);
+            this.minema = new GuiCheckBox(-1, x, y, I18n.format("aperture.gui.config.minema"), Aperture.proxy.config.camera_minema);
             this.minema.packedFGColour = 0xffffff;
             y += 20;
 
             this.buttons.add(this.minema);
         }
 
-        this.spectator = new GuiCheckBox(-2, x, y, "Spectator", Aperture.proxy.config.camera_spectator);
+        this.spectator = new GuiCheckBox(-2, x, y, I18n.format("aperture.gui.config.spectator"), Aperture.proxy.config.camera_spectator);
         this.spectator.packedFGColour = 0xffffff;
         y += 20;
 
-        this.renderPath = new GuiCheckBox(-3, x, y, "Show path", ClientProxy.renderer.render);
+        this.renderPath = new GuiCheckBox(-3, x, y, I18n.format("aperture.gui.config.show_path"), ClientProxy.renderer.render);
         this.renderPath.packedFGColour = 0xffffff;
         y += 20;
 
-        this.sync = new GuiCheckBox(-4, x, y, "Sync", this.editor.syncing);
+        this.sync = new GuiCheckBox(-4, x, y, I18n.format("aperture.gui.config.sync"), this.editor.syncing);
         this.sync.packedFGColour = 0xffffff;
 
         this.buttons.add(this.spectator);

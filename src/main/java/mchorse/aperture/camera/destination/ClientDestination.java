@@ -7,6 +7,8 @@ import org.apache.commons.io.FileUtils;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraUtils;
+import mchorse.aperture.utils.L10n;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -34,11 +36,11 @@ public class ClientDestination extends AbstractDestination
         {
             FileUtils.write(new File(ClientProxy.getClientCameras(), this.filename + ".json"), CameraUtils.toJSON(profile));
 
-            /* TODO: inform user about success */
+            L10n.success(Minecraft.getMinecraft().player, "profile.client_save", this.filename);
         }
         catch (Exception e)
         {
-            /* TODO: inform user about error */
+            L10n.error(Minecraft.getMinecraft().player, "profile.client_cant_save", this.filename);
         }
     }
 
@@ -52,13 +54,14 @@ public class ClientDestination extends AbstractDestination
 
             newProfile.setDestination(this);
             newProfile.dirty = false;
+
             ClientProxy.control.addProfile(newProfile);
 
-            /* TODO: inform user about success */
+            L10n.success(Minecraft.getMinecraft().player, "profile.client_load", this.filename);
         }
         catch (Exception e)
         {
-            /* TODO: inform user about error */
+            L10n.error(Minecraft.getMinecraft().player, "profile.client_cant_load", this.filename);
         }
     }
 
