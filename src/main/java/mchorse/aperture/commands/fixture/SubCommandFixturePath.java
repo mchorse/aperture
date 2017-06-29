@@ -7,6 +7,7 @@ import mchorse.aperture.commands.path.SubCommandPathEdit;
 import mchorse.aperture.commands.path.SubCommandPathGoto;
 import mchorse.aperture.commands.path.SubCommandPathMove;
 import mchorse.aperture.commands.path.SubCommandPathRemove;
+import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -46,7 +47,7 @@ public class SubCommandFixturePath extends SubCommandBase
     {
         if (ClientProxy.control.currentProfile == null)
         {
-            /* TODO: inform user */
+            L10n.error(sender, "profile.no_current");
         }
         else
         {

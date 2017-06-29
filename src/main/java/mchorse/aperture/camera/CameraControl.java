@@ -52,12 +52,19 @@ public class CameraControl
         this.currentProfile = null;
     }
 
+    /**
+     * Add a camera profile to the list of loaded camera profiles and also set 
+     * it current. 
+     */
     public void addProfile(CameraProfile profile)
     {
         this.insertProfile(profile);
         this.currentProfile = profile;
     }
 
+    /**
+     * Insert camera profile (just add it to the list of camera profiles) 
+     */
     public void insertProfile(CameraProfile newProfile)
     {
         Iterator<CameraProfile> it = this.profiles.iterator();
@@ -76,7 +83,7 @@ public class CameraControl
     }
 
     /**
-     * Does camera profile has similar destination 
+     * Is there a camera profile which has same destination 
      */
     public boolean hasSimilar(AbstractDestination destination)
     {

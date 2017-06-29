@@ -3,6 +3,10 @@ package mchorse.aperture.commands.camera;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.destination.AbstractDestination;
+import mchorse.aperture.camera.destination.ServerDestination;
+import mchorse.aperture.utils.L10n;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -33,10 +37,11 @@ public class SubCommandCameraList extends CommandBase
     {
         CameraControl control = ClientProxy.control;
 
-        /* TODO: extract strings */
         if (control.profiles.isEmpty())
         {
-            sender.addChatMessage(new TextComponentString("No camera profiles"));
+            L10n.info(sender, "no_loaded_profiles");
+
+            return;
         }
 
         String text = "";
@@ -44,9 +49,12 @@ public class SubCommandCameraList extends CommandBase
         for (CameraProfile profile : control.profiles)
         {
             boolean current = profile == control.currentProfile;
+            AbstractDestination dest = profile.getDestination();
 
-            /* TODO: refactor */
-            text += "- " + (current ? "§7" : "") + profile.toString() + "§r\n";
+            String side = I18n.format("aperture.misc." + (dest instanceof ServerDestination ? "server" : "client"));
+            String desc = I18n.format("aperture.misc.profile_info" + (current ? "_current" : ""), side, dest.getFilename(), profile.getDuration(), profile.getCount());
+
+            text += "- " + desc + "§r\n";
         }
 
         sender.addChatMessage(new TextComponentString(text.trim()));

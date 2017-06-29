@@ -18,6 +18,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Points GUI module
@@ -29,7 +30,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
 {
     /* Input */
     public PathFixture path;
-    public IPointPicker picker;
+    public GuiPathFixturePanel picker;
 
     /* GUI */
     public ScrollArea area = new ScrollArea(20);
@@ -107,7 +108,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
             this.index++;
         }
 
-        /* TODO: make camera profile dirty */
+        this.picker.editor.getProfile().dirty();
     }
 
     /**
@@ -252,7 +253,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
 
         this.buttons.draw(mouseX, mouseY);
 
-        String label = "Path Points";
+        String label = I18n.format("aperture.gui.panels.path_points");
         int w = this.font.getStringWidth(label);
         this.font.drawStringWithShadow(label, this.area.x + this.area.w / 2 - w / 2, this.area.y - 14, 0xffffff);
     }

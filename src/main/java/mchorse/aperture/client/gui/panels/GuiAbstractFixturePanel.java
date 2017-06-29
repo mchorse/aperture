@@ -11,6 +11,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Base class for abstract fixture panel
@@ -45,7 +46,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         this.name.setGuiResponder(this);
 
         this.duration = new GuiTrackpad(this, font);
-        this.duration.title = "Duration";
+        this.duration.title = I18n.format("aperture.gui.panels.duration");
         this.duration.amplitude = 1.0F;
         this.duration.min = 1;
 

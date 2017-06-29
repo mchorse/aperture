@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Point GUI module
@@ -24,9 +25,9 @@ public class GuiPointModule implements IGuiModule
         this.y = new GuiTrackpad(listener, font);
         this.z = new GuiTrackpad(listener, font);
 
-        this.x.title = "X";
-        this.y.title = "Y";
-        this.z.title = "Z";
+        this.x.title = I18n.format("aperture.gui.panels.x");
+        this.y.title = I18n.format("aperture.gui.panels.y");
+        this.z.title = I18n.format("aperture.gui.panels.z");
 
         this.x.amplitude = this.y.amplitude = this.z.amplitude = 0.1F;
     }

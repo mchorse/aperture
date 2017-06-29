@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Circular GUI module
@@ -27,10 +28,10 @@ public class GuiCircularModule implements IGuiModule
         this.circles = new GuiTrackpad(listener, font);
         this.distance = new GuiTrackpad(listener, font);
 
-        this.offset.title = "Offset";
-        this.pitch.title = "Pitch";
-        this.circles.title = "Circles";
-        this.distance.title = "Distance";
+        this.offset.title = I18n.format("aperture.gui.panels.offset");
+        this.pitch.title = I18n.format("aperture.gui.panels.pitch");
+        this.circles.title = I18n.format("aperture.gui.panels.cicles");
+        this.distance.title = I18n.format("aperture.gui.panels.distance");
     }
 
     public void fill(CircularFixture fixture)

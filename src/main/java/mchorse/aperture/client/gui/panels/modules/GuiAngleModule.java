@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Angle GUI module
@@ -26,10 +27,10 @@ public class GuiAngleModule implements IGuiModule
         this.roll = new GuiTrackpad(listener, font);
         this.fov = new GuiTrackpad(listener, font);
 
-        this.yaw.title = "Yaw";
-        this.pitch.title = "Pitch";
-        this.roll.title = "Roll";
-        this.fov.title = "FOV";
+        this.yaw.title = I18n.format("aperture.gui.panels.yaw");
+        this.pitch.title = I18n.format("aperture.gui.panels.pitch");
+        this.roll.title = I18n.format("aperture.gui.panels.roll");
+        this.fov.title = I18n.format("aperture.gui.panels.fov");
     }
 
     public void fill(Angle angle)

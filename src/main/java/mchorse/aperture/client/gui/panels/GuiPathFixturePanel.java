@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 
 /**
  * Path fixture panel
@@ -86,6 +87,11 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.point.fill(this.position.point);
         this.angle.fill(this.position.angle);
+
+        if (this.editor.syncing)
+        {
+            this.editor.scrub.setValue((int) this.currentOffset());
+        }
     }
 
     @Override
@@ -211,8 +217,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        this.editor.drawCenteredString(this.font, "Position", this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
-        this.editor.drawCenteredString(this.font, "Angle", this.angle.yaw.area.x + this.angle.yaw.area.w / 2, this.angle.yaw.area.y - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
+        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.yaw.area.x + this.angle.yaw.area.w / 2, this.angle.yaw.area.y - 14, 0xffffffff);
 
         this.point.draw(mouseX, mouseY, partialTicks);
         this.angle.draw(mouseX, mouseY, partialTicks);

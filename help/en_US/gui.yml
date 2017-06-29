@@ -19,3 +19,69 @@ aperture.gui:
     break: Break
     select: Select
     ok: Ok
+    
+    config:
+        minema: Minema
+        spectator: Spectator
+        show_path: Show path
+        sync: Sync
+    
+    tooltips:
+        jump_next_fixture: Jump to next fixture
+        jump_next_frame: Jump to next frame
+        plause: Play/pause
+        jump_prev_frame: Jump to previous frame
+        jump_prev_fixture: Jump to previous fixture
+        
+        move_up: Move fixture forward
+        move_duration: Move duration to the cursor
+        copy_position: Copy player's position
+        move_down: Move fixture backward
+        
+        save: Save camera profile
+        profiles: Show camera profiles
+        config: Show camera editor options
+        add: Add fixture
+        remove: Remove selected fixture
+    
+    editor:
+        f1: Press F1 to show GUI again...
+    
+    fixtures:
+        idle: Idle
+        path: Path
+        look: Look
+        follow: Follow
+        circular: Circular
+    
+    profiles:
+        loaded: Loaded
+        load: Load
+        new: New
+    
+    panels:
+        duration: Duration
+        
+        x: X
+        y: Y
+        z: Z
+        
+        yaw: Yaw
+        pitch: Pitch
+        roll: Roll
+        fov: FOV
+        
+        offset: Offset
+        circles: Circles
+        distance: Distance
+        
+        path_points: Path points
+        position: Position
+        angle: Angle
+        circle: Circle
+        selector: Selector
+        
+        interps:
+            linear: Linear
+            cubic: Cubic
+            hermite: Hermite

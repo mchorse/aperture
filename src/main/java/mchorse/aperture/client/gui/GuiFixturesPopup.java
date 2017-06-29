@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -51,11 +52,11 @@ public class GuiFixturesPopup
         int followColor = 0xff000000 + Color.FOLLOW.hex;
         int circularColor = 0xff000000 + Color.CIRCULAR.hex;
 
-        this.idle = new GuiFlatButton(0, 0, 0, 0, 0, idleColor, idleColor - 0x00111111, "Idle");
-        this.path = new GuiFlatButton(0, 0, 0, 0, 0, pathColor, pathColor - 0x00111111, "Path");
-        this.look = new GuiFlatButton(0, 0, 0, 0, 0, lookColor, lookColor - 0x00111111, "Look");
-        this.follow = new GuiFlatButton(0, 0, 0, 0, 0, followColor, followColor - 0x00111111, "Follow");
-        this.circular = new GuiFlatButton(0, 0, 0, 0, 0, circularColor, circularColor - 0x00111111, "Circular");
+        this.idle = new GuiFlatButton(0, 0, 0, 0, 0, idleColor, idleColor - 0x00111111, I18n.format("aperture.gui.fixtures.idle"));
+        this.path = new GuiFlatButton(0, 0, 0, 0, 0, pathColor, pathColor - 0x00111111, I18n.format("aperture.gui.fixtures.path"));
+        this.look = new GuiFlatButton(0, 0, 0, 0, 0, lookColor, lookColor - 0x00111111, I18n.format("aperture.gui.fixtures.look"));
+        this.follow = new GuiFlatButton(0, 0, 0, 0, 0, followColor, followColor - 0x00111111, I18n.format("aperture.gui.fixtures.follow"));
+        this.circular = new GuiFlatButton(0, 0, 0, 0, 0, circularColor, circularColor - 0x00111111, I18n.format("aperture.gui.fixtures.circular"));
 
         this.buttons.add(this.idle);
         this.buttons.add(this.path);
