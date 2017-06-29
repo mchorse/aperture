@@ -1,0 +1,44 @@
+# Keys localization
+key.aperture:
+    # Categories
+    misc: Aperture
+    camera: Aperture 翻滚和FOV
+    
+    camera_editor: 相机编辑器
+    smooth_camera: 平滑相机
+
+    # Camera control
+    control: 
+        title: Aperture 控制
+        
+        stepUp: 向上移动
+        stepDown: 向下移动
+        stepLeft: 向左移动
+        stepRight: 向右移动
+        stepFront: 向前移动
+        stepBack: 向后移动
+        
+        rotateUp: 视角向上
+        rotateDown: 视角向下
+        rotateLeft: 视角向左
+        rotateRight: 视角向右
+    
+    # Roll controlling keys
+    roll:
+        add: 顺时针翻滚
+        reduce: 逆时针翻滚
+        reset: 重设翻滚
+    
+    # Roll controlling keys
+    fov:
+        add: 增大 FOV
+        reduce: 减小 FOV
+        reset: 重设 FOV
+    # Profile management keys
+    profile:
+        title: Aperture 相机
+
+        toggle: 相机配置显示渲染开关
+
+        start: 开始相机配置
+        stop: 停止相机配置

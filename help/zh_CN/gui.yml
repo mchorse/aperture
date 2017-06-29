@@ -1,0 +1,21 @@
+# GUI
+
+aperture.gui:
+    # General strings
+    done: 完成
+    next: 下一个
+    previous: 上一个
+    restore: 恢复默认
+    reset: 重设
+    add: 添加
+    edit: 编辑
+    remove: 移除
+    detach: 分离
+    record: 录制
+    pick: 选择伪装...
+    duplicate: 拷贝
+    search: "搜索:"
+    cancel: 取消
+    break: 破坏
+    select: 选择
+    ok: 好
