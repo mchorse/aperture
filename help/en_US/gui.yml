@@ -58,7 +58,7 @@ aperture.gui:
         loaded: Loaded
         load: Load
         new: New
-        tooltip: New camera filename
+        tooltip: New camera name
     
     panels:
         duration: Duration
