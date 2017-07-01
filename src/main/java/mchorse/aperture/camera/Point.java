@@ -1,6 +1,6 @@
 package mchorse.aperture.camera;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,6 +45,6 @@ public class Point
     @Override
     public String toString()
     {
-        return Objects.toStringHelper(this).addValue(this.x).addValue(this.y).addValue(this.z).toString();
+        return MoreObjects.toStringHelper(this).addValue(this.x).addValue(this.y).addValue(this.z).toString();
     }
 }

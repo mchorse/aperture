@@ -301,9 +301,9 @@ public class KeyboardHandler
 
                 vec = vec.rotateYaw(-yaw / 180 * (float) Math.PI);
 
-                x += vec.xCoord;
-                y += vec.yCoord;
-                z += vec.zCoord;
+                x += vec.x;
+                y += vec.y;
+                z += vec.z;
 
                 player.setPositionAndRotation(x, y, z, yaw, pitch);
                 player.setVelocity(0, 0, 0);

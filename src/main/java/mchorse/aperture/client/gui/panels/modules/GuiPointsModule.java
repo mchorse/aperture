@@ -251,7 +251,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
             GuiUtils.drawHorizontalGradientRect(x + this.area.w - 4, y, x + this.area.w, y + this.area.h, 0x0, 0x88000000, 0);
         }
 
-        this.buttons.draw(mouseX, mouseY);
+        this.buttons.draw(mouseX, mouseY, partialTicks);
 
         String label = I18n.format("aperture.gui.panels.path_points");
         int w = this.font.getStringWidth(label);

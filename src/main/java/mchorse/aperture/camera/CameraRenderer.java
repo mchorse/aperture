@@ -15,9 +15,9 @@ import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -301,7 +301,7 @@ public class CameraRenderer
         float texRX = (float) tx2 / (float) tw;
         float texRY = 2.0F / 16.0F;
 
-        VertexBuffer vb = Tessellator.getInstance().getBuffer();
+        BufferBuilder vb = Tessellator.getInstance().getBuffer();
 
         vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         vb.pos(minX, minY, 0).tex(texRX, texRY).endVertex();
@@ -313,14 +313,14 @@ public class CameraRenderer
         GlStateManager.disableBlend();
 
         String indexString = String.valueOf(index);
-        int indexWidth = this.mc.fontRendererObj.getStringWidth(indexString) / 2;
+        int indexWidth = this.mc.fontRenderer.getStringWidth(indexString) / 2;
 
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.scale(0.03f, 0.03f, 0.03f);
         GlStateManager.translate(0, -3.5, -0.1);
         GlStateManager.translate(0, -12, 0);
 
-        this.mc.fontRendererObj.drawString(indexString, -indexWidth, 0, -1);
+        this.mc.fontRenderer.drawString(indexString, -indexWidth, 0, -1);
 
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
@@ -383,7 +383,7 @@ public class CameraRenderer
         float texRX = (float) tx2 / (float) tw;
         float texRY = 1;
 
-        VertexBuffer vb = Tessellator.getInstance().getBuffer();
+        BufferBuilder vb = Tessellator.getInstance().getBuffer();
 
         vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         vb.pos(minX, minY, 0).tex(texRX, texRY).endVertex();
@@ -396,19 +396,19 @@ public class CameraRenderer
 
         String indexString = String.valueOf(index);
         String durationString = duration + "t";
-        int indexWidth = this.mc.fontRendererObj.getStringWidth(indexString) / 2;
-        int durationWidth = this.mc.fontRendererObj.getStringWidth(durationString) / 2;
+        int indexWidth = this.mc.fontRenderer.getStringWidth(indexString) / 2;
+        int durationWidth = this.mc.fontRenderer.getStringWidth(durationString) / 2;
 
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.scale(0.05f, 0.05f, 0.05f);
         GlStateManager.translate(0, -3.5, -0.1);
 
-        this.mc.fontRendererObj.drawString(indexString, -indexWidth, 0, -1);
+        this.mc.fontRenderer.drawString(indexString, -indexWidth, 0, -1);
 
         GlStateManager.translate(0, -13, 0);
         GlStateManager.scale(0.5f, 0.5f, 0.5f);
 
-        this.mc.fontRendererObj.drawString(durationString, -durationWidth, 0, -1);
+        this.mc.fontRenderer.drawString(durationString, -durationWidth, 0, -1);
 
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
@@ -431,7 +431,7 @@ public class CameraRenderer
         GlStateManager.disableTexture2D();
         GlStateManager.color(color.red, color.green, color.blue, 0.5F);
 
-        VertexBuffer vb = Tessellator.getInstance().getBuffer();
+        BufferBuilder vb = Tessellator.getInstance().getBuffer();
 
         vb.setTranslation(x, y + this.mc.player.eyeHeight, z);
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);

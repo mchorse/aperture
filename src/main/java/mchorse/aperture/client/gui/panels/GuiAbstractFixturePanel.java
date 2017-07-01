@@ -125,8 +125,8 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         int x = this.area.x;
         int y = this.area.y + 10;
 
-        this.name.xPosition = x + 1;
-        this.name.yPosition = y + 1;
+        this.name.x = x + 1;
+        this.name.y = y + 1;
         this.name.width = 98;
         this.name.height = 18;
 
@@ -168,7 +168,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
 
         if (!this.name.isFocused())
         {
-            GuiUtils.drawRightString(this.font, "Name", this.name.xPosition + this.name.width - 4, this.name.yPosition + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(this.font, "Name", this.name.x + this.name.width - 4, this.name.y + 5, 0xffaaaaaa);
         }
     }
 }

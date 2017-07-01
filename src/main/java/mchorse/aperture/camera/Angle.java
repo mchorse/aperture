@@ -1,6 +1,6 @@
 package mchorse.aperture.camera;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
 
 import mchorse.aperture.ClientProxy;
@@ -60,6 +60,6 @@ public class Angle
     @Override
     public String toString()
     {
-        return Objects.toStringHelper(this).addValue(this.yaw).addValue(this.pitch).addValue(this.roll).addValue(this.fov).toString();
+        return MoreObjects.toStringHelper(this).addValue(this.yaw).addValue(this.pitch).addValue(this.roll).addValue(this.fov).toString();
     }
 }

@@ -55,10 +55,10 @@ public class GuiInterpModule implements IGuiModule
     {
         this.pos.width = this.angle.width = w;
         this.pos.height = this.angle.height = 20;
-        this.pos.xPosition = this.angle.xPosition = x;
+        this.pos.x = this.angle.x = x;
 
-        this.pos.yPosition = y;
-        this.angle.yPosition = y + 25;
+        this.pos.y = y;
+        this.angle.y = y + 25;
     }
 
     /**
@@ -123,11 +123,11 @@ public class GuiInterpModule implements IGuiModule
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
-        this.buttons.draw(mouseX, mouseY);
+        this.buttons.draw(mouseX, mouseY, partialTicks);
 
-        FontRenderer font = this.mc.fontRendererObj;
+        FontRenderer font = this.mc.fontRenderer;
 
-        font.drawStringWithShadow(I18n.format("aperture.gui.panels.position"), this.pos.xPosition + this.pos.width + 5, this.pos.yPosition + 6, 0xffffff);
-        font.drawStringWithShadow(I18n.format("aperture.gui.panels.angle"), this.angle.xPosition + this.angle.width + 5, this.angle.yPosition + 6, 0xffffff);
+        font.drawStringWithShadow(I18n.format("aperture.gui.panels.position"), this.pos.x + this.pos.width + 5, this.pos.y + 6, 0xffffff);
+        font.drawStringWithShadow(I18n.format("aperture.gui.panels.angle"), this.angle.x + this.angle.width + 5, this.angle.y + 6, 0xffffff);
     }
 }

@@ -1,6 +1,6 @@
 package mchorse.aperture.camera;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,6 +61,6 @@ public class Position
     @Override
     public String toString()
     {
-        return Objects.toStringHelper(this).addValue(this.point).addValue(this.angle).toString();
+        return MoreObjects.toStringHelper(this).addValue(this.point).addValue(this.angle).toString();
     }
 }

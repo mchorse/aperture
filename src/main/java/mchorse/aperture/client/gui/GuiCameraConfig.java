@@ -91,7 +91,7 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
 
         for (GuiButton button : this.buttons.buttons)
         {
-            button.xPosition = this.area.x + 4;
+            button.x = this.area.x + 4;
         }
 
         this.area.h = this.buttons.buttons.size() * 20;
@@ -169,7 +169,7 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
         {
             Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xaa000000);
 
-            this.buttons.draw(mouseX, mouseY);
+            this.buttons.draw(mouseX, mouseY, partialTicks);
         }
     }
 }

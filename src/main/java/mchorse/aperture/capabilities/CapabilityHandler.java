@@ -5,6 +5,7 @@ import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.CameraProvider;
 import mchorse.aperture.capabilities.camera.ICamera;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
@@ -26,10 +27,9 @@ public class CapabilityHandler
      * Attach capabilities (well, only one, right now)
      */
     @SubscribeEvent
-    @SuppressWarnings("deprecation")
-    public void attachCapability(AttachCapabilitiesEvent.Entity event)
+    public void attachCapability(AttachCapabilitiesEvent<Entity> event)
     {
-        if (!(event.getEntity() instanceof EntityPlayer)) return;
+        if (!(event.getObject() instanceof EntityPlayer)) return;
 
         event.addCapability(CAMERA_CAP, new CameraProvider());
     }

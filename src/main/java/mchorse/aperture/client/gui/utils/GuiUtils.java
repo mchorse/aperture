@@ -7,11 +7,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
@@ -91,7 +91,7 @@ public class GuiUtils
         GlStateManager.shadeModel(7425);
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
         vertexbuffer.pos(right, top, zLevel).color(r2, g2, b2, a2).endVertex();
         vertexbuffer.pos(left, top, zLevel).color(r1, g1, b1, a1).endVertex();
@@ -147,16 +147,16 @@ public class GuiUtils
 
     public static void setSize(GuiButton button, int x, int y, int w, int h)
     {
-        button.xPosition = x;
-        button.yPosition = y;
+        button.x = x;
+        button.y = y;
         button.width = w;
         button.height = h;
     }
 
     public static void setSize(GuiTextField field, int x, int y, int w, int h)
     {
-        field.xPosition = x + 1;
-        field.yPosition = y + 1;
+        field.x = x + 1;
+        field.y = y + 1;
         field.width = w - 2;
         field.height = h - 2;
     }

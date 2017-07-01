@@ -57,7 +57,7 @@ public class GuiProfilesManager implements IGuiModule
         this.load = new GuiButton(2, 0, 0, I18n.format("aperture.gui.profiles.load"));
         this.add = new GuiButton(3, 0, 0, I18n.format("aperture.gui.profiles.new"));
 
-        this.name = new GuiTextField(0, this.mc.fontRendererObj, 0, 0, 0, 0);
+        this.name = new GuiTextField(0, this.mc.fontRenderer, 0, 0, 0, 0);
     }
 
     public void init()
@@ -219,15 +219,15 @@ public class GuiProfilesManager implements IGuiModule
         Gui.drawRect(this.rect.x, this.rect.y, this.rect.x + this.rect.w, this.rect.y + this.rect.h, 0xaa000000);
         Gui.drawRect(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.x + this.scrollLoaded.w, this.scrollLoaded.y + this.scrollLoaded.h, 0x88000000);
 
-        this.loaded.drawButton(mc, mouseX, mouseY);
-        this.load.drawButton(mc, mouseX, mouseY);
-        this.add.drawButton(mc, mouseX, mouseY);
+        this.loaded.drawButton(mc, mouseX, mouseY, partialTicks);
+        this.load.drawButton(mc, mouseX, mouseY, partialTicks);
+        this.add.drawButton(mc, mouseX, mouseY, partialTicks);
 
         this.name.drawTextBox();
 
         if (!this.name.isFocused() && this.name.getText().isEmpty())
         {
-            this.mc.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.profiles.tooltip"), this.name.xPosition + 4, this.name.yPosition + 5, 0xaaaaaa);
+            this.mc.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.profiles.tooltip"), this.name.x + 4, this.name.y + 5, 0xaaaaaa);
         }
 
         GuiUtils.scissor(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.w, this.scrollLoaded.h, this.editor.width, this.editor.height);
@@ -260,7 +260,7 @@ public class GuiProfilesManager implements IGuiModule
                     Gui.drawRect(x, y, x + w, y + this.scrollLoaded.scrollItemSize, current ? 0x880088ff : 0x88000000);
                 }
 
-                this.mc.fontRendererObj.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
+                this.mc.fontRenderer.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
                 this.mc.renderEngine.bindTexture(GuiCameraEditor.EDITOR_TEXTURE);
 
                 if (hovered)
@@ -302,7 +302,7 @@ public class GuiProfilesManager implements IGuiModule
                     Gui.drawRect(x, y, x + w, y + this.scrollLoaded.scrollItemSize, current ? 0x880088ff : 0x88000000);
                 }
 
-                this.mc.fontRendererObj.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
+                this.mc.fontRenderer.drawStringWithShadow(dest.getFilename(), x + 22, y + 7, 0xffffff);
                 this.mc.renderEngine.bindTexture(GuiCameraEditor.EDITOR_TEXTURE);
 
                 GlStateManager.color(1, 1, 1, 1);

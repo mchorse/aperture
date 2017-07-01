@@ -74,13 +74,13 @@ public class GuiFixturesPopup
 
         this.idle.width = this.path.width = this.look.width = this.follow.width = this.circular.width = bw;
         this.idle.height = this.path.height = this.look.height = this.follow.height = this.circular.height = bh;
-        this.idle.xPosition = this.path.xPosition = this.look.xPosition = this.follow.xPosition = this.circular.xPosition = x + 1;
+        this.idle.x = this.path.x = this.look.x = this.follow.x = this.circular.x = x + 1;
 
-        this.idle.yPosition = y + 1;
-        this.path.yPosition = y + 1 + bh;
-        this.look.yPosition = y + 1 + bh * 2;
-        this.follow.yPosition = y + 1 + bh * 3;
-        this.circular.yPosition = y + 1 + bh * 4;
+        this.idle.y = y + 1;
+        this.path.y = y + 1 + bh;
+        this.look.y = y + 1 + bh * 2;
+        this.follow.y = y + 1 + bh * 3;
+        this.circular.y = y + 1 + bh * 4;
     }
 
     public boolean isInside(int x, int y)
@@ -176,7 +176,7 @@ public class GuiFixturesPopup
 
             for (GuiButton button : this.buttons)
             {
-                button.drawButton(this.mc, mouseX, mouseY);
+                button.drawButton(this.mc, mouseX, mouseY, partialTicks);
             }
         }
     }
@@ -206,16 +206,16 @@ public class GuiFixturesPopup
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY)
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
         {
             if (this.visible)
             {
-                FontRenderer fontrenderer = mc.fontRendererObj;
-                this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+                FontRenderer fontrenderer = mc.fontRenderer;
+                this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
                 int color = this.hovered ? this.activeColor : this.color;
 
-                Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, color);
+                Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, color);
                 this.mouseDragged(mc, mouseX, mouseY);
                 int j = 14737632;
 
@@ -232,7 +232,7 @@ public class GuiFixturesPopup
                     j = 16777120;
                 }
 
-                this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+                this.drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, j);
             }
         }
     }

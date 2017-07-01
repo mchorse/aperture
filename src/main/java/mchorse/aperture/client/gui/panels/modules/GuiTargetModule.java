@@ -39,8 +39,8 @@ public class GuiTargetModule implements IGuiModule
 
     public void update(int x, int y)
     {
-        this.selector.xPosition = x + 1;
-        this.selector.yPosition = y + 1;
+        this.selector.x = x + 1;
+        this.selector.y = y + 1;
 
         this.selector.width = 98;
         this.selector.height = 18;
@@ -69,7 +69,7 @@ public class GuiTargetModule implements IGuiModule
 
         if (!this.selector.isFocused())
         {
-            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.selector"), this.selector.xPosition + this.selector.width - 4, this.selector.yPosition + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.selector"), this.selector.x + this.selector.width - 4, this.selector.y + 5, 0xffaaaaaa);
         }
     }
 }

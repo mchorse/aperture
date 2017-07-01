@@ -40,7 +40,7 @@ public class GuiPlaybackScrub
     {
         this.listener = listener;
         this.profile = profile;
-        this.font = Minecraft.getMinecraft().fontRendererObj;
+        this.font = Minecraft.getMinecraft().fontRenderer;
     }
 
     /* Public API methods  */

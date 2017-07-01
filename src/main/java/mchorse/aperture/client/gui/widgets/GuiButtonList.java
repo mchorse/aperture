@@ -60,11 +60,11 @@ public class GuiButtonList
     /**
      * Just draw the buttons
      */
-    public void draw(int mouseX, int mouseY)
+    public void draw(int mouseX, int mouseY, float partialTicks)
     {
         for (GuiButton button : this.buttons)
         {
-            button.drawButton(this.mc, mouseX, mouseY);
+            button.drawButton(this.mc, mouseX, mouseY, partialTicks);
         }
     }
 }

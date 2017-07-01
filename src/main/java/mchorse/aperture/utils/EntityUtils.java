@@ -68,12 +68,12 @@ public class EntityUtils
         }
 
         Vec3d look = input.getLook(1.0F);
-        Vec3d max = eyes.addVector(look.xCoord * maxReach, look.yCoord * maxReach, look.zCoord * maxReach);
+        Vec3d max = eyes.addVector(look.x * maxReach, look.y * maxReach, look.z * maxReach);
         Entity target = null;
 
         float area = 1.0F;
 
-        List<Entity> list = input.world.getEntitiesInAABBexcluding(input, input.getEntityBoundingBox().addCoord(look.xCoord * maxReach, look.yCoord * maxReach, look.zCoord * maxReach).expand(area, area, area), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+        List<Entity> list = input.world.getEntitiesInAABBexcluding(input, input.getEntityBoundingBox().expand(look.x * maxReach, look.y * maxReach, look.z * maxReach).grow(area, area, area), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
         {
             @Override
             public boolean apply(@Nullable Entity entity)
@@ -93,10 +93,10 @@ public class EntityUtils
                 continue;
             }
 
-            AxisAlignedBB aabb = entity.getEntityBoundingBox().expandXyz(entity.getCollisionBorderSize());
+            AxisAlignedBB aabb = entity.getEntityBoundingBox().grow(entity.getCollisionBorderSize());
             RayTraceResult intercept = aabb.calculateIntercept(eyes, max);
 
-            if (aabb.isVecInside(eyes))
+            if (aabb.contains(eyes))
             {
                 if (entityDistance >= 0.0D)
                 {

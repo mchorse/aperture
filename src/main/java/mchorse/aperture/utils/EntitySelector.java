@@ -137,7 +137,7 @@ public class EntitySelector
                     list2.addAll(getTagPredicates(map));
                     list2.addAll(getRadiusPredicates(map, vec3d));
                     list2.addAll(getRotationsPredicates(map));
-                    list2.addAll(net.minecraftforge.event.ForgeEventFactory.gatherEntitySelectors(map, s, sender, vec3d));
+                    list2.addAll(net.minecraftforge.fml.common.registry.GameRegistry.createEntitySelectors(map, s, sender, vec3d));
                     list1.addAll(filterResults(map, targetClass, list2, s, world, blockpos));
                 }
 
@@ -314,7 +314,7 @@ public class EntitySelector
                     {
                         EntityLivingBase entitylivingbase = (EntityLivingBase) p_apply_1_;
                         Team team = entitylivingbase.getTeam();
-                        String s1 = team == null ? "" : team.getRegisteredName();
+                        String s1 = team == null ? "" : team.getName();
                         return s1.equals(s_f) != flag;
                     }
                 }
@@ -519,7 +519,7 @@ public class EntitySelector
                     @Override
                     public boolean apply(@Nullable Entity p_apply_1_)
                     {
-                        return p_apply_1_ != null && axisalignedbb.intersectsWith(p_apply_1_.getEntityBoundingBox());
+                        return p_apply_1_ != null && axisalignedbb.intersects(p_apply_1_.getEntityBoundingBox());
                     }
                 };
                 list.addAll(worldIn.<T> getPlayers(entityClass, Predicates.<T> and(predicate1, predicate2)));
@@ -551,7 +551,7 @@ public class EntitySelector
                 @Override
                 public int compare(Entity p_compare_1_, Entity p_compare_2_)
                 {
-                    return ComparisonChain.start().compare(p_compare_1_.getDistanceSq(pos.xCoord, pos.yCoord, pos.zCoord), p_compare_2_.getDistanceSq(pos.xCoord, pos.yCoord, pos.zCoord)).result();
+                    return ComparisonChain.start().compare(p_compare_1_.getDistanceSq(pos.x, pos.y, pos.z), p_compare_2_.getDistanceSq(pos.x, pos.y, pos.z)).result();
                 }
             });
         }
@@ -597,7 +597,7 @@ public class EntitySelector
 
     private static Vec3d getPosFromArguments(Map<String, String> params, Vec3d pos)
     {
-        return new Vec3d(getCoordinate(params, ARGUMENT_COORDINATE_X, pos.xCoord, true), getCoordinate(params, ARGUMENT_COORDINATE_Y, pos.yCoord, false), getCoordinate(params, ARGUMENT_COORDINATE_Z, pos.zCoord, true));
+        return new Vec3d(getCoordinate(params, ARGUMENT_COORDINATE_X, pos.x, true), getCoordinate(params, ARGUMENT_COORDINATE_Y, pos.y, false), getCoordinate(params, ARGUMENT_COORDINATE_Z, pos.z, true));
     }
 
     private static double getCoordinate(Map<String, String> params, String key, double defaultD, boolean offset)

@@ -141,7 +141,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
     static
     {
-        FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
+        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
 
         /* Registering per fixture panels */
         PANELS.put(IdleFixture.class, new GuiIdleFixturePanel(font));
@@ -773,7 +773,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (!this.visible)
         {
             /* Little tip for the users who don't know what they did */
-            this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+            this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
 
             return;
         }
@@ -834,16 +834,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             String label = this.tooltips.get(button.id);
 
-            if (label != null && mouseX >= button.xPosition && mouseY >= button.yPosition && mouseX < button.xPosition + button.width && mouseY < button.yPosition + button.height)
+            if (label != null && mouseX >= button.x && mouseY >= button.y && mouseX < button.x + button.width && mouseY < button.y + button.height)
             {
-                this.drawTooltip(label, button.xPosition, button.yPosition + button.height + 6);
+                this.drawTooltip(label, button.x, button.y + button.height + 6);
             }
         }
     }
 
     private void drawTooltip(String label, int x, int y)
     {
-        int width = this.fontRendererObj.getStringWidth(label);
+        int width = this.fontRenderer.getStringWidth(label);
 
         if (x + width + 4 > this.width)
         {
@@ -855,7 +855,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             x = 4;
         }
 
-        Gui.drawRect(x - 3, y - 3, x + width + 3, y + this.fontRendererObj.FONT_HEIGHT + 3, 0xaa000000);
-        this.fontRendererObj.drawStringWithShadow(label, x, y, 0xffffff);
+        Gui.drawRect(x - 3, y - 3, x + width + 3, y + this.fontRenderer.FONT_HEIGHT + 3, 0xaa000000);
+        this.fontRenderer.drawStringWithShadow(label, x, y, 0xffffff);
     }
 }
