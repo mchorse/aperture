@@ -37,6 +37,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
@@ -82,6 +83,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      * profile playback in the camera editor without exiting it) 
      */
     private boolean visible = true;
+
+    /**
+     * Last player's position upon entering this GUI 
+     */
+    private BlockPos lastPos;
 
     /**
      * Whether cameras are sync'd every render tick. Usable for target based
@@ -284,6 +290,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     {
         this.setProfile(null);
         this.scrub.value = 0;
+        this.lastPos = null;
     }
 
     /**
@@ -322,6 +329,23 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         this.maxScrub = 0;
         this.visible = true;
+
+        /* Disable syncing if the player is too far away */
+        BlockPos lastPos = new BlockPos(player);
+
+        if (this.lastPos != null)
+        {
+            int dx = Math.abs(lastPos.getX() - this.lastPos.getX());
+            int dy = Math.abs(lastPos.getY() - this.lastPos.getY());
+            int dz = Math.abs(lastPos.getZ() - this.lastPos.getZ());
+
+            if (dx > 48 || dy > 48 || dz > 48)
+            {
+                this.syncing = false;
+            }
+        }
+
+        this.lastPos = lastPos;
     }
 
     public CameraProfile getProfile()
