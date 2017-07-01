@@ -66,6 +66,8 @@ public class LookFixture extends IdleFixture
     @Override
     public void applyFixture(float progress, float partialTicks, Position pos)
     {
+        pos.copy(this.position);
+
         if (this.entity == null || this.entity.isDead)
         {
             this.tryFindingEntity();
@@ -92,7 +94,6 @@ public class LookFixture extends IdleFixture
         yaw = Interpolations.lerpYaw(this.oldYaw, yaw, value);
         pitch = Interpolations.lerp(this.oldPitch, pitch, value);
 
-        pos.copy(this.position);
         pos.angle.set(yaw, pitch);
 
         this.oldYaw = yaw;
