@@ -668,6 +668,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         if (!this.visible)
         {
+            /* Toggle playback in the visible mode */
+            if (keyCode == 32)
+            {
+                this.actionPerformed(this.plause);
+            }
+
             return;
         }
 
@@ -773,7 +779,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (!this.visible)
         {
             /* Little tip for the users who don't know what they did */
-            this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+            if (!this.runner.isRunning())
+            {
+                this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+            }
 
             return;
         }
