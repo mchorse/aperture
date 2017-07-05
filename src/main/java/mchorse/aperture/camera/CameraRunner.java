@@ -161,16 +161,6 @@ public class CameraRunner
 
         if (event.phase == Phase.START)
         {
-            if (this.ticks == 0)
-            {
-                /* Currently Minema supports client side /minema command which
-                 * record video */
-                if (Aperture.proxy.config.camera_minema)
-                {
-                    ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
-                }
-            }
-
             return;
         }
 
@@ -261,6 +251,16 @@ public class CameraRunner
     {
         if (event.side == Side.CLIENT && event.player == this.mc.player && event.phase == Phase.START)
         {
+            if (this.ticks == 0)
+            {
+                /* Currently Minema supports client side /minema command which
+                 * record video */
+                if (Aperture.proxy.config.camera_minema)
+                {
+                    ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
+                }
+            }
+
             this.ticks++;
         }
     }
