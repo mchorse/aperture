@@ -92,8 +92,12 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
             /* Remove a point and update scroll */
             this.path.removePoint(this.index);
 
-            this.index--;
-            this.area.setSize(size - 1);
+            if (this.index > 0)
+            {
+                this.index--;
+            }
+
+            this.area.setSize(this.path.getCount());
             this.area.scrollTo((int) (this.index / (float) this.path.getCount() * this.area.scrollSize));
 
             if (this.picker != null)

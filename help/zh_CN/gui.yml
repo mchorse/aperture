@@ -19,3 +19,70 @@ aperture.gui:
     break: 破坏
     select: 选择
     ok: 好
+    
+    config:
+        minema: Minema
+        spectator: 观看者
+        show_path: 显示路径
+        sync: 同步
+    
+    tooltips:
+        jump_next_fixture: 跳到下一个关键点
+        jump_next_frame: 跳到下一帧
+        plause: 播放/暂停
+        jump_prev_frame: 跳到上一帧
+        jump_prev_fixture: 跳到上一个关键点
+        
+        move_up: 将关键点向前移动
+        move_duration: 将持续时间移动到光标
+        copy_position: 拷贝玩家的位置
+        move_down: 将关键点向后移动
+        
+        save: 保存相机配置
+        profiles: 显示相机配置
+        config: 显示相机编辑器选项
+        add: 添加关键点
+        remove: 移除选择的关键点
+    
+    editor:
+        f1: 请按F1来再次展示界面...
+    
+    fixtures:
+        idle: 静止
+        path: 路径
+        look: 跟着看
+        follow: 跟着走
+        circular: 环形
+    
+    profiles:
+        loaded: 已加载
+        load: 加载
+        new: 新建
+        tooltip: 新相机名称
+    
+    panels:
+        duration: 持续长度
+        
+        x: X
+        y: Y
+        z: Z
+        
+        yaw: 偏航
+        pitch: 俯仰
+        roll: 翻滚
+        fov: FOV
+        
+        offset: 延迟
+        circles: 圆圈
+        distance: 长度
+        
+        path_points: 路径点
+        position: 位置
+        angle: 角度
+        circle: 圆圈
+        selector: 选择器
+        
+        interps:
+            linear: 线性
+            cubic: 三次曲线
+            hermite: 艾米插值
