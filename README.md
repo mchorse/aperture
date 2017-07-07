@@ -1,3 +1,5 @@
+![Aperture](https://i.imgur.com/Wras78u.png)
+
 **Aperture** is a Minecraft mod which allows you to create cinematics using GUI (or commands). It works with Forge for Minecraft 1.10.2, 1.11.2 and 1.12. 
 
 Aperture's features are fully frame based, which allows you to record smooth footage using [Minema](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2790594-minema-unofficial-the-smooth-movie-recorder) mod. 
@@ -15,6 +17,12 @@ Here are some features which makes Aperture different from other camera mods:
 * Playback duration is measured in **ticks**, instead of frames or milliseconds, which makes editing more consistent. Tick is a unit which is in the middle between frames and milliseconds. They don't depend on the frame rate in the settings, meanwhile also can be easily converted to seconds. There are about 20 ticks per a second (depends on the lag).
 * Provides a smooth camera which is basically an analogue of vanilla cinematic camera, but Minema friendly.
 
+## Videos
+
+There is a playlist of videos which are about Aperture. At the moment of public release, there are two videos: mod's teaser and mod's tutorial.
+
+<a href="https://youtu.be/36E5-HYoH5I?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/36E5-HYoH5I/0.jpg"></a> 
+
 ## Install
 
 Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available minecraft version. Put it in minecraft's `mods` folder, and launch the game.
@@ -30,11 +38,7 @@ When reposting my mod on your own website or reviewing it, please consider follo
 * By uploading a custom build of this mod, the build becomes your responsibility.
 * Provide the source link, please. [CurseForge](https://minecraft.curseforge.com/projects/aperture) page is preferable.
 * Provide a link to my [YouTube channel](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w), please. This will be really appreciated! 
-* You can use Aperture [banner](
-Notice: Undefined index: banner in /Users/igor/Documents/minecraft/reads/templates/terms.php on line 10
-) or [cover](
-Notice: Undefined index: cover in /Users/igor/Documents/minecraft/reads/templates/terms.php on line 10
-) for your repost page. Don't apply the watermark, though, that's just rude.
+* You can use Aperture [banner](https://i.imgur.com/Wras78u.png) or [cover](https://i.imgur.com/rckGnn4.png) for your repost page. Don't apply the watermark, though, that's just rude.
 
 If you're interested in this project, you might as well follow me on any of social media accounts listed below:
 
