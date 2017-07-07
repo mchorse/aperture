@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.lwjgl.input.Mouse;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRunner;
@@ -776,10 +777,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        if (!this.visible)
+        boolean isRunning = this.runner.isRunning();
+
+        if (!this.visible || (isRunning && Aperture.proxy.config.camera_minema))
         {
             /* Little tip for the users who don't know what they did */
-            if (!this.runner.isRunning())
+            if (!isRunning)
             {
                 this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
             }
@@ -839,13 +842,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.config.draw(mouseX, mouseY, partialTicks);
         this.profiles.draw(mouseX, mouseY, partialTicks);
 
-        for (GuiButton button : this.buttonList)
+        if (this.profile != null)
         {
-            String label = this.tooltips.get(button.id);
-
-            if (label != null && mouseX >= button.xPosition && mouseY >= button.yPosition && mouseX < button.xPosition + button.width && mouseY < button.yPosition + button.height)
+            for (GuiButton button : this.buttonList)
             {
-                this.drawTooltip(label, button.xPosition, button.yPosition + button.height + 6);
+                String label = this.tooltips.get(button.id);
+
+                if (label != null && mouseX >= button.xPosition && mouseY >= button.yPosition && mouseX < button.xPosition + button.width && mouseY < button.yPosition + button.height)
+                {
+                    this.drawTooltip(label, button.xPosition, button.yPosition + button.height + 6);
+                }
             }
         }
     }
