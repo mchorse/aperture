@@ -24,6 +24,7 @@ public class CameraRunner
 {
     private Minecraft mc = Minecraft.getMinecraft();
     private float fov = -1;
+    private boolean firstTick = false;
 
     protected boolean isRunning = false;
     protected long ticks;
@@ -106,13 +107,6 @@ public class CameraRunner
                 this.mc.player.sendChatMessage("/gamemode 3");
             }
 
-            /* Currently Minema supports client side /minema command which
-             * record video */
-            if (Aperture.proxy.config.camera_minema)
-            {
-                ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
-            }
-
             this.position.set(this.mc.player);
 
             this.fov = this.mc.gameSettings.fovSetting;
@@ -120,6 +114,7 @@ public class CameraRunner
         }
 
         this.isRunning = true;
+        this.firstTick = true;
         this.duration = this.profile.getDuration();
         this.ticks = start;
     }
@@ -169,6 +164,18 @@ public class CameraRunner
         if (event.phase == Phase.START)
         {
             return;
+        }
+
+        if (this.firstTick)
+        {
+            /* Currently Minema supports client side /minema command which
+             * record video */
+            if (Aperture.proxy.config.camera_minema)
+            {
+                ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
+            }
+
+            this.firstTick = false;
         }
 
         long progress = Math.min(this.ticks, this.duration);

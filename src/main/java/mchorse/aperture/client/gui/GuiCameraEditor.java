@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.lwjgl.input.Mouse;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRunner;
@@ -668,6 +669,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         if (!this.visible)
         {
+            /* Toggle playback in the visible mode */
+            if (keyCode == 32)
+            {
+                this.actionPerformed(this.plause);
+            }
+
             return;
         }
 
@@ -770,10 +777,15 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        if (!this.visible)
+        boolean isRunning = this.runner.isRunning();
+
+        if (!this.visible || (isRunning && Aperture.proxy.config.camera_minema))
         {
             /* Little tip for the users who don't know what they did */
-            this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+            if (!isRunning)
+            {
+                this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+            }
 
             return;
         }
@@ -830,13 +842,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.config.draw(mouseX, mouseY, partialTicks);
         this.profiles.draw(mouseX, mouseY, partialTicks);
 
-        for (GuiButton button : this.buttonList)
+        if (this.profile != null)
         {
-            String label = this.tooltips.get(button.id);
-
-            if (label != null && mouseX >= button.x && mouseY >= button.y && mouseX < button.x + button.width && mouseY < button.y + button.height)
+            for (GuiButton button : this.buttonList)
             {
-                this.drawTooltip(label, button.x, button.y + button.height + 6);
+                String label = this.tooltips.get(button.id);
+
+                if (label != null && mouseX >= button.x && mouseY >= button.y && mouseX < button.x + button.width && mouseY < button.y + button.height)
+                {
+                    this.drawTooltip(label, button.x, button.y + button.height + 6);
+                }
             }
         }
     }
