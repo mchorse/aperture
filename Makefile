@@ -4,6 +4,7 @@ build_mod: copy_assets build_lang
 copy_assets:
 	rm -f ./src/main/resources/*.md
 	cp ./README.md ./src/main/resources/README.md
+	cp ./README_CN.md ./src/main/resources/README_CN.md
 	cp ./CHANGELOG.md ./src/main/resources/CHANGELOG.md
 	cp ./LICENSE.md ./src/main/resources/LICENSE.md
 
