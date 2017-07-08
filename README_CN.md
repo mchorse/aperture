@@ -31,9 +31,9 @@ Aperture的功能完全按帧进行，便可以让你使用 [Minema](http://www.
 
 之后，Aperture mod 应该安装了，显示在 Minecraft 的 mods 菜单。如果没有显示在菜单里，那么你可能错误地进行操作了。
 
-## For mod reviewers and reposters
+## mod 评测和转发者看这里
 
-When reposting my mod on your own website or reviewing it, please consider following (if you want to support me and my mod):
+当你转发和评测我的mod时，请考虑以下内容（如果你想支持我和mod）：
 
 * 不要改mod名字。这是 *Aperture* mod。
 * 确保你所描述的东西是真实存在的。失实写的东西，比如支持的Minecraft版本或者不存在的功能，由你背锅。
