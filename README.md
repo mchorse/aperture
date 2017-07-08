@@ -1,5 +1,7 @@
 ![Aperture](https://i.imgur.com/Wras78u.png)
 
+[Planet Minecraft page](https://www.planetminecraft.com/mod/aperture-3978432/) – [Minecraft Forum thread](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2837982-aperture-an-advanced-camera-mod) – [CurseForge page](https://minecraft.curseforge.com/projects/aperture) – [Source code](https://github.com/mchorse/aperture) 
+
 **Aperture** is a Minecraft mod which allows you to create cinematics using GUI (or commands). It works with Forge for Minecraft 1.10.2, 1.11.2 and 1.12. 
 
 Aperture's features are fully frame based, which allows you to record smooth footage using [Minema](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2790594-minema-unofficial-the-smooth-movie-recorder) mod. 
