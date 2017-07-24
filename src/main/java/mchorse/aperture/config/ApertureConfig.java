@@ -76,6 +76,11 @@ public class ApertureConfig
      */
     public boolean camera_simulate_velocity;
 
+    /**
+     * Camera debug ticks 
+     */
+    public boolean camera_debug_ticks;
+
     /* Non conifg option stuff */
 
     /**
@@ -109,6 +114,7 @@ public class ApertureConfig
         this.camera_path_default_interp = this.config.getString("camera_path_default_interp", camera, "linear", "Default interpolation method for path fixture", prefix + "camera_path_default_interp");
         this.camera_command_name = this.config.getString("camera_command_name", camera, "camera", "Allows you to rebind camera command's name (requires game reload to take effect)", prefix + "camera_command_name");
         this.camera_simulate_velocity = this.config.getBoolean("camera_simulate_velocity", camera, false, "Simulate player's velocity during camera playback (see legs in perspective)", prefix + "camera_simulate_velocity");
+        this.camera_debug_ticks = this.config.getBoolean("camera_debug_ticks", camera, false, "Write ticks to the log during camera playback", prefix + "camera_debug_ticks");
 
         /* Processing camera command name */
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");

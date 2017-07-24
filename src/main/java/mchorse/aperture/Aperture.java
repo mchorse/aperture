@@ -1,5 +1,7 @@
 package mchorse.aperture;
 
+import org.apache.logging.log4j.Logger;
+
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -35,9 +37,14 @@ public class Aperture
     @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
     public static CommonProxy proxy;
 
+    /* Mod's logger */
+    public static Logger LOGGER;
+
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
+        LOGGER = event.getModLog();
+
         proxy.preLoad(event);
     }
 
