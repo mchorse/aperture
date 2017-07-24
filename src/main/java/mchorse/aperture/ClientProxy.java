@@ -33,8 +33,8 @@ public class ClientProxy extends CommonProxy
 {
     /* Camera stuff */
     public static CameraRenderer renderer = new CameraRenderer();
-    public static CameraRunner runner = new CameraRunner();
     public static CameraControl control = new CameraControl();
+    public static CameraRunner runner;
 
     public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
@@ -95,6 +95,7 @@ public class ClientProxy extends CommonProxy
 
         config = new File(path);
         cameras = new File(path + "/aperture/cameras/");
+        runner = new CameraRunner();
 
         super.preLoad(event);
     }
