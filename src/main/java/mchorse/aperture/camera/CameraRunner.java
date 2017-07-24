@@ -265,6 +265,11 @@ public class CameraRunner
     {
         if (event.side == Side.CLIENT && event.player == this.mc.player && event.phase == Phase.START)
         {
+            if (Aperture.proxy.config.camera_debug_ticks)
+            {
+                Aperture.LOGGER.info("Camera frame: " + this.ticks);
+            }
+
             this.ticks++;
         }
     }
