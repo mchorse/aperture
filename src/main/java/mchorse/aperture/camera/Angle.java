@@ -3,6 +3,7 @@ package mchorse.aperture.camera;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,8 +44,11 @@ public class Angle
         yaw = yaw % 360;
         yaw = yaw > 180 ? -(360 - yaw) : yaw;
 
-        /* Clamp pitch */
-        pitch = MathHelper.clamp_float(pitch, -90, 90);
+        if (Aperture.proxy.config.camera_smooth_clamp)
+        {
+            /* Clamp pitch */
+            pitch = MathHelper.clamp_float(pitch, -90, 90);
+        }
 
         this.yaw = yaw;
         this.pitch = pitch;
