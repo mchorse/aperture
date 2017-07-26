@@ -154,7 +154,7 @@ public class CameraRunner
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event)
     {
-        if (this.profile == null)
+        if (this.profile == null || this.mc.thePlayer == null)
         {
             this.stop();
 
