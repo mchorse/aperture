@@ -226,6 +226,18 @@ public class CameraRunner
                 player.motionX = player.motionY = player.motionZ = 0;
             }
 
+            if (!this.mc.isSingleplayer())
+            {
+                float dx = point.x - prevX;
+                float dy = point.y - prevY;
+                float dz = point.z - prevZ;
+
+                if (dx * dx + dy * dy + dz * dz >= 10 * 10)
+                {
+                    this.mc.thePlayer.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                }
+            }
+
             this.yaw = angle.yaw;
             this.pitch = angle.pitch;
 
