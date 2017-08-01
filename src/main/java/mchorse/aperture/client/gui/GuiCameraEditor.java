@@ -55,7 +55,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     /**
      * Camera editor texture
      */
-    public static final ResourceLocation EDITOR_TEXTURE = new ResourceLocation("aperture:textures/gui/camera_editor.png");
+    public static final ResourceLocation EDITOR_TEXTURE = new ResourceLocation(
+            "aperture:textures/gui/camera_editor.png");
 
     /**
      * Registry of editing camera fixture panels. Per every fixture class type
@@ -89,6 +90,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      * Last player's position upon entering this GUI 
      */
     private BlockPos lastPos;
+
+    /**
+     * This property saves state for the sync option, to allow more friendly
+     */
+    private boolean haveScrubbed;
 
     /**
      * Whether cameras are sync'd every render tick. Usable for target based
@@ -159,6 +165,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     public void scrubbed(GuiPlaybackScrub scrub, int value)
     {
+        this.haveScrubbed = true;
+
         if (!this.runner.isRunning() && this.syncing)
         {
             this.updatePlayer(value, 0.0F);
@@ -330,6 +338,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         this.maxScrub = 0;
         this.visible = true;
+        this.haveScrubbed = false;
 
         /* Disable syncing if the player is too far away */
         BlockPos lastPos = new BlockPos(player);
@@ -434,7 +443,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         /* Setup buttons */
         x -= w;
-        this.toNextFixture = new GuiTextureButton(0, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(64, 0).setActiveTexPos(64, 16);
+        this.toNextFixture = new GuiTextureButton(0, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(64, 0).setActiveTexPos(64,
+                16);
         x -= w;
         this.nextFrame = new GuiTextureButton(1, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(32, 0).setActiveTexPos(32, 16);
         x -= w;
@@ -442,12 +452,15 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         x -= w;
         this.prevFrame = new GuiTextureButton(3, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(48, 0).setActiveTexPos(48, 16);
         x -= w;
-        this.toPrevFixture = new GuiTextureButton(4, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(80, 0).setActiveTexPos(80, 16);
+        this.toPrevFixture = new GuiTextureButton(4, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(80, 0).setActiveTexPos(80,
+                16);
 
         x = this.width - w;
-        this.openProfiles = new GuiTextureButton(10, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(96, 0).setActiveTexPos(96, 16);
+        this.openProfiles = new GuiTextureButton(10, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(96, 0).setActiveTexPos(96,
+                16);
         x -= w;
-        this.openConfig = new GuiTextureButton(11, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(208, 0).setActiveTexPos(208, 16);
+        this.openConfig = new GuiTextureButton(11, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(208, 0).setActiveTexPos(208,
+                16);
         x -= w;
         this.save = new GuiTextureButton(9, x + 2, y + 2, EDITOR_TEXTURE);
         x -= w;
@@ -456,13 +469,17 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.remove = new GuiTextureButton(51, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(240, 0).setActiveTexPos(240, 16);
 
         x = 60;
-        this.moveForward = new GuiTextureButton(5, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(144, 0).setActiveTexPos(144, 16);
+        this.moveForward = new GuiTextureButton(5, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(144, 0).setActiveTexPos(144,
+                16);
         x -= w;
-        this.moveDuration = new GuiTextureButton(6, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(192, 0).setActiveTexPos(192, 16);
+        this.moveDuration = new GuiTextureButton(6, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(192, 0).setActiveTexPos(192,
+                16);
         x -= w;
-        this.copyPosition = new GuiTextureButton(7, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(176, 0).setActiveTexPos(176, 16);
+        this.copyPosition = new GuiTextureButton(7, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(176, 0).setActiveTexPos(176,
+                16);
         x -= w;
-        this.moveBackward = new GuiTextureButton(8, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(160, 0).setActiveTexPos(160, 16);
+        this.moveBackward = new GuiTextureButton(8, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(160, 0).setActiveTexPos(160,
+                16);
 
         this.cameraProfileWasChanged(this.profile);
         this.updatePlauseButton();
@@ -784,7 +801,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             /* Little tip for the users who don't know what they did */
             if (!isRunning)
             {
-                this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+                this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12,
+                        0xffffff);
             }
 
             return;
@@ -848,7 +866,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             {
                 String label = this.tooltips.get(button.id);
 
-                if (label != null && mouseX >= button.xPosition && mouseY >= button.yPosition && mouseX < button.xPosition + button.width && mouseY < button.yPosition + button.height)
+                if (label != null && mouseX >= button.xPosition && mouseY >= button.yPosition
+                        && mouseX < button.xPosition + button.width && mouseY < button.yPosition + button.height)
                 {
                     this.drawTooltip(label, button.xPosition, button.yPosition + button.height + 6);
                 }
