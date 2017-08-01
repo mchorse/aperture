@@ -11,6 +11,7 @@ import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
@@ -238,7 +239,7 @@ public class CameraRenderer
     private void drawPathFixture(Color color, AbstractFixture fixture, Position prev, Position next)
     {
         PathFixture path = (PathFixture) fixture;
-        List<Position> points = path.getPoints();
+        List<DurablePosition> points = path.getPoints();
 
         final int p = 15;
 
@@ -254,7 +255,7 @@ public class CameraRenderer
 
             if (i != 0)
             {
-                path.applyFixture((float) i / (float) size, 0, prev);
+                path.applyFixture((float) path.getTickForPoint(i) / (float) path.getDuration(), 0, prev);
 
                 this.drawPathPoint(color, prev, i);
             }

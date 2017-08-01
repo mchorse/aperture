@@ -1,7 +1,7 @@
 package mchorse.aperture.client.gui.panels;
 
-import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
@@ -15,6 +15,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 /**
  * Path fixture panel
@@ -30,8 +31,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiAngleModule angle;
     public GuiPointsModule points;
     public GuiInterpModule interp;
+    public GuiCheckBox perPointDuration;
 
-    public Position position;
+    public DurablePosition position;
 
     public GuiPathFixturePanel(FontRenderer font)
     {
@@ -41,6 +43,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle = new GuiAngleModule(this, font);
         this.points = new GuiPointsModule(this, font);
         this.interp = new GuiInterpModule(this);
+        this.perPointDuration = new GuiCheckBox(0, 0, 0, "Per point duration", false);
 
         this.height = 100;
     }
@@ -88,6 +91,11 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.point.fill(this.position.point);
         this.angle.fill(this.position.angle);
 
+        if (this.fixture.perPointDuration)
+        {
+            this.duration.setValue(this.position.getDuration());
+        }
+
         if (this.editor.syncing)
         {
             this.editor.scrub.setValue((int) this.currentOffset());
@@ -113,7 +121,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         super.select(fixture, duration);
 
         int index = (int) ((duration / (float) fixture.getDuration()) * fixture.getCount());
-        Position pos = fixture.getPoint(index);
+        DurablePosition pos = fixture.getPoint(index);
 
         this.position = pos;
 
@@ -121,6 +129,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle.fill(pos.angle);
         this.points.fill(fixture);
         this.interp.fill(fixture);
+        this.perPointDuration.setIsChecked(fixture.perPointDuration);
 
         this.points.index = index;
     }
@@ -128,7 +137,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     public long currentOffset()
     {
-        long point = (long) ((this.points.index / (float) (this.fixture.getCount() - 1)) * (this.fixture.getDuration()));
+        long point = this.fixture.getTickForPoint(this.points.index);
 
         if (point == this.fixture.getDuration())
         {
@@ -169,6 +178,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         y = this.area.y + 60;
 
         this.interp.update(x, y, 80);
+
+        this.perPointDuration.xPosition = x;
+        this.perPointDuration.yPosition = y + 50;
     }
 
     @Override
@@ -183,6 +195,21 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
+    protected void updateDuration(long value)
+    {
+        if (this.fixture.perPointDuration)
+        {
+            this.position.setDuration(value);
+        }
+        else
+        {
+            this.fixture.setDuration(value);
+        }
+
+        this.editor.updateValues();
+    }
+
+    @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -191,6 +218,22 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle.mouseClicked(mouseX, mouseY, mouseButton);
         this.points.mouseClicked(mouseX, mouseY, mouseButton);
         this.interp.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (this.perPointDuration.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY))
+        {
+            this.fixture.perPointDuration = this.perPointDuration.isChecked();
+
+            if (this.fixture.perPointDuration)
+            {
+                this.duration.setValue(this.position.getDuration());
+            }
+            else
+            {
+                this.duration.setValue(this.fixture.getDuration());
+            }
+
+            this.editor.updateValues();
+        }
     }
 
     @Override
@@ -224,5 +267,6 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle.draw(mouseX, mouseY, partialTicks);
         this.points.draw(mouseX, mouseY, partialTicks);
         this.interp.draw(mouseX, mouseY, partialTicks);
+        this.perPointDuration.drawButton(Minecraft.getMinecraft(), mouseX, mouseY);
     }
 }

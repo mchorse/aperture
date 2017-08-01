@@ -2,9 +2,9 @@ package mchorse.aperture.commands.path;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -62,7 +62,7 @@ public class SubCommandPathAdd extends CommandBase
         if (args.length < 2)
         {
             /* Add in the end */
-            path.addPoint(new Position((EntityPlayer) sender));
+            path.addPoint(new DurablePosition((EntityPlayer) sender));
         }
         else
         {
@@ -75,7 +75,7 @@ public class SubCommandPathAdd extends CommandBase
                 return;
             }
 
-            path.addPoint(new Position((EntityPlayer) sender), point);
+            path.addPoint(new DurablePosition((EntityPlayer) sender), point);
             profile.dirty();
         }
     }

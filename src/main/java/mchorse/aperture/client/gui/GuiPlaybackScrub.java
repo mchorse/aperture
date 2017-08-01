@@ -171,15 +171,33 @@ public class GuiPlaybackScrub
                 PathFixture path = (PathFixture) fixture;
                 int c = path.getCount() - 1;
 
-                if (c > 0)
+                if (c > 1)
                 {
-                    int fract = (fx - fbx) / c;
-
-                    for (int j = 1; j < c; j++)
+                    if (path.perPointDuration)
                     {
-                        int px = fbx + fract * j;
+                        long duration = path.getDuration();
+                        long frame = path.getPoint(0).getDuration();
 
-                        Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+                        for (int j = 1; j < c; j++)
+                        {
+                            int fract = (int) ((fx - fbx) * ((float) frame / duration));
+                            int px = fbx + fract;
+
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+
+                            frame += path.getPoint(j).getDuration();
+                        }
+                    }
+                    else
+                    {
+                        int fract = (fx - fbx) / c;
+
+                        for (int j = 1; j < c; j++)
+                        {
+                            int px = fbx + fract * j;
+
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+                        }
                     }
                 }
             }

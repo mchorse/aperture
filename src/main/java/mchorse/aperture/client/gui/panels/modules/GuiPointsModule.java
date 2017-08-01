@@ -2,8 +2,8 @@ package mchorse.aperture.client.gui.panels.modules;
 
 import org.lwjgl.opengl.GL11;
 
-import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.IButtonListener;
@@ -76,7 +76,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
         else if (button.id == 1)
         {
             /* Add a point based on player attributes */
-            this.path.addPoint(new Position(Minecraft.getMinecraft().thePlayer), this.index + 1);
+            this.path.addPoint(new DurablePosition(Minecraft.getMinecraft().thePlayer), this.index + 1);
 
             this.index++;
             this.area.setSize(this.path.getCount());
@@ -192,7 +192,8 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
 
     @Override
     public void keyTyped(char typedChar, int keyCode)
-    {}
+    {
+    }
 
     /**
      * Draw the module
