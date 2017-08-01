@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import mchorse.aperture.Aperture;
@@ -162,10 +163,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      * was scrubbed from playback scrubber.
      */
     @Override
-    public void scrubbed(GuiPlaybackScrub scrub, int value)
+    public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub)
     {
-        this.haveScrubbed = true;
-
         if (!this.runner.isRunning() && this.syncing)
         {
             this.updatePlayer(value, 0.0F);
@@ -175,7 +174,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.runner.setTicks(value);
         }
 
-        ClientProxy.EVENT_BUS.post(new CameraEditorScrubbedEvent(this.runner.isRunning(), this.scrub.value));
+        if (fromScrub)
+        {
+            this.haveScrubbed = true;
+
+            ClientProxy.EVENT_BUS.post(new CameraEditorScrubbedEvent(this.runner.isRunning(), this.scrub.value));
+        }
     }
 
     /**
@@ -675,14 +679,13 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             }
         }
 
+        if (!this.hasActiveTextfields())
+        {
+            this.handleKeys(typedChar, keyCode);
+        }
+
         if (!this.visible)
         {
-            /* Toggle playback in the visible mode */
-            if (keyCode == 32)
-            {
-                this.actionPerformed(this.plause);
-            }
-
             return;
         }
 
@@ -696,6 +699,49 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (this.fixturePanel != null)
         {
             this.fixturePanel.keyTyped(typedChar, keyCode);
+        }
+    }
+
+    private boolean hasActiveTextfields()
+    {
+        return (this.fixturePanel != null && this.fixturePanel.hasActiveTextfields()) || this.profiles.hasAnyActiveTextfields();
+    }
+
+    /**
+     * Handle shortcut keys when text fields aren't selected
+     */
+    private void handleKeys(char typedChar, int keyCode)
+    {
+        System.out.println(keyCode + " " + Keyboard.KEY_S);
+
+        if (keyCode == Keyboard.KEY_S)
+        {
+            /* Toggle sync */
+            this.config.sync.playPressSound(this.mc.getSoundHandler());
+            this.config.sync.mousePressed(mc, this.config.sync.xPosition + 1, this.config.sync.yPosition + 1);
+            this.config.actionButtonPerformed(this.config.sync);
+        }
+        else if (keyCode == Keyboard.KEY_SPACE)
+        {
+            try
+            {
+                /* Play/pause */
+                this.actionPerformed(this.plause);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        else if (keyCode == Keyboard.KEY_D)
+        {
+            /* Deselect current fixture */
+            this.pickCameraFixture(null, 0);
+        }
+        else if (keyCode == Keyboard.KEY_C && this.fixturePanel != null)
+        {
+            /* Copy the position */
+            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
         }
     }
 

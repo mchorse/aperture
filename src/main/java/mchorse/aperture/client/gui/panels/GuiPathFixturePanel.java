@@ -95,6 +95,10 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         {
             this.duration.setValue(this.position.getDuration());
         }
+        else
+        {
+            this.duration.setValue(this.fixture.getDuration());
+        }
 
         if (this.editor.syncing)
         {
@@ -244,6 +248,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.point.mouseReleased(mouseX, mouseY, state);
         this.angle.mouseReleased(mouseX, mouseY, state);
         this.points.mouseReleased(mouseX, mouseY, state);
+    }
+
+    @Override
+    public boolean hasActiveTextfields()
+    {
+        return super.hasActiveTextfields() || this.point.hasActiveTextfields() || this.angle.hasActiveTextfields();
     }
 
     @Override

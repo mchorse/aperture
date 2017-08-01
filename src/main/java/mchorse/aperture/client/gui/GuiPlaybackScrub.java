@@ -61,7 +61,7 @@ public class GuiPlaybackScrub
      * Set the value of the scrubber. Also, if the value has changed notify
      * the listener.
      */
-    public void setValue(int value)
+    public void setValue(int value, boolean fromScrub)
     {
         int old = this.value;
 
@@ -70,8 +70,24 @@ public class GuiPlaybackScrub
 
         if (this.value != old && this.listener != null)
         {
-            this.listener.scrubbed(this, this.value);
+            this.listener.scrubbed(this, this.value, fromScrub);
         }
+    }
+
+    /**
+     * Set the value of the scrubber using API
+     */
+    public void setValue(int value)
+    {
+        this.setValue(value, false);
+    }
+
+    /**
+     * Set the value of the scrubber from scrub
+     */
+    public void setValueFromScrub(int value)
+    {
+        this.setValue(value, true);
     }
 
     /**
@@ -96,7 +112,7 @@ public class GuiPlaybackScrub
             if (mouseButton == 0)
             {
                 this.scrubbing = true;
-                this.setValue(this.calcValueFromMouse(mouseX));
+                this.setValueFromScrub(this.calcValueFromMouse(mouseX));
             }
             else if (mouseButton == 1 && this.profile != null)
             {
@@ -130,7 +146,7 @@ public class GuiPlaybackScrub
     {
         if (this.scrubbing)
         {
-            this.setValue(this.calcValueFromMouse(mouseX));
+            this.setValueFromScrub(this.calcValueFromMouse(mouseX));
         }
 
         int x = this.area.x;
@@ -240,6 +256,6 @@ public class GuiPlaybackScrub
      */
     public static interface IScrubListener
     {
-        public void scrubbed(GuiPlaybackScrub scrub, int value);
+        public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub);
     }
 }

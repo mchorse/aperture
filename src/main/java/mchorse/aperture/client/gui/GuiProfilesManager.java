@@ -195,7 +195,8 @@ public class GuiProfilesManager implements IGuiModule
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
-    {}
+    {
+    }
 
     @Override
     public void keyTyped(char typedChar, int keyCode)
@@ -338,5 +339,13 @@ public class GuiProfilesManager implements IGuiModule
     public static interface IProfileListener
     {
         public void selectProfile(CameraProfile profile);
+    }
+
+    /**
+     * Check whether this widget has any focused text fields 
+     */
+    public boolean hasAnyActiveTextfields()
+    {
+        return this.name.isFocused();
     }
 }

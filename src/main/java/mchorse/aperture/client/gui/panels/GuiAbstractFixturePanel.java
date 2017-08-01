@@ -136,6 +136,12 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     }
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return this.name.isFocused() || this.duration.text.isFocused();
+    }
+
+    @Override
     public void keyTyped(char typedChar, int keyCode)
     {
         this.name.textboxKeyTyped(typedChar, keyCode);

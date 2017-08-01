@@ -192,8 +192,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
 
     @Override
     public void keyTyped(char typedChar, int keyCode)
-    {
-    }
+    {}
 
     /**
      * Draw the module

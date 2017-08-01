@@ -142,8 +142,6 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
         {
             ClientProxy.renderer.toggleRender();
             this.renderPath.setIsChecked(ClientProxy.renderer.render);
-
-            System.out.println(ClientProxy.renderer.render);
         }
         else if (id == -4)
         {

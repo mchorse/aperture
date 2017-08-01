@@ -119,6 +119,12 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     }
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return super.hasActiveTextfields() || this.angle.hasActiveTextfields();
+    }
+
+    @Override
     public void keyTyped(char typedChar, int keyCode)
     {
         super.keyTyped(typedChar, keyCode);

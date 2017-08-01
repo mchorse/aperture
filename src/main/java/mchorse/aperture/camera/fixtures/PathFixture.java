@@ -243,7 +243,7 @@ public class PathFixture extends AbstractFixture
                 prevPoint = point;
                 point += this.points.get(index).getDuration();
 
-                if (point > frame)
+                if (point >= frame)
                 {
                     break;
                 }
