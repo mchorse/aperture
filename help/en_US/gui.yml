@@ -24,19 +24,19 @@ aperture.gui:
         minema: Minema
         spectator: Spectator
         show_path: Show path
-        sync: Sync
-        flight: Flight mode
+        sync: Sync (S)
+        flight: Flight mode (F)
 
     tooltips:
         jump_next_fixture: Jump to next fixture
         jump_next_frame: Jump to next frame
-        plause: Play/pause
+        plause: Play/pause (space)
         jump_prev_frame: Jump to previous frame
         jump_prev_fixture: Jump to previous fixture
 
         move_up: Move fixture forward
         move_duration: Move duration to the cursor
-        copy_position: Copy player's position
+        copy_position: Copy player's position (C)
         move_down: Move fixture backward
 
         save: Save camera profile
