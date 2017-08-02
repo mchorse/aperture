@@ -67,6 +67,11 @@ public class GuiAngleModule implements IGuiModule
         this.fov.mouseReleased(mouseX, mouseY, state);
     }
 
+    public boolean hasActiveTextfields()
+    {
+        return this.yaw.text.isFocused() || this.pitch.text.isFocused() || this.roll.text.isFocused() || this.fov.text.isFocused();
+    }
+
     @Override
     public void keyTyped(char typedChar, int keyCode)
     {

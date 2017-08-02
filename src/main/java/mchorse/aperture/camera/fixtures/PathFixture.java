@@ -6,7 +6,10 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
+import mchorse.aperture.camera.Angle;
+import mchorse.aperture.camera.Point;
 import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.smooth.Interpolations;
 import net.minecraft.command.CommandBase;
@@ -22,7 +25,10 @@ import net.minecraft.util.math.MathHelper;
 public class PathFixture extends AbstractFixture
 {
     @Expose
-    protected List<Position> points = new ArrayList<Position>();
+    public boolean perPointDuration;
+
+    @Expose
+    protected List<DurablePosition> points = new ArrayList<DurablePosition>();
 
     public InterpolationType interpolationPos;
     public InterpolationType interpolationAngle;
@@ -37,11 +43,11 @@ public class PathFixture extends AbstractFixture
         this.interpolationAngle = type;
     }
 
-    public Position getPoint(int index)
+    public DurablePosition getPoint(int index)
     {
         if (this.points.size() == 0)
         {
-            return Position.ZERO;
+            return new DurablePosition(0, 0, 0, 0, 0);
         }
 
         if (index >= this.points.size())
@@ -62,7 +68,7 @@ public class PathFixture extends AbstractFixture
         return !this.points.isEmpty() && index >= 0 && index < this.points.size();
     }
 
-    public List<Position> getPoints()
+    public List<DurablePosition> getPoints()
     {
         return this.points;
     }
@@ -72,12 +78,12 @@ public class PathFixture extends AbstractFixture
         return this.points.size();
     }
 
-    public void addPoint(Position point)
+    public void addPoint(DurablePosition point)
     {
         this.points.add(point);
     }
 
-    public void addPoint(Position point, int before)
+    public void addPoint(DurablePosition point, int before)
     {
         this.points.add(before, point);
     }
@@ -87,7 +93,7 @@ public class PathFixture extends AbstractFixture
         this.points.add(to, this.points.remove(from));
     }
 
-    public void editPoint(Position point, int index)
+    public void editPoint(DurablePosition point, int index)
     {
         this.points.set(index, point);
     }
@@ -98,11 +104,87 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
+    public long getDuration()
+    {
+        if (this.perPointDuration)
+        {
+            long duration = 0;
+
+            for (DurablePosition pos : this.points)
+            {
+                duration += pos.duration;
+            }
+
+            return duration;
+        }
+
+        return super.getDuration();
+    }
+
+    /**
+     * Return index of a point at given frame (relative to that path fixture, i.e. 0)  
+     */
+    public int getIndexForPoint(int frame)
+    {
+        if (!this.perPointDuration)
+        {
+            float range = (float) frame / this.duration;
+            int index = (int) Math.floor(range * (this.points.size() - 1));
+
+            return MathHelper.clamp(index, 0, (int) this.duration);
+        }
+
+        int index = 0;
+        long point = 0;
+
+        while (point < frame)
+        {
+            point += this.points.get(index).getDuration();
+
+            if (point >= frame)
+            {
+                break;
+            }
+
+            index++;
+        }
+
+        return MathHelper.clamp(index, 0, this.getCount() - 1);
+    }
+
+    /**
+     * Return the frame for point at the index   
+     */
+    public long getTickForPoint(int index)
+    {
+        if (!this.perPointDuration)
+        {
+            return (long) ((index / (float) (this.points.size() - 1)) * this.duration);
+        }
+
+        long duration = 0;
+
+        for (DurablePosition pos : this.points)
+        {
+            index--;
+
+            if (index < 0)
+            {
+                break;
+            }
+
+            duration += pos.getDuration();
+        }
+
+        return duration;
+    }
+
+    @Override
     public void edit(String[] args, EntityPlayer player) throws CommandException
     {
         if (args.length == 0)
         {
-            this.addPoint(new Position(player));
+            this.addPoint(new DurablePosition(player));
         }
         else if (args.length == 1)
         {
@@ -137,18 +219,59 @@ public class PathFixture extends AbstractFixture
     @Override
     public void applyFixture(float progress, float partialTicks, Position pos)
     {
-        if (this.points.isEmpty()) return;
+        long duration = this.getDuration();
+
+        if (this.points.isEmpty() || duration == 0)
+        {
+            return;
+        }
 
         int length = this.points.size() - 1;
+        int index = 0;
 
-        progress += ((float) 1 / this.duration) * partialTicks;
-        progress = MathHelper.clamp(progress * length, 0, length);
+        float x = progress + (1.0F / duration) * partialTicks;
 
-        int index = (int) Math.floor(progress);
+        if (this.perPointDuration)
+        {
+            long frame = (long) (progress * duration);
+            int points = this.points.size();
 
-        progress = progress - index;
+            long point = 0;
+            long prevPoint = 0;
 
-        this.apply(pos, index, progress);
+            while (point < frame)
+            {
+                prevPoint = point;
+                point += this.points.get(index).getDuration();
+
+                if (point >= frame)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            if (index < points - 1)
+            {
+                float diff = point - prevPoint + 1.0F;
+
+                x = (float) ((frame + partialTicks) - prevPoint) / diff;
+            }
+            else
+            {
+                index = points - 1;
+                x = 0;
+            }
+        }
+        else
+        {
+            x = MathHelper.clamp(x * length, 0, length);
+            index = (int) Math.floor(x);
+            x = x - index;
+        }
+
+        this.apply(pos, index, x);
     }
 
     /**
@@ -253,6 +376,30 @@ public class PathFixture extends AbstractFixture
         }
     }
 
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        {
+            this.addPoint(DurablePosition.fromByteBuf(buffer));
+        }
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        buffer.writeInt(this.points.size());
+
+        for (DurablePosition pos : this.points)
+        {
+            pos.toByteBuf(buffer);
+        }
+    }
+
     /* Interpolation */
 
     public static InterpolationType interpFromString(String string)
@@ -279,6 +426,62 @@ public class PathFixture extends AbstractFixture
         private InterpolationType(String name)
         {
             this.name = name;
+        }
+    }
+
+    /**
+     * Durable position
+     * 
+     * Just like a position, but with a duration
+     */
+    public static class DurablePosition extends Position
+    {
+        @Expose
+        protected long duration = 1L;
+
+        public static DurablePosition fromByteBuf(ByteBuf buffer)
+        {
+            return new DurablePosition(buffer.readLong(), Point.fromByteBuf(buffer), Angle.fromByteBuf(buffer));
+        }
+
+        public DurablePosition(EntityPlayer player)
+        {
+            super(player);
+        }
+
+        public DurablePosition(Point point, Angle angle)
+        {
+            super(point, angle);
+        }
+
+        public DurablePosition(long duration, Point point, Angle angle)
+        {
+            super(point, angle);
+
+            this.setDuration(duration);
+        }
+
+        public DurablePosition(float x, float y, float z, float yaw, float pitch)
+        {
+            super(x, y, z, yaw, pitch);
+        }
+
+        public long getDuration()
+        {
+            return this.duration;
+        }
+
+        public void setDuration(long duration)
+        {
+            this.duration = duration < 0 ? 0 : duration;
+        }
+
+        @Override
+        public void toByteBuf(ByteBuf buffer)
+        {
+            buffer.writeLong(this.duration);
+
+            super.toByteBuf(buffer);
         }
     }
 }

@@ -2,6 +2,7 @@ package mchorse.aperture.camera.fixtures;
 
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.Position;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,6 +36,22 @@ public class IdleFixture extends AbstractFixture
     }
 
     /* Save/load methods */
+
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        this.position = Position.fromByteBuf(buffer);
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        this.position.toByteBuf(buffer);
+    }
 
     @Override
     public byte getType()

@@ -95,9 +95,10 @@ public class ClientProxy extends CommonProxy
 
         config = new File(path);
         cameras = new File(path + "/aperture/cameras/");
-        runner = new CameraRunner();
 
         super.preLoad(event);
+
+        runner = new CameraRunner();
     }
 
     /**

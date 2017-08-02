@@ -2,6 +2,7 @@ package mchorse.aperture.camera.fixtures;
 
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.Point;
 import mchorse.aperture.camera.Position;
 import net.minecraft.command.CommandBase;
@@ -105,6 +106,30 @@ public class CircularFixture extends AbstractFixture
 
         pos.point.set(x - 0.5F, y, z - 0.5F);
         pos.angle.set(MathHelper.wrapDegrees(yaw - 180.0F), this.pitch);
+    }
+
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        this.start = Point.fromByteBuf(buffer);
+        this.offset = buffer.readFloat();
+        this.distance = buffer.readFloat();
+        this.circles = buffer.readFloat();
+        this.pitch = buffer.readFloat();
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        this.start.toByteBuf(buffer);
+        buffer.writeFloat(this.offset);
+        buffer.writeFloat(this.distance);
+        buffer.writeFloat(this.circles);
+        buffer.writeFloat(this.pitch);
     }
 
     @Override

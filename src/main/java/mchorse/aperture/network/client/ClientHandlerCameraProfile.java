@@ -2,7 +2,6 @@ package mchorse.aperture.network.client;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.network.common.PacketCameraProfile;
@@ -25,7 +24,7 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
     @SideOnly(Side.CLIENT)
     public void run(EntityPlayerSP player, PacketCameraProfile message)
     {
-        CameraProfile profile = CameraUtils.cameraJSONBuilder(false).fromJson(message.profile, CameraProfile.class);
+        CameraProfile profile = message.profile;
 
         profile.setDestination(new ServerDestination(message.filename));
         profile.dirty = false;

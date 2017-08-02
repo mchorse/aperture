@@ -5,13 +5,13 @@ import java.util.List;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraRenderer.Color;
-import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -52,11 +52,16 @@ public class GuiFixturesPopup
         int followColor = 0xff000000 + Color.FOLLOW.hex;
         int circularColor = 0xff000000 + Color.CIRCULAR.hex;
 
-        this.idle = new GuiFlatButton(0, 0, 0, 0, 0, idleColor, idleColor - 0x00111111, I18n.format("aperture.gui.fixtures.idle"));
-        this.path = new GuiFlatButton(0, 0, 0, 0, 0, pathColor, pathColor - 0x00111111, I18n.format("aperture.gui.fixtures.path"));
-        this.look = new GuiFlatButton(0, 0, 0, 0, 0, lookColor, lookColor - 0x00111111, I18n.format("aperture.gui.fixtures.look"));
-        this.follow = new GuiFlatButton(0, 0, 0, 0, 0, followColor, followColor - 0x00111111, I18n.format("aperture.gui.fixtures.follow"));
-        this.circular = new GuiFlatButton(0, 0, 0, 0, 0, circularColor, circularColor - 0x00111111, I18n.format("aperture.gui.fixtures.circular"));
+        this.idle = new GuiFlatButton(0, 0, 0, 0, 0, idleColor, idleColor - 0x00111111,
+                I18n.format("aperture.gui.fixtures.idle"));
+        this.path = new GuiFlatButton(0, 0, 0, 0, 0, pathColor, pathColor - 0x00111111,
+                I18n.format("aperture.gui.fixtures.path"));
+        this.look = new GuiFlatButton(0, 0, 0, 0, 0, lookColor, lookColor - 0x00111111,
+                I18n.format("aperture.gui.fixtures.look"));
+        this.follow = new GuiFlatButton(0, 0, 0, 0, 0, followColor, followColor - 0x00111111,
+                I18n.format("aperture.gui.fixtures.follow"));
+        this.circular = new GuiFlatButton(0, 0, 0, 0, 0, circularColor, circularColor - 0x00111111,
+                I18n.format("aperture.gui.fixtures.circular"));
 
         this.buttons.add(this.idle);
         this.buttons.add(this.path);
@@ -74,7 +79,8 @@ public class GuiFixturesPopup
 
         this.idle.width = this.path.width = this.look.width = this.follow.width = this.circular.width = bw;
         this.idle.height = this.path.height = this.look.height = this.follow.height = this.circular.height = bh;
-        this.idle.xPosition = this.path.xPosition = this.look.xPosition = this.follow.xPosition = this.circular.xPosition = x + 1;
+        this.idle.xPosition = this.path.xPosition = this.look.xPosition = this.follow.xPosition = this.circular.xPosition = x
+                + 1;
 
         this.idle.yPosition = y + 1;
         this.path.yPosition = y + 1 + bh;
@@ -133,7 +139,7 @@ public class GuiFixturesPopup
         {
             PathFixture path = new PathFixture(duration);
 
-            path.addPoint(new Position(player));
+            path.addPoint(new DurablePosition(player));
             fixture = path;
         }
         else if (button == this.look)
@@ -189,7 +195,8 @@ public class GuiFixturesPopup
         public int color;
         public int activeColor;
 
-        public GuiFlatButton(int buttonId, int x, int y, int widthIn, int heightIn, int color, int activeColor, String buttonText)
+        public GuiFlatButton(int buttonId, int x, int y, int widthIn, int heightIn, int color, int activeColor,
+                String buttonText)
         {
             super(buttonId, x, y, widthIn, heightIn, buttonText);
 
@@ -211,11 +218,13 @@ public class GuiFixturesPopup
             if (this.visible)
             {
                 FontRenderer fontrenderer = mc.fontRendererObj;
-                this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+                this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition
+                        && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 
                 int color = this.hovered ? this.activeColor : this.color;
 
-                Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, color);
+                Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height,
+                        color);
                 this.mouseDragged(mc, mouseX, mouseY);
                 int j = 14737632;
 
@@ -232,7 +241,8 @@ public class GuiFixturesPopup
                     j = 16777120;
                 }
 
-                this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+                this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2,
+                        this.yPosition + (this.height - 8) / 2, j);
             }
         }
     }

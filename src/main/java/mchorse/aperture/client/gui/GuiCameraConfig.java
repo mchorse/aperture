@@ -25,6 +25,7 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
     public GuiCheckBox spectator;
     public GuiCheckBox renderPath;
     public GuiCheckBox sync;
+    public GuiCheckBox flight;
 
     public GuiCameraEditor editor;
 
@@ -71,10 +72,15 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
 
         this.sync = new GuiCheckBox(-4, x, y, I18n.format("aperture.gui.config.sync"), this.editor.syncing);
         this.sync.packedFGColour = 0xffffff;
+        y += 20;
+
+        this.flight = new GuiCheckBox(-5, x, y, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled);
+        this.flight.packedFGColour = 0xffffff;
 
         this.buttons.add(this.spectator);
         this.buttons.add(this.renderPath);
         this.buttons.add(this.sync);
+        this.buttons.add(this.flight);
 
         int max = 0;
 
@@ -142,12 +148,15 @@ public class GuiCameraConfig implements IGuiModule, IButtonListener
         {
             ClientProxy.renderer.toggleRender();
             this.renderPath.setIsChecked(ClientProxy.renderer.render);
-
-            System.out.println(ClientProxy.renderer.render);
         }
         else if (id == -4)
         {
             this.editor.syncing = this.sync.isChecked();
+        }
+        else if (id == -5)
+        {
+            this.editor.flight.enabled = this.flight.isChecked();
+            this.editor.haveScrubbed = true;
         }
 
         if (save)

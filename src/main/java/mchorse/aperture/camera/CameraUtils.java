@@ -122,7 +122,7 @@ public class CameraUtils
                 return;
             }
 
-            String profile = readCameraProfile(filename);
+            CameraProfile profile = cameraJSONBuilder(true).fromJson(readCameraProfile(filename), CameraProfile.class);
             ICamera recording = Camera.get(player);
 
             recording.setCurrentProfile(filename);

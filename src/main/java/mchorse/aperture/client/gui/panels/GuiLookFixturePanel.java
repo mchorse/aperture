@@ -112,6 +112,12 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
     }
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return super.hasActiveTextfields() || this.target.hasActiveTextfields();
+    }
+
+    @Override
     public void keyTyped(char typedChar, int keyCode)
     {
         super.keyTyped(typedChar, keyCode);

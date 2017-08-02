@@ -129,6 +129,12 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     }
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return super.hasActiveTextfields() || this.point.hasActiveTextfields() || this.circular.hasActiveTextfields();
+    }
+
+    @Override
     public void keyTyped(char typedChar, int keyCode)
     {
         super.keyTyped(typedChar, keyCode);

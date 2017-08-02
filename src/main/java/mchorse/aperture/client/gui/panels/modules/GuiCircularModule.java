@@ -68,6 +68,11 @@ public class GuiCircularModule implements IGuiModule
         this.distance.mouseReleased(mouseX, mouseY, state);
     }
 
+    public boolean hasActiveTextfields()
+    {
+        return this.offset.text.isFocused() || this.pitch.text.isFocused() || this.circles.text.isFocused() || this.distance.text.isFocused();
+    }
+
     @Override
     public void keyTyped(char typedChar, int keyCode)
     {
