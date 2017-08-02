@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.Angle;
 import mchorse.aperture.camera.Point;
@@ -375,6 +376,30 @@ public class PathFixture extends AbstractFixture
         }
     }
 
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        {
+            this.addPoint(DurablePosition.fromByteBuf(buffer));
+        }
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        buffer.writeInt(this.points.size());
+
+        for (DurablePosition pos : this.points)
+        {
+            pos.toByteBuf(buffer);
+        }
+    }
+
     /* Interpolation */
 
     public static InterpolationType interpFromString(String string)
@@ -414,6 +439,11 @@ public class PathFixture extends AbstractFixture
         @Expose
         protected long duration = 1L;
 
+        public static DurablePosition fromByteBuf(ByteBuf buffer)
+        {
+            return new DurablePosition(buffer.readLong(), Point.fromByteBuf(buffer), Angle.fromByteBuf(buffer));
+        }
+
         public DurablePosition(EntityPlayer player)
         {
             super(player);
@@ -422,6 +452,13 @@ public class PathFixture extends AbstractFixture
         public DurablePosition(Point point, Angle angle)
         {
             super(point, angle);
+        }
+
+        public DurablePosition(long duration, Point point, Angle angle)
+        {
+            super(point, angle);
+
+            this.setDuration(duration);
         }
 
         public DurablePosition(float x, float y, float z, float yaw, float pitch)
@@ -437,6 +474,14 @@ public class PathFixture extends AbstractFixture
         public void setDuration(long duration)
         {
             this.duration = duration < 0 ? 0 : duration;
+        }
+
+        @Override
+        public void toByteBuf(ByteBuf buffer)
+        {
+            buffer.writeLong(this.duration);
+
+            super.toByteBuf(buffer);
         }
     }
 }

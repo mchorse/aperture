@@ -2,6 +2,7 @@ package mchorse.aperture.camera.fixtures;
 
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.smooth.Interpolations;
@@ -13,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
  * Look camera fixture
@@ -136,6 +138,22 @@ public class LookFixture extends IdleFixture
     }
 
     /* Save/load methods */
+
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        this.selector = ByteBufUtils.readUTF8String(buffer);
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        ByteBufUtils.writeUTF8String(buffer, this.selector);
+    }
 
     @Override
     public byte getType()

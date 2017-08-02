@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.events.CameraProfileChangedEvent;
@@ -262,6 +263,35 @@ public class CameraProfile
         }
 
         fixture.applyFixture((float) progress / fixture.getDuration(), partialTicks, position);
+    }
+
+    /**
+     * Read camera profile from a byte buffer 
+     */
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        {
+            AbstractFixture fixture = AbstractFixture.readFromByteBuf(buffer);
+
+            if (fixture != null)
+            {
+                this.fixtures.add(fixture);
+            }
+        }
+    }
+
+    /**
+     * Write camera profile to a byte buffer 
+     */
+    public void toByteBuf(ByteBuf buffer)
+    {
+        buffer.writeInt(this.fixtures.size());
+
+        for (AbstractFixture fixture : this.fixtures)
+        {
+            fixture.toByteBuf(buffer);
+        }
     }
 
     /**

@@ -3,6 +3,7 @@ package mchorse.aperture.camera;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,16 @@ public class Angle
     public float roll;
     @Expose
     public float fov = 70.0F;
+
+    public static Angle fromByteBuf(ByteBuf buffer)
+    {
+        return new Angle(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+    }
+
+    public Angle(float yaw, float pitch, float roll, float fov)
+    {
+        this.set(yaw, pitch, roll, fov);
+    }
 
     public Angle(float yaw, float pitch)
     {
@@ -59,6 +70,14 @@ public class Angle
         float fov = Minecraft.getMinecraft().gameSettings.fovSetting;
 
         this.set(player.rotationYaw, player.rotationPitch, ClientProxy.control.roll, fov);
+    }
+
+    public void toByteBuf(ByteBuf buffer)
+    {
+        buffer.writeFloat(this.yaw);
+        buffer.writeFloat(this.pitch);
+        buffer.writeFloat(this.roll);
+        buffer.writeFloat(this.fov);
     }
 
     @Override

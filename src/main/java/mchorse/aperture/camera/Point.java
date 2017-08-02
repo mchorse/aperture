@@ -3,6 +3,7 @@ package mchorse.aperture.camera;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -19,6 +20,11 @@ public class Point
     public float y;
     @Expose
     public float z;
+
+    public static Point fromByteBuf(ByteBuf buffer)
+    {
+        return new Point(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+    }
 
     public Point(float x, float y, float z)
     {
@@ -40,6 +46,13 @@ public class Point
     public void set(EntityPlayer player)
     {
         this.set((float) player.posX, (float) player.posY, (float) player.posZ);
+    }
+
+    public void toByteBuf(ByteBuf buffer)
+    {
+        buffer.writeFloat(this.x);
+        buffer.writeFloat(this.y);
+        buffer.writeFloat(this.z);
     }
 
     @Override

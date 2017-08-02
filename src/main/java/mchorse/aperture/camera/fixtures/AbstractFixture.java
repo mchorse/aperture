@@ -6,11 +6,13 @@ import java.util.Map;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.Position;
 import mchorse.aperture.commands.SubCommandBase;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
  * Abstract camera fixture
@@ -70,6 +72,31 @@ public abstract class AbstractFixture
         else if (type == CIRCULAR) return new CircularFixture(duration);
 
         throw new Exception("Camera fixture by type '" + type + "' wasn't found!");
+    }
+
+    /**
+     * Create an abstract camera fixture out of byte buffer
+     */
+    public static AbstractFixture readFromByteBuf(ByteBuf buffer)
+    {
+        byte type = buffer.readByte();
+        long duration = buffer.readLong();
+
+        try
+        {
+            AbstractFixture fixture = fromType(type, duration);
+
+            fixture.fromByteBuf(buffer);
+
+            return fixture;
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error reading abstract camera fixture from ByteBuf of type " + type + " and " + duration + "t duration!!!");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
@@ -154,6 +181,26 @@ public abstract class AbstractFixture
 
     public void toJSON(JsonObject object)
     {}
+
+    /* ByteBuf (de)serialization methods */
+
+    /**
+     * Read abstract fixture's properties from byte buffer 
+     */
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        this.name = ByteBufUtils.readUTF8String(buffer);
+    }
+
+    /**
+     * Write this abstract fixture to the byte buffer 
+     */
+    public void toByteBuf(ByteBuf buffer)
+    {
+        buffer.writeByte(this.getType());
+        buffer.writeLong(this.duration);
+        ByteBufUtils.writeUTF8String(buffer, this.name);
+    }
 
     /* Abstract methods */
 
