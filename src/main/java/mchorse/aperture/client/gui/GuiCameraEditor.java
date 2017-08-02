@@ -21,6 +21,8 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiFixturesPopup.IFixtureSelector;
 import mchorse.aperture.client.gui.GuiPlaybackScrub.IScrubListener;
 import mchorse.aperture.client.gui.GuiProfilesManager.IProfileListener;
+import mchorse.aperture.client.gui.config.GuiCameraConfig;
+import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
@@ -142,6 +144,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     public GuiFixturesPopup popup;
     public GuiPlaybackScrub scrub;
     public GuiProfilesManager profiles;
+    public GuiConfigCameraOptions cameraOptions;
 
     /**
      * Current fixture panel to display
@@ -276,7 +279,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.scrub = new GuiPlaybackScrub(this, null);
         this.popup = new GuiFixturesPopup(this);
         this.profiles = new GuiProfilesManager(this);
-        this.config = new GuiCameraConfig(this);
+        this.cameraOptions = new GuiConfigCameraOptions(this);
+
+        this.config = new GuiCameraConfig();
+        this.config.options.add(this.cameraOptions);
 
         /* Initiating tooltips */
         this.tooltips.put(0, I18n.format("aperture.gui.tooltips.jump_next_fixture"));
@@ -607,7 +613,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 11)
         {
-            this.config.visible = true;
+            this.config.visible = !this.config.visible;
             this.profiles.visible = false;
         }
 
@@ -723,9 +729,9 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         else if (keyCode == Keyboard.KEY_F)
         {
             /* Toggle flight */
-            this.config.flight.playPressSound(this.mc.getSoundHandler());
-            this.config.flight.mousePressed(mc, this.config.flight.xPosition + 1, this.config.flight.yPosition + 1);
-            this.config.actionButtonPerformed(this.config.flight);
+            this.cameraOptions.flight.playPressSound(this.mc.getSoundHandler());
+            this.cameraOptions.flight.mousePressed(mc, this.cameraOptions.flight.xPosition + 1, this.cameraOptions.flight.yPosition + 1);
+            this.cameraOptions.actionButtonPerformed(this.cameraOptions.flight);
         }
 
         if (this.flight.enabled)
@@ -736,9 +742,9 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (keyCode == Keyboard.KEY_S)
         {
             /* Toggle sync */
-            this.config.sync.playPressSound(this.mc.getSoundHandler());
-            this.config.sync.mousePressed(mc, this.config.sync.xPosition + 1, this.config.sync.yPosition + 1);
-            this.config.actionButtonPerformed(this.config.sync);
+            this.cameraOptions.sync.playPressSound(this.mc.getSoundHandler());
+            this.cameraOptions.sync.mousePressed(mc, this.cameraOptions.sync.xPosition + 1, this.cameraOptions.sync.yPosition + 1);
+            this.cameraOptions.actionButtonPerformed(this.cameraOptions.sync);
         }
         else if (keyCode == Keyboard.KEY_SPACE)
         {
@@ -801,7 +807,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             return;
         }
 
+        boolean wasVisible = this.config.visible;
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (this.config.visible && wasVisible && !this.config.area.isInside(mouseX, mouseY))
+        {
+            this.config.visible = false;
+
+            return;
+        }
 
         if (this.fixturePanel != null)
         {
