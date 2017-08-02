@@ -17,6 +17,8 @@ aperture.config:
         camera_simulate_velocity: Velocity simulation
         camera_debug_ticks: Debug ticks
         
+        gui_render_mouse: Render mouse cursor in GUIs
+        
     smooth:
         title: Smooth camera
         tooltip: Smooth camera options

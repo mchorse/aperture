@@ -81,6 +81,11 @@ public class ApertureConfig
      */
     public boolean camera_debug_ticks;
 
+    /**
+     * Render mouse 
+     */
+    public boolean gui_render_mouse;
+
     /* Non conifg option stuff */
 
     /**
@@ -118,6 +123,9 @@ public class ApertureConfig
 
         /* Processing camera command name */
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");
+
+        /* Mouse rendering */
+        this.gui_render_mouse = this.config.getBoolean("gui_render_mouse", camera, false, prefix + "gui_render_mouse");
 
         if (this.camera_command_name.isEmpty())
         {
