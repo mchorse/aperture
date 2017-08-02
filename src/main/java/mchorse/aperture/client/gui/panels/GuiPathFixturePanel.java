@@ -43,7 +43,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle = new GuiAngleModule(this, font);
         this.points = new GuiPointsModule(this, font);
         this.interp = new GuiInterpModule(this);
-        this.perPointDuration = new GuiCheckBox(0, 0, 0, "Per point duration", false);
+        this.perPointDuration = new GuiCheckBox(0, 0, 0, I18n.format("aperture.gui.panels.per_point"), false);
 
         this.height = 100;
     }
@@ -124,13 +124,20 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     {
         super.select(fixture, duration);
 
-        int index = (int) ((duration / (float) fixture.getDuration()) * fixture.getCount());
-        DurablePosition pos = fixture.getPoint(index);
+        int index = this.points.index;
 
-        this.position = pos;
+        if (duration != -1)
+        {
+            index = (int) ((duration / (float) fixture.getDuration()) * fixture.getCount());
 
-        this.point.fill(pos.point);
-        this.angle.fill(pos.angle);
+            DurablePosition pos = fixture.getPoint(index);
+
+            this.position = pos;
+            this.points.index = index;
+        }
+
+        this.point.fill(this.position.point);
+        this.angle.fill(this.position.angle);
         this.points.fill(fixture);
         this.interp.fill(fixture);
         this.perPointDuration.setIsChecked(fixture.perPointDuration);

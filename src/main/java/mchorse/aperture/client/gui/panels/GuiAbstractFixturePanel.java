@@ -157,6 +157,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
 
     public void editFixture()
     {
+        this.select(this.fixture, -1);
         this.editor.updateProfile();
     }
 

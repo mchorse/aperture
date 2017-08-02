@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.ClientProxy;
@@ -117,15 +118,9 @@ public class GuiProfilesManager implements IGuiModule
             this.updateButtons();
         }
 
-        if (this.add.mousePressed(mc, mouseX, mouseY) && !this.name.getText().isEmpty())
+        if (this.add.mousePressed(mc, mouseX, mouseY))
         {
-            CameraProfile profile = new CameraProfile(new ServerDestination(this.name.getText()));
-            ClientProxy.control.addProfile(profile);
-
-            this.editor.selectProfile(profile);
-
-            this.name.setText("");
-            this.name.setCursorPositionZero();
+            this.createCameraProfile(this.name.getText());
         }
 
         if (this.scrollLoaded.isInside(mouseX, mouseY))
@@ -183,6 +178,22 @@ public class GuiProfilesManager implements IGuiModule
         this.name.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
+    private void createCameraProfile(String text)
+    {
+        if (text.isEmpty())
+        {
+            return;
+        }
+
+        CameraProfile profile = new CameraProfile(new ServerDestination(text));
+        ClientProxy.control.addProfile(profile);
+
+        this.editor.selectProfile(profile);
+
+        this.name.setText("");
+        this.name.setCursorPositionZero();
+    }
+
     public void mouseScroll(int mouseX, int mouseY, int scroll)
     {
         ScrollArea area = this.showLoaded ? this.scrollLoaded : this.scrollLoad;
@@ -195,14 +206,20 @@ public class GuiProfilesManager implements IGuiModule
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-    }
+    {}
 
     @Override
     public void keyTyped(char typedChar, int keyCode)
     {
         if (!this.visible)
         {
+            return;
+        }
+
+        if (keyCode == Keyboard.KEY_RETURN)
+        {
+            this.createCameraProfile(this.name.getText());
+
             return;
         }
 

@@ -25,6 +25,7 @@ aperture.gui:
         spectator: Spectator
         show_path: Show path
         sync: Sync
+        flight: Flight mode
 
     tooltips:
         jump_next_fixture: Jump to next fixture
@@ -81,6 +82,7 @@ aperture.gui:
         angle: Angle
         circle: Circle
         selector: Selector
+        per_point: Per point duration
 
         interps:
             linear: Linear
