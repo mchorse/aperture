@@ -38,6 +38,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -939,6 +940,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             /* Draw widgets */
             this.scrub.draw(mouseX, mouseY, partialTicks);
+            this.drawIcons();
 
             if (this.fixturePanel != null)
             {
@@ -962,6 +964,32 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                     this.drawTooltip(label, button.xPosition, button.yPosition + button.height + 6);
                 }
             }
+        }
+    }
+
+    private void drawIcons()
+    {
+        if (!this.syncing && !this.flight.enabled)
+        {
+            return;
+        }
+
+        int x = this.width - 18;
+        int y = 22;
+
+        this.mc.renderEngine.bindTexture(EDITOR_TEXTURE);
+
+        GlStateManager.color(1, 1, 1, 1);
+
+        if (this.syncing)
+        {
+            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, 32, 16, 16, 256, 256);
+            x -= 20;
+        }
+
+        if (this.flight.enabled)
+        {
+            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, 48, 16, 16, 256, 256);
         }
     }
 
