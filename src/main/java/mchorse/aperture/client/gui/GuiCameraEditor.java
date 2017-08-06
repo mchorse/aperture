@@ -584,7 +584,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                 this.scrub.index = to;
             }
         }
-        else if (id == 6 && this.fixturePanel != null)
+        else if (id == 6)
         {
             this.shiftDurationToCursor();
         }
@@ -657,6 +657,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private void shiftDurationToCursor()
     {
+        if (this.fixturePanel == null)
+        {
+            return;
+        }
+
         /* Move duration to the scrub location */
         AbstractFixture fixture = this.profile.get(this.scrub.index);
         long offset = this.profile.calculateOffset(fixture);
