@@ -11,6 +11,7 @@ public class GuiCameraConfig implements IGuiModule
 {
     public Area area = new Area();
     public List<AbstractGuiConfigOptions> options = new ArrayList<AbstractGuiConfigOptions>();
+    public List<AbstractGuiConfigOptions> activeOptions = new ArrayList<AbstractGuiConfigOptions>();
 
     public boolean visible;
 
@@ -27,12 +28,20 @@ public class GuiCameraConfig implements IGuiModule
         int width = 0;
         int height = 0;
 
+        this.activeOptions.clear();
+
         for (AbstractGuiConfigOptions options : this.options)
         {
+            if (!options.isActive())
+            {
+                continue;
+            }
+
             width += options.getWidth();
             height = Math.max(height, options.getHeight());
 
             options.update(x + w - width, y);
+            this.activeOptions.add(options);
         }
 
         this.area.set(x + w - width, y, width, height);
@@ -43,7 +52,7 @@ public class GuiCameraConfig implements IGuiModule
     {
         if (this.visible)
         {
-            for (AbstractGuiConfigOptions options : this.options)
+            for (AbstractGuiConfigOptions options : this.activeOptions)
             {
                 options.mouseClicked(mouseX, mouseY, mouseButton);
             }
@@ -55,7 +64,7 @@ public class GuiCameraConfig implements IGuiModule
     {
         if (this.visible)
         {
-            for (AbstractGuiConfigOptions options : this.options)
+            for (AbstractGuiConfigOptions options : this.activeOptions)
             {
                 options.mouseReleased(mouseX, mouseY, state);
             }
@@ -67,7 +76,7 @@ public class GuiCameraConfig implements IGuiModule
     {
         if (this.visible)
         {
-            for (AbstractGuiConfigOptions options : this.options)
+            for (AbstractGuiConfigOptions options : this.activeOptions)
             {
                 options.keyTyped(typedChar, keyCode);
             }
@@ -81,7 +90,7 @@ public class GuiCameraConfig implements IGuiModule
         {
             Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xaa000000);
 
-            for (AbstractGuiConfigOptions options : this.options)
+            for (AbstractGuiConfigOptions options : this.activeOptions)
             {
                 options.draw(mouseX, mouseY, partialTicks);
             }

@@ -117,6 +117,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         {
             this.fixture.interpolationAngle = this.interp.typeFromIndex(((GuiCirculate) button).getValue());
         }
+
+        this.editor.updateProfile();
     }
 
     @Override
@@ -233,6 +235,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         if (this.perPointDuration.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY))
         {
             this.fixture.perPointDuration = this.perPointDuration.isChecked();
+            this.editor.updateProfile();
 
             if (this.fixture.perPointDuration)
             {

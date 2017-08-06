@@ -38,6 +38,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -550,7 +551,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 1)
         {
-            this.scrub.setValue(this.scrub.value + 1);
+            this.jumpToNextFrame();
         }
         else if (id == 2)
         {
@@ -563,7 +564,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 3)
         {
-            this.scrub.setValue(this.scrub.value - 1);
+            this.jumpToPrevFrame();
         }
         else if (id == 4)
         {
@@ -583,20 +584,9 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                 this.scrub.index = to;
             }
         }
-        else if (id == 6 && this.fixturePanel != null)
+        else if (id == 6)
         {
-            /* Move duration to the scrub location */
-            AbstractFixture fixture = this.profile.get(this.scrub.index);
-            long offset = this.profile.calculateOffset(fixture);
-
-            if (this.scrub.value > offset)
-            {
-                fixture.setDuration(this.scrub.value - offset);
-                this.updateProfile();
-
-                this.updateValues();
-                this.fixturePanel.select(fixture, 0);
-            }
+            this.shiftDurationToCursor();
         }
         else if (id == 7 && this.fixturePanel != null)
         {
@@ -647,11 +637,51 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     }
 
     /**
+     * Jump to the next frame (tick)
+     */
+    private void jumpToNextFrame()
+    {
+        this.scrub.setValueFromScrub(this.scrub.value + 1);
+    }
+
+    /**
+     * Jump to the previous frame (tick) 
+     */
+    private void jumpToPrevFrame()
+    {
+        this.scrub.setValueFromScrub(this.scrub.value - 1);
+    }
+
+    /**
+     * Shift duration to the cursor  
+     */
+    private void shiftDurationToCursor()
+    {
+        if (this.fixturePanel == null)
+        {
+            return;
+        }
+
+        /* Move duration to the scrub location */
+        AbstractFixture fixture = this.profile.get(this.scrub.index);
+        long offset = this.profile.calculateOffset(fixture);
+
+        if (this.scrub.value > offset)
+        {
+            fixture.setDuration(this.scrub.value - offset);
+            this.updateProfile();
+
+            this.updateValues();
+            this.fixturePanel.select(fixture, 0);
+        }
+    }
+
+    /**
      * Jump to the next camera fixture
      */
     private void jumpToNextFixture()
     {
-        this.scrub.setValue((int) this.profile.calculateOffset(this.scrub.value, true));
+        this.scrub.setValueFromScrub((int) this.profile.calculateOffset(this.scrub.value, true));
     }
 
     /**
@@ -659,7 +689,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private void jumpToPrevFixture()
     {
-        this.scrub.setValue((int) this.profile.calculateOffset(this.scrub.value - 1, false));
+        this.scrub.setValueFromScrub((int) this.profile.calculateOffset(this.scrub.value - 1, false));
     }
 
     /**
@@ -739,6 +769,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             return;
         }
 
+        boolean shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+
         if (keyCode == Keyboard.KEY_S)
         {
             /* Toggle sync */
@@ -762,6 +794,32 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             /* Deselect current fixture */
             this.pickCameraFixture(null, 0);
+        }
+        else if (keyCode == Keyboard.KEY_M)
+        {
+            this.shiftDurationToCursor();
+        }
+        else if (keyCode == Keyboard.KEY_RIGHT)
+        {
+            if (shift)
+            {
+                this.jumpToNextFixture();
+            }
+            else
+            {
+                this.jumpToNextFrame();
+            }
+        }
+        else if (keyCode == Keyboard.KEY_LEFT)
+        {
+            if (shift)
+            {
+                this.jumpToPrevFixture();
+            }
+            else
+            {
+                this.jumpToPrevFrame();
+            }
         }
     }
 
@@ -791,6 +849,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.profiles.mouseClicked(mouseX, mouseY, mouseButton);
 
             return;
+        }
+        else
+        {
+            this.profiles.name.setFocused(false);
         }
 
         this.config.mouseClicked(mouseX, mouseY, mouseButton);
@@ -910,7 +972,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (running)
             {
                 this.scrub.value = (int) this.runner.getTicks();
-                this.scrub.value = MathHelper.clamp(this.scrub.value, 0, this.scrub.max);
+                this.scrub.value = MathHelper.clamp(this.scrub.value, this.scrub.min, this.scrub.max);
             }
 
             if (!running && this.playing)
@@ -923,6 +985,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             /* Draw widgets */
             this.scrub.draw(mouseX, mouseY, partialTicks);
+            this.drawIcons();
 
             if (this.fixturePanel != null)
             {
@@ -946,6 +1009,32 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                     this.drawTooltip(label, button.xPosition, button.yPosition + button.height + 6);
                 }
             }
+        }
+    }
+
+    private void drawIcons()
+    {
+        if (!this.syncing && !this.flight.enabled)
+        {
+            return;
+        }
+
+        int x = this.width - 18;
+        int y = 22;
+
+        this.mc.renderEngine.bindTexture(EDITOR_TEXTURE);
+
+        GlStateManager.color(1, 1, 1, 1);
+
+        if (this.syncing)
+        {
+            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, 32, 16, 16, 256, 256);
+            x -= 20;
+        }
+
+        if (this.flight.enabled)
+        {
+            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, 48, 16, 16, 256, 256);
         }
     }
 

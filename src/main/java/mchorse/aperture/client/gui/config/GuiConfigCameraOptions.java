@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.Loader;
 
 public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
 {
+    private String title = I18n.format("aperture.gui.config.title");
+
     public GuiCheckBox minema;
     public GuiCheckBox spectator;
     public GuiCheckBox renderPath;
@@ -61,7 +63,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     @Override
     public int getWidth()
     {
-        return Math.max(this.max + 8, Minecraft.getMinecraft().fontRendererObj.getStringWidth("Camera Options") + 8);
+        return Math.max(this.max + 8, Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.title) + 8);
     }
 
     @Override
@@ -85,6 +87,12 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
 
         this.x = x;
         this.y = y;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        return true;
     }
 
     @Override
@@ -136,6 +144,6 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     {
         super.draw(mouseX, mouseY, partialTicks);
 
-        Minecraft.getMinecraft().fontRendererObj.drawString("Camera Options", this.x + 4, this.y + 4, 0xffffff, true);
+        Minecraft.getMinecraft().fontRendererObj.drawString(this.title, this.x + 4, this.y + 4, 0xffffff, true);
     }
 }

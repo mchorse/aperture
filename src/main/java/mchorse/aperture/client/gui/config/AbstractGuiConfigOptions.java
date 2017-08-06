@@ -23,6 +23,8 @@ public abstract class AbstractGuiConfigOptions implements IGuiModule, IButtonLis
 
     public abstract void update(int x, int y);
 
+    public abstract boolean isActive();
+
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {

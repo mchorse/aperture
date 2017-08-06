@@ -75,7 +75,7 @@ public class GuiPlaybackScrub
     }
 
     /**
-     * Set the value of the scrubber using API
+     * Set the value of the scrubb using API
      */
     public void setValue(int value)
     {
