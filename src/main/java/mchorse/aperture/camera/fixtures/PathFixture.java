@@ -239,12 +239,17 @@ public class PathFixture extends AbstractFixture
             long point = 0;
             long prevPoint = 0;
 
-            while (point < frame)
+            while (point - 1 < frame)
             {
+                if (index >= points)
+                {
+                    break;
+                }
+
                 prevPoint = point;
                 point += this.points.get(index).getDuration();
 
-                if (point >= frame)
+                if (point - 1 >= frame)
                 {
                     break;
                 }
@@ -254,15 +259,17 @@ public class PathFixture extends AbstractFixture
 
             if (index < points - 1)
             {
-                float diff = point - prevPoint + 1.0F;
+                float diff = point - prevPoint;
 
-                x = (float) ((frame + partialTicks) - prevPoint) / diff;
+                x = (float) ((frame + partialTicks) - prevPoint) / (diff == 0 ? 1.0F : diff);
             }
             else
             {
                 index = points - 1;
                 x = 0;
             }
+
+            index = MathHelper.clamp_int(index, 0, points - 1);
         }
         else
         {
@@ -397,8 +404,8 @@ public class PathFixture extends AbstractFixture
         super.toByteBuf(buffer);
 
         buffer.writeBoolean(this.perPointDuration);
-        buffer.writeInt(this.interpolationPos.id);
-        buffer.writeInt(this.interpolationAngle.id);
+        buffer.writeByte(this.interpolationPos.id);
+        buffer.writeByte(this.interpolationAngle.id);
 
         buffer.writeInt(this.points.size());
 
