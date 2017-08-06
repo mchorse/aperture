@@ -550,7 +550,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 1)
         {
-            this.scrub.setValue(this.scrub.value + 1);
+            this.scrub.setValueFromScrub(this.scrub.value + 1);
         }
         else if (id == 2)
         {
@@ -563,7 +563,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 3)
         {
-            this.scrub.setValue(this.scrub.value - 1);
+            this.scrub.setValueFromScrub(this.scrub.value - 1);
         }
         else if (id == 4)
         {
@@ -659,7 +659,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private void jumpToNextFixture()
     {
-        this.scrub.setValue((int) this.profile.calculateOffset(this.scrub.value, true));
+        this.scrub.setValueFromScrub((int) this.profile.calculateOffset(this.scrub.value, true));
     }
 
     /**
@@ -667,7 +667,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private void jumpToPrevFixture()
     {
-        this.scrub.setValue((int) this.profile.calculateOffset(this.scrub.value - 1, false));
+        this.scrub.setValueFromScrub((int) this.profile.calculateOffset(this.scrub.value - 1, false));
     }
 
     /**
@@ -926,7 +926,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (running)
             {
                 this.scrub.value = (int) this.runner.getTicks();
-                this.scrub.value = MathHelper.clamp_int(this.scrub.value, 0, this.scrub.max);
+                this.scrub.value = MathHelper.clamp_int(this.scrub.value, this.scrub.min, this.scrub.max);
             }
 
             if (!running && this.playing)
