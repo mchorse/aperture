@@ -363,6 +363,6 @@ public class GuiProfilesManager implements IGuiModule
      */
     public boolean hasAnyActiveTextfields()
     {
-        return this.name.isFocused();
+        return this.visible && this.name.isFocused();
     }
 }

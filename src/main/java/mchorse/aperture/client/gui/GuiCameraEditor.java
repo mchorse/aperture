@@ -804,6 +804,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             return;
         }
+        else
+        {
+            this.profiles.name.setFocused(false);
+        }
 
         this.config.mouseClicked(mouseX, mouseY, mouseButton);
 
