@@ -35,7 +35,7 @@ aperture.gui:
         jump_prev_fixture: Jump to previous fixture
 
         move_up: Move fixture forward
-        move_duration: Move duration to the cursor
+        move_duration: Move duration to the cursor (M)
         copy_position: Copy player's position (C)
         move_down: Move fixture backward
 

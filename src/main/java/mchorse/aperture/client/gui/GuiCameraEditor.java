@@ -585,18 +585,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 6 && this.fixturePanel != null)
         {
-            /* Move duration to the scrub location */
-            AbstractFixture fixture = this.profile.get(this.scrub.index);
-            long offset = this.profile.calculateOffset(fixture);
-
-            if (this.scrub.value > offset)
-            {
-                fixture.setDuration(this.scrub.value - offset);
-                this.updateProfile();
-
-                this.updateValues();
-                this.fixturePanel.select(fixture, 0);
-            }
+            this.shiftDurationToCursor();
         }
         else if (id == 7 && this.fixturePanel != null)
         {
@@ -643,6 +632,25 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
                 this.updateValues();
             }
+        }
+    }
+
+    /**
+     * Shift duration to the cursor  
+     */
+    private void shiftDurationToCursor()
+    {
+        /* Move duration to the scrub location */
+        AbstractFixture fixture = this.profile.get(this.scrub.index);
+        long offset = this.profile.calculateOffset(fixture);
+
+        if (this.scrub.value > offset)
+        {
+            fixture.setDuration(this.scrub.value - offset);
+            this.updateProfile();
+
+            this.updateValues();
+            this.fixturePanel.select(fixture, 0);
         }
     }
 
@@ -762,6 +770,10 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             /* Deselect current fixture */
             this.pickCameraFixture(null, 0);
+        }
+        else if (keyCode == Keyboard.KEY_M)
+        {
+            this.shiftDurationToCursor();
         }
     }
 
