@@ -88,6 +88,12 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     }
 
     @Override
+    public boolean isActive()
+    {
+        return true;
+    }
+
+    @Override
     public void actionButtonPerformed(GuiButton button)
     {
         /* Options */
