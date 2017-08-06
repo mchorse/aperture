@@ -381,6 +381,10 @@ public class PathFixture extends AbstractFixture
     {
         super.fromByteBuf(buffer);
 
+        this.perPointDuration = buffer.readBoolean();
+        this.interpolationPos = interpFromInt(buffer.readByte());
+        this.interpolationAngle = interpFromInt(buffer.readByte());
+
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
             this.addPoint(DurablePosition.fromByteBuf(buffer));
@@ -392,6 +396,10 @@ public class PathFixture extends AbstractFixture
     {
         super.toByteBuf(buffer);
 
+        buffer.writeBoolean(this.perPointDuration);
+        buffer.writeInt(this.interpolationPos.id);
+        buffer.writeInt(this.interpolationAngle.id);
+
         buffer.writeInt(this.points.size());
 
         for (DurablePosition pos : this.points)
@@ -401,6 +409,21 @@ public class PathFixture extends AbstractFixture
     }
 
     /* Interpolation */
+
+    public static InterpolationType interpFromInt(int number)
+    {
+        if (number == 1)
+        {
+            return InterpolationType.CUBIC;
+        }
+
+        if (number == 2)
+        {
+            return InterpolationType.HERMITE;
+        }
+
+        return InterpolationType.LINEAR;
+    }
 
     public static InterpolationType interpFromString(String string)
     {
@@ -419,13 +442,15 @@ public class PathFixture extends AbstractFixture
 
     public static enum InterpolationType
     {
-        LINEAR("linear"), CUBIC("cubic"), HERMITE("hermite");
+        LINEAR("linear", 0), CUBIC("cubic", 1), HERMITE("hermite", 2);
 
         public final String name;
+        public final int id;
 
-        private InterpolationType(String name)
+        private InterpolationType(String name, int id)
         {
             this.name = name;
+            this.id = id;
         }
     }
 
