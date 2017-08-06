@@ -551,7 +551,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 1)
         {
-            this.scrub.setValueFromScrub(this.scrub.value + 1);
+            this.jumpToNextFrame();
         }
         else if (id == 2)
         {
@@ -564,7 +564,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 3)
         {
-            this.scrub.setValueFromScrub(this.scrub.value - 1);
+            this.jumpToPrevFrame();
         }
         else if (id == 4)
         {
@@ -634,6 +634,22 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                 this.updateValues();
             }
         }
+    }
+
+    /**
+     * Jump to the next frame (tick)
+     */
+    private void jumpToNextFrame()
+    {
+        this.scrub.setValueFromScrub(this.scrub.value + 1);
+    }
+
+    /**
+     * Jump to the previous frame (tick) 
+     */
+    private void jumpToPrevFrame()
+    {
+        this.scrub.setValueFromScrub(this.scrub.value - 1);
     }
 
     /**
@@ -748,6 +764,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             return;
         }
 
+        boolean shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+
         if (keyCode == Keyboard.KEY_S)
         {
             /* Toggle sync */
@@ -775,6 +793,28 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         else if (keyCode == Keyboard.KEY_M)
         {
             this.shiftDurationToCursor();
+        }
+        else if (keyCode == Keyboard.KEY_RIGHT)
+        {
+            if (shift)
+            {
+                this.jumpToNextFixture();
+            }
+            else
+            {
+                this.jumpToNextFrame();
+            }
+        }
+        else if (keyCode == Keyboard.KEY_LEFT)
+        {
+            if (shift)
+            {
+                this.jumpToPrevFixture();
+            }
+            else
+            {
+                this.jumpToPrevFrame();
+            }
         }
     }
 

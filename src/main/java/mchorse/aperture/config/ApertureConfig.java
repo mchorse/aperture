@@ -82,7 +82,7 @@ public class ApertureConfig
     public boolean camera_debug_ticks;
 
     /**
-     * Render mouse 
+     * Render a custom mouse pointer in GUIs
      */
     public boolean gui_render_mouse;
 
@@ -125,7 +125,7 @@ public class ApertureConfig
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");
 
         /* Mouse rendering */
-        this.gui_render_mouse = this.config.getBoolean("gui_render_mouse", camera, false, prefix + "gui_render_mouse");
+        this.gui_render_mouse = this.config.getBoolean("gui_render_mouse", camera, false, "Render a custom mouse pointer in GUIs", prefix + "gui_render_mouse");
 
         if (this.camera_command_name.isEmpty())
         {

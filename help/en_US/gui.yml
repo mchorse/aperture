@@ -28,11 +28,11 @@ aperture.gui:
         flight: Flight mode (F)
 
     tooltips:
-        jump_next_fixture: Jump to next fixture
-        jump_next_frame: Jump to next frame
-        plause: Play/pause (space)
-        jump_prev_frame: Jump to previous frame
-        jump_prev_fixture: Jump to previous fixture
+        jump_next_fixture: Jump to next fixture (Shift + Right)
+        jump_next_frame: Jump to next frame (Right)
+        plause: Play/pause (Space)
+        jump_prev_frame: Jump to previous frame (Left)
+        jump_prev_fixture: Jump to previous fixture (Shift + Left)
 
         move_up: Move fixture forward
         move_duration: Move duration to the cursor (M)
