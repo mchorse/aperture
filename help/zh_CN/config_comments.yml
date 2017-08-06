@@ -13,6 +13,8 @@ aperture.config.comments:
         camera_command_name: 允许你重新绑定相机命令的名字（需要重启游戏来生效）
         camera_simulate_velocity: 在回放时模拟玩家走动摇摆（从腿的角度）
 
+        gui_render_mouse: 在打开GUI的时候渲染出鼠标的材质
+
     smooth:
         camera_smooth_clamp: 在－90和90度之间，修剪平滑相机的俯仰程度？嗡!嗡!嗡!
 

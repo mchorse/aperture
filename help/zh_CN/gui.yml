@@ -21,21 +21,24 @@ aperture.gui:
     ok: 好
 
     config:
+        title: 相机选项
+
         minema: Minema
         spectator: 观看者
         show_path: 显示路径
-        sync: 同步
+        sync: 同步 (S)
+        flight: 飞行模式 (F)
 
     tooltips:
-        jump_next_fixture: 跳到下一个关键点
-        jump_next_frame: 跳到下一帧
-        plause: 播放/暂停
-        jump_prev_frame: 跳到上一帧
-        jump_prev_fixture: 跳到上一个关键点
+        jump_next_fixture: 跳到下一个关键点 (Shift + 右)
+        jump_next_frame: 跳到下一帧 (右)
+        plause: 播放/暂停 (空格)
+        jump_prev_frame: 跳到上一帧 (左)
+        jump_prev_fixture: 跳到上一个关键点 (Shift + 左)
 
         move_up: 将关键点向前移动
-        move_duration: 将持续时间移动到光标
-        copy_position: 拷贝玩家的位置
+        move_duration: 将持续时间移动到光标 (M)
+        copy_position: 拷贝玩家的位置 (C)
         move_down: 将关键点向后移动
 
         save: 保存相机配置
@@ -81,6 +84,7 @@ aperture.gui:
         angle: 角度
         circle: 圆圈
         selector: 选择器
+        per_point: 持续长度/节点
 
         interps:
             linear: 线性
