@@ -21,6 +21,8 @@ aperture.gui:
     ok: Ok
 
     config:
+        title: Camera Options
+        
         minema: Minema
         spectator: Spectator
         show_path: Show path
