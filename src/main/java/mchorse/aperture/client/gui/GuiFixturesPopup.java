@@ -5,13 +5,13 @@ import java.util.List;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraRenderer.Color;
-import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -133,7 +133,7 @@ public class GuiFixturesPopup
         {
             PathFixture path = new PathFixture(duration);
 
-            path.addPoint(new Position(player));
+            path.addPoint(new DurablePosition(player));
             fixture = path;
         }
         else if (button == this.look)

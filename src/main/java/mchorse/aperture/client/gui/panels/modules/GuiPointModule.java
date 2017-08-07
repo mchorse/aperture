@@ -62,6 +62,11 @@ public class GuiPointModule implements IGuiModule
         this.z.mouseReleased(mouseX, mouseY, state);
     }
 
+    public boolean hasActiveTextfields()
+    {
+        return this.x.text.isFocused() || this.y.text.isFocused() || this.z.text.isFocused();
+    }
+
     @Override
     public void keyTyped(char typedChar, int keyCode)
     {

@@ -3,7 +3,7 @@ aperture.config:
     camera:
         title: 相机
         tooltip: 通用相机配置
-        
+
         camera_duration: 默认关键点时长
         camera_duration_step: 时长步骤
         camera_interpolate_target: 插入以目标为基础的帧
@@ -14,19 +14,23 @@ aperture.config:
         camera_minema: Minema
         camera_smooth_clamp: 修剪相机俯仰程度
         camera_path_default_interp: 默认插入路径类型
-        camera_command_name: Camera command name
-        camera_simulate_velocity: Velocity simulation
-        
+        camera_command_name: 相机命令名称
+        camera_simulate_velocity: 模拟速率
+
+        gui_render_mouse: 在GUI中渲染出鼠标指针
+
     smooth:
         title: 平滑相机
         tooltip: 平滑相机配置
-        
-            roll_speed: 倾斜速度
-            roll_friction: 倾斜摩擦力
 
-            fov_speed: FOV 速度
-            fov_friction: FOV 摩擦力
+        camera_smooth_clamp: 限制幅度
 
-            smooth_enabled: 开启平滑相机
-            mouse_x_friction: 鼠标X轴摩擦力
-            mouse_y_friction: 鼠标Y轴摩擦力
+        roll_speed: 倾斜速度
+        roll_friction: 倾斜摩擦力
+
+        fov_speed: FOV 速度
+        fov_friction: FOV 摩擦力
+
+        smooth_enabled: 开启平滑相机
+        mouse_x_friction: 鼠标X轴摩擦力
+        mouse_y_friction: 鼠标Y轴摩擦力

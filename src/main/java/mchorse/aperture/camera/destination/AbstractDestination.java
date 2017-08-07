@@ -26,6 +26,9 @@ public abstract class AbstractDestination
         return new ServerDestination(resource.getResourcePath());
     }
 
+    /**
+     * Abstract fixture's constructor. It accepts only the filename of a fixture. 
+     */
     public AbstractDestination(String filename)
     {
         this.setFilename(filename);

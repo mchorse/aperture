@@ -1,6 +1,7 @@
 package mchorse.aperture.network.common;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -8,17 +9,17 @@ public class PacketCameraProfile implements IMessage
 {
     public boolean play;
     public String filename;
-    public String profile;
+    public CameraProfile profile;
 
     public PacketCameraProfile()
     {}
 
-    public PacketCameraProfile(String filename, String profile)
+    public PacketCameraProfile(String filename, CameraProfile profile)
     {
         this(filename, profile, false);
     }
 
-    public PacketCameraProfile(String filename, String profile, boolean play)
+    public PacketCameraProfile(String filename, CameraProfile profile, boolean play)
     {
         this.play = play;
         this.filename = filename;
@@ -30,7 +31,8 @@ public class PacketCameraProfile implements IMessage
     {
         this.play = buf.readBoolean();
         this.filename = ByteBufUtils.readUTF8String(buf);
-        this.profile = ByteBufUtils.readUTF8String(buf);
+        this.profile = new CameraProfile(null);
+        this.profile.fromByteBuf(buf);
     }
 
     @Override
@@ -38,6 +40,6 @@ public class PacketCameraProfile implements IMessage
     {
         buf.writeBoolean(this.play);
         ByteBufUtils.writeUTF8String(buf, this.filename);
-        ByteBufUtils.writeUTF8String(buf, this.profile);
+        this.profile.toByteBuf(buf);
     }
 }

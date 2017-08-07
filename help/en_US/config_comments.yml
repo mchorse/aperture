@@ -12,6 +12,9 @@ aperture.config.comments:
         camera_path_default_interp: Default interpolation method for path fixture
         camera_command_name: Allows you to rebind camera command's name (requires game reload to take effect)
         camera_simulate_velocity: Simulate player's velocity during camera playback (see legs in perspective)
+        camera_debug_ticks: Write current camera playback tick to the log
+        
+        gui_render_mouse: Render on the screen a texture of a mouse pointer during GUI
         
     smooth:
         camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range? WUB WUB WUB

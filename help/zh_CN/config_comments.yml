@@ -1,0 +1,29 @@
+# Config strings
+aperture.config.comments:
+    camera:
+        camera_duration_step: 当使用快捷键改变关键点时长时，一次会增加/减少多少？（tick）
+        camera_duration: 相机关键点的默认时长有多久？（tick）
+        camera_interpolate_target: 插入目标为基础（follow和look）的相机关键点的结果
+        camera_interpolate_target_value: 插入目标为基础相机关键点的值
+        camera_spectator: 当开始播放相机回放时切换到旁观模式？
+        camera_step_factor: 为路径帧提供的相机路径参数
+        camera_rotate_factor: Camera rotate factor for rotate keys
+        camera_minema: 为倾斜帧提供的相机倾斜参数
+        camera_path_default_interp: 插入路径时，路径的默认类型
+        camera_command_name: 允许你重新绑定相机命令的名字（需要重启游戏来生效）
+        camera_simulate_velocity: 在回放时模拟玩家走动摇摆（从腿的角度）
+
+        gui_render_mouse: 在打开GUI的时候渲染出鼠标的材质
+
+    smooth:
+        camera_smooth_clamp: 在－90和90度之间，修剪平滑相机的俯仰程度？嗡!嗡!嗡!
+
+        roll_speed: 倾斜加速速度
+        roll_friction: 倾斜加速摩擦力（慢下来有多快）
+
+        fov_speed: FOV加速速度
+        fov_friction: FOV加速摩擦力（慢下来有多快）
+
+        smooth_enabled: 开启平滑相机。嗡!嗡!嗡!
+        mouse_x_friction: 鼠标平滑X轴摩擦力
+        mouse_y_friction: 鼠标平滑Y轴摩擦力

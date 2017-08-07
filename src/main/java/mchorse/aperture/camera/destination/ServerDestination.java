@@ -1,7 +1,6 @@
 package mchorse.aperture.camera.destination;
 
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketLoadCameraProfile;
@@ -28,7 +27,7 @@ public class ServerDestination extends AbstractDestination
     @Override
     public void save(CameraProfile profile)
     {
-        Dispatcher.sendToServer(new PacketCameraProfile(this.filename, CameraUtils.toJSON(profile)));
+        Dispatcher.sendToServer(new PacketCameraProfile(this.filename, profile));
     }
 
     @Override

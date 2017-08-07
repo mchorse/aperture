@@ -4,8 +4,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 
+import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -93,7 +93,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     {
         for (Entry<T, E> entry : map.entrySet())
         {
-            if (Objects.equals(value, entry.getValue()))
+            if (Objects.equal(value, entry.getValue()))
             {
                 return entry.getKey();
             }

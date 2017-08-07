@@ -3,7 +3,9 @@ package mchorse.aperture.camera;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.GameType;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,7 +25,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CameraRunner
 {
     private Minecraft mc = Minecraft.getMinecraft();
-    private float fov = -1;
+    private float fov = 70.0F;
+    private GameType gameMode = GameType.NOT_SET;
     private boolean firstTick = false;
 
     protected boolean isRunning = false;
@@ -102,14 +105,15 @@ public class CameraRunner
 
         if (!this.isRunning)
         {
-            if (Aperture.proxy.config.camera_spectator)
+            this.fov = this.mc.gameSettings.fovSetting;
+            this.gameMode = this.getGameMode(this.mc.player);
+            this.position.set(this.mc.player);
+
+            if (Aperture.proxy.config.camera_spectator && this.gameMode != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode 3");
             }
 
-            this.position.set(this.mc.player);
-
-            this.fov = this.mc.gameSettings.fovSetting;
             MinecraftForge.EVENT_BUS.register(this);
         }
 
@@ -120,15 +124,25 @@ public class CameraRunner
     }
 
     /**
+     * Get game mode of the given player 
+     */
+    public GameType getGameMode(EntityPlayer player)
+    {
+        NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getGameProfile().getId());
+
+        return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
+    }
+
+    /**
      * Stop playback of camera profile 
      */
     public void stop()
     {
         if (this.isRunning)
         {
-            if (Aperture.proxy.config.camera_spectator)
+            if (Aperture.proxy.config.camera_spectator && this.gameMode != GameType.SPECTATOR)
             {
-                this.mc.player.sendChatMessage("/gamemode 1");
+                this.mc.player.sendChatMessage("/gamemode " + this.gameMode.getID());
             }
 
             if (Aperture.proxy.config.camera_minema)
@@ -137,6 +151,8 @@ public class CameraRunner
             }
 
             this.mc.gameSettings.fovSetting = this.fov;
+            this.gameMode = null;
+
             MinecraftForge.EVENT_BUS.unregister(this);
         }
 
@@ -154,7 +170,7 @@ public class CameraRunner
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event)
     {
-        if (this.profile == null)
+        if (this.profile == null || this.mc.player == null)
         {
             this.stop();
 
@@ -226,6 +242,18 @@ public class CameraRunner
                 player.motionX = player.motionY = player.motionZ = 0;
             }
 
+            if (!this.mc.isSingleplayer())
+            {
+                float dx = point.x - prevX;
+                float dy = point.y - prevY;
+                float dz = point.z - prevZ;
+
+                if (dx * dx + dy * dy + dz * dz >= 10 * 10)
+                {
+                    this.mc.player.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                }
+            }
+
             this.yaw = angle.yaw;
             this.pitch = angle.pitch;
 
@@ -265,6 +293,11 @@ public class CameraRunner
     {
         if (event.side == Side.CLIENT && event.player == this.mc.player && event.phase == Phase.START)
         {
+            if (Aperture.proxy.config.camera_debug_ticks)
+            {
+                Aperture.LOGGER.info("Camera frame: " + this.ticks);
+            }
+
             this.ticks++;
         }
     }

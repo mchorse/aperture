@@ -34,4 +34,9 @@ public interface IFixturePanel<T extends AbstractFixture> extends IGuiModule
      * Useful mostly for composite camera fixtures like {@link PathFixture}.
      */
     public long currentOffset();
+
+    /**
+     * Return whether this fixture panel has any "focused" textfields 
+     */
+    public boolean hasActiveTextfields();
 }

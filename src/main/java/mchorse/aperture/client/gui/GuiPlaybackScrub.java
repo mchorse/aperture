@@ -61,7 +61,7 @@ public class GuiPlaybackScrub
      * Set the value of the scrubber. Also, if the value has changed notify
      * the listener.
      */
-    public void setValue(int value)
+    public void setValue(int value, boolean fromScrub)
     {
         int old = this.value;
 
@@ -70,8 +70,24 @@ public class GuiPlaybackScrub
 
         if (this.value != old && this.listener != null)
         {
-            this.listener.scrubbed(this, this.value);
+            this.listener.scrubbed(this, this.value, fromScrub);
         }
+    }
+
+    /**
+     * Set the value of the scrubb using API
+     */
+    public void setValue(int value)
+    {
+        this.setValue(value, false);
+    }
+
+    /**
+     * Set the value of the scrubber from scrub
+     */
+    public void setValueFromScrub(int value)
+    {
+        this.setValue(value, true);
     }
 
     /**
@@ -96,7 +112,7 @@ public class GuiPlaybackScrub
             if (mouseButton == 0)
             {
                 this.scrubbing = true;
-                this.setValue(this.calcValueFromMouse(mouseX));
+                this.setValueFromScrub(this.calcValueFromMouse(mouseX));
             }
             else if (mouseButton == 1 && this.profile != null)
             {
@@ -130,7 +146,7 @@ public class GuiPlaybackScrub
     {
         if (this.scrubbing)
         {
-            this.setValue(this.calcValueFromMouse(mouseX));
+            this.setValueFromScrub(this.calcValueFromMouse(mouseX));
         }
 
         int x = this.area.x;
@@ -171,15 +187,33 @@ public class GuiPlaybackScrub
                 PathFixture path = (PathFixture) fixture;
                 int c = path.getCount() - 1;
 
-                if (c > 0)
+                if (c > 1)
                 {
-                    int fract = (fx - fbx) / c;
-
-                    for (int j = 1; j < c; j++)
+                    if (path.perPointDuration)
                     {
-                        int px = fbx + fract * j;
+                        long duration = path.getDuration();
+                        long frame = path.getPoint(0).getDuration();
 
-                        Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+                        for (int j = 1; j < c; j++)
+                        {
+                            int fract = (int) ((fx - fbx) * ((float) frame / duration));
+                            int px = fbx + fract;
+
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+
+                            frame += path.getPoint(j).getDuration();
+                        }
+                    }
+                    else
+                    {
+                        int fract = (fx - fbx) / c;
+
+                        for (int j = 1; j < c; j++)
+                        {
+                            int px = fbx + fract * j;
+
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+                        }
                     }
                 }
             }
@@ -222,6 +256,6 @@ public class GuiPlaybackScrub
      */
     public static interface IScrubListener
     {
-        public void scrubbed(GuiPlaybackScrub scrub, int value);
+        public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub);
     }
 }

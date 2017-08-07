@@ -3,6 +3,7 @@ package mchorse.aperture.camera;
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -21,6 +22,11 @@ public class Position
     public Point point = new Point(0, 0, 0);
     @Expose
     public Angle angle = new Angle(0, 0);
+
+    public static Position fromByteBuf(ByteBuf buffer)
+    {
+        return new Position(Point.fromByteBuf(buffer), Angle.fromByteBuf(buffer));
+    }
 
     public Position(Point point, Angle angle)
     {
@@ -56,6 +62,12 @@ public class Position
         player.setPositionAndRotation(this.point.x, this.point.y, this.point.z, this.angle.yaw, this.angle.pitch);
         player.setLocationAndAngles(this.point.x, this.point.y, this.point.z, this.angle.yaw, this.angle.pitch);
         player.motionX = player.motionY = player.motionZ = 0;
+    }
+
+    public void toByteBuf(ByteBuf buffer)
+    {
+        this.point.toByteBuf(buffer);
+        this.angle.toByteBuf(buffer);
     }
 
     @Override

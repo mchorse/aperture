@@ -128,6 +128,12 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     }
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return super.hasActiveTextfields() || this.point.hasActiveTextfields();
+    }
+
+    @Override
     public void keyTyped(char typedChar, int keyCode)
     {
         super.keyTyped(typedChar, keyCode);

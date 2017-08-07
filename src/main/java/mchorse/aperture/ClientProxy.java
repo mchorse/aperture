@@ -6,6 +6,7 @@ import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.CameraRunner;
 import mchorse.aperture.client.KeyboardHandler;
+import mchorse.aperture.client.MouseRenderer;
 import mchorse.aperture.client.RenderingHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.commands.CommandCamera;
@@ -33,8 +34,8 @@ public class ClientProxy extends CommonProxy
 {
     /* Camera stuff */
     public static CameraRenderer renderer = new CameraRenderer();
-    public static CameraRunner runner = new CameraRunner();
     public static CameraControl control = new CameraControl();
+    public static CameraRunner runner;
 
     public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
@@ -97,6 +98,8 @@ public class ClientProxy extends CommonProxy
         cameras = new File(path + "/aperture/cameras/");
 
         super.preLoad(event);
+
+        runner = new CameraRunner();
     }
 
     /**
@@ -111,6 +114,7 @@ public class ClientProxy extends CommonProxy
         super.load(event);
 
         /* Event listeners */
+        MinecraftForge.EVENT_BUS.register(new MouseRenderer());
         MinecraftForge.EVENT_BUS.register(new RenderingHandler());
         MinecraftForge.EVENT_BUS.register(keys = new KeyboardHandler());
         MinecraftForge.EVENT_BUS.register(renderer);

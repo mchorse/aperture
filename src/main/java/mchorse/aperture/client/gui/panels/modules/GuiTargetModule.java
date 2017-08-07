@@ -56,6 +56,11 @@ public class GuiTargetModule implements IGuiModule
     public void mouseReleased(int mouseX, int mouseY, int state)
     {}
 
+    public boolean hasActiveTextfields()
+    {
+        return this.selector.isFocused();
+    }
+
     @Override
     public void keyTyped(char typedChar, int keyCode)
     {
