@@ -65,7 +65,7 @@ public class LookFixture extends IdleFixture
      * Totally not taken from EntityLookHelper
      */
     @Override
-    public void applyFixture(float progress, float partialTicks, Position pos)
+    public void applyFixture(long ticks, float partialTicks, Position pos)
     {
         pos.copy(this.position);
 
@@ -102,7 +102,7 @@ public class LookFixture extends IdleFixture
     }
 
     @Override
-    public void preApplyFixture(float progress, Position pos)
+    public void preApplyFixture(long ticks, Position pos)
     {
         this.tryFindingEntity();
 
