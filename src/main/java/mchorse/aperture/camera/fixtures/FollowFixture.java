@@ -44,7 +44,7 @@ public class FollowFixture extends LookFixture
     }
 
     @Override
-    public void applyFixture(float progress, float partialTicks, Position pos)
+    public void applyFixture(long ticks, float partialTicks, Position pos)
     {
         if (this.entity == null || this.entity.isDead)
         {
@@ -79,7 +79,7 @@ public class FollowFixture extends LookFixture
     }
 
     @Override
-    public void preApplyFixture(float progress, Position pos)
+    public void preApplyFixture(long ticks, Position pos)
     {
         this.tryFindingEntity();
 

@@ -197,7 +197,7 @@ public class CameraRenderer
         for (AbstractFixture fixture : profile.getAll())
         {
             fixture.applyFixture(0, 0.0F, prev);
-            fixture.applyFixture(1, 0.0F, next);
+            fixture.applyFixture(fixture.getDuration(), 0.0F, next);
 
             long duration = fixture.getDuration();
 
@@ -240,6 +240,7 @@ public class CameraRenderer
     {
         PathFixture path = (PathFixture) fixture;
         List<DurablePosition> points = path.getPoints();
+        long duration = fixture.getDuration();
 
         final int p = 15;
 
@@ -247,15 +248,15 @@ public class CameraRenderer
         {
             for (int j = 0; j < p; j++)
             {
-                path.applyFixture((float) (j + i * p) / (float) (size * p), 0, prev);
-                path.applyFixture((float) (j + i * p + 1) / (float) (size * p), 0, next);
+                path.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, prev);
+                path.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, next);
 
                 this.drawLine(color, this.playerX, this.playerY, this.playerZ, prev, next);
             }
 
             if (i != 0)
             {
-                path.applyFixture((float) path.getTickForPoint(i) / (float) path.getDuration(), 0, prev);
+                path.applyFixture(path.getTickForPoint(i), 0, prev);
 
                 this.drawPathPoint(color, prev, i);
             }
@@ -334,11 +335,12 @@ public class CameraRenderer
     private void drawCircularFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
     {
         float circles = ((CircularFixture) fixture).circles;
+        long duration = fixture.getDuration();
 
         for (int i = 0; i < circles; i += 3)
         {
-            fixture.applyFixture(i / circles, partialTicks, prev);
-            fixture.applyFixture((i + 2) / circles, partialTicks, next);
+            fixture.applyFixture((long) (i / circles * duration), partialTicks, prev);
+            fixture.applyFixture((long) ((i + 2) / circles * duration), partialTicks, next);
 
             this.drawLine(color, this.playerX, this.playerY, this.playerZ, prev, next);
         }

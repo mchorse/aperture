@@ -213,21 +213,21 @@ public abstract class AbstractFixture
     /**
      * Apply this fixture onto position
      */
-    public abstract void applyFixture(float progress, float partialTick, Position pos);
+    public abstract void applyFixture(long ticks, float partialTick, Position pos);
 
     /**
      * Before applying this fixture
      */
-    public void preApplyFixture(float progress, Position pos)
+    public void preApplyFixture(long ticks, Position pos)
     {}
 
     /**
      * Pre apply and apply this fixture
      */
-    public void preAndApplyFixture(float progress, float partialTick, Position pos)
+    public void preAndApplyFixture(long ticks, float partialTick, Position pos)
     {
-        this.preApplyFixture(progress, pos);
-        this.applyFixture(progress, partialTick, pos);
+        this.preApplyFixture(ticks, pos);
+        this.applyFixture(ticks, partialTick, pos);
     }
 
     /**

@@ -3,6 +3,7 @@ package mchorse.aperture.commands.fixture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -56,7 +57,9 @@ public class SubCommandFixtureGoto extends CommandBase
             return;
         }
 
-        profile.get(index).applyFixture(progress, 0, pos);
+        AbstractFixture fixture = profile.get(index);
+
+        fixture.applyFixture((long) (progress * fixture.getDuration()), 0, pos);
         pos.apply(player);
         ClientProxy.control.setRollAndFOV(pos.angle.roll, pos.angle.fov);
     }
