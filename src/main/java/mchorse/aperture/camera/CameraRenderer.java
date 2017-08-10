@@ -83,6 +83,13 @@ public class CameraRenderer
             event.setYaw(-180 + runner.yaw);
             event.setPitch(runner.pitch);
         }
+        else if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
+        {
+            Position position = ClientProxy.cameraEditor.position;
+
+            event.setYaw(-180 + position.angle.yaw);
+            event.setPitch(position.angle.pitch);
+        }
         else if (this.smooth.enabled && !this.mc.isGamePaused())
         {
             /* Yaw and pitch */

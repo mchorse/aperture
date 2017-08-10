@@ -104,7 +104,15 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public int maxScrub = 0;
 
+    /**
+     * Flight mode 
+     */
     public Flight flight = new Flight();
+
+    /**
+     * Position 
+     */
+    public Position position;
 
     public Map<Integer, String> tooltips = new HashMap<Integer, String>();
 
@@ -279,6 +287,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.config = new GuiCameraConfig();
         this.config.options.add(this.cameraOptions);
 
+        this.position = new Position(0, 0, 0, 0, 0);
+
         /* Initiating tooltips */
         this.tooltips.put(0, I18n.format("aperture.gui.tooltips.jump_next_fixture"));
         this.tooltips.put(1, I18n.format("aperture.gui.tooltips.jump_next_frame"));
@@ -334,6 +344,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public void updateCameraEditor(EntityPlayer player)
     {
+        this.position.set(player);
         this.selectProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
 
@@ -374,12 +385,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         tick = tick > duration ? duration : tick;
 
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        Position pos = new Position(player);
 
-        this.profile.applyProfile(tick, ticks, pos);
+        this.position.set(player);
+        this.profile.applyProfile(tick, ticks, this.position);
 
-        pos.apply(player);
-        ClientProxy.control.setRollAndFOV(pos.angle.roll, pos.angle.fov);
+        this.position.apply(player);
+        ClientProxy.control.setRollAndFOV(this.position.angle.roll, this.position.angle.fov);
     }
 
     /**
