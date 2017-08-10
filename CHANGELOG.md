@@ -2,6 +2,31 @@
 
 Aperture's change log.
 
+## Aperture 1.0.1
+
+This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.
+
+<a href="https://youtu.be/y7-WsAq6Vlg"><img src="https://img.youtube.com/vi/y7-WsAq6Vlg/0.jpg"></a> 
+
+* Added shortcuts in the camera editor:
+    * `D` – deselect current camera fixture
+    * `S` – toggle sync option
+    * `F` – toggle flight mode option
+    * `Space` – play/pause
+    * `C` – copy player's position
+    * `M` – move duration to cursor
+    * `Left Arrow` & `Right Arrow` – to move next or previous frame
+    * `Left Arrow` & `Right Arrow` while holding Shift – to move to next or previous fixture
+* Added indicators for sync and flight mode
+* Added path fixture to set per point duration
+* Allow to use `Enter` to create a new camera profile in profiles manager
+* Allow to fly in camera editor (flight mode)
+* Allow camera to surpass 90 degree limit (in camera runner)
+* Convert camera networking code from JSON to ByteBuf
+* Improved sync feature – doesn't teleport the user straight away, only after the user will scrub the timeline
+* Return user back to his previous game mode
+* Send `CameraEditorScrubbedEvent` only when scrub was actually (or it was indirect, like from the jump buttons) scrubbed by the user
+
 ## Aperture 1.0
 
 First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has.

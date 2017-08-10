@@ -217,7 +217,7 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(float progress, float partialTicks, Position pos)
+    public void applyFixture(long ticks, float partialTicks, Position pos)
     {
         long duration = this.getDuration();
 
@@ -228,18 +228,16 @@ public class PathFixture extends AbstractFixture
 
         int length = this.points.size() - 1;
         int index = 0;
-
-        float x = progress + (1.0F / duration) * partialTicks;
+        float x = 0;
 
         if (this.perPointDuration)
         {
-            long frame = (long) (progress * duration);
             int points = this.points.size();
 
             long point = 0;
             long prevPoint = 0;
 
-            while (point - 1 < frame)
+            while (point - 1 < ticks)
             {
                 if (index >= points)
                 {
@@ -249,7 +247,7 @@ public class PathFixture extends AbstractFixture
                 prevPoint = point;
                 point += this.points.get(index).getDuration();
 
-                if (point - 1 >= frame)
+                if (point - 1 >= ticks)
                 {
                     break;
                 }
@@ -261,7 +259,7 @@ public class PathFixture extends AbstractFixture
             {
                 float diff = point - prevPoint;
 
-                x = (float) ((frame + partialTicks) - prevPoint) / (diff == 0 ? 1.0F : diff);
+                x = ((ticks + partialTicks) - prevPoint) / (diff == 0 ? 1.0F : diff);
             }
             else
             {
@@ -273,6 +271,7 @@ public class PathFixture extends AbstractFixture
         }
         else
         {
+            x = (ticks / (float) this.duration) + (1.0F / duration) * partialTicks;
             x = MathHelper.clamp(x * length, 0, length);
             index = (int) Math.floor(x);
             x = x - index;

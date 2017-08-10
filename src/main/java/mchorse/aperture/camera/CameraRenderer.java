@@ -83,6 +83,13 @@ public class CameraRenderer
             event.setYaw(-180 + runner.yaw);
             event.setPitch(runner.pitch);
         }
+        else if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
+        {
+            Position position = ClientProxy.cameraEditor.position;
+
+            event.setYaw(-180 + position.angle.yaw);
+            event.setPitch(position.angle.pitch);
+        }
         else if (this.smooth.enabled && !this.mc.isGamePaused())
         {
             /* Yaw and pitch */
@@ -197,7 +204,7 @@ public class CameraRenderer
         for (AbstractFixture fixture : profile.getAll())
         {
             fixture.applyFixture(0, 0.0F, prev);
-            fixture.applyFixture(1, 0.0F, next);
+            fixture.applyFixture(fixture.getDuration(), 0.0F, next);
 
             long duration = fixture.getDuration();
 
@@ -240,6 +247,7 @@ public class CameraRenderer
     {
         PathFixture path = (PathFixture) fixture;
         List<DurablePosition> points = path.getPoints();
+        long duration = fixture.getDuration();
 
         final int p = 15;
 
@@ -247,15 +255,15 @@ public class CameraRenderer
         {
             for (int j = 0; j < p; j++)
             {
-                path.applyFixture((float) (j + i * p) / (float) (size * p), 0, prev);
-                path.applyFixture((float) (j + i * p + 1) / (float) (size * p), 0, next);
+                path.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, prev);
+                path.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, next);
 
                 this.drawLine(color, this.playerX, this.playerY, this.playerZ, prev, next);
             }
 
             if (i != 0)
             {
-                path.applyFixture((float) path.getTickForPoint(i) / (float) path.getDuration(), 0, prev);
+                path.applyFixture(path.getTickForPoint(i), 0, prev);
 
                 this.drawPathPoint(color, prev, i);
             }
@@ -283,8 +291,19 @@ public class CameraRenderer
 
         GL11.glNormal3f(0, 1, 0);
         GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
-        GlStateManager.rotate(-this.mc.getRenderManager().playerViewY, 0, 1, 0);
-        GlStateManager.rotate(this.mc.getRenderManager().playerViewX, 1, 0, 0);
+
+        if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
+        {
+            Position pos = ClientProxy.cameraEditor.position;
+
+            GlStateManager.rotate(-pos.angle.yaw, 0, 1, 0);
+            GlStateManager.rotate(pos.angle.pitch, 1, 0, 0);
+        }
+        else
+        {
+            GlStateManager.rotate(-this.mc.getRenderManager().playerViewY, 0, 1, 0);
+            GlStateManager.rotate(this.mc.getRenderManager().playerViewX, 1, 0, 0);
+        }
 
         float factor = 0.1F;
         float minX = -factor;
@@ -333,12 +352,16 @@ public class CameraRenderer
      */
     private void drawCircularFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
     {
-        float circles = ((CircularFixture) fixture).circles;
+        float circles = Math.min(((CircularFixture) fixture).circles, 360);
+        long duration = fixture.getDuration();
 
-        for (int i = 0; i < circles; i += 3)
+        for (int i = 0; i < circles; i += 5)
         {
-            fixture.applyFixture(i / circles, partialTicks, prev);
-            fixture.applyFixture((i + 2) / circles, partialTicks, next);
+            float a = i / circles * duration;
+            float b = (i + 3) / circles * duration;
+
+            fixture.applyFixture((long) a, a - (int) a, prev);
+            fixture.applyFixture((long) b, b - (int) b, next);
 
             this.drawLine(color, this.playerX, this.playerY, this.playerZ, prev, next);
         }
@@ -363,8 +386,19 @@ public class CameraRenderer
 
         GL11.glNormal3f(0, 1, 0);
         GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
-        GlStateManager.rotate(-this.mc.getRenderManager().playerViewY, 0, 1, 0);
-        GlStateManager.rotate(this.mc.getRenderManager().playerViewX, 1, 0, 0);
+
+        if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
+        {
+            Position position = ClientProxy.cameraEditor.position;
+
+            GlStateManager.rotate(-position.angle.yaw, 0, 1, 0);
+            GlStateManager.rotate(position.angle.pitch, 1, 0, 0);
+        }
+        else
+        {
+            GlStateManager.rotate(-this.mc.getRenderManager().playerViewY, 0, 1, 0);
+            GlStateManager.rotate(this.mc.getRenderManager().playerViewX, 1, 0, 0);
+        }
 
         float factor = 0.5F;
 

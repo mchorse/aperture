@@ -144,6 +144,11 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.interp.fill(fixture);
         this.perPointDuration.setIsChecked(fixture.perPointDuration);
 
+        if (fixture.perPointDuration && this.position != null)
+        {
+            this.duration.setValue(this.position.getDuration());
+        }
+
         this.points.index = index;
     }
 

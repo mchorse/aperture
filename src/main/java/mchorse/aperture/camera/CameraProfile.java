@@ -262,7 +262,7 @@ public class CameraProfile
             fixture.preApplyFixture(progress, position);
         }
 
-        fixture.applyFixture((float) progress / fixture.getDuration(), partialTicks, position);
+        fixture.applyFixture(progress, partialTicks, position);
     }
 
     /**

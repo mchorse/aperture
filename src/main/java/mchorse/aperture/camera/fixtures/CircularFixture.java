@@ -88,10 +88,9 @@ public class CircularFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(float progress, float partialTicks, Position pos)
+    public void applyFixture(long ticks, float partialTicks, Position pos)
     {
-        progress += ((float) 1 / this.duration) * partialTicks;
-
+        float progress = (ticks / (float) this.duration) + (1.0F / this.duration * partialTicks);
         float angle = (float) (Math.toRadians(this.offset) + progress * Math.toRadians(this.circles));
 
         float cos = this.distance * (float) Math.cos(angle);
