@@ -2,18 +2,18 @@ package mchorse.aperture.client.gui;
 
 import org.lwjgl.input.Keyboard;
 
-import net.minecraft.entity.player.EntityPlayer;
+import mchorse.aperture.camera.Position;
 import net.minecraft.util.math.Vec3d;
 
 public class Flight
 {
     public boolean enabled = false;
 
-    public void animate(EntityPlayer player)
+    public void animate(Position position)
     {
         float multiplier = 1;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
         {
             multiplier = 5;
         }
@@ -26,8 +26,8 @@ public class Flight
         double factor = 0.1 * multiplier;
         double angleFactor = 0.5 * multiplier;
 
-        float yaw = player.rotationYaw;
-        float pitch = player.rotationPitch;
+        float yaw = position.angle.yaw;
+        float pitch = position.angle.pitch;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_DOWN))
         {
@@ -39,17 +39,17 @@ public class Flight
             yaw += (Keyboard.isKeyDown(Keyboard.KEY_LEFT) ? -angleFactor : angleFactor);
         }
 
-        double x = player.posX;
-        double y = player.posY;
-        double z = player.posZ;
+        float x = position.point.x;
+        float y = position.point.y;
+        float z = position.point.z;
 
         double xx = 0;
         double yy = 0;
         double zz = 0;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_Z) || Keyboard.isKeyDown(Keyboard.KEY_X))
+        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
         {
-            yy = (Keyboard.isKeyDown(Keyboard.KEY_Z) ? factor : -factor);
+            yy = (Keyboard.isKeyDown(Keyboard.KEY_SPACE) ? factor : -factor);
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_D))
@@ -62,7 +62,7 @@ public class Flight
             zz = (Keyboard.isKeyDown(Keyboard.KEY_W) ? factor : -factor);
         }
 
-        if (xx != 0 || yy != 0 || zz != 0 || yaw != player.rotationYaw || pitch != player.rotationPitch)
+        if (xx != 0 || yy != 0 || zz != 0 || yaw != position.angle.yaw || pitch != position.angle.pitch)
         {
             Vec3d vec = new Vec3d(xx, yy, zz);
 
@@ -72,8 +72,8 @@ public class Flight
             y += vec.yCoord;
             z += vec.zCoord;
 
-            player.setPositionAndRotation(x, y, z, yaw, pitch);
-            player.setVelocity(0, 0, 0);
+            position.point.set(x, y, z);
+            position.angle.set(yaw, pitch);
         }
     }
 }

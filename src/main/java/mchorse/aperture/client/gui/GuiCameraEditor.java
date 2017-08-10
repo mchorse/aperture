@@ -913,7 +913,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         if (this.flight.enabled)
         {
-            this.flight.animate(this.mc.thePlayer);
+            this.flight.animate(this.position);
+            this.position.apply(this.mc.thePlayer);
 
             if (this.syncing && this.haveScrubbed && this.fixturePanel != null)
             {

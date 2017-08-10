@@ -216,6 +216,16 @@ public abstract class AbstractFixture
     public abstract void applyFixture(long ticks, float partialTick, Position pos);
 
     /**
+     * Apply this fixture onto position using a double between 0 and 1
+     */
+    public void applyFixture(double range, float partialTick, Position pos)
+    {
+        long ticks = (long) (range * this.getDuration());
+
+        this.applyFixture(ticks, partialTick, pos);
+    }
+
+    /**
      * Before applying this fixture
      */
     public void preApplyFixture(long ticks, Position pos)
