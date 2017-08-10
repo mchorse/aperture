@@ -42,7 +42,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
@@ -90,11 +89,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     private boolean visible = true;
 
     /**
-     * Last player's position upon entering this GUI 
-     */
-    private BlockPos lastPos;
-
-    /**
      * This property saves state for the sync option, to allow more friendly
      */
     public boolean haveScrubbed;
@@ -110,7 +104,15 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public int maxScrub = 0;
 
+    /**
+     * Flight mode 
+     */
     public Flight flight = new Flight();
+
+    /**
+     * Position 
+     */
+    public Position position;
 
     public Map<Integer, String> tooltips = new HashMap<Integer, String>();
 
@@ -285,6 +287,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.config = new GuiCameraConfig();
         this.config.options.add(this.cameraOptions);
 
+        this.position = new Position(0, 0, 0, 0, 0);
+
         /* Initiating tooltips */
         this.tooltips.put(0, I18n.format("aperture.gui.tooltips.jump_next_fixture"));
         this.tooltips.put(1, I18n.format("aperture.gui.tooltips.jump_next_frame"));
@@ -311,7 +315,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     {
         this.setProfile(null);
         this.scrub.value = 0;
-        this.lastPos = null;
     }
 
     /**
@@ -341,6 +344,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public void updateCameraEditor(EntityPlayer player)
     {
+        this.position.set(player);
         this.selectProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
 
@@ -352,23 +356,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.visible = true;
         this.haveScrubbed = false;
         this.flight.enabled = false;
-
-        /* Disable syncing if the player is too far away */
-        BlockPos lastPos = new BlockPos(player);
-
-        if (this.lastPos != null)
-        {
-            int dx = Math.abs(lastPos.getX() - this.lastPos.getX());
-            int dy = Math.abs(lastPos.getY() - this.lastPos.getY());
-            int dz = Math.abs(lastPos.getZ() - this.lastPos.getZ());
-
-            if (dx > 48 || dy > 48 || dz > 48)
-            {
-                this.syncing = false;
-            }
-        }
-
-        this.lastPos = lastPos;
     }
 
     public CameraProfile getProfile()
@@ -398,12 +385,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         tick = tick > duration ? duration : tick;
 
         EntityPlayer player = Minecraft.getMinecraft().player;
-        Position pos = new Position(player);
 
-        this.profile.applyProfile(tick, ticks, pos);
+        this.position.set(player);
+        this.profile.applyProfile(tick, ticks, this.position);
 
-        pos.apply(player);
-        ClientProxy.control.setRollAndFOV(pos.angle.roll, pos.angle.fov);
+        this.position.apply(player);
+        ClientProxy.control.setRollAndFOV(this.position.angle.roll, this.position.angle.fov);
     }
 
     /**
@@ -926,7 +913,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         if (this.flight.enabled)
         {
-            this.flight.animate(this.mc.player);
+            this.flight.animate(this.position);
+            this.position.apply(this.mc.player);
 
             if (this.syncing && this.haveScrubbed && this.fixturePanel != null)
             {
