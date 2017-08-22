@@ -33,12 +33,6 @@ compileJava
 /* Build language files */
 task buildLangFiles {
     doLast {
-        /*
-        def yaml = new org.yaml.snakeyaml.Yaml()
-        def document = "\n- Hesperiidae\n- Papilionidae\n- Apatelodidae\n- Epiplemidae"
-        def list = yaml.load(document)
-        */ 
-        
         def help = file("help")
         
         def flatten
@@ -156,10 +150,7 @@ minecraft
 }
 
 dependencies 
-{
-	compile files("run/mods/metamorph-" + metamorph + "-" + project.minecraft.version + "-dev.jar")
-	compile files("run/mods/aperture-" + aperture + "-" + project.minecraft.version + "-dev.jar")
-}
+{}
 
 processResources
 {
