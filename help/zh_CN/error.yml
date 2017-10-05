@@ -5,19 +5,19 @@ aperture.error:
     
     # Camera fixtures errors
     fixture:
-        few_args: {f}这个命令的参数给少了！
-        wrong_type: {f}相机关键点类型 %s{f} 不存在！
-        no_entity: {f}你应该看着某个实体来创建这个相机关键点！
+        few_args: "{f}这个命令的参数给少了！"
+        wrong_type: "{f}相机关键点类型 %s{f} 不存在！"
+        no_entity: "{f}你应该看着某个实体来创建这个相机关键点！"
         
-        empty: {f}这个摄像机配置文件是空的！
+        empty: "{f}这个摄像机配置文件是空的！"
     
     # Camera profile errors
     profile:
-        empty_filename: {f}这个相机配置文件没有名字！要解决此问题，请指定参数 {7}[filename]{f} 。
-        cant_save: {f}无法以文件名 %s{f} 保存摄像机配置。
-        cant_load: {f}无法以文件名 %s{f} 加载摄像机配置。
+        empty_filename: "{f}这个相机配置文件没有名字！要解决此问题，请指定参数 {7}[filename]{f} 。"
+        cant_save: "{f}无法以文件名 %s{f} 保存摄像机配置。"
+        cant_load: "{f}无法以文件名 %s{f} 加载摄像机配置。"
         
-        not_path: {f}在索引号 %s{f} 的关键点不是路径关键点！
-        not_exists: {f}在目前的相机配置文件里没有相机关键点在 %s{f} 索引号里！
-        no_path_point: {f}路径索引号 %s{f} 里在索引号 %s{f} 里没有路径定点！
-        move_no_path_point: {f}路径索引号 %s{f} 里在索引号 %s{f} 或 %s{f} 里没有定点！
+        not_path: "{f}在索引号 %s{f} 的关键点不是路径关键点！"
+        not_exists: "{f}在目前的相机配置文件里没有相机关键点在 %s{f} 索引号里！"
+        no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 里没有路径定点！"
+        move_no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 或 %s{f} 里没有定点！"
