@@ -9,7 +9,7 @@ aperture.commands:
     
     # Camera's commands
     camera:
-        help: {r}{o}Camera command{r}. Provides sub-commands for managing camera profile and its camera fixtures.
+        help: "{r}{o}Camera command{r}. Provides sub-commands for managing camera profile and its camera fixtures."
         
         start: 
             |
@@ -105,7 +105,7 @@ aperture.commands:
                     {r}Move camera fixture at {7}<from>{r} index to {7}<to>{r} index in the camera profile
         
         path: 
-            help: {r}{o}Camera path sub-command{r}. Provides sub-commands for managing path fixture and its points.
+            help: "{r}{o}Camera path sub-command{r}. Provides sub-commands for managing path fixture and its points."
             
             add:
                 |

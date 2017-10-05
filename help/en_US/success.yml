@@ -1,8 +1,8 @@
 aperture.success:
     profile:
-        clear: {f}Currently used camera profile was cleared.
-        save: {f}Current camera profile was saved in file %s{f}.
-        load: {f}Camera profile was loaded from file %s{f}.
+        clear: "{f}Currently used camera profile was cleared."
+        save: "{f}Current camera profile was saved in file %s{f}."
+        load: "{f}Camera profile was loaded from file %s{f}."
         
-        client_save: {f}Client camera profile was saved in file %s{f}.
-        client_load: {f}Client camera profile was loaded from file %s{f}.
+        client_save: "{f}Client camera profile was saved in file %s{f}."
+        client_load: "{f}Client camera profile was loaded from file %s{f}."

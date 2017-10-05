@@ -9,7 +9,7 @@ aperture.commands:
     
     # Camera's commands
     camera:
-        help: {r}{o}相机命令。{r} 提供关于管理相机配置和相机关键点的次级命令。
+        help: "{r}{o}相机命令。{r} 提供关于管理相机配置和相机关键点的次级命令。"
         
         start: 
             |
@@ -105,7 +105,7 @@ aperture.commands:
                     {r}在相机配置里，将关键点索引号 {7}<from>{r} 移动到索引号 {7}<to>{r}。
             
         path: 
-            help: {r}{o}相机路径次级命令{r}。提供管理相机路径和关键点的次级命令。
+            help: "{r}{o}相机路径次级命令{r}。提供管理相机路径和关键点的次级命令。"
             
             add:
                 |
