@@ -149,8 +149,14 @@ minecraft
     serverJvmArgs = ["-Xmx1G"]
 }
 
-dependencies 
-{}
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+artifacts {
+    archives deobfJar
+}
 
 processResources
 {
