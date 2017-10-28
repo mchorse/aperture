@@ -23,7 +23,7 @@ Aperture的功能完全按帧进行，便可以让你使用 [Minema](http://www.
 
 这是一个关于Aperture的播放列表。最近发布，现在有两个视频：mod的预告片和mod的教程。（[中文教程](https://space.bilibili.com/5671320#!/favlist?fid=65456137&fname=Blockbuster%20%E6%95%99%E7%A8%8B)由译者制作，不代表McHorse观点）
 
-<a href="https://youtu.be/36E5-HYoH5I?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/36E5-HYoH5I/0.jpg"></a>
+<a href="https://youtu.be/y7-WsAq6Vlg?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/y7-WsAq6Vlg/0.jpg"></a>
 
 ## 安装
 
@@ -40,7 +40,7 @@ Aperture的功能完全按帧进行，便可以让你使用 [Minema](http://www.
 * 上传一个由你自己编译的版本，你编译的版本是你的锅。
 * 请提供来源链接。提供 [CurseForge](https://minecraft.curseforge.com/projects/aperture) 最棒。
 * 请提供一个链接到我的 [YouTube 频道](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w)。非常感谢！
-* 你可以使用 Aperture 的 [banner](https://i.imgur.com/Wras78u.png) 或 [封面](https://i.imgur.com/rckGnn4.png) 当你转发时。不要加个水印，那很残忍。
+* 当你转发时你可以使用 Aperture 的 [banner](https://i.imgur.com/Wras78u.png) 或 [封面](https://i.imgur.com/rckGnn4.png)  。不要加个水印，那很残忍。
 
 如果你对此项目感兴趣，你可以关注我的社交媒体账号：
 
@@ -48,24 +48,4 @@ Aperture的功能完全按帧进行，便可以让你使用 [Minema](http://www.
 
 ## Bug 反馈
 
-当你发现了一个Bug，或者mod导致游戏崩溃，我希望你可以报告bug或崩溃在[issue tracker](https://github.com/mchorse/aperture/issues/), 或私信在 [Twitter](https://twitter.com/McHorsy)。也请麻烦在[pastebin](http://pastebin.com)贴一份日志文件，并描述下发生的事情，及重现bug或崩溃的方法。谢谢！
-
-## 开发者请看
-
-语言文件需要通过PHP从 YML 格式转换到 INI 格式。你需要安装PHP 5 和 [composer](https://getcomposer.org/download/)。如果已经有了，就运行：
-
-```sh
-# 前往 "php" 文件夹
-cd php
-
-# 安装 PHP 依赖 (我假定你在仓库根目录放置了composer)
-../composer.phar install
-
-# 回到上一个文件夹
-cd ..
-
-# 或者 "make check"
-make build_lang
-```
-
-这应该就可以把YML转换成语言文件。同时，你要去刷新一下Eclipse或者IDE. 同时你要刷新一下Eclipse或你的IDE来s让更改的文件导入。打开 `en_US.lang` 然后再gradle编译一遍就行了。
+当你发现了一个Bug，或者mod导致游戏崩溃，我希望你可以在[issue tracker](https://github.com/mchorse/aperture/issues/)报告bug或崩溃, 或私信在 [Twitter](https://twitter.com/McHorsy)。也请麻烦在[pastebin](http://pastebin.com)贴一份日志文件，并描述下发生的事情，及重现bug或崩溃的方法。谢谢！
