@@ -21,7 +21,7 @@ Aperture的功能完全按帧进行，便可以让你使用 [Minema](http://www.
 
 ## 视频
 
-这是一个关于Aperture的播放列表。最近发布，现在有两个视频：mod的预告片和mod的教程。（[中文教程](https://space.bilibili.com/5671320#!/favlist?fid=65456137&fname=Blockbuster%20%E6%95%99%E7%A8%8B)由译者制作，不代表McHorse观点）
+这是一个关于Aperture的播放列表。最近发布，现在有两个视频：mod的预告片和mod的教程。（由Noble团队制作的[中文教程](http://www.bilibili.com/video/av15303499/)不代表McHorse观点）
 
 <a href="https://youtu.be/y7-WsAq6Vlg?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/y7-WsAq6Vlg/0.jpg"></a>
 
