@@ -202,6 +202,11 @@ public class CameraRunner
         }
         else
         {
+            if (Aperture.proxy.config.camera_debug_ticks)
+            {
+                Aperture.LOGGER.info("Camera render frame: " + event.renderTickTime + " " + this.ticks);
+            }
+
             float prevX = this.position.point.x;
             float prevY = this.position.point.y;
             float prevZ = this.position.point.z;
