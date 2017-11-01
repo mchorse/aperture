@@ -225,7 +225,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
             int xx = this.area.x + i * this.area.scrollItemSize - (int) this.area.scroll;
             int w = this.font.getStringWidth(label);
 
-            Gui.drawRect(xx, y, xx + 20, y + 20, this.index == i ? 0xffdd2280 : 0xffff2280);
+            Gui.drawRect(xx, y, xx + 20, y + 20, this.index == i ? 0xffcc1170 : 0xffff2280);
             Gui.drawRect(xx + 19, y, xx + 20, y + 20, 0x22000000);
             this.font.drawStringWithShadow(label, xx + 10 - w / 2, y + 6, 0xffffff);
         }
