@@ -10,6 +10,10 @@ import net.minecraft.client.gui.Gui;
 public class GuiCameraConfig implements IGuiModule
 {
     public Area area = new Area();
+
+    /**
+     * TODO: rename to <code>public static final OPTIONS</code> 
+     */
     public List<AbstractGuiConfigOptions> options = new ArrayList<AbstractGuiConfigOptions>();
     public List<AbstractGuiConfigOptions> activeOptions = new ArrayList<AbstractGuiConfigOptions>();
 

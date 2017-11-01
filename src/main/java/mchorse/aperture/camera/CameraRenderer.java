@@ -82,6 +82,17 @@ public class CameraRenderer
         CameraRunner runner = ClientProxy.runner;
 
         float ticks = (float) event.getRenderPartialTicks();
+        EntityPlayer player = this.mc.thePlayer;
+
+        /**
+         * Apply camera angles only in case if it's the player. The 
+         * reason behind this check is that mods like CFM which render 
+         * the world to a texture won't get affected the camera changes.  
+         */
+        if (event.getYaw() - 180 != player.rotationYaw)
+        {
+            return;
+        }
 
         if (runner.isRunning())
         {
@@ -103,8 +114,6 @@ public class CameraRenderer
 
             event.setYaw(-180 + yaw);
             event.setPitch(-pitch);
-
-            EntityPlayer player = this.mc.thePlayer;
 
             player.rotationYaw = yaw;
             player.rotationPitch = -pitch;
