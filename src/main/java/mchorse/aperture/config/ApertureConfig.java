@@ -87,6 +87,11 @@ public class ApertureConfig
     public boolean camera_first_tick_zero;
 
     /**
+     * Render camera profile in the world?
+     */
+    public boolean camera_profile_render;
+
+    /**
      * Render a custom mouse pointer in GUIs
      */
     public boolean gui_render_mouse;
@@ -125,7 +130,8 @@ public class ApertureConfig
         this.camera_command_name = this.config.getString("camera_command_name", camera, "camera", "Allows you to rebind camera command's name (requires game reload to take effect)", prefix + "camera_command_name");
         this.camera_simulate_velocity = this.config.getBoolean("camera_simulate_velocity", camera, false, "Simulate player's velocity during camera playback (see legs in perspective)", prefix + "camera_simulate_velocity");
         this.camera_debug_ticks = this.config.getBoolean("camera_debug_ticks", camera, false, "Write ticks to the log during camera playback", prefix + "camera_debug_ticks");
-        this.camera_first_tick_zero = this.config.getBoolean("camera_first_tick_zero", camera, false, "When camera runner starts, start the actual playback when partial tick is exactly zero", prefix + "first_tick_zero");
+        this.camera_first_tick_zero = this.config.getBoolean("camera_first_tick_zero", camera, false, "When camera runner starts, start the actual playback when partial tick is exactly zero", prefix + "camera_first_tick_zero");
+        this.camera_profile_render = this.config.getBoolean("camera_profile_render", camera, true, "Render camera profile in the world?", prefix + "camera_profile_render");
 
         /* Processing camera command name */
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");

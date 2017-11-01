@@ -40,7 +40,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.spectator = new GuiCheckBox(-2, 0, 0, I18n.format("aperture.gui.config.spectator"), Aperture.proxy.config.camera_spectator);
         this.spectator.packedFGColour = 0xffffff;
 
-        this.renderPath = new GuiCheckBox(-3, 0, 0, I18n.format("aperture.gui.config.show_path"), ClientProxy.renderer.render);
+        this.renderPath = new GuiCheckBox(-3, 0, 0, I18n.format("aperture.gui.config.show_path"), Aperture.proxy.config.camera_profile_render);
         this.renderPath.packedFGColour = 0xffffff;
 
         this.sync = new GuiCheckBox(-4, 0, 0, I18n.format("aperture.gui.config.sync"), this.editor.syncing);
@@ -87,6 +87,16 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
 
         this.x = x;
         this.y = y;
+
+        if (this.minema != null)
+        {
+            this.minema.setIsChecked(Aperture.proxy.config.camera_minema);
+        }
+
+        this.spectator.setIsChecked(Aperture.proxy.config.camera_spectator);
+        this.renderPath.setIsChecked(Aperture.proxy.config.camera_profile_render);
+        this.sync.setIsChecked(this.editor.syncing);
+        this.flight.setIsChecked(this.editor.flight.enabled);
     }
 
     @Override
@@ -119,7 +129,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         else if (id == -3)
         {
             ClientProxy.renderer.toggleRender();
-            this.renderPath.setIsChecked(ClientProxy.renderer.render);
+            this.renderPath.setIsChecked(Aperture.proxy.config.camera_profile_render);
         }
         else if (id == -4)
         {
@@ -133,7 +143,6 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
 
         if (save)
         {
-            Aperture.proxy.onConfigChange(Aperture.proxy.forge);
             Aperture.proxy.forge.save();
             Aperture.proxy.config.reload();
         }
