@@ -28,6 +28,8 @@ public class CameraRunner
     private float fov = 70.0F;
     private GameType gameMode = GameType.NOT_SET;
     private boolean firstTick = false;
+    private boolean firstTickZero = false;
+    private boolean firstTickZeroStart = false;
 
     protected boolean isRunning = false;
     protected long ticks;
@@ -118,9 +120,12 @@ public class CameraRunner
         }
 
         this.isRunning = true;
-        this.firstTick = true;
         this.duration = this.profile.getDuration();
         this.ticks = start;
+
+        this.firstTick = true;
+        this.firstTickZero = Aperture.proxy.config.camera_first_tick_zero;
+        this.firstTickZeroStart = false;
     }
 
     /**
@@ -202,6 +207,16 @@ public class CameraRunner
         }
         else
         {
+            if (this.firstTickZero && event.renderTickTime == 0.0)
+            {
+                this.firstTickZeroStart = true;
+            }
+
+            if (Aperture.proxy.config.camera_debug_ticks)
+            {
+                Aperture.LOGGER.info("Camera render frame: " + event.renderTickTime + " " + this.ticks);
+            }
+
             float prevX = this.position.point.x;
             float prevY = this.position.point.y;
             float prevZ = this.position.point.z;
@@ -298,7 +313,10 @@ public class CameraRunner
                 Aperture.LOGGER.info("Camera frame: " + this.ticks);
             }
 
-            this.ticks++;
+            if (this.firstTickZero && this.firstTickZeroStart || !this.firstTickZero)
+            {
+                this.ticks++;
+            }
         }
     }
 }

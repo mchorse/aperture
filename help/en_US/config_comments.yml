@@ -13,6 +13,8 @@ aperture.config.comments:
         camera_command_name: Allows you to rebind camera command's name (requires game reload to take effect)
         camera_simulate_velocity: Simulate player's velocity during camera playback (see legs in perspective)
         camera_debug_ticks: Write current camera playback tick to the log
+        camera_first_tick_zero: When camera runner starts, start the actual playback when partial tick is exactly zero
+        camera_profile_render: Render camera profile in the world?
         
         gui_render_mouse: Render on the screen a texture of a mouse pointer during GUI
         

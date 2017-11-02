@@ -38,7 +38,7 @@ aperture.gui:
 
         move_up: Move fixture forward
         move_duration: Move duration to the cursor (M)
-        copy_position: Copy player's position (C)
+        copy_position: Copy player's position (B)
         move_down: Move fixture backward
 
         save: Save camera profile

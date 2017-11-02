@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -49,7 +50,6 @@ public class CameraRenderer
     public SmoothCamera smooth = new SmoothCamera();
     public Filter roll = new Filter();
     public Filter fov = new Filter();
-    public boolean render = true;
 
     protected double playerX;
     protected double playerY;
@@ -62,7 +62,12 @@ public class CameraRenderer
 
     public void toggleRender()
     {
-        this.render = !this.render;
+        Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_profile_render");
+
+        prop.set(!prop.getBoolean());
+
+        Aperture.proxy.forge.save();
+        Aperture.proxy.config.reload();
     }
 
     /**
@@ -77,6 +82,17 @@ public class CameraRenderer
         CameraRunner runner = ClientProxy.runner;
 
         float ticks = (float) event.getRenderPartialTicks();
+        EntityPlayer player = this.mc.player;
+
+        /**
+         * Apply camera angles only in case if it's the player. The 
+         * reason behind this check is that mods like CFM which render 
+         * the world to a texture won't get affected the camera changes.  
+         */
+        if (event.getYaw() - 180 != player.rotationYaw)
+        {
+            return;
+        }
 
         if (runner.isRunning())
         {
@@ -98,8 +114,6 @@ public class CameraRenderer
 
             event.setYaw(-180 + yaw);
             event.setPitch(-pitch);
-
-            EntityPlayer player = this.mc.player;
 
             player.rotationYaw = yaw;
             player.rotationPitch = -pitch;
@@ -181,7 +195,7 @@ public class CameraRenderer
 
         boolean badProfile = profile == null || profile.getCount() < 1;
 
-        if (!this.render) return;
+        if (!Aperture.proxy.config.camera_profile_render) return;
         if (ClientProxy.runner.isRunning()) return;
         if (badProfile) return;
 
