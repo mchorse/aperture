@@ -738,7 +738,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private void handleKeys(char typedChar, int keyCode)
     {
-        if (keyCode == Keyboard.KEY_C && this.fixturePanel != null)
+        if (keyCode == Keyboard.KEY_B && this.fixturePanel != null)
         {
             /* Copy the position */
             ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();

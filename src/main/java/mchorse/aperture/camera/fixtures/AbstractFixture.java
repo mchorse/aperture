@@ -1,6 +1,8 @@
 package mchorse.aperture.camera.fixtures;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonObject;
@@ -8,6 +10,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.modifiers.ICameraModifier;
 import mchorse.aperture.commands.SubCommandBase;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -57,6 +60,11 @@ public abstract class AbstractFixture
      */
     @Expose
     protected String name = "";
+
+    /**
+     * Camera modifiers 
+     */
+    protected List<ICameraModifier> modifiers = new ArrayList<ICameraModifier>();
 
     /**
      * This is abstract's fixture factory method.
@@ -232,12 +240,14 @@ public abstract class AbstractFixture
     {}
 
     /**
-     * Pre apply and apply this fixture
+     * Apply camera modifiers
      */
-    public void preAndApplyFixture(long ticks, float partialTick, Position pos)
+    public void applyModifiers(long ticks, float partialTick, Position pos)
     {
-        this.preApplyFixture(ticks, pos);
-        this.applyFixture(ticks, partialTick, pos);
+        for (ICameraModifier modifier : this.modifiers)
+        {
+            modifier.modify(ticks, this, partialTick, pos);
+        }
     }
 
     /**

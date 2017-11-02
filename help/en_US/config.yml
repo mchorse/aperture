@@ -17,6 +17,7 @@ aperture.config:
         camera_simulate_velocity: Velocity simulation
         camera_first_tick_zero: First tick zero
         camera_debug_ticks: Debug ticks
+        camera_profile_render: Render camera profile
         
         gui_render_mouse: Render mouse cursor in GUIs
         
