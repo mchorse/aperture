@@ -21,6 +21,8 @@ public class IdleFixture extends AbstractFixture
     public IdleFixture(long duration)
     {
         super(duration);
+
+        // this.modifiers.add(new ShakeModifier(10, 0.5F));
     }
 
     @Override
