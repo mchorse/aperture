@@ -6,7 +6,9 @@ import java.util.List;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.AbstractDestination;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -60,6 +62,13 @@ public class CameraControl
     {
         this.insertProfile(profile);
         this.currentProfile = profile;
+
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+
+        if (screen instanceof GuiCameraEditor)
+        {
+            ((GuiCameraEditor) screen).selectProfile(profile);
+        }
     }
 
     /**

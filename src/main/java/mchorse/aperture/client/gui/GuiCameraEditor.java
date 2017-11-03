@@ -738,12 +738,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private void handleKeys(char typedChar, int keyCode)
     {
-        if (keyCode == Keyboard.KEY_B && this.fixturePanel != null)
-        {
-            /* Copy the position */
-            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
-        }
-        else if (keyCode == Keyboard.KEY_F)
+        if (keyCode == Keyboard.KEY_F)
         {
             /* Toggle flight */
             this.cameraOptions.flight.playPressSound(this.mc.getSoundHandler());
@@ -760,10 +755,18 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         if (keyCode == Keyboard.KEY_S)
         {
-            /* Toggle sync */
-            this.cameraOptions.sync.playPressSound(this.mc.getSoundHandler());
-            this.cameraOptions.sync.mousePressed(mc, this.cameraOptions.sync.xPosition + 1, this.cameraOptions.sync.yPosition + 1);
-            this.cameraOptions.actionButtonPerformed(this.cameraOptions.sync);
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && this.profile != null)
+            {
+                /* Save camera profile */
+                this.profile.save();
+            }
+            else
+            {
+                /* Toggle sync */
+                this.cameraOptions.sync.playPressSound(this.mc.getSoundHandler());
+                this.cameraOptions.sync.mousePressed(mc, this.cameraOptions.sync.xPosition + 1, this.cameraOptions.sync.yPosition + 1);
+                this.cameraOptions.actionButtonPerformed(this.cameraOptions.sync);
+            }
         }
         else if (keyCode == Keyboard.KEY_SPACE)
         {
@@ -807,6 +810,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             {
                 this.jumpToPrevFrame();
             }
+        }
+        else if (keyCode == Keyboard.KEY_B && this.fixturePanel != null)
+        {
+            /* Copy the position */
+            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
         }
     }
 
