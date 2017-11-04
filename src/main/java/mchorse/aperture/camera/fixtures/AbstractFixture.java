@@ -10,7 +10,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.Position;
-import mchorse.aperture.camera.modifiers.ICameraModifier;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.commands.SubCommandBase;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -64,7 +64,7 @@ public abstract class AbstractFixture
     /**
      * Camera modifiers 
      */
-    protected List<ICameraModifier> modifiers = new ArrayList<ICameraModifier>();
+    protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
 
     /**
      * This is abstract's fixture factory method.
@@ -244,10 +244,21 @@ public abstract class AbstractFixture
      */
     public void applyModifiers(long ticks, float partialTick, Position pos)
     {
-        for (ICameraModifier modifier : this.modifiers)
+        for (AbstractModifier modifier : this.modifiers)
         {
-            modifier.modify(ticks, this, partialTick, pos);
+            if (modifier.enabled)
+            {
+                modifier.modify(ticks, this, partialTick, pos);
+            }
         }
+    }
+
+    /**
+     * Get modifiers 
+     */
+    public List<AbstractModifier> getModifiers()
+    {
+        return this.modifiers;
     }
 
     /**
