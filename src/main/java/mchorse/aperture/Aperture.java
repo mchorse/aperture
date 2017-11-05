@@ -2,11 +2,13 @@ package mchorse.aperture;
 
 import org.apache.logging.log4j.Logger;
 
+import mchorse.aperture.commands.CommandAperture;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 /**
  * Main entry point of Aperture
@@ -52,5 +54,11 @@ public class Aperture
     public void load(FMLInitializationEvent event)
     {
         proxy.load(event);
+    }
+
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event)
+    {
+        event.registerServerCommand(new CommandAperture());
     }
 }

@@ -136,11 +136,14 @@ public class GuiProfilesManager implements IGuiModule
 
                     if (isX)
                     {
-                        ClientProxy.control.profiles.remove(index);
-                        ClientProxy.control.currentProfile = null;
+                        /* Reset current camera profile only removed one is was current profile */
+                        if (this.editor.getProfile() == ClientProxy.control.profiles.remove(index))
+                        {
+                            ClientProxy.control.currentProfile = null;
+                            this.editor.selectProfile(null);
+                        }
 
                         this.scrollLoaded.setSize(ClientProxy.control.profiles.size());
-                        this.editor.selectProfile(null);
                     }
                     else if (isReverse)
                     {

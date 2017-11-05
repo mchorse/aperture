@@ -41,9 +41,10 @@ aperture.gui:
         copy_position: Copy player's position (B)
         move_down: Move fixture backward
 
-        save: Save camera profile
+        save: Save camera profile (Ctrl + S)
         profiles: Show camera profiles
         config: Show camera editor options
+        modifiers: Show modifiers panel (O)
         add: Add fixture
         remove: Remove selected fixture
 
