@@ -18,6 +18,7 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         this.shake = new GuiTrackpad(this, font);
         this.shakeAmount = new GuiTrackpad(this, font);
 
+        /* TODO: extract strings */
         this.shake.title = "Shake";
         this.shakeAmount.title = "Amount";
         this.title = "Camera shake";

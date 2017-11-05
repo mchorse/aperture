@@ -17,6 +17,7 @@ public abstract class AbstractModifier
 {
     /* Types */
     public static final byte SHAKE = 1;
+    public static final byte MATH = 2;
 
     /**
      * Whether this modifier is enabled 
@@ -45,6 +46,7 @@ public abstract class AbstractModifier
     public static AbstractModifier createFromType(byte type) throws Exception
     {
         if (type == SHAKE) return new ShakeModifier();
+        if (type == MATH) return new MathModifier();
 
         throw new Exception("Modifier with type '" + type + "' not exists!");
     }
