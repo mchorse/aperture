@@ -29,10 +29,12 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         if (trackpad == this.shake && value != 0)
         {
             this.modifier.shake = value;
+            this.modifiers.editor.updateProfile();
         }
         else if (trackpad == this.shakeAmount)
         {
             this.modifier.shakeAmount = value;
+            this.modifiers.editor.updateProfile();
         }
     }
 

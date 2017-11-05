@@ -2,6 +2,7 @@ package mchorse.aperture.camera.modifiers;
 
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 
@@ -12,6 +13,9 @@ public class ShakeModifier extends AbstractModifier
 
     @Expose
     public float shakeAmount;
+
+    public ShakeModifier()
+    {}
 
     public ShakeModifier(float shake, float shakeAmount)
     {
@@ -29,5 +33,29 @@ public class ShakeModifier extends AbstractModifier
 
         pos.angle.yaw += swingX * this.shakeAmount;
         pos.angle.pitch += swingY * this.shakeAmount;
+    }
+
+    @Override
+    public byte getType()
+    {
+        return AbstractModifier.SHAKE;
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        buffer.writeFloat(this.shake);
+        buffer.writeFloat(this.shakeAmount);
+    }
+
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        this.shake = buffer.readFloat();
+        this.shakeAmount = buffer.readFloat();
     }
 }

@@ -2,6 +2,7 @@ package mchorse.aperture.camera.fixtures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +65,7 @@ public abstract class AbstractFixture
     /**
      * Camera modifiers 
      */
+    @Expose
     protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
 
     /**
@@ -100,7 +102,6 @@ public abstract class AbstractFixture
         }
         catch (Exception e)
         {
-            System.out.println("Error reading abstract camera fixture from ByteBuf of type " + type + " and " + duration + "t duration!!!");
             e.printStackTrace();
         }
 
@@ -198,6 +199,16 @@ public abstract class AbstractFixture
     public void fromByteBuf(ByteBuf buffer)
     {
         this.name = ByteBufUtils.readUTF8String(buffer);
+
+        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        {
+            AbstractModifier modifier = AbstractModifier.readFromByteBuf(buffer);
+
+            if (modifier != null)
+            {
+                this.modifiers.add(modifier);
+            }
+        }
     }
 
     /**
@@ -205,9 +216,33 @@ public abstract class AbstractFixture
      */
     public void toByteBuf(ByteBuf buffer)
     {
+        Iterator<AbstractModifier> it = this.modifiers.iterator();
+
+        while (it.hasNext())
+        {
+            if (it.next() == null)
+            {
+                it.remove();
+            }
+        }
+
         buffer.writeByte(this.getType());
         buffer.writeLong(this.duration);
         ByteBufUtils.writeUTF8String(buffer, this.name);
+
+        if (this.modifiers == null)
+        {
+            buffer.writeInt(0);
+        }
+        else
+        {
+            buffer.writeInt(this.modifiers.size());
+
+            for (AbstractModifier modifier : this.modifiers)
+            {
+                modifier.toByteBuf(buffer);
+            }
+        }
     }
 
     /* Abstract methods */

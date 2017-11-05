@@ -62,7 +62,6 @@ public class GuiModifiersManager
     public GuiModifiersManager(GuiCameraEditor editor)
     {
         this.editor = editor;
-
         this.add = new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16);
     }
 
@@ -139,9 +138,12 @@ public class GuiModifiersManager
 
             modifiers.add(modifier);
             this.addModifier(modifier);
+            this.editor.updateProfile();
         }
 
         Iterator<GuiAbstractModifierPanel<AbstractModifier>> it = this.panels.iterator();
+
+        boolean recalc = false;
 
         while (it.hasNext())
         {
@@ -151,12 +153,19 @@ public class GuiModifiersManager
             {
                 it.remove();
                 this.fixture.getModifiers().remove(panel.modifier);
-                this.recalcPanels();
+                this.editor.updateProfile();
+
+                recalc = true;
 
                 continue;
             }
 
             panel.mouseClicked(mouseX, mouseY, mouseButton);
+        }
+
+        if (recalc)
+        {
+            this.recalcPanels();
         }
     }
 
@@ -166,9 +175,9 @@ public class GuiModifiersManager
 
         for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
         {
-            h += panel.getHeight();
-
             panel.update(this.area.x + this.area.w, this.area.y + 20 + h);
+
+            h += panel.getHeight();
         }
 
         this.area.scrollSize = h + 20;

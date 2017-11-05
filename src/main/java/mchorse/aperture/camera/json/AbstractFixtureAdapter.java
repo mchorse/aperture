@@ -22,6 +22,8 @@ import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.modifiers.ShakeModifier;
 
 /**
  * This class is responsible for serializing and deserializing an abstract
@@ -32,7 +34,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     /**
      * Gson instance for building up
      */
-    private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    private Gson gson;
 
     /**
      * Hash map of fixtures types mapped to corresponding class. I think this
@@ -47,6 +49,17 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         TYPES.put("look", LookFixture.class);
         TYPES.put("follow", FollowFixture.class);
         TYPES.put("circular", CircularFixture.class);
+    }
+
+    public AbstractFixtureAdapter()
+    {
+        GsonBuilder builder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
+        AbstractModifierAdapter modifierAdapter = new AbstractModifierAdapter();
+
+        builder.registerTypeAdapter(AbstractModifier.class, modifierAdapter);
+        builder.registerTypeAdapter(ShakeModifier.class, modifierAdapter);
+
+        this.gson = builder.create();
     }
 
     /**
