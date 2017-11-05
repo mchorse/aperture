@@ -24,8 +24,8 @@ public class ShakeModifier extends AbstractModifier
     {
         float x = (ticks + partialTick) / this.shake;
 
-        float swingX = (float) (Math.cos(x) * Math.sin(x));
-        float swingY = (float) (Math.sin(x) * Math.cos(x));
+        float swingX = (float) (Math.sin(x) * Math.sin(x) * Math.cos(x));
+        float swingY = (float) (Math.cos(x) * Math.sin(x) * Math.sin(x));
 
         pos.angle.yaw += swingX * this.shakeAmount;
         pos.angle.pitch += swingY * this.shakeAmount;

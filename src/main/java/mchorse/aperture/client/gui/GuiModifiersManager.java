@@ -2,6 +2,7 @@ package mchorse.aperture.client.gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,10 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.math.MathHelper;
 
-public class GuiModifiersPanel
+/**
+ * 
+ */
+public class GuiModifiersManager
 {
     /**
      * Registry of camera modifier panels 
@@ -47,7 +51,6 @@ public class GuiModifiersPanel
     public ScrollArea area = new ScrollArea(0);
 
     public GuiButton add;
-    public GuiButton remove;
     public GuiCameraEditor editor;
 
     static
@@ -56,12 +59,11 @@ public class GuiModifiersPanel
         PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);
     }
 
-    public GuiModifiersPanel(GuiCameraEditor editor)
+    public GuiModifiersManager(GuiCameraEditor editor)
     {
         this.editor = editor;
 
         this.add = new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16);
-        this.remove = new GuiTextureButton(1, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(240, 0).setActiveTexPos(240, 16);
     }
 
     public void setFixture(AbstractFixture fixture)
@@ -92,7 +94,7 @@ public class GuiModifiersPanel
             try
             {
                 FontRenderer font = this.editor.mc.fontRendererObj;
-                GuiAbstractModifierPanel<AbstractModifier> panel = (GuiAbstractModifierPanel<AbstractModifier>) clazz.getConstructor(modifier.getClass(), FontRenderer.class).newInstance(modifier, font);
+                GuiAbstractModifierPanel<AbstractModifier> panel = (GuiAbstractModifierPanel<AbstractModifier>) clazz.getConstructor(modifier.getClass(), GuiModifiersManager.class, FontRenderer.class).newInstance(modifier, this, font);
 
                 int h = 0;
 
@@ -101,7 +103,7 @@ public class GuiModifiersPanel
                     h += otherPanel.getHeight();
                 }
 
-                panel.update(this.area.x + this.area.w, this.area.y + 25 + h);
+                panel.update(this.area.x + this.area.w, this.area.y + 20 + h);
                 this.panels.add(panel);
 
                 this.area.scrollSize = h + panel.getHeight() + 20;
@@ -116,20 +118,9 @@ public class GuiModifiersPanel
     public void update(int x, int y, int w, int h)
     {
         this.area.set(x, y, w, h);
+        this.recalcPanels();
 
         GuiUtils.setSize(this.add, x + w - 20 + 2, y + 2, 16, 16);
-        GuiUtils.setSize(this.remove, x + w - 40 + 2, y + 2, 16, 16);
-
-        int i = 0;
-
-        for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
-        {
-            panel.update(x + w, y + 25 + i);
-
-            i += panel.getHeight();
-        }
-
-        this.area.scrollSize = i + 20;
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -149,16 +140,38 @@ public class GuiModifiersPanel
             modifiers.add(modifier);
             this.addModifier(modifier);
         }
-        else if (this.remove.mousePressed(mc, mouseX, mouseY))
+
+        Iterator<GuiAbstractModifierPanel<AbstractModifier>> it = this.panels.iterator();
+
+        while (it.hasNext())
         {
-            modifiers.remove(modifiers.size() - 1);
-            this.panels.remove(this.panels.size() - 1);
+            GuiAbstractModifierPanel<AbstractModifier> panel = it.next();
+
+            if (panel.remove.mousePressed(this.editor.mc, mouseX, mouseY))
+            {
+                it.remove();
+                this.fixture.getModifiers().remove(panel.modifier);
+                this.recalcPanels();
+
+                continue;
+            }
+
+            panel.mouseClicked(mouseX, mouseY, mouseButton);
         }
+    }
+
+    private void recalcPanels()
+    {
+        int h = 0;
 
         for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
         {
-            panel.mouseClicked(mouseX, mouseY, mouseButton);
+            h += panel.getHeight();
+
+            panel.update(this.area.x + this.area.w, this.area.y + 20 + h);
         }
+
+        this.area.scrollSize = h + 20;
     }
 
     public void mouseReleased(int mouseX, int mouseY, int state)
@@ -208,7 +221,7 @@ public class GuiModifiersPanel
         }
 
         Minecraft mc = Minecraft.getMinecraft();
-        int h = MathHelper.clamp_int(this.area.scrollSize, 0, this.area.h);
+        int h = MathHelper.clamp_int(this.area.scrollSize, 20, this.area.h);
 
         if (this.fixture == null)
         {
@@ -220,7 +233,6 @@ public class GuiModifiersPanel
         mc.fontRendererObj.drawStringWithShadow("Modifiers", this.area.x + 6, this.area.y + 7, 0xffffff);
 
         this.add.drawButton(mc, mouseX, mouseY);
-        this.remove.drawButton(mc, mouseX, mouseY);
 
         if (this.fixture == null)
         {

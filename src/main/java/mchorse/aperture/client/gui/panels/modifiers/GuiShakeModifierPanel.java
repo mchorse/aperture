@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.modifiers.ShakeModifier;
+import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import net.minecraft.client.gui.FontRenderer;
@@ -10,21 +11,22 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     public GuiTrackpad shake;
     public GuiTrackpad shakeAmount;
 
-    public GuiShakeModifierPanel(ShakeModifier modifier, FontRenderer font)
+    public GuiShakeModifierPanel(ShakeModifier modifier, GuiModifiersManager panel, FontRenderer font)
     {
-        super(modifier, font);
+        super(modifier, panel, font);
 
         this.shake = new GuiTrackpad(this, font);
         this.shakeAmount = new GuiTrackpad(this, font);
 
         this.shake.title = "Shake";
         this.shakeAmount.title = "Amount";
+        this.title = "Camera shake";
     }
 
     @Override
     public void setTrackpadValue(GuiTrackpad trackpad, float value)
     {
-        if (trackpad == this.shake)
+        if (trackpad == this.shake && value != 0)
         {
             this.modifier.shake = value;
         }
@@ -34,13 +36,17 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         }
     }
 
+    /**
+     * TODO: rewrite to also accept width (and left top corner instead 
+     * of right top) 
+     */
     @Override
     public void update(int x, int y)
     {
         super.update(x, y);
 
-        this.shake.update(x - 160 + 5, y + 15, 70, 20);
-        this.shakeAmount.update(x - 75, y + 15, 70, 20);
+        this.shake.update(x - 160 + 5, y + 20, 70, 20);
+        this.shakeAmount.update(x - 75, y + 20, 70, 20);
 
         this.shake.setValue(this.modifier.shake);
         this.shakeAmount.setValue(this.modifier.shakeAmount);
@@ -76,7 +82,7 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
-        this.font.drawStringWithShadow("Shake", this.x - 160 + 5, this.y, 0xffffff);
+        super.draw(mouseX, mouseY, partialTicks);
 
         this.shake.draw(mouseX, mouseY, partialTicks);
         this.shakeAmount.draw(mouseX, mouseY, partialTicks);

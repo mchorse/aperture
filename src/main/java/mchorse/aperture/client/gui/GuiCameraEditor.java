@@ -158,7 +158,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     /**
      * GUI camera modifiers panel 
      */
-    public GuiModifiersPanel modifiers;
+    public GuiModifiersManager modifiers;
 
     static
     {
@@ -291,7 +291,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.popup = new GuiFixturesPopup(this);
         this.profiles = new GuiProfilesManager(this);
         this.cameraOptions = new GuiConfigCameraOptions(this);
-        this.modifiers = new GuiModifiersPanel(this);
+        this.modifiers = new GuiModifiersManager(this);
 
         this.config = new GuiCameraConfig();
         this.config.options.add(this.cameraOptions);
@@ -601,15 +601,19 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             this.profiles.visible = !this.profiles.visible;
             this.config.visible = false;
+            this.modifiers.visible = false;
         }
         else if (id == 11)
         {
             this.config.visible = !this.config.visible;
             this.profiles.visible = false;
+            this.modifiers.visible = false;
         }
         else if (id == 12)
         {
             this.modifiers.visible = !this.modifiers.visible;
+            this.profiles.visible = false;
+            this.config.visible = false;
         }
 
         /* Add and remove */
