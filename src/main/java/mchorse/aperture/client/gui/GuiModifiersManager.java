@@ -230,7 +230,7 @@ public class GuiModifiersManager
         }
 
         Minecraft mc = Minecraft.getMinecraft();
-        int h = MathHelper.clamp_int(this.area.scrollSize, 20, this.area.h);
+        int h = MathHelper.clamp(this.area.scrollSize, 20, this.area.h);
 
         if (this.fixture == null)
         {

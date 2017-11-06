@@ -14,13 +14,13 @@ import net.minecraft.util.math.BlockPos;
 public class CommandAperture extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "aperture";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.aperture.help";
     }
@@ -36,7 +36,7 @@ public class CommandAperture extends CommandBase
     {
         if (args.length < 2)
         {
-            throw new WrongUsageException(this.getCommandUsage(sender));
+            throw new WrongUsageException(this.getUsage(sender));
         }
 
         if (args[0].equals("play"))
@@ -53,7 +53,7 @@ public class CommandAperture extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 0)
         {
@@ -61,9 +61,9 @@ public class CommandAperture extends CommandBase
         }
         else if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, server.getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
         }
 
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return super.getTabCompletions(server, sender, args, pos);
     }
 }
