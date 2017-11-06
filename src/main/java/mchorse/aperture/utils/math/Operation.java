@@ -2,7 +2,7 @@ package mchorse.aperture.utils.math;
 
 public enum Operation
 {
-    ADD("+")
+    ADD("+", 1)
     {
         @Override
         public double calculate(double a, double b)
@@ -10,7 +10,7 @@ public enum Operation
             return a + b;
         }
     },
-    SUB("-")
+    SUB("-", 1)
     {
         @Override
         public double calculate(double a, double b)
@@ -18,7 +18,7 @@ public enum Operation
             return a - b;
         }
     },
-    MUL("*")
+    MUL("*", 2)
     {
         @Override
         public double calculate(double a, double b)
@@ -26,7 +26,7 @@ public enum Operation
             return a * b;
         }
     },
-    DIV("/")
+    DIV("/", 2)
     {
         @Override
         public double calculate(double a, double b)
@@ -35,7 +35,7 @@ public enum Operation
             return a / (b == 0 ? 1 : b);
         }
     },
-    MOD("%")
+    MOD("%", 2)
     {
         @Override
         public double calculate(double a, double b)
@@ -43,7 +43,7 @@ public enum Operation
             return a % b;
         }
     },
-    POW("^")
+    POW("^", 3)
     {
         @Override
         public double calculate(double a, double b)
@@ -52,11 +52,13 @@ public enum Operation
         }
     };
 
-    public String sign;
+    public final String sign;
+    public final int value;
 
-    private Operation(String sign)
+    private Operation(String sign, int value)
     {
         this.sign = sign;
+        this.value = value;
     }
 
     public abstract double calculate(double a, double b);
