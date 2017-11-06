@@ -216,16 +216,6 @@ public abstract class AbstractFixture
      */
     public void toByteBuf(ByteBuf buffer)
     {
-        Iterator<AbstractModifier> it = this.modifiers.iterator();
-
-        while (it.hasNext())
-        {
-            if (it.next() == null)
-            {
-                it.remove();
-            }
-        }
-
         buffer.writeByte(this.getType());
         buffer.writeLong(this.duration);
         ByteBufUtils.writeUTF8String(buffer, this.name);
@@ -236,6 +226,16 @@ public abstract class AbstractFixture
         }
         else
         {
+            Iterator<AbstractModifier> it = this.modifiers.iterator();
+
+            while (it.hasNext())
+            {
+                if (it.next() == null)
+                {
+                    it.remove();
+                }
+            }
+
             buffer.writeInt(this.modifiers.size());
 
             for (AbstractModifier modifier : this.modifiers)
