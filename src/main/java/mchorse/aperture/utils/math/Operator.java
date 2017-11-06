@@ -22,6 +22,6 @@ public class Operator implements IValue
     @Override
     public String toString()
     {
-        return a.toString() + " " + this.operation.sign + " " + b.toString();
+        return "(" + a.toString() + " " + this.operation.sign + " " + b.toString() + ")";
     }
 }
