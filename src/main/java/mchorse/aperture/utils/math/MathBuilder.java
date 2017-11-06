@@ -5,14 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mchorse.aperture.utils.math.functions.Floor;
+import mchorse.aperture.utils.math.functions.Function;
+
 public class MathBuilder
 {
     public Map<String, IValue> values = new HashMap<String, IValue>();
+    public Map<String, Class<? extends Function>> functions = new HashMap<String, Class<? extends Function>>();
 
     public MathBuilder()
     {
         /* Some default values */
         this.values.put("pi", new Variable("pi", Math.PI));
+
+        /* Some default functions */
+        this.functions.put("floor", Floor.class);
     }
 
     public IValue parse(String string)
@@ -162,8 +169,6 @@ public class MathBuilder
             }
         }
 
-        System.out.println(symbols);
-
         return null;
     }
 
@@ -184,10 +189,15 @@ public class MathBuilder
         }
         else if (object instanceof List)
         {
-            return this.parseSymbols((List<Object>) object);
+            return new Group(this.parseSymbols((List<Object>) object));
         }
 
         return null;
+    }
+
+    private boolean isVariable(Object o)
+    {
+        return o instanceof String && !this.isDecimal((String) o) && !this.isOperator((String) o);
     }
 
     private boolean isValue(Object o)

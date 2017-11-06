@@ -1,5 +1,8 @@
 package mchorse.aperture.utils.math;
 
+/**
+ * Constant class
+ */
 public class Constant implements IValue
 {
     private double value;
