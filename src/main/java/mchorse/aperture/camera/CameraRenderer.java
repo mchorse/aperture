@@ -87,9 +87,11 @@ public class CameraRenderer
         /**
          * Apply camera angles only in case if it's the player. The 
          * reason behind this check is that mods like CFM which render 
-         * the world to a texture won't get affected the camera changes.  
+         * the world to a texture won't get affected the camera changes.
+         * 
+         * The 0.001 part is added due to float precision error.
          */
-        if (event.getYaw() - 180 != player.rotationYaw)
+        if (Math.abs((event.getYaw() - 180) - player.rotationYaw) > 0.001)
         {
             return;
         }
