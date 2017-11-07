@@ -56,16 +56,22 @@ public class MathBuilder
      * Parse given math expression into a {@link IValue} which can be 
      * used to execute math.
      */
-    public IValue parse(String expression)
+    public IValue parse(String expression) throws Exception
     {
         /* If given string have illegal characters, then it can't be parsed */
         if (!expression.matches("^[\\w\\d\\s_+-/*%^.,()]+$"))
         {
-            return null;
+            throw new Exception("Given expression '" + expression + "' contains illegal characters!");
         }
 
         /* Remove all spaces, and leading and trailing parenthesis */
         expression = expression.replaceAll("\\s+", "");
+
+        if (expression.startsWith("(") && expression.endsWith(")"))
+        {
+            expression = expression.replaceAll("^\\(", "").replaceAll("\\)$", "");
+        }
+
         String[] chars = expression.split("(?!^)");
 
         int left = 0;
@@ -86,7 +92,7 @@ public class MathBuilder
         /* Amount of left and right brackets should be the same */
         if (left != right)
         {
-            return null;
+            throw new Exception("Given expression '" + expression + "' has more uneven amount of parenthesis, there are " + left + " open and " + right + " closed!");
         }
 
         return this.parseSymbols(this.breakdownChars(chars));
@@ -195,10 +201,8 @@ public class MathBuilder
      * However, beside parsing operations, it's also can return one or 
      * two item sized symbol lists.
      */
-    public IValue parseSymbols(List<Object> symbols)
+    public IValue parseSymbols(List<Object> symbols) throws Exception
     {
-        System.out.println("Symbols: " + symbols);
-
         int size = symbols.size();
 
         /* Constant, variable or group (parenthesis) */
@@ -269,7 +273,7 @@ public class MathBuilder
             }
         }
 
-        return null;
+        throw new Exception("Given symbols couldn't be parsed! " + symbols);
     }
 
     /**
@@ -283,11 +287,11 @@ public class MathBuilder
      * mixed with operators, groups, values and commas. And then plug it 
      * in to a class constructor with given name. 
      */
-    private IValue createFunction(String first, List<Object> args)
+    private IValue createFunction(String first, List<Object> args) throws Exception
     {
         if (!this.functions.containsKey(first))
         {
-            return null;
+            throw new Exception("Function '" + first + "' couldn't be found!");
         }
 
         List<IValue> values = new ArrayList<IValue>();
@@ -312,19 +316,10 @@ public class MathBuilder
         }
 
         Class<? extends Function> function = this.functions.get(first);
+        Constructor<? extends Function> ctor = function.getConstructor(IValue[].class);
+        Function func = ctor.newInstance(new Object[] {values.toArray(new IValue[values.size()])});
 
-        try
-        {
-            Constructor<? extends Function> ctor = function.getConstructor(IValue[].class);
-            Function func = ctor.newInstance(new Object[] {values.toArray(new IValue[values.size()])});
-
-            return func;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        return func;
     }
 
     /**
@@ -334,7 +329,7 @@ public class MathBuilder
      * based on the input object. It can create constants, variables and 
      * groups. 
      */
-    public IValue valueFromObject(Object object)
+    public IValue valueFromObject(Object object) throws Exception
     {
         if (object instanceof String)
         {
@@ -354,13 +349,13 @@ public class MathBuilder
             return new Group(this.parseSymbols((List<Object>) object));
         }
 
-        return null;
+        throw new Exception("Given object couldn't be converted to value! " + object);
     }
 
     /**
      * Get operation for given operator strings 
      */
-    private Operation operationForOperator(String op)
+    private Operation operationForOperator(String op) throws Exception
     {
         for (Operation operation : Operation.values())
         {
@@ -370,7 +365,7 @@ public class MathBuilder
             }
         }
 
-        return null;
+        throw new Exception("There is no such operator '" + op + "'!");
     }
 
     /**

@@ -25,8 +25,13 @@ public class TestMathBuilder
     @Test
     public void testParsing()
     {
-        IValue value = this.builder.parse("-5 + 10");
+        try
+        {
+            IValue value = this.builder.parse("-5 + 10");
 
-        System.out.println(value.toString() + " = " + value.get());
+            System.out.println(value.toString() + " = " + value.get());
+        }
+        catch (Exception e)
+        {}
     }
 }
