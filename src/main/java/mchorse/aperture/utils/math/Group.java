@@ -1,5 +1,11 @@
 package mchorse.aperture.utils.math;
 
+/**
+ * Group class
+ * 
+ * Simply wraps given {@link IValue} into parenthesis in the 
+ * {@link #toString()} method.
+ */
 public class Group implements IValue
 {
     private IValue value;

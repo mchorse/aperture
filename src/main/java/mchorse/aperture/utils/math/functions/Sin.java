@@ -2,9 +2,9 @@ package mchorse.aperture.utils.math.functions;
 
 import mchorse.aperture.utils.math.IValue;
 
-public class Floor extends Function
+public class Sin extends Function
 {
-    public Floor(IValue[] values) throws Exception
+    public Sin(IValue[] values) throws Exception
     {
         super(values);
     }
@@ -12,7 +12,7 @@ public class Floor extends Function
     @Override
     public String getName()
     {
-        return "floor";
+        return "sin";
     }
 
     @Override
@@ -24,6 +24,6 @@ public class Floor extends Function
     @Override
     public double get()
     {
-        return Math.floor(this.args[0].get());
+        return Math.sin(this.args[0].get());
     }
 }

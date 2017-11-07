@@ -1,10 +1,11 @@
 package mchorse.aperture.utils.math.functions;
 
 import mchorse.aperture.utils.math.IValue;
+import net.minecraft.util.math.MathHelper;
 
-public class Floor extends Function
+public class Clamp extends Function
 {
-    public Floor(IValue[] values) throws Exception
+    public Clamp(IValue[] values) throws Exception
     {
         super(values);
     }
@@ -12,18 +13,18 @@ public class Floor extends Function
     @Override
     public String getName()
     {
-        return "floor";
+        return "clamp";
     }
 
     @Override
     public int getRequiredArguments()
     {
-        return 1;
+        return 3;
     }
 
     @Override
     public double get()
     {
-        return Math.floor(this.args[0].get());
+        return MathHelper.clamp_double(this.args[0].get(), this.args[1].get(), this.args[2].get());
     }
 }

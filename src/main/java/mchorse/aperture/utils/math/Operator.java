@@ -1,5 +1,11 @@
 package mchorse.aperture.utils.math;
 
+/**
+ * Operator class
+ * 
+ * This class is responsible for performing a calculation of two values 
+ * based on given operation.
+ */
 public class Operator implements IValue
 {
     public Operation operation;

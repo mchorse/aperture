@@ -2,6 +2,8 @@ package mchorse.aperture.utils.math;
 
 /**
  * Constant class
+ * 
+ * This class simply returns supplied in the constructor value
  */
 public class Constant implements IValue
 {
