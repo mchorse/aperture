@@ -43,11 +43,14 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
         return 20;
     }
 
+    public boolean hasActiveTextfields()
+    {
+        return false;
+    }
+
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
-        // Gui.drawRect(this.x - 160, this.y, this.x, this.y + this.getHeight(), 0x88000000 + this.y * 10);
-
         this.font.drawStringWithShadow(this.title, this.x - 160 + 5, this.y + 7, 0xffffff);
 
         this.remove.drawButton(this.modifiers.editor.mc, mouseX, mouseY);

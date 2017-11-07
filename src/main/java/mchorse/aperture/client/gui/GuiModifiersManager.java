@@ -8,8 +8,10 @@ import java.util.Map;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiMathModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
@@ -57,6 +59,7 @@ public class GuiModifiersManager
     {
         /* Setup all Aperture vanilla camera modifiers */
         PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);
+        PANELS.put(MathModifier.class, GuiMathModifierPanel.class);
     }
 
     public GuiModifiersManager(GuiCameraEditor editor)
@@ -134,7 +137,7 @@ public class GuiModifiersManager
 
         if (this.add.mousePressed(mc, mouseX, mouseY))
         {
-            AbstractModifier modifier = new ShakeModifier(10, 0.5F);
+            AbstractModifier modifier = new MathModifier("y + sin(t + pt)");
 
             modifiers.add(modifier);
             this.addModifier(modifier);
@@ -213,7 +216,13 @@ public class GuiModifiersManager
     {
         if (this.visible)
         {
-
+            for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
+            {
+                if (panel.hasActiveTextfields())
+                {
+                    return true;
+                }
+            }
         }
 
         return false;

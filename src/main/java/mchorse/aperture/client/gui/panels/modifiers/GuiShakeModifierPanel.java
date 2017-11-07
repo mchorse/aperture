@@ -83,6 +83,12 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     }
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return this.shake.text.isFocused() || this.shakeAmount.text.isFocused();
+    }
+
+    @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
         super.draw(mouseX, mouseY, partialTicks);

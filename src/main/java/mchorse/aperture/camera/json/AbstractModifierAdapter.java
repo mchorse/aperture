@@ -15,6 +15,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 
 public class AbstractModifierAdapter implements JsonSerializer<AbstractModifier>, JsonDeserializer<AbstractModifier>
@@ -29,6 +30,7 @@ public class AbstractModifierAdapter implements JsonSerializer<AbstractModifier>
     static
     {
         TYPES.put("shake", ShakeModifier.class);
+        TYPES.put("math", MathModifier.class);
     }
 
     @Override
