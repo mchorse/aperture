@@ -15,8 +15,8 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     {
         super(modifier, modifiers, font);
 
-        this.title = "Math";
-        this.selector = new GuiTextField(0, font, 0, 0, 148, 18);
+        this.title = "Look";
+        this.selector = new GuiTextField(0, font, 0, 0, 0, 0);
         this.selector.setMaxStringLength(500);
     }
 

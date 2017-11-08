@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mchorse.aperture.utils.math.functions.Abs;
 import mchorse.aperture.utils.math.functions.Clamp;
 import mchorse.aperture.utils.math.functions.Cos;
 import mchorse.aperture.utils.math.functions.Floor;
@@ -46,10 +47,11 @@ public class MathBuilder
         this.variables.put("pi", new Variable("pi", Math.PI));
 
         /* Some default functions */
-        this.functions.put("floor", Floor.class);
-        this.functions.put("cos", Cos.class);
-        this.functions.put("sin", Sin.class);
+        this.functions.put("abs", Abs.class);
         this.functions.put("clamp", Clamp.class);
+        this.functions.put("cos", Cos.class);
+        this.functions.put("floor", Floor.class);
+        this.functions.put("sin", Sin.class);
     }
 
     /**
