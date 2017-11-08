@@ -1040,6 +1040,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (!running && this.playing)
             {
                 this.updatePlauseButton();
+                this.scrub.setValueFromScrub(0);
 
                 ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(false, this.scrub.value));
                 this.playing = false;
