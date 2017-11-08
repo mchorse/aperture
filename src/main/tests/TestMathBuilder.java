@@ -27,11 +27,13 @@ public class TestMathBuilder
     {
         try
         {
-            IValue value = this.builder.parse("-5 + 10");
+            IValue value = this.builder.parse("2-5");
 
             System.out.println(value.toString() + " = " + value.get());
         }
         catch (Exception e)
-        {}
+        {
+            e.printStackTrace();
+        }
     }
 }

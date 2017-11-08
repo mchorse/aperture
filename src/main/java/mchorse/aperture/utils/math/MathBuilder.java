@@ -119,7 +119,10 @@ public class MathBuilder
                 {
                     int size = symbols.size();
 
-                    if (size == 0 || (this.isOperator(symbols.get(size - 1)) || symbols.get(size - 1).equals(",")))
+                    boolean isFirst = size == 0 && buffer.isEmpty();
+                    boolean isOperatorBehind = size > 0 && (this.isOperator(symbols.get(size - 1)) || symbols.get(size - 1).equals(","));
+
+                    if (isFirst || isOperatorBehind)
                     {
                         buffer += s;
 
