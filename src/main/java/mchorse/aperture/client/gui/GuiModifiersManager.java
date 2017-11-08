@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.lwjgl.opengl.GL11;
+
+import mchorse.aperture.camera.CameraRenderer.Color;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
@@ -22,9 +25,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.math.MathHelper;
 
-/**
- * 
- */
 public class GuiModifiersManager
 {
     /**
@@ -48,12 +48,18 @@ public class GuiModifiersManager
     public boolean visible;
 
     /**
+     * Whether adding
+     */
+    public boolean adding;
+
+    /**
      * Modifier's panel are 
      */
     public ScrollArea area = new ScrollArea(0);
 
     public GuiButton add;
     public GuiCameraEditor editor;
+    public List<GuiButton> addButtons = new ArrayList<GuiButton>();
 
     static
     {
@@ -66,6 +72,12 @@ public class GuiModifiersManager
     {
         this.editor = editor;
         this.add = new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16);
+
+        int shakeColor = 0xff000000 + Color.IDLE.hex;
+        int mathColor = 0xff000000 + Color.PATH.hex;
+
+        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(1, 0, 0, 80, 20, shakeColor, shakeColor - 0x00111111, "Shake"));
+        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(2, 0, 0, 80, 20, mathColor, mathColor - 0x00111111, "Math"));
     }
 
     public void setFixture(AbstractFixture fixture)
@@ -123,6 +135,15 @@ public class GuiModifiersManager
         this.recalcPanels();
 
         GuiUtils.setSize(this.add, x + w - 20 + 2, y + 2, 16, 16);
+
+        int i = 0;
+
+        for (GuiButton button : this.addButtons)
+        {
+            GuiUtils.setSize(button, x + w - 80, y + 20 + i * 20, 80, 20);
+
+            i++;
+        }
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -135,13 +156,26 @@ public class GuiModifiersManager
         Minecraft mc = Minecraft.getMinecraft();
         List<AbstractModifier> modifiers = this.fixture.getModifiers();
 
+        if (this.adding)
+        {
+            for (GuiButton button : this.addButtons)
+            {
+                if (button.mousePressed(mc, mouseX, mouseY))
+                {
+                    this.addCameraModifier(button.id, modifiers);
+
+                    break;
+                }
+            }
+
+            this.adding = false;
+
+            return;
+        }
+
         if (this.add.mousePressed(mc, mouseX, mouseY))
         {
-            AbstractModifier modifier = new ShakeModifier(10, 0.5F);
-
-            modifiers.add(modifier);
-            this.addModifier(modifier);
-            this.editor.updateProfile();
+            this.adding = !this.adding;
         }
 
         Iterator<GuiAbstractModifierPanel<AbstractModifier>> it = this.panels.iterator();
@@ -170,6 +204,20 @@ public class GuiModifiersManager
         {
             this.recalcPanels();
         }
+    }
+
+    private void addCameraModifier(int id, List<AbstractModifier> modifiers)
+    {
+        try
+        {
+            AbstractModifier modifier = AbstractModifier.createFromType((byte) id);
+
+            modifiers.add(modifier);
+            this.addModifier(modifier);
+            this.editor.updateProfile();
+        }
+        catch (Exception e)
+        {}
     }
 
     private void recalcPanels()
@@ -258,9 +306,21 @@ public class GuiModifiersManager
         }
         else
         {
+            GuiUtils.scissor(this.area.x, this.area.y, this.area.w, h, mc.currentScreen.width, mc.currentScreen.height);
+
             for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
             {
                 panel.draw(mouseX, mouseY, partialTicks);
+            }
+
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+            if (this.adding)
+            {
+                for (GuiButton button : this.addButtons)
+                {
+                    button.drawButton(mc, mouseX, mouseY);
+                }
             }
         }
     }

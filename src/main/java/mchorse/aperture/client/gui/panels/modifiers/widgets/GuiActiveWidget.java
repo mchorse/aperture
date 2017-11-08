@@ -56,11 +56,12 @@ public class GuiActiveWidget implements IGuiModule
         {
             int x = this.area.x + w * i;
             boolean isSelected = ((this.value >> i) & 0x1) == 1;
+            boolean isHover = this.area.isInside(mouseX, mouseY) && (mouseX - this.area.x) / w == i;
+            int right = i == 6 ? this.area.x + this.area.w : x + w;
 
             if (isSelected)
             {
                 int color = 0xcc0088ff;
-                int right = i == 6 ? this.area.x + this.area.w : x + w;
 
                 Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, color);
 
@@ -68,6 +69,10 @@ public class GuiActiveWidget implements IGuiModule
                 {
                     Gui.drawRect(right - 1, this.area.y, right, this.area.y + this.area.h, 0x22000000);
                 }
+            }
+            else if (isHover)
+            {
+                Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, 0x880088ff);
             }
 
             Minecraft.getMinecraft().currentScreen.drawCenteredString(Minecraft.getMinecraft().fontRendererObj, this.labels.get(i), x + w / 2, this.area.y + 7, 0xffffff);

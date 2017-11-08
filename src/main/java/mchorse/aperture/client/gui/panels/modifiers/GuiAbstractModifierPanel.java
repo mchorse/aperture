@@ -53,8 +53,13 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
+        int h = this.getHeight();
+
         this.font.drawStringWithShadow(this.title, this.x + 5, this.y + 7, 0xffffff);
 
-        this.remove.drawButton(this.modifiers.editor.mc, mouseX, mouseY);
+        if (mouseX >= this.x && mouseY >= this.y && mouseX <= this.x + this.w && mouseY <= this.y + h)
+        {
+            this.remove.drawButton(this.modifiers.editor.mc, mouseX, mouseY);
+        }
     }
 }
