@@ -2,6 +2,7 @@ package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
+import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
@@ -9,6 +10,8 @@ import net.minecraft.client.gui.GuiTextField;
 public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 {
     public GuiTextField math;
+    public GuiActiveWidget active;
+    public String old = "";
 
     public GuiMathModifierPanel(MathModifier modifier, GuiModifiersManager modifiers, FontRenderer font)
     {
@@ -17,30 +20,37 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
         this.title = "Math";
         this.math = new GuiTextField(0, font, 0, 0, 148, 18);
         this.math.setMaxStringLength(500);
+
+        this.active = new GuiActiveWidget();
     }
 
     @Override
-    public void update(int x, int y)
+    public void update(int x, int y, int w)
     {
-        super.update(x, y);
+        super.update(x, y, w);
 
-        GuiUtils.setSize(this.math, x - 155, y + 20, 150, 20);
+        GuiUtils.setSize(this.math, x + 5, y + 20, w - 10, 20);
 
-        this.math.setText(this.modifier.value != null ? this.modifier.value.toString() : "");
+        this.math.setText(this.modifier.expression != null ? this.modifier.expression.toString() : "");
         this.math.setCursorPositionZero();
-        this.math.setMaxStringLength(500);
+
+        this.active.area.set(x + 5, y + 40, w - 10, 20);
+        this.active.value = this.modifier.active;
     }
 
     @Override
     public int getHeight()
     {
-        return 50;
+        return 70;
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         this.math.mouseClicked(mouseX, mouseY, mouseButton);
+        this.active.mouseClicked(mouseX, mouseY, mouseButton);
+
+        this.modifier.active = this.active.value;
     }
 
     @Override
@@ -52,9 +62,12 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
     {
         this.math.textboxKeyTyped(typedChar, keyCode);
 
-        if (this.math.isFocused() && !this.math.getText().isEmpty())
+        String text = this.math.getText();
+
+        if (this.math.isFocused() && !text.equals(this.old) && !text.isEmpty())
         {
-            this.modifier.rebuildExpression(this.math.getText());
+            this.math.setTextColor(this.modifier.rebuildExpression(text) ? 0xffffff : 0xff2244);
+            this.modifiers.editor.updateProfile();
         }
     }
 
@@ -70,5 +83,6 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
         super.draw(mouseX, mouseY, partialTicks);
 
         this.math.drawTextBox();
+        this.active.draw(mouseX, mouseY, partialTicks);
     }
 }

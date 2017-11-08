@@ -10,13 +10,14 @@ import mchorse.aperture.utils.math.MathBuilder;
 import mchorse.aperture.utils.math.Variable;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-public class MathModifier extends AbstractModifier
+public class MathModifier extends ComponentModifier
 {
-    public IValue value;
+    public IValue expression;
     public MathBuilder builder = new MathBuilder();
 
     public Variable ticks;
     public Variable partial;
+    public Variable value;
 
     public Variable x;
     public Variable y;
@@ -31,6 +32,7 @@ public class MathModifier extends AbstractModifier
     {
         this.ticks = new Variable("t", 0);
         this.partial = new Variable("pt", 0);
+        this.value = new Variable("value", 0);
 
         this.x = new Variable("x", 0);
         this.y = new Variable("y", 0);
@@ -43,6 +45,7 @@ public class MathModifier extends AbstractModifier
 
         this.builder.variables.put("t", this.ticks);
         this.builder.variables.put("pt", this.partial);
+        this.builder.variables.put("value", this.value);
 
         this.builder.variables.put("x", this.x);
         this.builder.variables.put("y", this.y);
@@ -60,25 +63,24 @@ public class MathModifier extends AbstractModifier
         this.rebuildExpression(expression);
     }
 
-    public void rebuildExpression(String expression)
+    public boolean rebuildExpression(String expression)
     {
         try
         {
-            IValue value = this.builder.parse(expression);
+            this.expression = this.builder.parse(expression);
 
-            if (value != null)
-            {
-                this.value = value;
-            }
+            return true;
         }
         catch (Exception e)
         {}
+
+        return false;
     }
 
     @Override
     public void modify(long ticks, AbstractFixture fixture, float partialTick, Position pos)
     {
-        if (this.value != null)
+        if (this.expression != null)
         {
             this.ticks.set(ticks);
             this.partial.set(partialTick);
@@ -92,16 +94,56 @@ public class MathModifier extends AbstractModifier
             this.roll.set(pos.angle.roll);
             this.fov.set(pos.angle.fov);
 
-            pos.point.y = (float) this.value.get();
+            if (this.isActive(0))
+            {
+                this.value.set(pos.point.x);
+                pos.point.x = (float) this.expression.get();
+            }
+
+            if (this.isActive(1))
+            {
+                this.value.set(pos.point.y);
+                pos.point.y = (float) this.expression.get();
+            }
+
+            if (this.isActive(2))
+            {
+                this.value.set(pos.point.z);
+                pos.point.z = (float) this.expression.get();
+            }
+
+            if (this.isActive(3))
+            {
+                this.value.set(pos.angle.yaw);
+                pos.angle.yaw = (float) this.expression.get();
+            }
+
+            if (this.isActive(4))
+            {
+                this.value.set(pos.angle.pitch);
+                pos.angle.pitch = (float) this.expression.get();
+            }
+
+            if (this.isActive(5))
+            {
+                this.value.set(pos.angle.roll);
+                pos.angle.roll = (float) this.expression.get();
+            }
+
+            if (this.isActive(6))
+            {
+                this.value.set(pos.angle.fov);
+                pos.angle.fov = (float) this.expression.get();
+            }
         }
     }
 
     @Override
     public void toJSON(JsonObject object)
     {
-        if (this.value != null)
+        if (this.expression != null)
         {
-            object.addProperty("expression", this.value.toString());
+            object.addProperty("expression", this.expression.toString());
         }
     }
 
@@ -119,7 +161,7 @@ public class MathModifier extends AbstractModifier
     {
         super.toByteBuf(buffer);
 
-        ByteBufUtils.writeUTF8String(buffer, this.value == null ? "" : this.value.toString());
+        ByteBufUtils.writeUTF8String(buffer, this.expression == null ? "" : this.expression.toString());
     }
 
     @Override

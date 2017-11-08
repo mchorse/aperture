@@ -105,7 +105,7 @@ public class GuiModifiersManager
                     h += otherPanel.getHeight();
                 }
 
-                panel.update(this.area.x + this.area.w, this.area.y + 20 + h);
+                panel.update(this.area.x, this.area.y + 20 + h, this.area.w);
                 this.panels.add(panel);
 
                 this.area.scrollSize = h + panel.getHeight() + 20;
@@ -137,7 +137,7 @@ public class GuiModifiersManager
 
         if (this.add.mousePressed(mc, mouseX, mouseY))
         {
-            AbstractModifier modifier = new MathModifier("y + sin(t + pt)");
+            AbstractModifier modifier = new ShakeModifier(10, 0.5F);
 
             modifiers.add(modifier);
             this.addModifier(modifier);
@@ -178,7 +178,7 @@ public class GuiModifiersManager
 
         for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
         {
-            panel.update(this.area.x + this.area.w, this.area.y + 20 + h);
+            panel.update(this.area.x, this.area.y + 20 + h, this.area.w);
 
             h += panel.getHeight();
         }

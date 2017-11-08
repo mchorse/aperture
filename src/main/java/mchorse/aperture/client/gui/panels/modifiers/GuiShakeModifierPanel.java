@@ -4,12 +4,14 @@ import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
+import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import net.minecraft.client.gui.FontRenderer;
 
 public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifier> implements ITrackpadListener
 {
     public GuiTrackpad shake;
     public GuiTrackpad shakeAmount;
+    public GuiActiveWidget active;
 
     public GuiShakeModifierPanel(ShakeModifier modifier, GuiModifiersManager panel, FontRenderer font)
     {
@@ -17,6 +19,7 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
 
         this.shake = new GuiTrackpad(this, font);
         this.shakeAmount = new GuiTrackpad(this, font);
+        this.active = new GuiActiveWidget();
 
         /* TODO: extract strings */
         this.shake.title = "Shake";
@@ -39,26 +42,26 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         }
     }
 
-    /**
-     * TODO: rewrite to also accept width (and left top corner instead 
-     * of right top) 
-     */
     @Override
-    public void update(int x, int y)
+    public void update(int x, int y, int w)
     {
-        super.update(x, y);
+        super.update(x, y, w);
 
-        this.shake.update(x - 160 + 5, y + 20, 70, 20);
-        this.shakeAmount.update(x - 75, y + 20, 70, 20);
+        int width = ((w - 20) / 2);
+
+        this.shake.update(x + 5, y + 20, width, 20);
+        this.shakeAmount.update(x + w - 5 - width, y + 20, width, 20);
 
         this.shake.setValue(this.modifier.shake);
         this.shakeAmount.setValue(this.modifier.shakeAmount);
+
+        this.active.area.set(x + 5, y + 40, w - 10, 20);
     }
 
     @Override
     public int getHeight()
     {
-        return 45;
+        return 65;
     }
 
     @Override
@@ -66,6 +69,9 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     {
         this.shake.mouseClicked(mouseX, mouseY, mouseButton);
         this.shakeAmount.mouseClicked(mouseX, mouseY, mouseButton);
+        this.active.mouseClicked(mouseX, mouseY, mouseButton);
+
+        this.modifier.active = this.active.value;
     }
 
     @Override
@@ -95,5 +101,6 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
 
         this.shake.draw(mouseX, mouseY, partialTicks);
         this.shakeAmount.draw(mouseX, mouseY, partialTicks);
+        this.active.draw(mouseX, mouseY, partialTicks);
     }
 }

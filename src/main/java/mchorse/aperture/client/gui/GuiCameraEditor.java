@@ -207,6 +207,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     {
         if (fixture == null)
         {
+            this.scrub.index = -1;
             this.fixturePanel = null;
         }
         else
@@ -508,7 +509,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         /* Setup areas of widgets */
         this.scrub.area.set(10, this.height - 20, this.width - 20, 20);
-        this.popup.update(width / 2 - 32, height / 2 - 51, 62, 102);
+        this.popup.update(width - 20 * 6 - 42, 20, 62, 102);
 
         if (this.fixturePanel != null)
         {
@@ -517,7 +518,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         this.config.update(width - 180, 20, 160, this.height - 80);
         this.profiles.update(width - 160, 20, 160, this.height - 80);
-        this.modifiers.update(width - 200, 20, 160, this.height - 80);
+        this.modifiers.update(width - 240, 20, 200, this.height - 80);
 
         if (this.profile == null)
         {
@@ -602,24 +603,30 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.profiles.visible = !this.profiles.visible;
             this.config.visible = false;
             this.modifiers.visible = false;
+            this.popup.visible = false;
         }
         else if (id == 11)
         {
             this.config.visible = !this.config.visible;
             this.profiles.visible = false;
             this.modifiers.visible = false;
+            this.popup.visible = false;
         }
         else if (id == 12)
         {
             this.modifiers.visible = !this.modifiers.visible;
             this.profiles.visible = false;
             this.config.visible = false;
+            this.popup.visible = false;
         }
 
         /* Add and remove */
         if (id == 50)
         {
-            this.popup.visible = true;
+            this.popup.visible = !this.popup.visible;
+            this.profiles.visible = false;
+            this.config.visible = false;
+            this.modifiers.visible = false;
         }
         else if (id == 51)
         {
@@ -786,6 +793,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && this.profile != null)
             {
                 /* Save camera profile */
+                this.save.playPressSound(this.mc.getSoundHandler());
                 this.profile.save();
             }
             else
@@ -871,6 +879,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             return;
         }
 
+        if (this.modifiers.visible)
+        {
+            this.modifiers.mouseClicked(mouseX, mouseY, mouseButton);
+
+            if (this.modifiers.area.isInside(mouseX, mouseY))
+            {
+                return;
+            }
+        }
+
         if (this.profile == null || this.profiles.isInside(mouseX, mouseY))
         {
             this.profiles.mouseClicked(mouseX, mouseY, mouseButton);
@@ -889,6 +907,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             return;
         }
 
+        boolean wasVisible2 = this.popup.visible;
+
         this.popup.mouseClicked(mouseX, mouseY, mouseButton);
 
         if (this.popup.visible && this.popup.area.isInside(mouseX, mouseY))
@@ -903,13 +923,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (this.config.visible && wasVisible && !this.config.area.isInside(mouseX, mouseY))
         {
             this.config.visible = false;
-
-            return;
         }
 
-        if (this.modifiers.visible && this.modifiers.area.isInside(mouseX, mouseY))
+        if (this.popup.visible && wasVisible2 && !this.popup.area.isInside(mouseX, mouseY))
         {
-            this.modifiers.mouseClicked(mouseX, mouseY, mouseButton);
+            this.popup.visible = false;
         }
 
         if (this.fixturePanel != null)
@@ -996,6 +1014,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (this.modifiers.visible)
             {
                 Gui.drawRect(width - 60, 0, width - 40, 20, 0xaa000000);
+            }
+
+            if (this.popup.visible)
+            {
+                Gui.drawRect(width - 120, 0, width - 100, 20, 0xaa000000);
             }
 
             super.drawScreen(mouseX, mouseY, partialTicks);

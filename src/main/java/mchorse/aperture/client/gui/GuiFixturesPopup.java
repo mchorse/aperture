@@ -172,7 +172,7 @@ public class GuiFixturesPopup
     {
         if (this.visible)
         {
-            Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xff000000);
+            Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xaa000000);
 
             for (GuiButton button : this.buttons)
             {

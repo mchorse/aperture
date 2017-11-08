@@ -18,6 +18,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
     public String title = "";
     public int x;
     public int y;
+    public int w;
 
     public GuiButton remove;
 
@@ -30,12 +31,13 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
         this.remove = new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(32, 32).setActiveTexPos(32, 48);
     }
 
-    public void update(int x, int y)
+    public void update(int x, int y, int w)
     {
         this.x = x;
         this.y = y;
+        this.w = w;
 
-        GuiUtils.setSize(this.remove, x - 18, y + 2, 16, 16);
+        GuiUtils.setSize(this.remove, x + w - 18, y + 2, 16, 16);
     }
 
     public int getHeight()
@@ -51,7 +53,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
-        this.font.drawStringWithShadow(this.title, this.x - 160 + 5, this.y + 7, 0xffffff);
+        this.font.drawStringWithShadow(this.title, this.x + 5, this.y + 7, 0xffffff);
 
         this.remove.drawButton(this.modifiers.editor.mc, mouseX, mouseY);
     }

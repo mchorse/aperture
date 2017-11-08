@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 
-public class ShakeModifier extends AbstractModifier
+public class ShakeModifier extends ComponentModifier
 {
     @Expose
     public float shake;
