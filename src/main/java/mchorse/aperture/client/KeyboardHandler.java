@@ -152,6 +152,11 @@ public class KeyboardHandler
     {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
+        if (ClientProxy.runner.getGameMode(player).isAdventure())
+        {
+            return;
+        }
+
         try
         {
             this.handleCameraBindings(player);
@@ -231,6 +236,11 @@ public class KeyboardHandler
         /* Camera control keys handling */
         if (player != null)
         {
+            if (ClientProxy.runner.getGameMode(player).isAdventure())
+            {
+                return;
+            }
+
             if (!ClientProxy.renderer.smooth.enabled)
             {
                 CameraControl control = ClientProxy.control;
