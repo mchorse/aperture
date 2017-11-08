@@ -11,9 +11,11 @@ import org.lwjgl.opengl.GL11;
 import mchorse.aperture.camera.CameraRenderer.Color;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiMathModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiUtils;
@@ -66,6 +68,7 @@ public class GuiModifiersManager
         /* Setup all Aperture vanilla camera modifiers */
         PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);
         PANELS.put(MathModifier.class, GuiMathModifierPanel.class);
+        PANELS.put(LookModifier.class, GuiLookModifierPanel.class);
     }
 
     public GuiModifiersManager(GuiCameraEditor editor)
@@ -75,9 +78,11 @@ public class GuiModifiersManager
 
         int shakeColor = 0xff000000 + Color.IDLE.hex;
         int mathColor = 0xff000000 + Color.PATH.hex;
+        int lookColor = 0xff000000 + Color.LOOK.hex;
 
         this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(1, 0, 0, 80, 20, shakeColor, shakeColor - 0x00111111, "Shake"));
         this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(2, 0, 0, 80, 20, mathColor, mathColor - 0x00111111, "Math"));
+        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(3, 0, 0, 80, 20, lookColor, lookColor - 0x00111111, "Look"));
     }
 
     public void setFixture(AbstractFixture fixture)
@@ -135,6 +140,15 @@ public class GuiModifiersManager
         this.recalcPanels();
 
         GuiUtils.setSize(this.add, x + w - 20 + 2, y + 2, 16, 16);
+
+        this.addButtons.clear();
+        int shakeColor = 0xff000000 + Color.IDLE.hex;
+        int mathColor = 0xff000000 + Color.PATH.hex;
+        int lookColor = 0xff000000 + Color.LOOK.hex;
+
+        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(1, 0, 0, 80, 20, shakeColor, shakeColor - 0x00111111, "Shake"));
+        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(2, 0, 0, 80, 20, mathColor, mathColor - 0x00111111, "Math"));
+        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(3, 0, 0, 80, 20, lookColor, lookColor - 0x00111111, "Look"));
 
         int i = 0;
 

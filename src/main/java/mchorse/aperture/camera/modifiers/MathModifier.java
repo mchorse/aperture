@@ -72,7 +72,9 @@ public class MathModifier extends ComponentModifier
             return true;
         }
         catch (Exception e)
-        {}
+        {
+            e.printStackTrace();
+        }
 
         return false;
     }

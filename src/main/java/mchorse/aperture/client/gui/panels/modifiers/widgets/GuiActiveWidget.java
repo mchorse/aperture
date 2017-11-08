@@ -33,8 +33,6 @@ public class GuiActiveWidget implements IGuiModule
             int index = (mouseX - this.area.x) / (this.area.w / 7);
 
             this.value ^= 1 << index;
-
-            System.out.println(Integer.toBinaryString(this.value));
         }
     }
 
