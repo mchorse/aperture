@@ -37,6 +37,7 @@ public class CameraRunner
 
     protected CameraProfile profile;
     protected Position position = new Position(0, 0, 0, 0, 0);
+    protected Position prevPos = new Position(0, 0, 0, 0, 0);
 
     /* Used by camera renderer */
     public float yaw = 0.0F;
@@ -119,6 +120,8 @@ public class CameraRunner
             MinecraftForge.EVENT_BUS.register(this);
         }
 
+        this.position.set(this.mc.thePlayer);
+
         this.isRunning = true;
         this.duration = this.profile.getDuration();
         this.ticks = start;
@@ -182,7 +185,7 @@ public class CameraRunner
             return;
         }
 
-        if (event.phase == Phase.START)
+        if (event.phase == Phase.END)
         {
             return;
         }
