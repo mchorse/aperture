@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui;
 
 import org.lwjgl.input.Keyboard;
 
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import net.minecraft.util.math.Vec3d;
 
 public class Flight

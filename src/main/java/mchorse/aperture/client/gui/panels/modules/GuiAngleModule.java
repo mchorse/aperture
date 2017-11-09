@@ -1,6 +1,6 @@
 package mchorse.aperture.client.gui.panels.modules;
 
-import mchorse.aperture.camera.Angle;
+import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;

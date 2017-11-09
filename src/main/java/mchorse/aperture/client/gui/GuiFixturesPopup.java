@@ -4,21 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.CameraRenderer.Color;
+import mchorse.aperture.camera.FixtureRegistry;
+import mchorse.aperture.camera.FixtureRegistry.FixtureInfo;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.camera.fixtures.FollowFixture;
-import mchorse.aperture.camera.fixtures.IdleFixture;
-import mchorse.aperture.camera.fixtures.LookFixture;
-import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
+import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Fixtures popup
@@ -33,12 +27,6 @@ public class GuiFixturesPopup
     public IFixtureSelector selector;
     public List<GuiButton> buttons = new ArrayList<GuiButton>();
 
-    public GuiButton idle;
-    public GuiButton path;
-    public GuiButton look;
-    public GuiButton follow;
-    public GuiButton circular;
-
     private Minecraft mc;
 
     public GuiFixturesPopup(IFixtureSelector selector)
@@ -46,23 +34,12 @@ public class GuiFixturesPopup
         this.selector = selector;
         this.mc = Minecraft.getMinecraft();
 
-        int idleColor = 0xff000000 + Color.IDLE.hex;
-        int pathColor = 0xff000000 + Color.PATH.hex;
-        int lookColor = 0xff000000 + Color.LOOK.hex;
-        int followColor = 0xff000000 + Color.FOLLOW.hex;
-        int circularColor = 0xff000000 + Color.CIRCULAR.hex;
+        for (FixtureInfo info : FixtureRegistry.CLIENT.values())
+        {
+            int color = 0xff000000 + info.color.getHex();
 
-        this.idle = new GuiFlatButton(0, 0, 0, 0, 0, idleColor, idleColor - 0x00111111, I18n.format("aperture.gui.fixtures.idle"));
-        this.path = new GuiFlatButton(0, 0, 0, 0, 0, pathColor, pathColor - 0x00111111, I18n.format("aperture.gui.fixtures.path"));
-        this.look = new GuiFlatButton(0, 0, 0, 0, 0, lookColor, lookColor - 0x00111111, I18n.format("aperture.gui.fixtures.look"));
-        this.follow = new GuiFlatButton(0, 0, 0, 0, 0, followColor, followColor - 0x00111111, I18n.format("aperture.gui.fixtures.follow"));
-        this.circular = new GuiFlatButton(0, 0, 0, 0, 0, circularColor, circularColor - 0x00111111, I18n.format("aperture.gui.fixtures.circular"));
-
-        this.buttons.add(this.idle);
-        this.buttons.add(this.path);
-        this.buttons.add(this.look);
-        this.buttons.add(this.follow);
-        this.buttons.add(this.circular);
+            this.buttons.add(new GuiFlatButton(info.type, 0, 0, 0, 0, color, color - 0x00111111, info.title));
+        }
     }
 
     public void update(int x, int y, int w, int h)
@@ -71,16 +48,14 @@ public class GuiFixturesPopup
 
         int bh = (h - 2) / 5;
         int bw = (w - 2);
+        int i = 0;
 
-        this.idle.width = this.path.width = this.look.width = this.follow.width = this.circular.width = bw;
-        this.idle.height = this.path.height = this.look.height = this.follow.height = this.circular.height = bh;
-        this.idle.xPosition = this.path.xPosition = this.look.xPosition = this.follow.xPosition = this.circular.xPosition = x + 1;
+        for (GuiButton button : this.buttons)
+        {
+            GuiUtils.setSize(button, x + 1, y + 1 + bh * i, bw, bh);
 
-        this.idle.yPosition = y + 1;
-        this.path.yPosition = y + 1 + bh;
-        this.look.yPosition = y + 1 + bh * 2;
-        this.follow.yPosition = y + 1 + bh * 3;
-        this.circular.yPosition = y + 1 + bh * 4;
+            i++;
+        }
     }
 
     public boolean isInside(int x, int y)
@@ -118,49 +93,21 @@ public class GuiFixturesPopup
      */
     private void actionPerformed(GuiButton button)
     {
-        AbstractFixture fixture = null;
-        EntityPlayer player = this.mc.thePlayer;
         long duration = Aperture.proxy.config.camera_duration;
+        AbstractFixture fixture = null;
 
-        if (button == this.idle)
+        try
         {
-            IdleFixture idle = new IdleFixture(duration);
-
-            idle.position.set(player);
-            fixture = idle;
+            fixture = FixtureRegistry.fromType((byte) button.id, duration);
         }
-        else if (button == this.path)
+        catch (Exception e)
         {
-            PathFixture path = new PathFixture(duration);
-
-            path.addPoint(new DurablePosition(player));
-            fixture = path;
-        }
-        else if (button == this.look)
-        {
-            LookFixture look = new LookFixture(duration);
-            look.position.set(player);
-
-            fixture = look;
-        }
-        else if (button == this.follow)
-        {
-            FollowFixture follow = new FollowFixture(duration);
-
-            follow.position.angle.set(player);
-            fixture = follow;
-        }
-        else if (button == this.circular)
-        {
-            CircularFixture circular = new CircularFixture(duration);
-
-            circular.start.set(player);
-            circular.pitch = player.rotationPitch;
-            fixture = circular;
+            e.printStackTrace();
         }
 
         if (fixture != null && this.selector != null)
         {
+            fixture.fromPlayer(this.mc.thePlayer);
             this.selector.createFixture(fixture);
         }
     }

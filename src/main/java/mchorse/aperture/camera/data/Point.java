@@ -1,4 +1,4 @@
-package mchorse.aperture.camera;
+package mchorse.aperture.camera.data;
 
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;

@@ -2,6 +2,9 @@ package mchorse.aperture.camera;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.data.Angle;
+import mchorse.aperture.camera.data.Point;
+import mchorse.aperture.camera.data.Position;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,19 +28,56 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CameraRunner
 {
     private Minecraft mc = Minecraft.getMinecraft();
+
+    /**
+     * FOV used before camera playback 
+     */
     private float fov = 70.0F;
+
+    /**
+     * Game mode player was in before playback
+     */
     private GameType gameMode = GameType.NOT_SET;
+
+    /**
+     * Whether it's first tick during the playback 
+     */
     private boolean firstTick = false;
+
+    /**
+     * Is camera runner waits for 0.0 partial tick 
+     */
     private boolean firstTickZero = false;
+
+    /**
+     * Whether partial tick 0.0 was detected 
+     */
     private boolean firstTickZeroStart = false;
 
-    protected boolean isRunning = false;
-    protected long ticks;
-    protected long duration;
+    /**
+     * Is camera runner running? 
+     */
+    private boolean isRunning = false;
 
-    protected CameraProfile profile;
-    protected Position position = new Position(0, 0, 0, 0, 0);
-    protected Position prevPos = new Position(0, 0, 0, 0, 0);
+    /**
+     * The duration of camera profile 
+     */
+    private long duration;
+
+    /**
+     * Camera profile which is getting currently played 
+     */
+    private CameraProfile profile;
+
+    /**
+     * Position used to apply fixtures and modifiers upon 
+     */
+    private Position position = new Position(0, 0, 0, 0, 0);
+
+    /**
+     * How many ticks passed since the beginning
+     */
+    public long ticks;
 
     /* Used by camera renderer */
     public float yaw = 0.0F;
@@ -45,29 +85,9 @@ public class CameraRunner
 
     /* Profile access methods */
 
-    public CameraProfile getProfile()
-    {
-        return this.profile;
-    }
-
-    public void setProfile(CameraProfile profile)
-    {
-        this.profile = profile;
-    }
-
     public boolean isRunning()
     {
         return this.isRunning;
-    }
-
-    public long getTicks()
-    {
-        return this.ticks;
-    }
-
-    public void setTicks(long ticks)
-    {
-        this.ticks = ticks;
     }
 
     /* Playback methods (start/stop) */
@@ -99,12 +119,12 @@ public class CameraRunner
      */
     public void start(CameraProfile profile, long start)
     {
-        this.profile = profile;
-
-        if (this.profile == null || this.profile.getCount() == 0)
+        if (profile == null || profile.getCount() == 0)
         {
             return;
         }
+
+        this.profile = profile;
 
         if (!this.isRunning)
         {

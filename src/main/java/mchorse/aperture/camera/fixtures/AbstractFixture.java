@@ -1,16 +1,16 @@
 package mchorse.aperture.camera.fixtures;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.FixtureRegistry;
+import mchorse.aperture.camera.ModifierRegistry;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.commands.SubCommandBase;
 import net.minecraft.command.CommandBase;
@@ -28,27 +28,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  */
 public abstract class AbstractFixture
 {
-    /* Types of camera fixtures */
-    public static final byte IDLE = 1;
-    public static final byte PATH = 2;
-    public static final byte LOOK = 3;
-    public static final byte FOLLOW = 4;
-    public static final byte CIRCULAR = 5;
-
-    /**
-     * A mapping between string named to byte type of the fixture
-     */
-    public static final Map<String, Byte> STRING_TO_TYPE = new HashMap<String, Byte>();
-
-    static
-    {
-        STRING_TO_TYPE.put("idle", IDLE);
-        STRING_TO_TYPE.put("path", PATH);
-        STRING_TO_TYPE.put("look", LOOK);
-        STRING_TO_TYPE.put("follow", FOLLOW);
-        STRING_TO_TYPE.put("circular", CIRCULAR);
-    }
-
     /**
      * Duration of this fixture. Represented in ticks. There are 20 ticks in a
      * second.
@@ -67,46 +46,6 @@ public abstract class AbstractFixture
      */
     @Expose
     protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
-
-    /**
-     * This is abstract's fixture factory method.
-     *
-     * It's responsible creating a camera fixture from type.
-     */
-    public static AbstractFixture fromType(byte type, long duration) throws Exception
-    {
-        if (type == IDLE) return new IdleFixture(duration);
-        else if (type == PATH) return new PathFixture(duration);
-        else if (type == LOOK) return new LookFixture(duration);
-        else if (type == FOLLOW) return new FollowFixture(duration);
-        else if (type == CIRCULAR) return new CircularFixture(duration);
-
-        throw new Exception("Camera fixture by type '" + type + "' wasn't found!");
-    }
-
-    /**
-     * Create an abstract camera fixture out of byte buffer
-     */
-    public static AbstractFixture readFromByteBuf(ByteBuf buffer)
-    {
-        byte type = buffer.readByte();
-        long duration = buffer.readLong();
-
-        try
-        {
-            AbstractFixture fixture = fromType(type, duration);
-
-            fixture.fromByteBuf(buffer);
-
-            return fixture;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     /**
      * This is another abstract's fixture factory method.
@@ -130,7 +69,7 @@ public abstract class AbstractFixture
 
         try
         {
-            fixture = fromType(STRING_TO_TYPE.get(type), duration);
+            fixture = FixtureRegistry.fromType(FixtureRegistry.STRING_TO_TYPE.get(type), duration);
         }
         catch (Exception e)
         {
@@ -183,6 +122,12 @@ public abstract class AbstractFixture
         return this.name == null ? "" : this.name;
     }
 
+    /**
+     * Get some properties from player upon creation  
+     */
+    public void fromPlayer(EntityPlayer player)
+    {}
+
     /* JSON (de)serialization methods */
 
     public void fromJSON(JsonObject object)
@@ -202,7 +147,7 @@ public abstract class AbstractFixture
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            AbstractModifier modifier = AbstractModifier.readFromByteBuf(buffer);
+            AbstractModifier modifier = ModifierRegistry.fromByteBuf(buffer);
 
             if (modifier != null)
             {
@@ -216,8 +161,6 @@ public abstract class AbstractFixture
      */
     public void toByteBuf(ByteBuf buffer)
     {
-        buffer.writeByte(this.getType());
-        buffer.writeLong(this.duration);
         ByteBufUtils.writeUTF8String(buffer, this.name);
 
         if (this.modifiers == null)
@@ -226,6 +169,8 @@ public abstract class AbstractFixture
         }
         else
         {
+            /* Clear all null modifiers (they can appear due to 
+             * incorrect JSON parsing */
             Iterator<AbstractModifier> it = this.modifiers.iterator();
 
             while (it.hasNext())
@@ -240,7 +185,7 @@ public abstract class AbstractFixture
 
             for (AbstractModifier modifier : this.modifiers)
             {
-                modifier.toByteBuf(buffer);
+                ModifierRegistry.toByteBuf(modifier, buffer);
             }
         }
     }
@@ -295,9 +240,4 @@ public abstract class AbstractFixture
     {
         return this.modifiers;
     }
-
-    /**
-     * Get the type of this fixture
-     */
-    public abstract byte getType();
 }

@@ -3,7 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.JsonObject;
 
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.utils.math.IValue;
 import mchorse.aperture.utils.math.MathBuilder;
@@ -170,11 +170,5 @@ public class MathModifier extends ComponentModifier
         super.fromByteBuf(buffer);
 
         this.rebuildExpression(ByteBufUtils.readUTF8String(buffer));
-    }
-
-    @Override
-    public byte getType()
-    {
-        return AbstractModifier.MATH;
     }
 }

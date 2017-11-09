@@ -17,13 +17,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.camera.fixtures.FollowFixture;
-import mchorse.aperture.camera.fixtures.IdleFixture;
-import mchorse.aperture.camera.fixtures.LookFixture;
-import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.aperture.camera.modifiers.ShakeModifier;
 
 /**
  * This class is responsible for serializing and deserializing an abstract
@@ -42,22 +36,11 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
      */
     public static final Map<String, Class<? extends AbstractFixture>> TYPES = new HashMap<String, Class<? extends AbstractFixture>>();
 
-    static
-    {
-        TYPES.put("idle", IdleFixture.class);
-        TYPES.put("path", PathFixture.class);
-        TYPES.put("look", LookFixture.class);
-        TYPES.put("follow", FollowFixture.class);
-        TYPES.put("circular", CircularFixture.class);
-    }
-
     public AbstractFixtureAdapter()
     {
         GsonBuilder builder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
-        AbstractModifierAdapter modifierAdapter = new AbstractModifierAdapter();
 
-        builder.registerTypeAdapter(AbstractModifier.class, modifierAdapter);
-        builder.registerTypeAdapter(ShakeModifier.class, modifierAdapter);
+        builder.registerTypeAdapter(AbstractModifier.class, new AbstractModifierAdapter());
 
         this.gson = builder.create();
     }

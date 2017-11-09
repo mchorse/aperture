@@ -3,6 +3,7 @@ package mchorse.aperture.commands.fixture;
 import java.util.List;
 
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
@@ -64,7 +65,7 @@ public class SubCommandFixtureAdd extends CommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, AbstractFixture.STRING_TO_TYPE.keySet());
+            return getListOfStringsMatchingLastWord(args, FixtureRegistry.STRING_TO_TYPE.keySet());
         }
 
         return super.getTabCompletionOptions(server, sender, args, pos);

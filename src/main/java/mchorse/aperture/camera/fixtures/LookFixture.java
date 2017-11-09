@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.smooth.Interpolations;
 import mchorse.aperture.utils.EntitySelector;
 import mchorse.aperture.utils.EntityUtils;
@@ -153,11 +153,5 @@ public class LookFixture extends IdleFixture
         super.toByteBuf(buffer);
 
         ByteBufUtils.writeUTF8String(buffer, this.selector);
-    }
-
-    @Override
-    public byte getType()
-    {
-        return AbstractFixture.LOOK;
     }
 }

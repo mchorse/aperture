@@ -8,16 +8,12 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
-import mchorse.aperture.camera.CameraRenderer.Color;
+import mchorse.aperture.camera.ModifierRegistry;
+import mchorse.aperture.camera.ModifierRegistry.ModifierInfo;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.aperture.camera.modifiers.LookModifier;
-import mchorse.aperture.camera.modifiers.MathModifier;
-import mchorse.aperture.camera.modifiers.ShakeModifier;
+import mchorse.aperture.client.gui.GuiFixturesPopup.GuiFlatButton;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
-import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
-import mchorse.aperture.client.gui.panels.modifiers.GuiMathModifierPanel;
-import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
 import mchorse.aperture.utils.ScrollArea;
@@ -59,32 +55,49 @@ public class GuiModifiersManager
      */
     public ScrollArea area = new ScrollArea(0);
 
-    public GuiButton add;
-    public GuiCameraEditor editor;
+    /**
+     * Add buttons (which add different {@link AbstractModifier}s to a 
+     * fixture 
+     */
     public List<GuiButton> addButtons = new ArrayList<GuiButton>();
 
-    static
-    {
-        /* Setup all Aperture vanilla camera modifiers */
-        PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);
-        PANELS.put(MathModifier.class, GuiMathModifierPanel.class);
-        PANELS.put(LookModifier.class, GuiLookModifierPanel.class);
-    }
+    public GuiButton add;
+    public GuiCameraEditor editor;
 
     public GuiModifiersManager(GuiCameraEditor editor)
     {
         this.editor = editor;
         this.add = new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16);
 
-        int shakeColor = 0xff000000 + Color.IDLE.hex;
-        int mathColor = 0xff000000 + Color.PATH.hex;
-        int lookColor = 0xff000000 + Color.LOOK.hex;
+        for (ModifierInfo info : ModifierRegistry.CLIENT.values())
+        {
+            int color = 0xff000000 + info.color.getHex();
 
-        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(1, 0, 0, 80, 20, shakeColor, shakeColor - 0x00111111, "Shake"));
-        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(2, 0, 0, 80, 20, mathColor, mathColor - 0x00111111, "Math"));
-        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(3, 0, 0, 80, 20, lookColor, lookColor - 0x00111111, "Look"));
+            this.addButtons.add(new GuiFlatButton(info.type, 0, 0, 0, 0, color, color - 0x00111111, info.title));
+        }
     }
 
+    public void update(int x, int y, int w, int h)
+    {
+        this.area.set(x, y, w, h);
+        this.area.scrollSize = 20;
+        this.recalcPanels();
+
+        GuiUtils.setSize(this.add, x + w - 20 + 2, y + 2, 16, 16);
+
+        int i = 0;
+
+        for (GuiButton button : this.addButtons)
+        {
+            GuiUtils.setSize(button, x + w - 80, y + 20 + i * 20, 80, 20);
+
+            i++;
+        }
+    }
+
+    /**
+     * Set fixture current fixture to manage  
+     */
     public void setFixture(AbstractFixture fixture)
     {
         if (fixture == null)
@@ -94,6 +107,7 @@ public class GuiModifiersManager
         else if (fixture != this.fixture)
         {
             this.panels.clear();
+            this.area.scrollSize = 20;
 
             for (AbstractModifier modifier : fixture.getModifiers())
             {
@@ -104,6 +118,9 @@ public class GuiModifiersManager
         this.fixture = fixture;
     }
 
+    /**
+     * Add a camera modifier for current
+     */
     public void addModifier(AbstractModifier modifier)
     {
         Class<? extends GuiAbstractModifierPanel<? extends AbstractModifier>> clazz = PANELS.get(modifier.getClass());
@@ -115,48 +132,17 @@ public class GuiModifiersManager
                 FontRenderer font = this.editor.mc.fontRendererObj;
                 GuiAbstractModifierPanel<AbstractModifier> panel = (GuiAbstractModifierPanel<AbstractModifier>) clazz.getConstructor(modifier.getClass(), GuiModifiersManager.class, FontRenderer.class).newInstance(modifier, this, font);
 
-                int h = 0;
-
-                for (GuiAbstractModifierPanel<AbstractModifier> otherPanel : this.panels)
-                {
-                    h += otherPanel.getHeight();
-                }
-
-                panel.update(this.area.x, this.area.y + 20 + h, this.area.w);
+                panel.update(this.area.x, this.area.y + this.area.scrollSize, this.area.w);
                 this.panels.add(panel);
 
-                this.area.scrollSize = h + panel.getHeight() + 20;
+                System.out.println(panel);
+
+                this.area.scrollSize += panel.getHeight();
             }
             catch (Exception e)
             {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void update(int x, int y, int w, int h)
-    {
-        this.area.set(x, y, w, h);
-        this.recalcPanels();
-
-        GuiUtils.setSize(this.add, x + w - 20 + 2, y + 2, 16, 16);
-
-        this.addButtons.clear();
-        int shakeColor = 0xff000000 + Color.IDLE.hex;
-        int mathColor = 0xff000000 + Color.PATH.hex;
-        int lookColor = 0xff000000 + Color.LOOK.hex;
-
-        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(1, 0, 0, 80, 20, shakeColor, shakeColor - 0x00111111, "Shake"));
-        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(2, 0, 0, 80, 20, mathColor, mathColor - 0x00111111, "Math"));
-        this.addButtons.add(new GuiFixturesPopup.GuiFlatButton(3, 0, 0, 80, 20, lookColor, lookColor - 0x00111111, "Look"));
-
-        int i = 0;
-
-        for (GuiButton button : this.addButtons)
-        {
-            GuiUtils.setSize(button, x + w - 80, y + 20 + i * 20, 80, 20);
-
-            i++;
         }
     }
 
@@ -224,7 +210,7 @@ public class GuiModifiersManager
     {
         try
         {
-            AbstractModifier modifier = AbstractModifier.createFromType((byte) id);
+            AbstractModifier modifier = ModifierRegistry.fromType((byte) id);
 
             modifiers.add(modifier);
             this.addModifier(modifier);
@@ -274,6 +260,10 @@ public class GuiModifiersManager
         }
     }
 
+    /**
+     * Whether this manager has any active text fields (used to determine 
+     * whether it's okay to handle shortcuts). 
+     */
     public boolean hasActiveTextfields()
     {
         if (this.visible)
@@ -308,6 +298,7 @@ public class GuiModifiersManager
             h = 45;
         }
 
+        /* Background */
         Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + h, 0xaa000000);
         Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + 20, 0x88000000);
         mc.fontRendererObj.drawStringWithShadow("Modifiers", this.area.x + 6, this.area.y + 7, 0xffffff);
@@ -316,11 +307,14 @@ public class GuiModifiersManager
 
         if (this.fixture == null)
         {
-            this.editor.drawCenteredString(mc.fontRendererObj, "Select camera fixture...", this.area.x + this.area.w / 2, this.area.y + 28, 0xcccccc);
+            int x = this.area.x + this.area.w / 2;
+            int y = this.area.y + 28;
+
+            this.editor.drawCenteredString(mc.fontRendererObj, "Select camera fixture...", x, y, 0xcccccc);
         }
-        else
+        else if (h > 0)
         {
-            GuiUtils.scissor(this.area.x, this.area.y, this.area.w, h, mc.currentScreen.width, mc.currentScreen.height);
+            GuiUtils.scissor(this.area.x, this.area.y + 20, this.area.w, h - 20, mc.currentScreen.width, mc.currentScreen.height);
 
             for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
             {

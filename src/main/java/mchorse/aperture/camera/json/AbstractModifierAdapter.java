@@ -15,9 +15,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.aperture.camera.modifiers.LookModifier;
-import mchorse.aperture.camera.modifiers.MathModifier;
-import mchorse.aperture.camera.modifiers.ShakeModifier;
 
 public class AbstractModifierAdapter implements JsonSerializer<AbstractModifier>, JsonDeserializer<AbstractModifier>
 {
@@ -26,14 +23,10 @@ public class AbstractModifierAdapter implements JsonSerializer<AbstractModifier>
      */
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+    /**
+     * Registered modifier classes mapped to a string name 
+     */
     public static final Map<String, Class<? extends AbstractModifier>> TYPES = new HashMap<String, Class<? extends AbstractModifier>>();
-
-    static
-    {
-        TYPES.put("shake", ShakeModifier.class);
-        TYPES.put("math", MathModifier.class);
-        TYPES.put("look", LookModifier.class);
-    }
 
     @Override
     public AbstractModifier deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException

@@ -47,7 +47,7 @@ public class RenderingHandler
 
         if (ClientProxy.runner.isRunning())
         {
-            list.add("Camera ticks " + ClientProxy.runner.getTicks());
+            list.add("Camera ticks " + ClientProxy.runner.ticks);
         }
     }
 }

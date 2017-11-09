@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.events.CameraProfileChangedEvent;
@@ -274,7 +275,7 @@ public class CameraProfile
     {
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            AbstractFixture fixture = AbstractFixture.readFromByteBuf(buffer);
+            AbstractFixture fixture = FixtureRegistry.fromByteBuf(buffer);
 
             if (fixture != null)
             {
@@ -292,7 +293,7 @@ public class CameraProfile
 
         for (AbstractFixture fixture : this.fixtures)
         {
-            fixture.toByteBuf(buffer);
+            FixtureRegistry.toByteBuf(fixture, buffer);
         }
     }
 

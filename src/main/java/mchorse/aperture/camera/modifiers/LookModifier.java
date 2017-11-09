@@ -3,7 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.utils.EntitySelector;
 import net.minecraft.client.Minecraft;
@@ -78,11 +78,5 @@ public class LookModifier extends AbstractModifier
         super.toByteBuf(buffer);
 
         ByteBufUtils.writeUTF8String(buffer, this.selector);
-    }
-
-    @Override
-    public byte getType()
-    {
-        return AbstractModifier.LOOK;
     }
 }

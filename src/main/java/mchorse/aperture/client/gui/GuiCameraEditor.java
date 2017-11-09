@@ -11,30 +11,19 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRunner;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.camera.fixtures.FollowFixture;
-import mchorse.aperture.camera.fixtures.IdleFixture;
-import mchorse.aperture.camera.fixtures.LookFixture;
-import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiFixturesPopup.IFixtureSelector;
 import mchorse.aperture.client.gui.GuiPlaybackScrub.IScrubListener;
 import mchorse.aperture.client.gui.GuiProfilesManager.IProfileListener;
 import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
-import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
-import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
-import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
-import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
-import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.IFixturePanel;
 import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
 import mchorse.aperture.events.CameraEditorPlaybackStateEvent;
 import mchorse.aperture.events.CameraEditorScrubbedEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -160,18 +149,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public GuiModifiersManager modifiers;
 
-    static
-    {
-        FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
-
-        /* Registering per fixture panels */
-        PANELS.put(IdleFixture.class, new GuiIdleFixturePanel(font));
-        PANELS.put(PathFixture.class, new GuiPathFixturePanel(font));
-        PANELS.put(LookFixture.class, new GuiLookFixturePanel(font));
-        PANELS.put(FollowFixture.class, new GuiFollowFixturePanel(font));
-        PANELS.put(CircularFixture.class, new GuiCircularFixturePanel(font));
-    }
-
     /**
      * Teleport player and setup position, motion and angle based on the value
      * was scrubbed from playback scrubber.
@@ -185,7 +162,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else
         {
-            this.runner.setTicks(value);
+            this.runner.ticks = value;
         }
 
         if (fromScrub)
@@ -1033,7 +1010,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             if (running)
             {
-                this.scrub.value = (int) this.runner.getTicks();
+                this.scrub.value = (int) this.runner.ticks;
                 this.scrub.value = MathHelper.clamp_int(this.scrub.value, this.scrub.min, this.scrub.max);
             }
 
