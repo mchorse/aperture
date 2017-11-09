@@ -29,12 +29,12 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
     {
         super.update(x, y, w);
 
-        GuiUtils.setSize(this.math, x + 5, y + 20, w - 10, 20);
+        GuiUtils.setSize(this.math, x + 5, y + 25, w - 10, 20);
 
         this.math.setText(this.modifier.expression != null ? this.modifier.expression.toString() : "");
         this.math.setCursorPositionZero();
 
-        this.active.area.set(x + 5, y + 40, w - 10, 20);
+        this.active.area.set(x + 5, y + 45, w - 10, 20);
         this.active.value = this.modifier.active;
     }
 
@@ -47,6 +47,8 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+
         this.math.mouseClicked(mouseX, mouseY, mouseButton);
         this.active.mouseClicked(mouseX, mouseY, mouseButton);
 

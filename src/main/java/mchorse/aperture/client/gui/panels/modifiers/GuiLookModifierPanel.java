@@ -25,7 +25,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     {
         super.update(x, y, w);
 
-        GuiUtils.setSize(this.selector, x + 5, y + 20, w - 10, 20);
+        GuiUtils.setSize(this.selector, x + 5, y + 25, w - 10, 20);
 
         this.selector.setText(this.modifier.selector);
         this.selector.setCursorPositionZero();
@@ -40,6 +40,8 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+
         this.selector.mouseClicked(mouseX, mouseY, mouseButton);
     }
 

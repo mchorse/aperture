@@ -206,9 +206,8 @@ public class CameraProfile
         if (this.has(from) && this.has(to))
         {
             this.fixtures.add(to, this.fixtures.remove(from));
+            this.dirty();
         }
-
-        this.dirty();
     }
 
     /**

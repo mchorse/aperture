@@ -2,7 +2,6 @@ package mchorse.aperture.client.gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +48,8 @@ public class GuiModifiersManager
      * Whether adding
      */
     public boolean adding;
+
+    public boolean modified = false;
 
     /**
      * Modifier's panel are 
@@ -135,8 +136,6 @@ public class GuiModifiersManager
                 panel.update(this.area.x, this.area.y + this.area.scrollSize, this.area.w);
                 this.panels.add(panel);
 
-                System.out.println(panel);
-
                 this.area.scrollSize += panel.getHeight();
             }
             catch (Exception e)
@@ -144,6 +143,39 @@ public class GuiModifiersManager
                 e.printStackTrace();
             }
         }
+    }
+
+    public void moveModifier(GuiAbstractModifierPanel<? extends AbstractModifier> panel, int direction)
+    {
+        int index = this.panels.indexOf(panel);
+
+        if (index == -1)
+        {
+            return;
+        }
+
+        int to = index + direction;
+
+        if (to < 0 || to >= this.panels.size())
+        {
+            return;
+        }
+
+        List<AbstractModifier> modifiers = this.fixture.getModifiers();
+
+        this.panels.add(to, this.panels.remove(index));
+        modifiers.add(to, modifiers.remove(index));
+        this.recalcPanels();
+        this.modified = true;
+    }
+
+    public void removeModifier(GuiAbstractModifierPanel<? extends AbstractModifier> panel)
+    {
+        this.panels.remove(panel);
+        this.fixture.getModifiers().remove(panel.modifier);
+
+        this.recalcPanels();
+        this.modified = true;
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -178,32 +210,17 @@ public class GuiModifiersManager
             this.adding = !this.adding;
         }
 
-        Iterator<GuiAbstractModifierPanel<AbstractModifier>> it = this.panels.iterator();
+        List<GuiAbstractModifierPanel<? extends AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<? extends AbstractModifier>>(this.panels);
 
-        boolean recalc = false;
-
-        while (it.hasNext())
+        for (GuiAbstractModifierPanel<? extends AbstractModifier> panel : panels)
         {
-            GuiAbstractModifierPanel<AbstractModifier> panel = it.next();
-
-            if (panel.remove.mousePressed(this.editor.mc, mouseX, mouseY))
+            if (!this.modified)
             {
-                it.remove();
-                this.fixture.getModifiers().remove(panel.modifier);
-                this.editor.updateProfile();
-
-                recalc = true;
-
-                continue;
+                panel.mouseClicked(mouseX, mouseY, mouseButton);
             }
-
-            panel.mouseClicked(mouseX, mouseY, mouseButton);
         }
 
-        if (recalc)
-        {
-            this.recalcPanels();
-        }
+        this.modified = false;
     }
 
     private void addCameraModifier(int id, List<AbstractModifier> modifiers)

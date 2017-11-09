@@ -49,24 +49,26 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
 
         int width = ((w - 20) / 2);
 
-        this.shake.update(x + 5, y + 20, width, 20);
-        this.shakeAmount.update(x + w - 5 - width, y + 20, width, 20);
+        this.shake.update(x + 5, y + 25, width, 20);
+        this.shakeAmount.update(x + w - 5 - width, y + 25, width, 20);
 
         this.shake.setValue(this.modifier.shake);
         this.shakeAmount.setValue(this.modifier.shakeAmount);
 
-        this.active.area.set(x + 5, y + 40, w - 10, 20);
+        this.active.area.set(x + 5, y + 45, w - 10, 20);
     }
 
     @Override
     public int getHeight()
     {
-        return 65;
+        return 70;
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+
         this.shake.mouseClicked(mouseX, mouseY, mouseButton);
         this.shakeAmount.mouseClicked(mouseX, mouseY, mouseButton);
         this.active.mouseClicked(mouseX, mouseY, mouseButton);
