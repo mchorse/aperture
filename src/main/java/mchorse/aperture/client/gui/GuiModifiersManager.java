@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
 public class GuiModifiersManager
@@ -62,7 +63,14 @@ public class GuiModifiersManager
      */
     public List<GuiButton> addButtons = new ArrayList<GuiButton>();
 
+    /**
+     * Button to show add buttons 
+     */
     public GuiButton add;
+
+    /**
+     * Reference to the parent screen (the camera editor) 
+     */
     public GuiCameraEditor editor;
 
     public GuiModifiersManager(GuiCameraEditor editor)
@@ -78,6 +86,9 @@ public class GuiModifiersManager
         }
     }
 
+    /**
+     * Update, I guess
+     */
     public void update(int x, int y, int w, int h)
     {
         this.area.set(x, y, w, h);
@@ -94,6 +105,8 @@ public class GuiModifiersManager
 
             i++;
         }
+
+        this.area.clamp();
     }
 
     /**
@@ -178,51 +191,6 @@ public class GuiModifiersManager
         this.modified = true;
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (!this.visible || this.fixture == null)
-        {
-            return;
-        }
-
-        Minecraft mc = Minecraft.getMinecraft();
-        List<AbstractModifier> modifiers = this.fixture.getModifiers();
-
-        if (this.adding)
-        {
-            for (GuiButton button : this.addButtons)
-            {
-                if (button.mousePressed(mc, mouseX, mouseY))
-                {
-                    this.addCameraModifier(button.id, modifiers);
-
-                    break;
-                }
-            }
-
-            this.adding = false;
-
-            return;
-        }
-
-        if (this.add.mousePressed(mc, mouseX, mouseY))
-        {
-            this.adding = !this.adding;
-        }
-
-        List<GuiAbstractModifierPanel<? extends AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<? extends AbstractModifier>>(this.panels);
-
-        for (GuiAbstractModifierPanel<? extends AbstractModifier> panel : panels)
-        {
-            if (!this.modified)
-            {
-                panel.mouseClicked(mouseX, mouseY, mouseButton);
-            }
-        }
-
-        this.modified = false;
-    }
-
     private void addCameraModifier(int id, List<AbstractModifier> modifiers)
     {
         try
@@ -251,6 +219,56 @@ public class GuiModifiersManager
         this.area.scrollSize = h + 20;
     }
 
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        if (!this.visible || this.fixture == null)
+        {
+            return;
+        }
+
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (this.adding)
+        {
+            List<AbstractModifier> modifiers = this.fixture.getModifiers();
+
+            for (GuiButton button : this.addButtons)
+            {
+                if (button.mousePressed(mc, mouseX, mouseY))
+                {
+                    this.addCameraModifier(button.id, modifiers);
+
+                    break;
+                }
+            }
+
+            this.adding = false;
+
+            return;
+        }
+
+        if (this.add.mousePressed(mc, mouseX, mouseY))
+        {
+            this.adding = !this.adding;
+        }
+
+        /* Create a copy of  */
+        List<GuiAbstractModifierPanel<? extends AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<? extends AbstractModifier>>(this.panels);
+
+        for (GuiAbstractModifierPanel<? extends AbstractModifier> panel : panels)
+        {
+            if (!this.modified)
+            {
+                panel.mouseClicked(mouseX, mouseY + this.area.scroll, mouseButton);
+            }
+        }
+
+        this.modified = false;
+    }
+
+    /**
+     * Mouse was released
+     */
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
         if (!this.visible)
@@ -260,10 +278,21 @@ public class GuiModifiersManager
 
         for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
         {
-            panel.mouseReleased(mouseX, mouseY, state);
+            panel.mouseReleased(mouseX, mouseY + this.area.scroll, state);
         }
     }
 
+    public void mouseScroll(int x, int y, int scroll)
+    {
+        if (this.area.isInside(x, y))
+        {
+            this.area.scrollBy(scroll / 5);
+        }
+    }
+
+    /**
+     * Key press handling 
+     */
     public void keyTyped(char typedChar, int keyCode)
     {
         if (!this.visible)
@@ -332,12 +361,15 @@ public class GuiModifiersManager
         else if (h > 0)
         {
             GuiUtils.scissor(this.area.x, this.area.y + 20, this.area.w, h - 20, mc.currentScreen.width, mc.currentScreen.height);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0, -this.area.scroll, 0);
 
             for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
             {
-                panel.draw(mouseX, mouseY, partialTicks);
+                panel.draw(mouseX, mouseY + this.area.scroll, partialTicks);
             }
 
+            GlStateManager.popMatrix();
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
             if (this.adding)
@@ -346,6 +378,11 @@ public class GuiModifiersManager
                 {
                     button.drawButton(mc, mouseX, mouseY);
                 }
+            }
+
+            if (this.area.scrollSize > this.area.h)
+            {
+                /* Draw scroll bar */
             }
         }
     }

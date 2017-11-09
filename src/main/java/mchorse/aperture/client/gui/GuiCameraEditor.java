@@ -845,7 +845,18 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         int scroll = -Mouse.getEventDWheel();
 
-        this.profiles.mouseScroll(x, y, scroll);
+        if (scroll != 0)
+        {
+            if (this.profiles.visible)
+            {
+                this.profiles.mouseScroll(x, y, scroll);
+            }
+
+            if (this.modifiers.visible)
+            {
+                this.modifiers.mouseScroll(x, y, scroll);
+            }
+        }
     }
 
     @Override
