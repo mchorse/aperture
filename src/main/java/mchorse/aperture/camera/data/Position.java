@@ -20,6 +20,7 @@ public class Position
 
     @Expose
     public Point point = new Point(0, 0, 0);
+
     @Expose
     public Angle angle = new Angle(0, 0);
 
@@ -38,6 +39,12 @@ public class Position
     {
         this.point.set(x, y, z);
         this.angle.set(yaw, pitch);
+    }
+
+    public Position(float x, float y, float z, float yaw, float pitch, float roll, float fov)
+    {
+        this.point.set(x, y, z);
+        this.angle.set(yaw, pitch, roll, fov);
     }
 
     public Position(EntityPlayer player)

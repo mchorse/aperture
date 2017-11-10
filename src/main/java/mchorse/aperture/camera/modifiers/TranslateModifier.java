@@ -7,13 +7,19 @@ import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 
+/**
+ * Translate camera modifier
+ * 
+ * This camera modifier is basically translates the position of 
+ * calculated camera fixture by stored X, Y and Z.
+ */
 public class TranslateModifier extends AbstractModifier
 {
     @Expose
     public Point translate = new Point(0, 0, 0);
 
     @Override
-    public void modify(long ticks, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
     {
         pos.point.x += this.translate.x;
         pos.point.y += this.translate.y;

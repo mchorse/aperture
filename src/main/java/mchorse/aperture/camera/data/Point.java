@@ -16,11 +16,16 @@ public class Point
 {
     @Expose
     public float x;
+
     @Expose
     public float y;
+
     @Expose
     public float z;
 
+    /**
+     * Read a {@link Point} instance from byte buffer 
+     */
     public static Point fromByteBuf(ByteBuf buffer)
     {
         return new Point(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());

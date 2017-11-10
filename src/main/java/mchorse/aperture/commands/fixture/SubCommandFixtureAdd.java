@@ -65,7 +65,7 @@ public class SubCommandFixtureAdd extends CommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FixtureRegistry.STRING_TO_TYPE.keySet());
+            return getListOfStringsMatchingLastWord(args, FixtureRegistry.NAME_TO_ID.keySet());
         }
 
         return super.getTabCompletionOptions(server, sender, args, pos);

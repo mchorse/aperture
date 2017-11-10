@@ -6,6 +6,12 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 
+/**
+ * Shake modifier
+ * 
+ * This modifier shakes the camera depending on the given component 
+ * flags.
+ */
 public class ShakeModifier extends ComponentModifier
 {
     @Expose
@@ -24,7 +30,7 @@ public class ShakeModifier extends ComponentModifier
     }
 
     @Override
-    public void modify(long ticks, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
     {
         float x = (ticks + partialTick) / (this.shake == 0 ? 1 : this.shake);
 

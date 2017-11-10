@@ -1,11 +1,7 @@
 package mchorse.aperture.camera.json;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -16,12 +12,13 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 
 /**
- * This class is responsible for serializing and deserializing an abstract
- * camera fixtures types.
+ * This class is responsible for serializing and deserializing 
+ * registered camera fixtures to JSON.
  */
 public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, JsonDeserializer<AbstractFixture>
 {
@@ -29,12 +26,6 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
      * Gson instance for building up
      */
     private Gson gson;
-
-    /**
-     * Hash map of fixtures types mapped to corresponding class. I think this
-     * code should be moved to the AbstractFixture class.
-     */
-    public static final Map<String, Class<? extends AbstractFixture>> TYPES = new HashMap<String, Class<? extends AbstractFixture>>();
 
     public AbstractFixtureAdapter()
     {
@@ -56,10 +47,15 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     public AbstractFixture deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         JsonObject object = json.getAsJsonObject();
-        String type = object.get("type").getAsString();
-        AbstractFixture fixture = this.gson.fromJson(json, TYPES.get(type));
+        AbstractFixture fixture = null;
 
-        fixture.fromJSON(object);
+        if (object.has("type"))
+        {
+            String type = object.get("type").getAsString();
+
+            fixture = this.gson.fromJson(json, FixtureRegistry.NAME_TO_CLASS.get(type));
+            fixture.fromJSON(object);
+        }
 
         return fixture;
     }
@@ -76,24 +72,9 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     {
         JsonObject object = (JsonObject) this.gson.toJsonTree(src);
 
+        object.addProperty("type", FixtureRegistry.NAME_TO_CLASS.inverse().get(src.getClass()));
         src.toJSON(object);
-        object.addProperty("type", getKeyByValue(TYPES, src.getClass()));
 
         return object;
-    }
-
-    /**
-     * From StackOverflow
-     */
-    public static <T, E> T getKeyByValue(Map<T, E> map, E value)
-    {
-        for (Entry<T, E> entry : map.entrySet())
-        {
-            if (Objects.equal(value, entry.getValue()))
-            {
-                return entry.getKey();
-            }
-        }
-        return null;
     }
 }

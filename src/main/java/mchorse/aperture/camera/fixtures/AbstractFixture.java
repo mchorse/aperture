@@ -42,7 +42,7 @@ public abstract class AbstractFixture
     protected String name = "";
 
     /**
-     * Camera modifiers 
+     * List of camera modifiers. 
      */
     @Expose
     protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
@@ -69,7 +69,7 @@ public abstract class AbstractFixture
 
         try
         {
-            fixture = FixtureRegistry.fromType(FixtureRegistry.STRING_TO_TYPE.get(type), duration);
+            fixture = FixtureRegistry.fromType(FixtureRegistry.NAME_TO_ID.get(type), duration);
         }
         catch (Exception e)
         {
@@ -81,6 +81,10 @@ public abstract class AbstractFixture
         return fixture;
     }
 
+    /**
+     * Default constructor. All subclasses must implement the same 
+     * constructor, because {@link FixtureRegistry} depends on it. 
+     */
     public AbstractFixture(long duration)
     {
         this.setDuration(duration);
@@ -170,7 +174,7 @@ public abstract class AbstractFixture
         else
         {
             /* Clear all null modifiers (they can appear due to 
-             * incorrect JSON parsing */
+             * incorrect JSON parsing) */
             Iterator<AbstractModifier> it = this.modifiers.iterator();
 
             while (it.hasNext())
@@ -222,13 +226,13 @@ public abstract class AbstractFixture
     /**
      * Apply camera modifiers
      */
-    public void applyModifiers(long ticks, float partialTick, Position pos)
+    public void applyModifiers(long ticks, long offset, float partialTick, Position pos)
     {
         for (AbstractModifier modifier : this.modifiers)
         {
             if (modifier.enabled)
             {
-                modifier.modify(ticks, this, partialTick, pos);
+                modifier.modify(ticks, offset, this, partialTick, pos);
             }
         }
     }

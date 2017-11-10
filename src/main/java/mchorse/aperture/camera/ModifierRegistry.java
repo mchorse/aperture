@@ -7,7 +7,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.json.AbstractModifierAdapter;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.utils.Color;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,9 +20,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ModifierRegistry
 {
     /**
-     * Bi-directional map between 
+     * Bi-directional map between class and byte ID
      */
-    public static final BiMap<Class<? extends AbstractModifier>, Byte> MAP = HashBiMap.create();
+    public static final BiMap<Class<? extends AbstractModifier>, Byte> CLASS_TO_ID = HashBiMap.create();
+
+    /**
+     * Registered modifier name mapped to a class. 
+     */
+    public static final BiMap<String, Class<? extends AbstractModifier>> NAME_TO_CLASS = HashBiMap.create();
 
     /**
      * Client information about camera modifier 
@@ -41,7 +45,7 @@ public class ModifierRegistry
      */
     public static byte getType(AbstractModifier modifier)
     {
-        Byte type = MAP.get(modifier.getClass());
+        Byte type = CLASS_TO_ID.get(modifier.getClass());
 
         return type == null ? -1 : type.byteValue();
     }
@@ -51,7 +55,7 @@ public class ModifierRegistry
      */
     public static AbstractModifier fromType(byte type) throws Exception
     {
-        Class<? extends AbstractModifier> clazz = MAP.inverse().get(type);
+        Class<? extends AbstractModifier> clazz = CLASS_TO_ID.inverse().get(type);
 
         if (clazz != null)
         {
@@ -97,13 +101,13 @@ public class ModifierRegistry
      */
     public static void register(String name, Class<? extends AbstractModifier> clazz)
     {
-        if (MAP.containsKey(clazz))
+        if (CLASS_TO_ID.containsKey(clazz))
         {
             return;
         }
 
-        MAP.put(clazz, NEXT_ID);
-        AbstractModifierAdapter.TYPES.put(name, clazz);
+        CLASS_TO_ID.put(clazz, NEXT_ID);
+        NAME_TO_CLASS.put(name, clazz);
 
         NEXT_ID++;
     }
@@ -114,7 +118,7 @@ public class ModifierRegistry
     @SideOnly(Side.CLIENT)
     public static void registerClient(Class<? extends AbstractModifier> clazz, String title, Color color)
     {
-        Byte type = MAP.get(clazz);
+        Byte type = CLASS_TO_ID.get(clazz);
 
         if (type == null)
         {

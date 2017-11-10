@@ -22,9 +22,14 @@ public abstract class AbstractModifier
     public boolean enabled = true;
 
     /**
-     * Apply modifier on given position
+     * Modify (apply, filter, process, however you name it) modifier on 
+     * given position
+     * 
+     * @param ticks - Amount of ticks from start
+     * @param offset - Amount of ticks from current camera fixture
+     * @param fixture - Currently running camera fixture
      */
-    public abstract void modify(long ticks, AbstractFixture fixture, float partialTick, Position pos);
+    public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos);
 
     public void toJSON(JsonObject object)
     {}

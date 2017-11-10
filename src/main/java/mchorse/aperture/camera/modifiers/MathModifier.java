@@ -10,12 +10,25 @@ import mchorse.aperture.utils.math.MathBuilder;
 import mchorse.aperture.utils.math.Variable;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+/**
+ * Math modifier
+ * 
+ * Probably the most complex modifier in Aperture. This modifier accepts 
+ * a math expression (which supports basic operators, variables and 
+ * functions) written by user, and calculates the value based on that 
+ * expression.
+ * 
+ * This modifier provides all essential input variables for math 
+ * expressions, such as: position, angle, progress, progress offset from 
+ * fixture and current value.
+ */
 public class MathModifier extends ComponentModifier
 {
     public IValue expression;
     public MathBuilder builder = new MathBuilder();
 
     public Variable ticks;
+    public Variable offset;
     public Variable partial;
     public Variable value;
 
@@ -31,6 +44,7 @@ public class MathModifier extends ComponentModifier
     public MathModifier()
     {
         this.ticks = new Variable("t", 0);
+        this.offset = new Variable("o", 0);
         this.partial = new Variable("pt", 0);
         this.value = new Variable("value", 0);
 
@@ -44,6 +58,7 @@ public class MathModifier extends ComponentModifier
         this.fov = new Variable("fov", 0);
 
         this.builder.variables.put("t", this.ticks);
+        this.builder.variables.put("o", this.offset);
         this.builder.variables.put("pt", this.partial);
         this.builder.variables.put("value", this.value);
 
@@ -78,11 +93,12 @@ public class MathModifier extends ComponentModifier
     }
 
     @Override
-    public void modify(long ticks, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
     {
         if (this.expression != null)
         {
             this.ticks.set(ticks);
+            this.offset.set(offset);
             this.partial.set(partialTick);
 
             this.x.set(pos.point.x);

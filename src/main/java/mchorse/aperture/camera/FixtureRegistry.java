@@ -8,7 +8,6 @@ import com.google.common.collect.HashBiMap;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.json.AbstractFixtureAdapter;
 import mchorse.aperture.utils.Color;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,14 +20,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class FixtureRegistry
 {
     /**
-     * Bi-directional map between 
+     * Bi-directional map between class and byte ID
      */
-    public static final BiMap<Class<? extends AbstractFixture>, Byte> MAP = HashBiMap.create();
+    public static final BiMap<Class<? extends AbstractFixture>, Byte> CLASS_TO_ID = HashBiMap.create();
+
+    /**
+     * Bi-directional map  map of fixtures types mapped to corresponding 
+     * class
+     */
+    public static final BiMap<String, Class<? extends AbstractFixture>> NAME_TO_CLASS = HashBiMap.create();
 
     /**
      * A mapping between string named to byte type of the fixture
      */
-    public static final Map<String, Byte> STRING_TO_TYPE = new HashMap<String, Byte>();
+    public static final Map<String, Byte> NAME_TO_ID = new HashMap<String, Byte>();
 
     /**
      * Client information about camera fixtures, such as title, color, etc.
@@ -46,7 +51,7 @@ public class FixtureRegistry
      */
     public static AbstractFixture fromType(byte type, long duration) throws Exception
     {
-        Class<? extends AbstractFixture> clazz = MAP.inverse().get(type);
+        Class<? extends AbstractFixture> clazz = CLASS_TO_ID.inverse().get(type);
 
         if (clazz == null)
         {
@@ -61,7 +66,7 @@ public class FixtureRegistry
      */
     public static void toByteBuf(AbstractFixture fixture, ByteBuf buffer)
     {
-        byte type = MAP.get(fixture.getClass());
+        byte type = CLASS_TO_ID.get(fixture.getClass());
 
         buffer.writeByte(type);
         buffer.writeLong(fixture.getDuration());
@@ -98,9 +103,14 @@ public class FixtureRegistry
      */
     public static void register(String name, Class<? extends AbstractFixture> clazz)
     {
-        MAP.put(clazz, NEXT_ID);
-        STRING_TO_TYPE.put(name, NEXT_ID);
-        AbstractFixtureAdapter.TYPES.put(name, clazz);
+        if (CLASS_TO_ID.containsKey(clazz))
+        {
+            return;
+        }
+
+        CLASS_TO_ID.put(clazz, NEXT_ID);
+        NAME_TO_ID.put(name, NEXT_ID);
+        NAME_TO_CLASS.put(name, clazz);
 
         NEXT_ID++;
     }
@@ -111,7 +121,7 @@ public class FixtureRegistry
     @SideOnly(Side.CLIENT)
     public static void registerClient(Class<? extends AbstractFixture> clazz, String title, Color color)
     {
-        Byte type = MAP.get(clazz);
+        Byte type = CLASS_TO_ID.get(clazz);
 
         if (type == null)
         {

@@ -264,7 +264,7 @@ public class CameraProfile
         }
 
         fixture.applyFixture(progress, partialTick, position);
-        fixture.applyModifiers(originalProgress, partialTick, position);
+        fixture.applyModifiers(originalProgress, progress, partialTick, position);
     }
 
     /**

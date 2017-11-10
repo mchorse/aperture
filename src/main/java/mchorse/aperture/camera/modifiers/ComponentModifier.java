@@ -9,6 +9,10 @@ import io.netty.buffer.ByteBuf;
  */
 public abstract class ComponentModifier extends AbstractModifier
 {
+    /**
+     * Byte value that uses only 7 bits for determining which components 
+     * should be processed. 
+     */
     @Expose
     public byte active;
 
