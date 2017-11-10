@@ -15,7 +15,6 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
     {
         super(modifier, modifiers, font);
 
-        this.title = "Follow";
         this.selector = new GuiTextField(0, font, 0, 0, 0, 0);
         this.selector.setMaxStringLength(500);
     }

@@ -17,7 +17,6 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
     {
         super(modifier, modifiers, font);
 
-        this.title = "Math";
         this.math = new GuiTextField(0, font, 0, 0, 148, 18);
         this.math.setMaxStringLength(500);
 

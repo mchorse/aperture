@@ -12,10 +12,12 @@ import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.modifiers.AngleModifier;
 import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
+import mchorse.aperture.camera.modifiers.TranslateModifier;
 import mchorse.aperture.client.KeyboardHandler;
 import mchorse.aperture.client.MouseRenderer;
 import mchorse.aperture.client.RenderingHandler;
@@ -26,10 +28,12 @@ import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiAngleModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiFollowModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiMathModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiTranslateModifierPanel;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
 import mchorse.aperture.utils.Color;
@@ -153,11 +157,15 @@ public class ClientProxy extends CommonProxy
         GuiModifiersManager.PANELS.put(MathModifier.class, GuiMathModifierPanel.class);
         GuiModifiersManager.PANELS.put(LookModifier.class, GuiLookModifierPanel.class);
         GuiModifiersManager.PANELS.put(FollowModifier.class, GuiFollowModifierPanel.class);
+        GuiModifiersManager.PANELS.put(TranslateModifier.class, GuiTranslateModifierPanel.class);
+        GuiModifiersManager.PANELS.put(AngleModifier.class, GuiAngleModifierPanel.class);
 
         ModifierRegistry.registerClient(ShakeModifier.class, "Shake", new Color(0.085F, 0.62F, 0.395F));
         ModifierRegistry.registerClient(MathModifier.class, "Math", new Color(0.408F, 0.128F, 0.681F));
         ModifierRegistry.registerClient(LookModifier.class, "Look", new Color(0.298F, 0.690F, 0.972F));
         ModifierRegistry.registerClient(FollowModifier.class, "Follow", new Color(0.85F, 0.137F, 0.329F));
+        ModifierRegistry.registerClient(TranslateModifier.class, "Translate", new Color(0.298F, 0.631F, 0.247F));
+        ModifierRegistry.registerClient(AngleModifier.class, "Angle", new Color(0.847F, 0.482F, 0.043F));
 
         cameraEditor = new GuiCameraEditor(runner);
 

@@ -37,6 +37,8 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
         this.enable = new GuiTextureButton(1, 0, 0, GuiCameraEditor.EDITOR_TEXTURE);
         this.moveUp = new GuiTextureButton(2, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(96, 32).setActiveTexPos(96, 48);
         this.moveDown = new GuiTextureButton(3, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(96, 40).setActiveTexPos(96, 56);
+
+        this.title = ModifierRegistry.CLIENT.get(modifier.getClass()).title;
     }
 
     public void update(int x, int y, int w)

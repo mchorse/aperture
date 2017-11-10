@@ -24,7 +24,6 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         /* TODO: extract strings */
         this.shake.title = "Shake";
         this.shakeAmount.title = "Amount";
-        this.title = "Camera shake";
     }
 
     @Override
