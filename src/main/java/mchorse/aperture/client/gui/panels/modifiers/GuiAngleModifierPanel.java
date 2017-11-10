@@ -102,6 +102,12 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
     {}
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return this.yaw.text.isFocused() || this.pitch.text.isFocused() || this.roll.text.isFocused() || this.fov.text.isFocused();
+    }
+
+    @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
         super.draw(mouseX, mouseY, partialTicks);

@@ -90,6 +90,12 @@ public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<Translat
     {}
 
     @Override
+    public boolean hasActiveTextfields()
+    {
+        return this.x.text.isFocused() || this.y.text.isFocused() || this.z.text.isFocused();
+    }
+
+    @Override
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
         super.draw(mouseX, mouseY, partialTicks);
