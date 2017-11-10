@@ -12,6 +12,7 @@ import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
@@ -25,6 +26,7 @@ import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiFollowModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiMathModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
@@ -150,10 +152,12 @@ public class ClientProxy extends CommonProxy
         GuiModifiersManager.PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);
         GuiModifiersManager.PANELS.put(MathModifier.class, GuiMathModifierPanel.class);
         GuiModifiersManager.PANELS.put(LookModifier.class, GuiLookModifierPanel.class);
+        GuiModifiersManager.PANELS.put(FollowModifier.class, GuiFollowModifierPanel.class);
 
         ModifierRegistry.registerClient(ShakeModifier.class, "Shake", new Color(0.085F, 0.62F, 0.395F));
         ModifierRegistry.registerClient(MathModifier.class, "Math", new Color(0.408F, 0.128F, 0.681F));
         ModifierRegistry.registerClient(LookModifier.class, "Look", new Color(0.298F, 0.690F, 0.972F));
+        ModifierRegistry.registerClient(FollowModifier.class, "Follow", new Color(0.85F, 0.137F, 0.329F));
 
         cameraEditor = new GuiCameraEditor(runner);
 

@@ -26,7 +26,7 @@ public class ShakeModifier extends ComponentModifier
     @Override
     public void modify(long ticks, AbstractFixture fixture, float partialTick, Position pos)
     {
-        float x = (ticks + partialTick) / this.shake;
+        float x = (ticks + partialTick) / (this.shake == 0 ? 1 : this.shake);
 
         float swingX = (float) (Math.sin(x) * Math.sin(x) * Math.cos(x));
         float swingY = (float) (Math.cos(x) * Math.sin(x) * Math.sin(x));

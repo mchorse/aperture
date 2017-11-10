@@ -9,6 +9,7 @@ import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
@@ -71,6 +72,7 @@ public class CommonProxy
         ModifierRegistry.register("shake", ShakeModifier.class);
         ModifierRegistry.register("math", MathModifier.class);
         ModifierRegistry.register("look", LookModifier.class);
+        ModifierRegistry.register("follow", FollowModifier.class);
     }
 
     /**
