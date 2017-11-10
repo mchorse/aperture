@@ -11,6 +11,8 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRunner;
+import mchorse.aperture.camera.data.Angle;
+import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiFixturesPopup.IFixtureSelector;
@@ -87,6 +89,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      * fixtures only
      */
     public boolean syncing;
+
+    /**
+     * Whether camera editor should display camera information 
+     */
+    public boolean displayPosition;
 
     /**
      * Maximum scrub duration
@@ -1018,6 +1025,27 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             }
 
             boolean running = this.runner.isRunning();
+
+            if ((this.syncing || running) && this.displayPosition)
+            {
+                Position pos = running ? this.runner.getPosition() : this.position;
+                Point point = pos.point;
+                Angle angle = pos.angle;
+
+                String[] labels = new String[] {"X: " + point.x, "Y: " + point.y, "Z: " + point.z, "Yaw: " + angle.yaw, "Pitch: " + angle.pitch, "Roll: " + angle.roll, "FOV: " + angle.fov};
+                int i = 6;
+
+                for (String label : labels)
+                {
+                    int width = this.fontRendererObj.getStringWidth(label);
+                    int y = this.height - 30 - 12 * i;
+
+                    Gui.drawRect(8, y - 2, 9 + width + 2, y + 9, 0x88000000);
+                    this.fontRendererObj.drawStringWithShadow(label, 10, y, 0xffffff);
+
+                    i--;
+                }
+            }
 
             if (running)
             {

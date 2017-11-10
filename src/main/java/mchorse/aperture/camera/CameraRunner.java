@@ -90,6 +90,11 @@ public class CameraRunner
         return this.isRunning;
     }
 
+    public Position getPosition()
+    {
+        return this.position;
+    }
+
     /* Playback methods (start/stop) */
 
     public void toggle(CameraProfile profile, long ticks)

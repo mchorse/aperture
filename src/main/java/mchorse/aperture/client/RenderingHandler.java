@@ -38,6 +38,11 @@ public class RenderingHandler
     @SubscribeEvent
     public void onHUDRender(RenderGameOverlayEvent.Text event)
     {
+        if (this.mc.currentScreen instanceof GuiCameraEditor)
+        {
+            event.setCanceled(true);
+        }
+
         if (!Minecraft.getMinecraft().gameSettings.showDebugInfo)
         {
             return;

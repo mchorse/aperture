@@ -19,6 +19,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     public GuiCheckBox renderPath;
     public GuiCheckBox sync;
     public GuiCheckBox flight;
+    public GuiCheckBox displayPosition;
 
     public int max;
     public int x;
@@ -49,10 +50,14 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.flight = new GuiCheckBox(-5, 0, 0, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled);
         this.flight.packedFGColour = 0xffffff;
 
+        this.displayPosition = new GuiCheckBox(-6, 0, 0, "Display position", this.editor.displayPosition);
+        this.displayPosition.packedFGColour = 0xffffff;
+
         this.buttons.add(this.spectator);
         this.buttons.add(this.renderPath);
         this.buttons.add(this.sync);
         this.buttons.add(this.flight);
+        this.buttons.add(this.displayPosition);
 
         for (GuiButton button : this.buttons.buttons)
         {
@@ -97,6 +102,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.renderPath.setIsChecked(Aperture.proxy.config.camera_profile_render);
         this.sync.setIsChecked(this.editor.syncing);
         this.flight.setIsChecked(this.editor.flight.enabled);
+        this.displayPosition.setIsChecked(this.editor.displayPosition);
     }
 
     @Override
@@ -139,6 +145,10 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         {
             this.editor.flight.enabled = this.flight.isChecked();
             this.editor.haveScrubbed = true;
+        }
+        else if (id == -6)
+        {
+            this.editor.displayPosition = !this.editor.displayPosition;
         }
 
         if (save)
