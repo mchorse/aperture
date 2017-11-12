@@ -26,6 +26,11 @@ public class ScrollArea extends Area
     public int scroll;
 
     /**
+     * Whether this scroll area gets dragged 
+     */
+    public boolean dragging;
+
+    /**
      * Scroll direction, used primarily in the {@link #clamp()} method 
      */
     public ScrollDirection direction = ScrollDirection.VERTICAL;

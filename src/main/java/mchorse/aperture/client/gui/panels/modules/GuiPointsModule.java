@@ -39,7 +39,6 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     public GuiButtonList buttons;
 
     /* Scrolling variables */
-    private boolean dragging;
     private int lastY;
 
     /**
@@ -153,7 +152,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
             if (mouseButton == 1)
             {
                 /* Initiate dragging */
-                this.dragging = true;
+                this.area.dragging = true;
                 this.lastY = mouseX;
             }
             else if (mouseButton == 0)
@@ -187,7 +186,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
-        this.dragging = false;
+        this.area.dragging = false;
     }
 
     @Override
@@ -204,7 +203,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     public void draw(int mouseX, int mouseY, float partialTicks)
     {
         /* Scroll this view */
-        if (this.dragging && this.area.scrollSize > this.area.w)
+        if (this.area.dragging && this.area.scrollSize > this.area.w)
         {
             this.area.scrollBy(this.lastY - mouseX);
 

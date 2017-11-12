@@ -2,7 +2,7 @@ package mchorse.aperture.commands.fixture;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;

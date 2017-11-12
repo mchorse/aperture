@@ -2,6 +2,19 @@ package mchorse.aperture;
 
 import java.io.File;
 
+import mchorse.aperture.camera.FixtureRegistry;
+import mchorse.aperture.camera.ModifierRegistry;
+import mchorse.aperture.camera.fixtures.CircularFixture;
+import mchorse.aperture.camera.fixtures.FollowFixture;
+import mchorse.aperture.camera.fixtures.IdleFixture;
+import mchorse.aperture.camera.fixtures.LookFixture;
+import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.modifiers.AngleModifier;
+import mchorse.aperture.camera.modifiers.FollowModifier;
+import mchorse.aperture.camera.modifiers.LookModifier;
+import mchorse.aperture.camera.modifiers.MathModifier;
+import mchorse.aperture.camera.modifiers.ShakeModifier;
+import mchorse.aperture.camera.modifiers.TranslateModifier;
 import mchorse.aperture.capabilities.CapabilityHandler;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.CameraStorage;
@@ -50,6 +63,20 @@ public class CommonProxy
 
         /* Capabilities */
         CapabilityManager.INSTANCE.register(ICamera.class, new CameraStorage(), Camera.class);
+
+        /* Register camera fixtures and modifiers */
+        FixtureRegistry.register("idle", IdleFixture.class);
+        FixtureRegistry.register("path", PathFixture.class);
+        FixtureRegistry.register("look", LookFixture.class);
+        FixtureRegistry.register("follow", FollowFixture.class);
+        FixtureRegistry.register("circular", CircularFixture.class);
+
+        ModifierRegistry.register("shake", ShakeModifier.class);
+        ModifierRegistry.register("math", MathModifier.class);
+        ModifierRegistry.register("look", LookModifier.class);
+        ModifierRegistry.register("follow", FollowModifier.class);
+        ModifierRegistry.register("translate", TranslateModifier.class);
+        ModifierRegistry.register("angle", AngleModifier.class);
     }
 
     /**

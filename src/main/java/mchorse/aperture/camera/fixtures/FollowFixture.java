@@ -1,7 +1,7 @@
 package mchorse.aperture.camera.fixtures;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.smooth.Interpolations;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +29,12 @@ public class FollowFixture extends LookFixture
         super.edit(args, player);
 
         this.calculateRelativePosition();
+    }
+
+    @Override
+    public void fromPlayer(EntityPlayer player)
+    {
+        this.position.angle.set(player);
     }
 
     /**
@@ -97,11 +103,5 @@ public class FollowFixture extends LookFixture
             this.oldY = y;
             this.oldZ = z;
         }
-    }
-
-    @Override
-    public byte getType()
-    {
-        return AbstractFixture.FOLLOW;
     }
 }

@@ -13,11 +13,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.camera.fixtures.FollowFixture;
-import mchorse.aperture.camera.fixtures.IdleFixture;
-import mchorse.aperture.camera.fixtures.LookFixture;
-import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.json.AbstractFixtureAdapter;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
@@ -67,14 +62,7 @@ public class CameraUtils
         builder.excludeFieldsWithoutExposeAnnotation();
 
         /* Serializer and deserializer */
-        AbstractFixtureAdapter fixtureAdapter = new AbstractFixtureAdapter();
-
-        builder.registerTypeAdapter(AbstractFixture.class, fixtureAdapter);
-        builder.registerTypeAdapter(IdleFixture.class, fixtureAdapter);
-        builder.registerTypeAdapter(PathFixture.class, fixtureAdapter);
-        builder.registerTypeAdapter(LookFixture.class, fixtureAdapter);
-        builder.registerTypeAdapter(FollowFixture.class, fixtureAdapter);
-        builder.registerTypeAdapter(CircularFixture.class, fixtureAdapter);
+        builder.registerTypeAdapter(AbstractFixture.class, new AbstractFixtureAdapter());
 
         return builder.create();
     }

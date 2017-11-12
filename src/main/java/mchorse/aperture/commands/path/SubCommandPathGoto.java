@@ -1,9 +1,9 @@
 package mchorse.aperture.commands.path;
 
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.camera.Angle;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Angle;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.utils.L10n;

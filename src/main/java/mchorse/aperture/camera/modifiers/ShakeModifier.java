@@ -3,10 +3,16 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 
-public class ShakeModifier extends AbstractModifier
+/**
+ * Shake modifier
+ * 
+ * This modifier shakes the camera depending on the given component 
+ * flags.
+ */
+public class ShakeModifier extends ComponentModifier
 {
     @Expose
     public float shake;
@@ -24,21 +30,16 @@ public class ShakeModifier extends AbstractModifier
     }
 
     @Override
-    public void modify(long ticks, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
     {
-        float x = (ticks + partialTick) / this.shake;
+        float x = (ticks + partialTick) / (this.shake == 0 ? 1 : this.shake);
 
         float swingX = (float) (Math.sin(x) * Math.sin(x) * Math.cos(x));
         float swingY = (float) (Math.cos(x) * Math.sin(x) * Math.sin(x));
 
+        /* TODO: adapt to components */
         pos.angle.yaw += swingX * this.shakeAmount;
         pos.angle.pitch += swingY * this.shakeAmount;
-    }
-
-    @Override
-    public byte getType()
-    {
-        return AbstractModifier.SHAKE;
     }
 
     @Override
