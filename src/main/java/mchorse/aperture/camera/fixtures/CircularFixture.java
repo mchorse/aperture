@@ -3,8 +3,8 @@ package mchorse.aperture.camera.fixtures;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.Point;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Point;
+import mchorse.aperture.camera.data.Position;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,6 +54,13 @@ public class CircularFixture extends AbstractFixture
     public CircularFixture(long duration)
     {
         super(duration);
+    }
+
+    @Override
+    public void fromPlayer(EntityPlayer player)
+    {
+        this.start.set(player);
+        this.pitch = player.rotationPitch;
     }
 
     @Override
@@ -129,11 +136,5 @@ public class CircularFixture extends AbstractFixture
         buffer.writeFloat(this.distance);
         buffer.writeFloat(this.circles);
         buffer.writeFloat(this.pitch);
-    }
-
-    @Override
-    public byte getType()
-    {
-        return AbstractFixture.CIRCULAR;
     }
 }

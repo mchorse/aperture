@@ -6,15 +6,15 @@ import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.camera.fixtures.FollowFixture;
-import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
+import mchorse.aperture.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -45,7 +45,6 @@ public class CameraRenderer
     public static final ResourceLocation TEXTURE = new ResourceLocation(Aperture.MODID, "textures/gui/fixture.png");
 
     protected Minecraft mc = Minecraft.getMinecraft();
-    protected CameraProfile profile;
 
     public SmoothCamera smooth = new SmoothCamera();
     public Filter roll = new Filter();
@@ -55,11 +54,9 @@ public class CameraRenderer
     protected double playerY;
     protected double playerZ;
 
-    public void setProfile(CameraProfile profile)
-    {
-        this.profile = profile;
-    }
-
+    /**
+     * Toggle path rendering
+     */
     public void toggleRender()
     {
         Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_profile_render");
@@ -87,9 +84,11 @@ public class CameraRenderer
         /**
          * Apply camera angles only in case if it's the player. The 
          * reason behind this check is that mods like CFM which render 
-         * the world to a texture won't get affected the camera changes.  
+         * the world to a texture won't get affected the camera changes.
+         * 
+         * The 0.001 part is added due to float precision error.
          */
-        if (event.getYaw() - 180 != player.rotationYaw)
+        if (Math.abs((event.getYaw() - 180) - player.rotationYaw) > 0.001)
         {
             return;
         }
@@ -226,7 +225,7 @@ public class CameraRenderer
             float distY = Math.abs(next.point.y - prev.point.y);
             float distZ = Math.abs(next.point.z - prev.point.z);
 
-            Color color = fromFixture(fixture);
+            Color color = FixtureRegistry.CLIENT.get(fixture.getClass()).color;
 
             if (distX + distY + distZ >= 0.5) this.drawCard(color, i, duration, next);
 
@@ -494,45 +493,5 @@ public class CameraRenderer
         GlStateManager.enableTexture2D();
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
-    }
-
-    /**
-     * Get color for a fixture
-     *
-     * Don't forget about instanceof thing with order and extend.
-     */
-    public static CameraRenderer.Color fromFixture(AbstractFixture fixture)
-    {
-        if (fixture instanceof PathFixture) return CameraRenderer.Color.PATH;
-        else if (fixture instanceof FollowFixture) return CameraRenderer.Color.FOLLOW;
-        else if (fixture instanceof LookFixture) return CameraRenderer.Color.LOOK;
-        else if (fixture instanceof CircularFixture) return CameraRenderer.Color.CIRCULAR;
-
-        return CameraRenderer.Color.IDLE;
-    }
-
-    /**
-     * Colors for fixture types.
-     */
-    public static enum Color
-    {
-        IDLE(0.085F, 0.62F, 0.395F), PATH(0.408F, 0.128F, 0.681F), LOOK(0.298F, 0.690F, 0.972F), FOLLOW(0.85F, 0.137F, 0.329F), CIRCULAR(0.298F, 0.631F, 0.247F);
-
-        public float red;
-        public float green;
-        public float blue;
-        public int hex = 0;
-
-        Color(float red, float green, float blue)
-        {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-
-            /* Converting given components to hex for ready-to-use usage */
-            this.hex += (int) (blue * 256);
-            this.hex += (int) (green * 256) << 8;
-            this.hex += (int) (red * 256) << 16;
-        }
     }
 }

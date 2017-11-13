@@ -1,5 +1,15 @@
 package mchorse.aperture.utils.math;
 
+/**
+ * Variable class
+ * 
+ * This class is responsible for providing a mutable {@link IValue} 
+ * which can be modifier during runtime and still getting referenced in 
+ * the expressions parsed by {@link MathBuilder}.
+ * 
+ * But in practice, it's simply returns stored value and provides a 
+ * method to modify it.
+ */
 public class Variable implements IValue
 {
     private String name = "";
@@ -11,6 +21,9 @@ public class Variable implements IValue
         this.value = value;
     }
 
+    /**
+     * Set the value of this variable 
+     */
     public void set(double value)
     {
         this.value = value;

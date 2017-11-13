@@ -38,6 +38,11 @@ public class RenderingHandler
     @SubscribeEvent
     public void onHUDRender(RenderGameOverlayEvent.Text event)
     {
+        if (this.mc.currentScreen instanceof GuiCameraEditor)
+        {
+            event.setCanceled(true);
+        }
+
         if (!Minecraft.getMinecraft().gameSettings.showDebugInfo)
         {
             return;
@@ -47,7 +52,7 @@ public class RenderingHandler
 
         if (ClientProxy.runner.isRunning())
         {
-            list.add("Camera ticks " + ClientProxy.runner.getTicks());
+            list.add("Camera ticks " + ClientProxy.runner.ticks);
         }
     }
 }

@@ -8,9 +8,9 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.Angle;
-import mchorse.aperture.camera.Point;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Angle;
+import mchorse.aperture.camera.data.Point;
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.smooth.Interpolations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -177,6 +177,12 @@ public class PathFixture extends AbstractFixture
         }
 
         return duration;
+    }
+
+    @Override
+    public void fromPlayer(EntityPlayer player)
+    {
+        this.addPoint(new DurablePosition(player));
     }
 
     @Override
@@ -354,12 +360,6 @@ public class PathFixture extends AbstractFixture
     }
 
     /* Save/load methods */
-
-    @Override
-    public byte getType()
-    {
-        return AbstractFixture.PATH;
-    }
 
     @Override
     public void toJSON(JsonObject object)

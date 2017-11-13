@@ -1,7 +1,7 @@
 package mchorse.aperture.client.gui;
 
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.CameraRenderer;
+import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.utils.Area;
@@ -169,7 +169,7 @@ public class GuiPlaybackScrub
 
         for (AbstractFixture fixture : this.profile.getAll())
         {
-            CameraRenderer.Color color = CameraRenderer.fromFixture(fixture);
+            int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getHex();
 
             boolean selected = i == this.index;
             float ff = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
@@ -177,8 +177,8 @@ public class GuiPlaybackScrub
             int fx = x + 1 + (int) ((w - 3) * ff);
             int fbx = x + 1 + (int) ((w - 3) * fb);
 
-            Gui.drawRect(fbx + 1, y + 15, fx, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color.hex);
-            Gui.drawRect(fx, y + 1, fx + 1, y + h - 1, 0xff000000 + color.hex);
+            Gui.drawRect(fbx + 1, y + 15, fx, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
+            Gui.drawRect(fx, y + 1, fx + 1, y + h - 1, 0xff000000 + color);
 
             String name = fixture.getName();
 
@@ -199,7 +199,7 @@ public class GuiPlaybackScrub
                             int fract = (int) ((fx - fbx) * ((float) frame / duration));
                             int px = fbx + fract;
 
-                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
 
                             frame += path.getPoint(j).getDuration();
                         }
@@ -212,7 +212,7 @@ public class GuiPlaybackScrub
                         {
                             int px = fbx + fract * j;
 
-                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color.hex - 0x00181818);
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
                         }
                     }
                 }

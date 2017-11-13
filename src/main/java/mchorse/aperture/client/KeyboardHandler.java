@@ -15,6 +15,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameType;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -152,6 +153,11 @@ public class KeyboardHandler
     {
         EntityPlayer player = Minecraft.getMinecraft().player;
 
+        if (ClientProxy.runner.getGameMode(player) == GameType.ADVENTURE)
+        {
+            return;
+        }
+
         try
         {
             this.handleCameraBindings(player);
@@ -231,6 +237,11 @@ public class KeyboardHandler
         /* Camera control keys handling */
         if (player != null)
         {
+            if (ClientProxy.runner.getGameMode(player) == GameType.ADVENTURE)
+            {
+                return;
+            }
+
             if (!ClientProxy.renderer.smooth.enabled)
             {
                 CameraControl control = ClientProxy.control;

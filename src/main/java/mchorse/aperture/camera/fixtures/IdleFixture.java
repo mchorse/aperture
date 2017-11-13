@@ -3,7 +3,7 @@ package mchorse.aperture.camera.fixtures;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.Position;
+import mchorse.aperture.camera.data.Position;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -21,12 +21,16 @@ public class IdleFixture extends AbstractFixture
     public IdleFixture(long duration)
     {
         super(duration);
-
-        // this.modifiers.add(new ShakeModifier(10, 0.5F));
     }
 
     @Override
     public void edit(String[] args, EntityPlayer player) throws CommandException
+    {
+        this.position.set(player);
+    }
+
+    @Override
+    public void fromPlayer(EntityPlayer player)
     {
         this.position.set(player);
     }
@@ -53,11 +57,5 @@ public class IdleFixture extends AbstractFixture
         super.toByteBuf(buffer);
 
         this.position.toByteBuf(buffer);
-    }
-
-    @Override
-    public byte getType()
-    {
-        return AbstractFixture.IDLE;
     }
 }

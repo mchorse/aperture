@@ -17,7 +17,7 @@ public class TestMathBuilder
     @Test
     public void testBreakdownSymbols()
     {
-        List<Object> symbols = this.builder.breakdownChars("floor(2+2)-10*pi".split("(?!^)"));
+        List<Object> symbols = this.builder.breakdownChars("pow(2+2,5)-10*pi".split("(?!^)"));
 
         System.out.println(symbols);
     }
@@ -25,8 +25,15 @@ public class TestMathBuilder
     @Test
     public void testParsing()
     {
-        IValue value = this.builder.parse("50 / (2 + 0.5) / pi - 5");
+        try
+        {
+            IValue value = this.builder.parse("2-5");
 
-        System.out.println(value.toString() + " = " + value.get());
+            System.out.println(value.toString() + " = " + value.get());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
