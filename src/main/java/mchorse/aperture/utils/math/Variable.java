@@ -20,7 +20,11 @@ public class Variable implements IValue
     {
         this.name = name;
         this.value = value;
-        this.negative = new Variable("-" + name, -value);
+
+        if (name.indexOf("-") != 0)
+        {
+            this.negative = new Variable("-" + name, -value);
+        }
     }
 
     /**
