@@ -45,6 +45,7 @@ public class MathBuilder
     {
         /* Some default values */
         this.variables.put("pi", new Variable("pi", Math.PI));
+        this.variables.put("pi", new Variable("e", Math.E));
 
         /* Some default functions */
         this.functions.put("abs", Abs.class);
