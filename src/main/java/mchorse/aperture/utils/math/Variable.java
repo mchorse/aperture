@@ -33,7 +33,11 @@ public class Variable implements IValue
     public void set(double value)
     {
         this.value = value;
-        this.negative.set(-value);
+
+        if (this.negative != null)
+        {
+            this.negative.set(-value);
+        }
     }
 
     @Override
