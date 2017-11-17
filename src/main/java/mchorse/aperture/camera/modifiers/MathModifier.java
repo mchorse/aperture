@@ -30,6 +30,8 @@ public class MathModifier extends ComponentModifier
     public Variable ticks;
     public Variable offset;
     public Variable partial;
+    public Variable fixtureDuration;
+    public Variable progress;
     public Variable value;
 
     public Variable x;
@@ -46,6 +48,8 @@ public class MathModifier extends ComponentModifier
         this.ticks = new Variable("t", 0);
         this.offset = new Variable("o", 0);
         this.partial = new Variable("pt", 0);
+        this.fixtureDuration = new Variable("d", 0);
+        this.progress = new Variable("p", 0);
         this.value = new Variable("value", 0);
 
         this.x = new Variable("x", 0);
@@ -60,6 +64,8 @@ public class MathModifier extends ComponentModifier
         this.builder.variables.put("t", this.ticks);
         this.builder.variables.put("o", this.offset);
         this.builder.variables.put("pt", this.partial);
+        this.builder.variables.put("d", this.fixtureDuration);
+        this.builder.variables.put("p", this.progress);
         this.builder.variables.put("value", this.value);
 
         this.builder.variables.put("x", this.x);
@@ -100,6 +106,8 @@ public class MathModifier extends ComponentModifier
             this.ticks.set(ticks);
             this.offset.set(offset);
             this.partial.set(partialTick);
+            this.fixtureDuration.set(fixture.getDuration());
+            this.progress.set(ticks + partialTick);
 
             this.x.set(pos.point.x);
             this.y.set(pos.point.y);
