@@ -61,21 +61,21 @@ public class MathModifier extends ComponentModifier
         this.roll = new Variable("roll", 0);
         this.fov = new Variable("fov", 0);
 
-        this.builder.variables.put("t", this.ticks);
-        this.builder.variables.put("o", this.offset);
-        this.builder.variables.put("pt", this.partial);
-        this.builder.variables.put("d", this.fixtureDuration);
-        this.builder.variables.put("p", this.progress);
-        this.builder.variables.put("value", this.value);
+        this.builder.register(this.ticks);
+        this.builder.register(this.offset);
+        this.builder.register(this.partial);
+        this.builder.register(this.fixtureDuration);
+        this.builder.register(this.progress);
+        this.builder.register(this.value);
 
-        this.builder.variables.put("x", this.x);
-        this.builder.variables.put("y", this.y);
-        this.builder.variables.put("z", this.z);
+        this.builder.register(this.x);
+        this.builder.register(this.y);
+        this.builder.register(this.z);
 
-        this.builder.variables.put("yaw", this.yaw);
-        this.builder.variables.put("pitch", this.pitch);
-        this.builder.variables.put("roll", this.roll);
-        this.builder.variables.put("fov", this.fov);
+        this.builder.register(this.yaw);
+        this.builder.register(this.pitch);
+        this.builder.register(this.roll);
+        this.builder.register(this.fov);
     }
 
     public MathModifier(String expression)
