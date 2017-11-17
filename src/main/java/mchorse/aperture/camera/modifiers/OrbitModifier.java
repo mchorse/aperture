@@ -123,6 +123,7 @@ public class OrbitModifier extends EntityModifier
 
         this.yaw = buffer.readFloat();
         this.pitch = buffer.readFloat();
+        this.distance = buffer.readFloat();
         this.copy = buffer.readBoolean();
     }
 
@@ -133,6 +134,7 @@ public class OrbitModifier extends EntityModifier
 
         buffer.writeFloat(this.yaw);
         buffer.writeFloat(this.pitch);
+        buffer.writeFloat(this.distance);
         buffer.writeBoolean(this.copy);
     }
 }
