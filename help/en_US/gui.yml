@@ -64,6 +64,8 @@ aperture.gui:
         load: Load
         new: New
         tooltip: New camera name
+        rename_profile: Rename profile
+        rename: Rename
 
     panels:
         duration: Duration
