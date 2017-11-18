@@ -86,6 +86,11 @@ public class GuiModifiersManager
         }
     }
 
+    public boolean isInside(int x, int y)
+    {
+        return this.visible && this.area.isInside(x, y) && y - this.area.y < this.area.scrollSize;
+    }
+
     /**
      * Update, I guess
      */
@@ -228,6 +233,13 @@ public class GuiModifiersManager
 
         Minecraft mc = Minecraft.getMinecraft();
 
+        if (mouseX >= this.area.x + this.area.w - 5 && this.area.scrollSize > this.area.h)
+        {
+            this.area.dragging = true;
+
+            return;
+        }
+
         if (this.adding)
         {
             List<AbstractModifier> modifiers = this.fixture.getModifiers();
@@ -275,6 +287,8 @@ public class GuiModifiersManager
         {
             return;
         }
+
+        this.area.dragging = false;
 
         for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
         {
@@ -336,6 +350,14 @@ public class GuiModifiersManager
             return;
         }
 
+        if (this.area.dragging)
+        {
+            float factor = (mouseY - (this.area.y + 20)) / (float) (this.area.h - 20);
+
+            this.area.scroll = (int) (factor * (this.area.scrollSize - this.area.h));
+            this.area.clamp();
+        }
+
         Minecraft mc = Minecraft.getMinecraft();
         int h = MathHelper.clamp_int(this.area.scrollSize, 20, this.area.h);
 
@@ -382,7 +404,13 @@ public class GuiModifiersManager
 
             if (this.area.scrollSize > this.area.h)
             {
-                /* Draw scroll bar */
+                float factor = this.area.scroll / (float) (this.area.scrollSize - this.area.h);
+
+                int bx = this.area.x + this.area.w - 5;
+                int bh = this.area.getScrollBar(40);
+                int by = this.area.y + 20 + (int) (factor * (this.area.h - bh - 20));
+
+                Gui.drawRect(bx, by, bx + 5, by + bh, 0xffaaaaaa);
             }
         }
     }

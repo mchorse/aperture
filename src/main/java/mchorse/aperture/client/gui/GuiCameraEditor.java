@@ -863,6 +863,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             {
                 this.modifiers.mouseScroll(x, y, scroll);
             }
+
+            if (this.flight.enabled)
+            {
+                this.flight.speed += Math.copySign(0.1F, scroll);
+                this.flight.speed = MathHelper.clamp_float(this.flight.speed, 0.1F, 50F);
+            }
         }
     }
 
@@ -878,7 +884,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             this.modifiers.mouseClicked(mouseX, mouseY, mouseButton);
 
-            if (this.modifiers.area.isInside(mouseX, mouseY))
+            if (this.modifiers.isInside(mouseX, mouseY))
             {
                 return;
             }
@@ -1026,6 +1032,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             boolean running = this.runner.isRunning();
 
+            /* Display camera attributes */
             if ((this.syncing || running) && this.displayPosition)
             {
                 Position pos = running ? this.runner.getPosition() : this.position;
@@ -1045,6 +1052,18 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
                     i--;
                 }
+            }
+
+            /* Display flight speed */
+            if (this.flight.enabled)
+            {
+                String speed = String.format("Speed: %.1f", this.flight.speed);
+                int width = this.fontRendererObj.getStringWidth(speed);
+                int x = this.width - 10 - width;
+                int y = this.height - 30;
+
+                Gui.drawRect(x - 2, y - 2, x + width + 2, y + 9, 0x88000000);
+                this.fontRendererObj.drawStringWithShadow(speed, x, y, 0xffffff);
             }
 
             if (running)
