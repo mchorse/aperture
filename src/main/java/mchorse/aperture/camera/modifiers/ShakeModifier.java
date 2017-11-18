@@ -37,7 +37,6 @@ public class ShakeModifier extends ComponentModifier
         float swingX = (float) (Math.sin(x) * Math.sin(x) * Math.cos(x));
         float swingY = (float) (Math.cos(x) * Math.sin(x) * Math.sin(x));
 
-        /* TODO: adapt to components */
         pos.angle.yaw += swingX * this.shakeAmount;
         pos.angle.pitch += swingY * this.shakeAmount;
     }

@@ -15,6 +15,7 @@ import mchorse.aperture.client.gui.GuiFixturesPopup.GuiFlatButton;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.aperture.utils.Color;
 import mchorse.aperture.utils.ScrollArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -81,8 +82,13 @@ public class GuiModifiersManager
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
             int color = 0xff000000 + info.color.getHex();
+            Color dark = info.color.clone();
 
-            this.addButtons.add(new GuiFlatButton(info.type, 0, 0, 0, 0, color, color - 0x00111111, info.title));
+            dark.red *= 0.9;
+            dark.green *= 0.9;
+            dark.blue *= 0.9;
+
+            this.addButtons.add(new GuiFlatButton(info.type, 0, 0, 0, 0, color, 0xff000000 + dark.getHex(), info.title));
         }
     }
 
@@ -193,6 +199,7 @@ public class GuiModifiersManager
         this.fixture.getModifiers().remove(panel.modifier);
 
         this.recalcPanels();
+        this.area.clamp();
         this.modified = true;
     }
 
@@ -264,15 +271,17 @@ public class GuiModifiersManager
             this.adding = !this.adding;
         }
 
-        /* Create a copy of  */
+        /* Create a copy of button arrays */
         List<GuiAbstractModifierPanel<? extends AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<? extends AbstractModifier>>(this.panels);
 
         for (GuiAbstractModifierPanel<? extends AbstractModifier> panel : panels)
         {
-            if (!this.modified)
+            if (this.modified)
             {
-                panel.mouseClicked(mouseX, mouseY + this.area.scroll, mouseButton);
+                break;
             }
+
+            panel.mouseClicked(mouseX, mouseY + this.area.scroll, mouseButton);
         }
 
         this.modified = false;

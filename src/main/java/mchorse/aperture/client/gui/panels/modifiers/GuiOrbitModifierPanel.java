@@ -148,5 +148,10 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
 
         this.copy.drawButton(mc, mouseX, mouseY);
         this.selector.drawTextBox();
+
+        if (!this.selector.isFocused())
+        {
+            GuiUtils.drawRightString(font, "Selector", this.selector.xPosition + this.selector.width - 4, this.selector.yPosition + 5, 0xffaaaaaa);
+        }
     }
 }

@@ -32,6 +32,11 @@ public class Color
         this.blue = blue;
     }
 
+    public Color clone()
+    {
+        return new Color(this.red, this.green, this.blue);
+    }
+
     public int getHex()
     {
         int hex = 0;

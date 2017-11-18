@@ -75,5 +75,10 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
         super.draw(mouseX, mouseY, partialTicks);
 
         this.selector.drawTextBox();
+
+        if (!this.selector.isFocused())
+        {
+            GuiUtils.drawRightString(font, "Selector", this.selector.xPosition + this.selector.width - 4, this.selector.yPosition + 5, 0xffaaaaaa);
+        }
     }
 }
