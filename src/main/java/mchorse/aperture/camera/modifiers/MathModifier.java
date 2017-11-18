@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  * 
  * This modifier provides all essential input variables for math 
  * expressions, such as: position, angle, progress, progress offset from 
- * fixture and current value.
+ * fixture, current value and more!
  */
 public class MathModifier extends ComponentModifier
 {
