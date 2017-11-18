@@ -34,11 +34,59 @@ public class ShakeModifier extends ComponentModifier
     {
         float x = (ticks + partialTick) / (this.shake == 0 ? 1 : this.shake);
 
-        float swingX = (float) (Math.sin(x) * Math.sin(x) * Math.cos(x));
-        float swingY = (float) (Math.cos(x) * Math.sin(x) * Math.sin(x));
+        boolean isX = this.isActive(0);
+        boolean isY = this.isActive(1);
+        boolean isZ = this.isActive(2);
+        boolean isYaw = this.isActive(3);
+        boolean isPitch = this.isActive(4);
+        boolean isRoll = this.isActive(5);
+        boolean isFov = this.isActive(6);
 
-        pos.angle.yaw += swingX * this.shakeAmount;
-        pos.angle.pitch += swingY * this.shakeAmount;
+        if (isYaw && isPitch && !isX && !isY && !isZ && !isRoll && !isFov)
+        {
+            float swingX = (float) (Math.sin(x) * Math.sin(x) * Math.cos(x) * Math.cos(x / 2));
+            float swingY = (float) (Math.cos(x) * Math.sin(x) * Math.sin(x));
+
+            pos.angle.yaw += swingX * this.shakeAmount;
+            pos.angle.pitch += swingY * this.shakeAmount;
+        }
+        else
+        {
+            if (isX)
+            {
+                pos.point.x += Math.sin(x) * this.shakeAmount;
+            }
+
+            if (isY)
+            {
+                pos.point.y -= Math.sin(x) * this.shakeAmount;
+            }
+
+            if (isZ)
+            {
+                pos.point.z += Math.cos(x) * this.shakeAmount;
+            }
+
+            if (isYaw)
+            {
+                pos.angle.yaw += Math.sin(x) * this.shakeAmount;
+            }
+
+            if (isPitch)
+            {
+                pos.angle.pitch += Math.cos(x) * this.shakeAmount;
+            }
+
+            if (isRoll)
+            {
+                pos.angle.roll += Math.sin(x) * this.shakeAmount;
+            }
+
+            if (isFov)
+            {
+                pos.angle.fov += Math.cos(x) * this.shakeAmount;
+            }
+        }
     }
 
     @Override
