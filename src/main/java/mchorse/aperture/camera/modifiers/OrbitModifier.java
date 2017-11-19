@@ -107,7 +107,7 @@ public class OrbitModifier extends EntityModifier
         double dX = pos.point.x - x;
         double dY = pos.point.y - y;
         double dZ = pos.point.z - z;
-        double horizontalDistance = MathHelper.sqrt_double(dX * dX + dZ * dZ);
+        double horizontalDistance = MathHelper.sqrt(dX * dX + dZ * dZ);
 
         yaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
         pitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));

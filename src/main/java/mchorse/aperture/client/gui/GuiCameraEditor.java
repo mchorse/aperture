@@ -908,7 +908,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (this.flight.enabled)
             {
                 this.flight.speed += Math.copySign(0.1F, scroll);
-                this.flight.speed = MathHelper.clamp_float(this.flight.speed, 0.1F, 50F);
+                this.flight.speed = MathHelper.clamp(this.flight.speed, 0.1F, 50F);
             }
         }
     }
