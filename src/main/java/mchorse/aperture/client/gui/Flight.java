@@ -8,19 +8,19 @@ import net.minecraft.util.math.Vec3d;
 public class Flight
 {
     public boolean enabled = false;
+    public float speed = 1;
 
     public void animate(Position position)
     {
-        float multiplier = 1;
+        float multiplier = this.speed;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
         {
-            multiplier = 5;
+            multiplier *= 5;
         }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+        else if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
         {
-            multiplier = 0.2F;
+            multiplier *= 0.2F;
         }
 
         double factor = 0.1 * multiplier;

@@ -42,6 +42,7 @@ public class GuiProfilesManager implements IGuiModule
     public GuiCameraEditor editor;
     public boolean visible;
     public boolean showLoaded = true;
+    public boolean rename = false;
     public List<AbstractDestination> destToLoad = new ArrayList<AbstractDestination>();
 
     public GuiButton loaded;
@@ -64,6 +65,7 @@ public class GuiProfilesManager implements IGuiModule
     public void init()
     {
         this.destToLoad.clear();
+        this.rename = false;
 
         for (String filename : CameraAPI.getClientProfiles())
         {
@@ -88,12 +90,15 @@ public class GuiProfilesManager implements IGuiModule
         GuiUtils.setSize(this.add, x + w - 45, y + h - 25, 40, 20);
         GuiUtils.setSize(this.name, x + 5, y + h - 25, w - 55, 20);
         this.updateButtons();
+
     }
 
     private void updateButtons()
     {
         this.loaded.enabled = !this.showLoaded;
         this.load.enabled = this.showLoaded;
+
+        this.add.displayString = this.rename ? I18n.format("aperture.gui.profiles.rename") : I18n.format("aperture.gui.profiles.new");
     }
 
     /**
@@ -127,42 +132,56 @@ public class GuiProfilesManager implements IGuiModule
         {
             if (this.showLoaded)
             {
-                int index = this.scrollLoaded.getIndex(mouseX, mouseY);
-
-                if (index >= 0)
+                if (!this.rename)
                 {
-                    boolean isReverse = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 40;
-                    boolean isX = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 20;
+                    int index = this.scrollLoaded.getIndex(mouseX, mouseY);
 
-                    if (isX)
+                    if (index >= 0)
                     {
-                        /* Reset current camera profile only removed one is was current profile */
-                        if (this.editor.getProfile() == ClientProxy.control.profiles.remove(index))
+                        boolean isRename = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 60;
+                        boolean isReverse = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 40;
+                        boolean isX = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 20;
+
+                        if (isX)
                         {
-                            ClientProxy.control.currentProfile = null;
-                            this.editor.selectProfile(null);
+                            /* Reset current camera profile only removed one is was current profile */
+                            if (this.editor.getProfile() == ClientProxy.control.profiles.remove(index))
+                            {
+                                ClientProxy.control.currentProfile = null;
+                                this.editor.selectProfile(null);
+                            }
+
+                            this.scrollLoaded.setSize(ClientProxy.control.profiles.size());
                         }
-
-                        this.scrollLoaded.setSize(ClientProxy.control.profiles.size());
-                    }
-                    else if (isReverse)
-                    {
-                        CameraProfile profile = ClientProxy.control.profiles.get(index);
-
-                        AbstractDestination dest = profile.getDestination();
-                        String filename = dest.getFilename();
-                        AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
-
-                        if (!ClientProxy.control.hasSimilar(newDest))
+                        else if (isReverse)
                         {
-                            profile.setDestination(newDest);
+                            CameraProfile profile = ClientProxy.control.profiles.get(index);
+
+                            AbstractDestination dest = profile.getDestination();
+                            String filename = dest.getFilename();
+                            AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
+
+                            if (!ClientProxy.control.hasSimilar(newDest))
+                            {
+                                profile.setDestination(newDest);
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (index >= 0 && index < ClientProxy.control.profiles.size())
+                        else if (isRename)
                         {
-                            this.editor.selectProfile(ClientProxy.control.profiles.get(index));
+                            CameraProfile profile = ClientProxy.control.profiles.get(index);
+
+                            this.rename = true;
+                            this.updateButtons();
+
+                            this.name.setText(profile.getDestination().getFilename());
+                            this.name.setCursorPositionZero();
+                        }
+                        else
+                        {
+                            if (index >= 0 && index < ClientProxy.control.profiles.size())
+                            {
+                                this.editor.selectProfile(ClientProxy.control.profiles.get(index));
+                            }
                         }
                     }
                 }
@@ -188,10 +207,19 @@ public class GuiProfilesManager implements IGuiModule
             return;
         }
 
-        CameraProfile profile = new CameraProfile(new ServerDestination(text));
-        ClientProxy.control.addProfile(profile);
+        if (this.rename)
+        {
+            this.editor.getProfile().getDestination().rename(text);
+            this.rename = false;
+            this.updateButtons();
+        }
+        else
+        {
+            CameraProfile profile = new CameraProfile(new ServerDestination(text));
+            ClientProxy.control.addProfile(profile);
 
-        this.editor.selectProfile(profile);
+            this.editor.selectProfile(profile);
+        }
 
         this.name.setText("");
         this.name.setCursorPositionZero();
@@ -227,6 +255,14 @@ public class GuiProfilesManager implements IGuiModule
         }
 
         this.name.textboxKeyTyped(typedChar, keyCode);
+
+        /* Canceling renaming */
+        if (this.rename && keyCode == Keyboard.KEY_ESCAPE)
+        {
+            this.rename = false;
+            this.updateButtons();
+            this.name.setText("");
+        }
     }
 
     @Override
@@ -248,7 +284,7 @@ public class GuiProfilesManager implements IGuiModule
 
         if (!this.name.isFocused() && this.name.getText().isEmpty())
         {
-            this.mc.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.profiles.tooltip"), this.name.x + 4, this.name.y + 5, 0xaaaaaa);
+            this.mc.fontRenderer.drawStringWithShadow(this.rename ? I18n.format("aperture.gui.profiles.rename_profile") : I18n.format("aperture.gui.profiles.tooltip"), this.name.x + 4, this.name.y + 5, 0xaaaaaa);
         }
 
         GuiUtils.scissor(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.w, this.scrollLoaded.h, this.editor.width, this.editor.height);
@@ -288,6 +324,7 @@ public class GuiProfilesManager implements IGuiModule
                 {
                     boolean isX = mouseX >= x + w - 20;
                     boolean isReverse = mouseX >= x + w - 40 && mouseX < x + w - 20;
+                    boolean isRename = mouseX >= x + w - 60 && mouseX < x + w - 40;
 
                     GlStateManager.color(1, 1, 1, 1);
                     Gui.drawModalRectWithCustomSizedTexture(x + w - 18, y + 2, 32, 32 + (isX ? 0 : 16), 16, 16, 256, 256);
@@ -300,6 +337,8 @@ public class GuiProfilesManager implements IGuiModule
                     {
                         Gui.drawModalRectWithCustomSizedTexture(x + w - 38, y + 2, 16, 32 + (isReverse ? 0 : 16), 16, 16, 256, 256);
                     }
+
+                    Gui.drawModalRectWithCustomSizedTexture(x + w - 58, y + 2, 160, 32 + (isRename ? 0 : 16), 16, 16, 256, 256);
                 }
 
                 Gui.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 0 + (dest instanceof ClientDestination ? 16 : 0), 32, 16, 16, 256, 256);
@@ -367,5 +406,26 @@ public class GuiProfilesManager implements IGuiModule
     public boolean hasAnyActiveTextfields()
     {
         return this.visible && this.name.isFocused();
+    }
+
+    /**
+     * Rename camera profile 
+     */
+    public void rename(AbstractDestination from, String to)
+    {
+        CameraProfile profile = ClientProxy.control.getProfile(from);
+
+        if (profile != null)
+        {
+            profile.getDestination().setFilename(to);
+        }
+
+        for (AbstractDestination dest : this.destToLoad)
+        {
+            if (dest.equals(from))
+            {
+                dest.setFilename(to);
+            }
+        }
     }
 }

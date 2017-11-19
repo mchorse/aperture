@@ -87,7 +87,11 @@ public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<Translat
 
     @Override
     public void keyTyped(char typedChar, int keyCode)
-    {}
+    {
+        this.x.keyTyped(typedChar, keyCode);
+        this.y.keyTyped(typedChar, keyCode);
+        this.z.keyTyped(typedChar, keyCode);
+    }
 
     @Override
     public boolean hasActiveTextfields()

@@ -44,7 +44,8 @@ public class MathBuilder
     public MathBuilder()
     {
         /* Some default values */
-        this.variables.put("pi", new Variable("pi", Math.PI));
+        this.register(new Variable("pi", Math.PI));
+        this.register(new Variable("e", Math.E));
 
         /* Some default functions */
         this.functions.put("abs", Abs.class);
@@ -52,6 +53,14 @@ public class MathBuilder
         this.functions.put("cos", Cos.class);
         this.functions.put("floor", Floor.class);
         this.functions.put("sin", Sin.class);
+    }
+
+    /**
+     * Register a variable 
+     */
+    public void register(Variable var)
+    {
+        this.variables.put(var.getName(), var);
     }
 
     /**
@@ -122,7 +131,7 @@ public class MathBuilder
                     int size = symbols.size();
 
                     boolean isFirst = size == 0 && buffer.isEmpty();
-                    boolean isOperatorBehind = size > 0 && (this.isOperator(symbols.get(size - 1)) || symbols.get(size - 1).equals(","));
+                    boolean isOperatorBehind = size > 0 && (this.isOperator(symbols.get(size - 1)) || symbols.get(size - 1).equals(",")) && buffer.isEmpty();
 
                     if (isFirst || isOperatorBehind)
                     {
@@ -344,9 +353,23 @@ public class MathBuilder
             {
                 return new Constant(Double.parseDouble(symbol));
             }
-            else if (this.variables.containsKey(symbol))
+            else if (this.isVariable(symbol))
             {
-                return this.variables.get(symbol);
+                /* Need to account for a negative value variable */
+                if (symbol.indexOf("-") == 0)
+                {
+                    symbol = symbol.substring(1);
+                    IValue value = this.variables.get(symbol);
+
+                    if (value instanceof Variable)
+                    {
+                        return ((Variable) value).negative;
+                    }
+                }
+                else
+                {
+                    return this.variables.get(symbol);
+                }
             }
         }
         else if (object instanceof List)

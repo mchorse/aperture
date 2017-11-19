@@ -85,5 +85,10 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 
         this.math.drawTextBox();
         this.active.draw(mouseX, mouseY, partialTicks);
+
+        if (!this.math.isFocused())
+        {
+            GuiUtils.drawRightString(font, "Math", this.math.x + this.math.width - 4, this.math.y + 5, 0xffaaaaaa);
+        }
     }
 }

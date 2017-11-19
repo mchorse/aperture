@@ -56,6 +56,11 @@ public abstract class AbstractDestination
     }
 
     /**
+     * Rename camera profile 
+     */
+    public abstract void rename(String name);
+
+    /**
      * Save given camera profile
      */
     public abstract void save(CameraProfile profile);

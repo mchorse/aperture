@@ -75,5 +75,10 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
         super.draw(mouseX, mouseY, partialTicks);
 
         this.selector.drawTextBox();
+
+        if (!this.selector.isFocused())
+        {
+            GuiUtils.drawRightString(font, "Selector", this.selector.x + this.selector.width - 4, this.selector.y + 5, 0xffaaaaaa);
+        }
     }
 }
