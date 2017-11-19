@@ -193,4 +193,15 @@ public class CameraUtils
 
         return writer.toString();
     }
+
+    /**
+     * Rename camera profile 
+     */
+    public static boolean renameProfile(String from, String to)
+    {
+        File fromFile = new File(cameraFile(from));
+        File toFile = new File(cameraFile(to));
+
+        return fromFile.renameTo(toFile);
+    }
 }

@@ -30,6 +30,18 @@ public class ClientDestination extends AbstractDestination
     }
 
     @Override
+    public void rename(String name)
+    {
+        File from = new File(ClientProxy.getClientCameras(), this.filename + ".json");
+        File to = new File(ClientProxy.getClientCameras(), name + ".json");
+
+        if (from.renameTo(to))
+        {
+            ClientProxy.cameraEditor.profiles.rename(this, name);
+        }
+    }
+
+    @Override
     public void save(CameraProfile profile)
     {
         try

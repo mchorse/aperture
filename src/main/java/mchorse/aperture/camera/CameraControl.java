@@ -112,6 +112,22 @@ public class CameraControl
     }
 
     /**
+     * Get camera profile by given filename 
+     */
+    public CameraProfile getProfile(AbstractDestination dest)
+    {
+        for (CameraProfile profile : this.profiles)
+        {
+            if (profile.getDestination().equals(dest))
+            {
+                return profile;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Add roll (it can be negative too)
      */
     public void setRoll(float value)

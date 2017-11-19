@@ -15,6 +15,7 @@ import mchorse.aperture.client.gui.GuiFixturesPopup.GuiFlatButton;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.aperture.utils.Color;
 import mchorse.aperture.utils.ScrollArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -81,9 +82,19 @@ public class GuiModifiersManager
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
             int color = 0xff000000 + info.color.getHex();
+            Color dark = info.color.clone();
 
-            this.addButtons.add(new GuiFlatButton(info.type, 0, 0, 0, 0, color, color - 0x00111111, info.title));
+            dark.red *= 0.9;
+            dark.green *= 0.9;
+            dark.blue *= 0.9;
+
+            this.addButtons.add(new GuiFlatButton(info.type, 0, 0, 0, 0, color, 0xff000000 + dark.getHex(), info.title));
         }
+    }
+
+    public boolean isInside(int x, int y)
+    {
+        return this.visible && this.area.isInside(x, y) && y - this.area.y < this.area.scrollSize;
     }
 
     /**
@@ -188,6 +199,7 @@ public class GuiModifiersManager
         this.fixture.getModifiers().remove(panel.modifier);
 
         this.recalcPanels();
+        this.area.clamp();
         this.modified = true;
     }
 
@@ -228,6 +240,13 @@ public class GuiModifiersManager
 
         Minecraft mc = Minecraft.getMinecraft();
 
+        if (mouseX >= this.area.x + this.area.w - 5 && this.area.scrollSize > this.area.h)
+        {
+            this.area.dragging = true;
+
+            return;
+        }
+
         if (this.adding)
         {
             List<AbstractModifier> modifiers = this.fixture.getModifiers();
@@ -252,15 +271,17 @@ public class GuiModifiersManager
             this.adding = !this.adding;
         }
 
-        /* Create a copy of  */
+        /* Create a copy of button arrays */
         List<GuiAbstractModifierPanel<? extends AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<? extends AbstractModifier>>(this.panels);
 
         for (GuiAbstractModifierPanel<? extends AbstractModifier> panel : panels)
         {
-            if (!this.modified)
+            if (this.modified)
             {
-                panel.mouseClicked(mouseX, mouseY + this.area.scroll, mouseButton);
+                break;
             }
+
+            panel.mouseClicked(mouseX, mouseY + this.area.scroll, mouseButton);
         }
 
         this.modified = false;
@@ -275,6 +296,8 @@ public class GuiModifiersManager
         {
             return;
         }
+
+        this.area.dragging = false;
 
         for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
         {
@@ -336,6 +359,14 @@ public class GuiModifiersManager
             return;
         }
 
+        if (this.area.dragging)
+        {
+            float factor = (mouseY - (this.area.y + 20)) / (float) (this.area.h - 20);
+
+            this.area.scroll = (int) (factor * (this.area.scrollSize - this.area.h));
+            this.area.clamp();
+        }
+
         Minecraft mc = Minecraft.getMinecraft();
         int h = MathHelper.clamp(this.area.scrollSize, 20, this.area.h);
 
@@ -382,7 +413,13 @@ public class GuiModifiersManager
 
             if (this.area.scrollSize > this.area.h)
             {
-                /* Draw scroll bar */
+                float factor = this.area.scroll / (float) (this.area.scrollSize - this.area.h);
+
+                int bx = this.area.x + this.area.w - 5;
+                int bh = this.area.getScrollBar(40);
+                int by = this.area.y + 20 + (int) (factor * (this.area.h - bh - 20));
+
+                Gui.drawRect(bx, by, bx + 5, by + bh, 0xffaaaaaa);
             }
         }
     }

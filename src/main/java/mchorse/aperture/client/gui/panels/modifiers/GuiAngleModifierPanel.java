@@ -99,7 +99,12 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
 
     @Override
     public void keyTyped(char typedChar, int keyCode)
-    {}
+    {
+        this.yaw.keyTyped(typedChar, keyCode);
+        this.pitch.keyTyped(typedChar, keyCode);
+        this.roll.keyTyped(typedChar, keyCode);
+        this.fov.keyTyped(typedChar, keyCode);
+    }
 
     @Override
     public boolean hasActiveTextfields()

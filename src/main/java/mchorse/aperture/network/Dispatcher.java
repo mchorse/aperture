@@ -4,15 +4,18 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.network.client.ClientHandlerCameraProfile;
 import mchorse.aperture.network.client.ClientHandlerCameraProfileList;
 import mchorse.aperture.network.client.ClientHandlerCameraState;
+import mchorse.aperture.network.client.ClientHandlerRenameCameraProfile;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketCameraProfileList;
 import mchorse.aperture.network.common.PacketCameraReset;
 import mchorse.aperture.network.common.PacketCameraState;
 import mchorse.aperture.network.common.PacketLoadCameraProfile;
+import mchorse.aperture.network.common.PacketRenameCameraProfile;
 import mchorse.aperture.network.common.PacketRequestCameraProfiles;
 import mchorse.aperture.network.server.ServerHandlerCameraProfile;
 import mchorse.aperture.network.server.ServerHandlerCameraReset;
 import mchorse.aperture.network.server.ServerHandlerLoadCameraProfile;
+import mchorse.aperture.network.server.ServerHandlerRenameCameraProfile;
 import mchorse.aperture.network.server.ServerHandlerRequestCameraProfiles;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
@@ -82,6 +85,8 @@ public class Dispatcher
         register(PacketLoadCameraProfile.class, ServerHandlerLoadCameraProfile.class, Side.SERVER);
         register(PacketRequestCameraProfiles.class, ServerHandlerRequestCameraProfiles.class, Side.SERVER);
         register(PacketCameraProfileList.class, ClientHandlerCameraProfileList.class, Side.CLIENT);
+        register(PacketRenameCameraProfile.class, ClientHandlerRenameCameraProfile.class, Side.CLIENT);
+        register(PacketRenameCameraProfile.class, ServerHandlerRenameCameraProfile.class, Side.SERVER);
     }
 
     /**

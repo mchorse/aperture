@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import mchorse.aperture.utils.math.IValue;
 import mchorse.aperture.utils.math.MathBuilder;
+import mchorse.aperture.utils.math.Variable;
 
 public class TestMathBuilder
 {
@@ -12,12 +13,13 @@ public class TestMathBuilder
     public TestMathBuilder()
     {
         this.builder = new MathBuilder();
+        this.builder.variables.put("new", new Variable("new", 25));
     }
 
     @Test
     public void testBreakdownSymbols()
     {
-        List<Object> symbols = this.builder.breakdownChars("pow(2+2,5)-10*pi".split("(?!^)"));
+        List<Object> symbols = this.builder.breakdownChars("2+sin(pi-10-new)-new".split("(?!^)"));
 
         System.out.println(symbols);
     }
@@ -27,7 +29,7 @@ public class TestMathBuilder
     {
         try
         {
-            IValue value = this.builder.parse("2-5");
+            IValue value = this.builder.parse("2+sin(pi - 10 - new)-new");
 
             System.out.println(value.toString() + " = " + value.get());
         }
