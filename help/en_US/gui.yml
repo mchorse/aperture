@@ -28,6 +28,7 @@ aperture.gui:
         show_path: Show path
         sync: Sync (S)
         flight: Flight mode (F)
+        display_info: Display position
 
     tooltips:
         jump_next_fixture: Jump to next fixture (Shift + Right)
@@ -51,6 +52,7 @@ aperture.gui:
 
     editor:
         f1: Press F1 to show GUI again...
+        speed: Speed
 
     fixtures:
         idle: Idle
@@ -58,6 +60,24 @@ aperture.gui:
         look: Look
         follow: Follow
         circular: Circular
+        
+    modifiers:
+        title: Modifiers
+        select: Select camera fixture...
+        
+        shake: Shake
+        math: Math
+        look: Look
+        follow: Follow
+        translate: Translate
+        angle: Angle
+        orbit: Orbit
+        
+        panels:
+            copy_entity: Copy entity
+            
+            shake: Shake
+            shake_amount: Amount
 
     profiles:
         loaded: Loaded
@@ -68,6 +88,7 @@ aperture.gui:
         rename: Rename
 
     panels:
+        name: Name
         duration: Duration
 
         x: X

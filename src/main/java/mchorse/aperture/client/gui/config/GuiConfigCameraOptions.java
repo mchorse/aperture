@@ -50,7 +50,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.flight = new GuiCheckBox(-5, 0, 0, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled);
         this.flight.packedFGColour = 0xffffff;
 
-        this.displayPosition = new GuiCheckBox(-6, 0, 0, "Display position", this.editor.displayPosition);
+        this.displayPosition = new GuiCheckBox(-6, 0, 0, I18n.format("aperture.gui.config.display_info"), this.editor.displayPosition);
         this.displayPosition.packedFGColour = 0xffffff;
 
         this.buttons.add(this.spectator);

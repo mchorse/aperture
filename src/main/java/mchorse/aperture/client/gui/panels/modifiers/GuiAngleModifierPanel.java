@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 
 public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifier> implements ITrackpadListener
 {
@@ -18,16 +19,16 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
         super(modifier, modifiers, font);
 
         this.yaw = new GuiTrackpad(this, font);
-        this.yaw.title = "Yaw";
+        this.yaw.title = I18n.format("aperture.gui.panels.yaw");
 
         this.pitch = new GuiTrackpad(this, font);
-        this.pitch.title = "Pitch";
+        this.pitch.title = I18n.format("aperture.gui.panels.pitch");
 
         this.roll = new GuiTrackpad(this, font);
-        this.roll.title = "Roll";
+        this.roll.title = I18n.format("aperture.gui.panels.roll");
 
         this.fov = new GuiTrackpad(this, font);
-        this.fov.title = "FOV";
+        this.fov.title = I18n.format("aperture.gui.panels.fov");
     }
 
     @Override

@@ -59,6 +59,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     public static final Map<Class<? extends AbstractFixture>, IFixturePanel<? extends AbstractFixture>> PANELS = new HashMap<Class<? extends AbstractFixture>, IFixturePanel<? extends AbstractFixture>>();
 
+    /* Strings */
+    private String stringSpeed = I18n.format("aperture.gui.editor.speed");
+    private String stringX = I18n.format("aperture.gui.panels.x");
+    private String stringY = I18n.format("aperture.gui.panels.y");
+    private String stringZ = I18n.format("aperture.gui.panels.z");
+    private String stringYaw = I18n.format("aperture.gui.panels.yaw");
+    private String stringPitch = I18n.format("aperture.gui.panels.pitch");
+    private String stringRoll = I18n.format("aperture.gui.panels.roll");
+    private String stringFov = I18n.format("aperture.gui.panels.fov");
+
     /**
      * Currently editing camera profile
      */
@@ -740,23 +750,27 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.visible = !this.visible;
         }
 
-        if (keyCode == 1)
-        {
-            GuiIngameForge.renderHotbar = true;
-            GuiIngameForge.renderCrosshairs = true;
-            Minecraft.getMinecraft().gameSettings.hideGUI = false;
-
-            this.mc.displayGuiScreen((GuiScreen) null);
-
-            if (this.mc.currentScreen == null)
-            {
-                this.mc.setIngameFocus();
-            }
-        }
-
         if (!this.hasActiveTextfields())
         {
-            this.handleKeys(typedChar, keyCode);
+            if (keyCode == 1)
+            {
+                GuiIngameForge.renderHotbar = true;
+                GuiIngameForge.renderCrosshairs = true;
+                Minecraft.getMinecraft().gameSettings.hideGUI = false;
+
+                this.mc.displayGuiScreen((GuiScreen) null);
+
+                if (this.mc.currentScreen == null)
+                {
+                    this.mc.setIngameFocus();
+                }
+
+                return;
+            }
+            else
+            {
+                this.handleKeys(typedChar, keyCode);
+            }
         }
 
         if (!this.visible)
@@ -1096,7 +1110,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
                 Point point = pos.point;
                 Angle angle = pos.angle;
 
-                String[] labels = new String[] {"X: " + point.x, "Y: " + point.y, "Z: " + point.z, "Yaw: " + angle.yaw, "Pitch: " + angle.pitch, "Roll: " + angle.roll, "FOV: " + angle.fov};
+                String[] labels = new String[] {this.stringX + ": " + point.x, this.stringY + ": " + point.y, this.stringZ + ": " + point.z, this.stringYaw + ": " + angle.yaw, this.stringPitch + ": " + angle.pitch, this.stringRoll + ": " + angle.roll, this.stringFov + ": " + angle.fov};
                 int i = 6;
 
                 for (String label : labels)
@@ -1114,7 +1128,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             /* Display flight speed */
             if (this.flight.enabled)
             {
-                String speed = String.format("Speed: %.1f", this.flight.speed);
+                String speed = String.format(this.stringSpeed + ": %.1f", this.flight.speed);
                 int width = this.fontRendererObj.getStringWidth(speed);
                 int x = this.width - 10 - width;
                 int y = this.height - 30;

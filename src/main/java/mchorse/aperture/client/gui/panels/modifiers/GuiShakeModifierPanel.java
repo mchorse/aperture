@@ -6,6 +6,7 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 
 public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifier> implements ITrackpadListener
 {
@@ -21,9 +22,8 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         this.shakeAmount = new GuiTrackpad(this, font);
         this.active = new GuiActiveWidget();
 
-        /* TODO: extract strings */
-        this.shake.title = "Shake";
-        this.shakeAmount.title = "Amount";
+        this.shake.title = I18n.format("aperture.gui.modifiers.panels.shake");
+        this.shakeAmount.title = I18n.format("aperture.gui.modifiers.panels.shake_amount");
     }
 
     @Override

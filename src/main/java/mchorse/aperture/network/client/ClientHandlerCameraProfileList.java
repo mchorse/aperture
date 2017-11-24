@@ -1,5 +1,8 @@
 package mchorse.aperture.network.client;
 
+import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
@@ -25,6 +28,16 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
             }
 
             manager.scrollLoad.setSize(manager.destToLoad.size());
+
+            if (!ClientProxy.control.logged)
+            {
+                if (manager.destToLoad.isEmpty())
+                {
+                    ClientProxy.control.addProfile(new CameraProfile(AbstractDestination.create("default")));
+                }
+
+                ClientProxy.control.logged = true;
+            }
         }
     }
 }

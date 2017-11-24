@@ -43,6 +43,7 @@ public class GuiProfilesManager implements IGuiModule
     public boolean visible;
     public boolean showLoaded = true;
     public boolean rename = false;
+    public boolean error = false;
     public List<AbstractDestination> destToLoad = new ArrayList<AbstractDestination>();
 
     public GuiButton loaded;
@@ -99,6 +100,7 @@ public class GuiProfilesManager implements IGuiModule
         this.load.enabled = this.showLoaded;
 
         this.add.displayString = this.rename ? I18n.format("aperture.gui.profiles.rename") : I18n.format("aperture.gui.profiles.new");
+        this.name.setTextColor(0xffffff);
     }
 
     /**
@@ -136,7 +138,7 @@ public class GuiProfilesManager implements IGuiModule
                 {
                     int index = this.scrollLoaded.getIndex(mouseX, mouseY);
 
-                    if (index >= 0)
+                    if (index >= 0 && index < ClientProxy.control.profiles.size())
                     {
                         boolean isRename = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 60;
                         boolean isReverse = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 40;
@@ -175,13 +177,12 @@ public class GuiProfilesManager implements IGuiModule
 
                             this.name.setText(profile.getDestination().getFilename());
                             this.name.setCursorPositionZero();
+
+                            this.editor.selectProfile(ClientProxy.control.profiles.get(index));
                         }
                         else
                         {
-                            if (index >= 0 && index < ClientProxy.control.profiles.size())
-                            {
-                                this.editor.selectProfile(ClientProxy.control.profiles.get(index));
-                            }
+                            this.editor.selectProfile(ClientProxy.control.profiles.get(index));
                         }
                     }
                 }
@@ -209,13 +210,22 @@ public class GuiProfilesManager implements IGuiModule
 
         if (this.rename)
         {
-            this.editor.getProfile().getDestination().rename(text);
+            if (this.error)
+            {
+                return;
+            }
+
+            AbstractDestination dest = this.editor.getProfile().getDestination();
+
+            dest.rename(text);
+            dest.setFilename(text);
+
             this.rename = false;
             this.updateButtons();
         }
         else
         {
-            CameraProfile profile = new CameraProfile(new ServerDestination(text));
+            CameraProfile profile = new CameraProfile(AbstractDestination.create(text));
             ClientProxy.control.addProfile(profile);
 
             this.editor.selectProfile(profile);
@@ -257,11 +267,43 @@ public class GuiProfilesManager implements IGuiModule
         this.name.textboxKeyTyped(typedChar, keyCode);
 
         /* Canceling renaming */
-        if (this.rename && keyCode == Keyboard.KEY_ESCAPE)
+        if (this.rename)
         {
-            this.rename = false;
-            this.updateButtons();
-            this.name.setText("");
+            if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                this.rename = false;
+                this.updateButtons();
+                this.name.setText("");
+            }
+            else
+            {
+                this.updateRename();
+            }
+        }
+    }
+
+    private void updateRename()
+    {
+        this.name.setTextColor(0xffffff);
+        this.error = false;
+
+        CameraProfile profile = this.editor.getProfile();
+
+        if (profile != null)
+        {
+            String name = this.name.getText();
+            AbstractDestination profileDest = profile.getDestination();
+
+            for (AbstractDestination dest : this.destToLoad)
+            {
+                if (dest.getFilename().equals(name) && !dest.equals(profileDest))
+                {
+                    this.name.setTextColor(0xff2244);
+                    this.error = true;
+
+                    break;
+                }
+            }
         }
     }
 

@@ -22,6 +22,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 
 public class GuiModifiersManager
@@ -35,6 +36,10 @@ public class GuiModifiersManager
      * Current list of panels 
      */
     public List<GuiAbstractModifierPanel<AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<AbstractModifier>>();
+
+    /* Strings */
+    private String stringTitle = I18n.format("aperture.gui.modifiers.title");
+    private String stringSelect = I18n.format("aperture.gui.modifiers.select");
 
     /**
      * Fixture whose modifiers are getting managed 
@@ -378,7 +383,7 @@ public class GuiModifiersManager
         /* Background */
         Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + h, 0xaa000000);
         Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + 20, 0x88000000);
-        mc.fontRendererObj.drawStringWithShadow("Modifiers", this.area.x + 6, this.area.y + 7, 0xffffff);
+        mc.fontRendererObj.drawStringWithShadow(this.stringTitle, this.area.x + 6, this.area.y + 7, 0xffffff);
 
         this.add.drawButton(mc, mouseX, mouseY);
 
@@ -387,7 +392,7 @@ public class GuiModifiersManager
             int x = this.area.x + this.area.w / 2;
             int y = this.area.y + 28;
 
-            this.editor.drawCenteredString(mc.fontRendererObj, "Select camera fixture...", x, y, 0xcccccc);
+            this.editor.drawCenteredString(mc.fontRendererObj, this.stringSelect, x, y, 0xcccccc);
         }
         else if (h > 0)
         {

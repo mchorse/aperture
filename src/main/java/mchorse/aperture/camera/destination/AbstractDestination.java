@@ -1,6 +1,7 @@
 package mchorse.aperture.camera.destination;
 
 import mchorse.aperture.camera.CameraProfile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -24,6 +25,15 @@ public abstract class AbstractDestination
         }
 
         return new ServerDestination(resource.getResourcePath());
+    }
+
+    /**
+     * Create an abstract destination based on the game's state (i.e. 
+     * whether it's single or multiplayer game). 
+     */
+    public static AbstractDestination create(String filename)
+    {
+        return Minecraft.getMinecraft().isSingleplayer() ? new ServerDestination(filename) : new ClientDestination(filename);
     }
 
     /**
