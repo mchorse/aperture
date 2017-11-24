@@ -6,6 +6,7 @@ import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 
 public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 {
@@ -88,7 +89,7 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 
         if (!this.math.isFocused())
         {
-            GuiUtils.drawRightString(font, "Math", this.math.x + this.math.width - 4, this.math.y + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(font, I18n.format("aperture.gui.modifiers.math"), this.math.x + this.math.width - 4, this.math.y + 5, 0xffaaaaaa);
         }
     }
 }

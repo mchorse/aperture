@@ -163,13 +163,13 @@ public class ClientProxy extends CommonProxy
         GuiModifiersManager.PANELS.put(AngleModifier.class, GuiAngleModifierPanel.class);
         GuiModifiersManager.PANELS.put(OrbitModifier.class, GuiOrbitModifierPanel.class);
 
-        ModifierRegistry.registerClient(ShakeModifier.class, "Shake", new Color(0.085F, 0.62F, 0.395F));
-        ModifierRegistry.registerClient(MathModifier.class, "Math", new Color(0.408F, 0.128F, 0.681F));
-        ModifierRegistry.registerClient(LookModifier.class, "Look", new Color(0.298F, 0.690F, 0.972F));
-        ModifierRegistry.registerClient(FollowModifier.class, "Follow", new Color(0.85F, 0.137F, 0.329F));
-        ModifierRegistry.registerClient(TranslateModifier.class, "Translate", new Color(0.298F, 0.631F, 0.247F));
-        ModifierRegistry.registerClient(AngleModifier.class, "Angle", new Color(0.847F, 0.482F, 0.043F));
-        ModifierRegistry.registerClient(OrbitModifier.class, "Orbit", new Color(0.874F, 0.184F, 0.625F));
+        ModifierRegistry.registerClient(ShakeModifier.class, I18n.format("aperture.gui.modifiers.shake"), new Color(0.085F, 0.62F, 0.395F));
+        ModifierRegistry.registerClient(MathModifier.class, I18n.format("aperture.gui.modifiers.math"), new Color(0.408F, 0.128F, 0.681F));
+        ModifierRegistry.registerClient(LookModifier.class, I18n.format("aperture.gui.modifiers.look"), new Color(0.298F, 0.690F, 0.972F));
+        ModifierRegistry.registerClient(FollowModifier.class, I18n.format("aperture.gui.modifiers.follow"), new Color(0.85F, 0.137F, 0.329F));
+        ModifierRegistry.registerClient(TranslateModifier.class, I18n.format("aperture.gui.modifiers.translate"), new Color(0.298F, 0.631F, 0.247F));
+        ModifierRegistry.registerClient(AngleModifier.class, I18n.format("aperture.gui.modifiers.angle"), new Color(0.847F, 0.482F, 0.043F));
+        ModifierRegistry.registerClient(OrbitModifier.class, I18n.format("aperture.gui.modifiers.orbit"), new Color(0.874F, 0.184F, 0.625F));
 
         cameraEditor = new GuiCameraEditor(runner);
 

@@ -175,8 +175,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
 
         if (!this.name.isFocused())
         {
-            /* TODO: extract */
-            GuiUtils.drawRightString(this.font, "Name", this.name.x + this.name.width - 4, this.name.y + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.name"), this.name.x + this.name.width - 4, this.name.y + 5, 0xffaaaaaa);
         }
     }
 }

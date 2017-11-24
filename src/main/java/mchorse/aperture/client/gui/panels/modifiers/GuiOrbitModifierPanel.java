@@ -8,6 +8,7 @@ import mchorse.aperture.client.gui.utils.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifier> implements ITrackpadListener
@@ -25,13 +26,13 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
         super(modifier, modifiers, font);
 
         this.yaw = new GuiTrackpad(this, font);
-        this.yaw.title = "Yaw";
+        this.yaw.title = I18n.format("aperture.gui.panels.yaw");
         this.pitch = new GuiTrackpad(this, font);
-        this.pitch.title = "Pitch";
+        this.pitch.title = I18n.format("aperture.gui.panels.pitch");
         this.distance = new GuiTrackpad(this, font);
-        this.distance.title = "Distance";
+        this.distance.title = I18n.format("aperture.gui.panels.distance");
 
-        this.copy = new GuiCheckBox(0, 0, 0, "Copy entity", false);
+        this.copy = new GuiCheckBox(0, 0, 0, I18n.format("aperture.gui.modifiers.panels.copy_entity"), false);
         this.selector = new GuiTextField(0, font, 0, 0, 0, 0);
         this.selector.setMaxStringLength(500);
     }
@@ -151,7 +152,7 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
 
         if (!this.selector.isFocused())
         {
-            GuiUtils.drawRightString(font, "Selector", this.selector.x + this.selector.width - 4, this.selector.y + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.x + this.selector.width - 4, this.selector.y + 5, 0xffaaaaaa);
         }
     }
 }
