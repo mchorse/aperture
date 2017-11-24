@@ -7,6 +7,7 @@ import mchorse.aperture.client.gui.panels.IGuiModule;
 import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.resources.I18n;
 
 public class GuiActiveWidget implements IGuiModule
 {
@@ -16,13 +17,13 @@ public class GuiActiveWidget implements IGuiModule
 
     public GuiActiveWidget()
     {
-        this.labels.add("X");
-        this.labels.add("Y");
-        this.labels.add("Z");
-        this.labels.add("Yaw");
-        this.labels.add("Pitch");
-        this.labels.add("Roll");
-        this.labels.add("FOV");
+        this.labels.add(I18n.format("aperture.gui.panels.x"));
+        this.labels.add(I18n.format("aperture.gui.panels.y"));
+        this.labels.add(I18n.format("aperture.gui.panels.z"));
+        this.labels.add(I18n.format("aperture.gui.panels.yaw"));
+        this.labels.add(I18n.format("aperture.gui.panels.pitch"));
+        this.labels.add(I18n.format("aperture.gui.panels.roll"));
+        this.labels.add(I18n.format("aperture.gui.panels.fov"));
     }
 
     @Override
