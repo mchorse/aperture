@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 
 public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModifier>
 {
@@ -78,7 +79,7 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
 
         if (!this.selector.isFocused())
         {
-            GuiUtils.drawRightString(font, "Selector", this.selector.xPosition + this.selector.width - 4, this.selector.yPosition + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.xPosition + this.selector.width - 4, this.selector.yPosition + 5, 0xffaaaaaa);
         }
     }
 }

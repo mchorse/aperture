@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 
 public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<TranslateModifier> implements ITrackpadListener
 {
@@ -17,13 +18,13 @@ public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<Translat
         super(modifier, modifiers, font);
 
         this.x = new GuiTrackpad(this, font);
-        this.x.title = "X";
+        this.x.title = I18n.format("aperture.gui.panels.x");
 
         this.y = new GuiTrackpad(this, font);
-        this.y.title = "Y";
+        this.y.title = I18n.format("aperture.gui.panels.y");
 
         this.z = new GuiTrackpad(this, font);
-        this.z.title = "Z";
+        this.z.title = I18n.format("aperture.gui.panels.z");
     }
 
     @Override

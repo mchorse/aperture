@@ -7,6 +7,16 @@ aperture.commands:
             
             This command loads all chunks in render distance. It might take a while
     
+    # Aperture command
+    aperture:
+        help: 
+            |
+                {r}{o}Aperture server command{r}. This command can be used to make given player (by an entity selector) start playing camera profile.
+                
+                {l}{6}/{r}aperture {8}play{r} {7}<target|camera_profile> [camera_profile]{r}
+                
+                {r}If you pass only {7}<target|camera_profile>{r}, then the given camera profile will be played back on you. If you pass two arguments after {8}play{r}, then you would be able to specify both player (using username or target selector) and camera profile. 
+    
     # Camera's commands
     camera:
         help: "{r}{o}Camera command{r}. Provides sub-commands for managing camera profile and its camera fixtures."
