@@ -211,12 +211,14 @@ public class GuiProfilesManager implements IGuiModule
 
         if (this.rename)
         {
-            if (!this.error)
+            if (this.error)
             {
-                this.editor.getProfile().getDestination().rename(text);
-                this.rename = false;
-                this.updateButtons();
+                return;
             }
+
+            this.editor.getProfile().getDestination().rename(text);
+            this.rename = false;
+            this.updateButtons();
         }
         else
         {
