@@ -138,7 +138,7 @@ public class GuiProfilesManager implements IGuiModule
                 {
                     int index = this.scrollLoaded.getIndex(mouseX, mouseY);
 
-                    if (index >= 0)
+                    if (index >= 0 && index < ClientProxy.control.profiles.size())
                     {
                         boolean isRename = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 60;
                         boolean isReverse = mouseX - this.scrollLoaded.x >= this.scrollLoaded.w - 40;
@@ -177,13 +177,12 @@ public class GuiProfilesManager implements IGuiModule
 
                             this.name.setText(profile.getDestination().getFilename());
                             this.name.setCursorPositionZero();
+
+                            this.editor.selectProfile(ClientProxy.control.profiles.get(index));
                         }
                         else
                         {
-                            if (index >= 0 && index < ClientProxy.control.profiles.size())
-                            {
-                                this.editor.selectProfile(ClientProxy.control.profiles.get(index));
-                            }
+                            this.editor.selectProfile(ClientProxy.control.profiles.get(index));
                         }
                     }
                 }
@@ -216,14 +215,17 @@ public class GuiProfilesManager implements IGuiModule
                 return;
             }
 
-            this.editor.getProfile().getDestination().rename(text);
+            AbstractDestination dest = this.editor.getProfile().getDestination();
+
+            dest.rename(text);
+            dest.setFilename(text);
+
             this.rename = false;
             this.updateButtons();
         }
         else
         {
-            AbstractDestination dest = Minecraft.getMinecraft().isSingleplayer() ? new ServerDestination(text) : new ClientDestination(text);
-            CameraProfile profile = new CameraProfile(dest);
+            CameraProfile profile = new CameraProfile(AbstractDestination.create(text));
             ClientProxy.control.addProfile(profile);
 
             this.editor.selectProfile(profile);

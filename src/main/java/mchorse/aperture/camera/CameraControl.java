@@ -37,6 +37,12 @@ public class CameraControl
     public float roll = 0;
 
     /**
+     * Was player logged in. Used to add a default camera profile in a 
+     * new world.
+     */
+    public boolean logged;
+
+    /**
      * Reset camera profiles 
      */
     public void reset()
@@ -52,6 +58,7 @@ public class CameraControl
 
         this.profiles.clear();
         this.currentProfile = null;
+        this.logged = false;
     }
 
     /**
