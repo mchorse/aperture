@@ -43,6 +43,7 @@ public class GuiProfilesManager implements IGuiModule
     public boolean visible;
     public boolean showLoaded = true;
     public boolean rename = false;
+    public boolean error = false;
     public List<AbstractDestination> destToLoad = new ArrayList<AbstractDestination>();
 
     public GuiButton loaded;
@@ -99,6 +100,7 @@ public class GuiProfilesManager implements IGuiModule
         this.load.enabled = this.showLoaded;
 
         this.add.displayString = this.rename ? I18n.format("aperture.gui.profiles.rename") : I18n.format("aperture.gui.profiles.new");
+        this.name.setTextColor(0xffffff);
     }
 
     /**
@@ -209,13 +211,17 @@ public class GuiProfilesManager implements IGuiModule
 
         if (this.rename)
         {
-            this.editor.getProfile().getDestination().rename(text);
-            this.rename = false;
-            this.updateButtons();
+            if (!this.error)
+            {
+                this.editor.getProfile().getDestination().rename(text);
+                this.rename = false;
+                this.updateButtons();
+            }
         }
         else
         {
-            CameraProfile profile = new CameraProfile(new ServerDestination(text));
+            AbstractDestination dest = Minecraft.getMinecraft().isSingleplayer() ? new ServerDestination(text) : new ClientDestination(text);
+            CameraProfile profile = new CameraProfile(dest);
             ClientProxy.control.addProfile(profile);
 
             this.editor.selectProfile(profile);
@@ -257,11 +263,43 @@ public class GuiProfilesManager implements IGuiModule
         this.name.textboxKeyTyped(typedChar, keyCode);
 
         /* Canceling renaming */
-        if (this.rename && keyCode == Keyboard.KEY_ESCAPE)
+        if (this.rename)
         {
-            this.rename = false;
-            this.updateButtons();
-            this.name.setText("");
+            if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                this.rename = false;
+                this.updateButtons();
+                this.name.setText("");
+            }
+            else
+            {
+                this.updateRename();
+            }
+        }
+    }
+
+    private void updateRename()
+    {
+        this.name.setTextColor(0xffffff);
+        this.error = false;
+
+        CameraProfile profile = this.editor.getProfile();
+
+        if (profile != null)
+        {
+            String name = this.name.getText();
+            AbstractDestination profileDest = profile.getDestination();
+
+            for (AbstractDestination dest : this.destToLoad)
+            {
+                if (dest.getFilename().equals(name) && !dest.equals(profileDest))
+                {
+                    this.name.setTextColor(0xff2244);
+                    this.error = true;
+
+                    break;
+                }
+            }
         }
     }
 

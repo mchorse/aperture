@@ -740,23 +740,27 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.visible = !this.visible;
         }
 
-        if (keyCode == 1)
-        {
-            GuiIngameForge.renderHotbar = true;
-            GuiIngameForge.renderCrosshairs = true;
-            Minecraft.getMinecraft().gameSettings.hideGUI = false;
-
-            this.mc.displayGuiScreen((GuiScreen) null);
-
-            if (this.mc.currentScreen == null)
-            {
-                this.mc.setIngameFocus();
-            }
-        }
-
         if (!this.hasActiveTextfields())
         {
-            this.handleKeys(typedChar, keyCode);
+            if (keyCode == 1)
+            {
+                GuiIngameForge.renderHotbar = true;
+                GuiIngameForge.renderCrosshairs = true;
+                Minecraft.getMinecraft().gameSettings.hideGUI = false;
+
+                this.mc.displayGuiScreen((GuiScreen) null);
+
+                if (this.mc.currentScreen == null)
+                {
+                    this.mc.setIngameFocus();
+                }
+
+                return;
+            }
+            else
+            {
+                this.handleKeys(typedChar, keyCode);
+            }
         }
 
         if (!this.visible)
