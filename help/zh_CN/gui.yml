@@ -28,6 +28,7 @@ aperture.gui:
         show_path: 显示路径
         sync: 同步 (S)
         flight: 飞行模式 (F)
+        display_info: 显示位置
 
     tooltips:
         jump_next_fixture: 跳到下一个关键点 (Shift + 右)
@@ -38,17 +39,20 @@ aperture.gui:
 
         move_up: 将关键点向前移动
         move_duration: 将持续时间移动到光标 (M)
-        copy_position: 拷贝玩家的位置 (C)
+        copy_position: 拷贝玩家的位置 (B)
         move_down: 将关键点向后移动
 
-        save: 保存相机配置
+        save: 保存相机配置 (Ctrl+S)
         profiles: 显示相机配置
         config: 显示相机编辑器选项
+        modifiers: 打开调整器面板 (O)
+        goto: 前往指定的帧
         add: 添加关键点
         remove: 移除选择的关键点
 
     editor:
         f1: 请按F1来再次展示界面...
+        speed: 速度
 
     fixtures:
         idle: 静止
@@ -57,11 +61,31 @@ aperture.gui:
         follow: 跟着走
         circular: 环形
 
+    modifiers:
+        title: 调整器
+        select: 选择相机关键点......
+
+        shake: 摇晃
+        math: 数学
+        look: 看
+        follow: 跟踪
+        translate: 翻译
+        angle: 角度
+        orbit: 轨道
+
+        panels:
+            copy_entity: 复制实体
+
+            shake: 摇晃
+            shake_amount: 数量值
+
     profiles:
         loaded: 已加载
         load: 加载
         new: 新建
         tooltip: 新相机名称
+        rename_profile: 重命名配置
+        rename: 重命名
 
     panels:
         duration: 持续长度

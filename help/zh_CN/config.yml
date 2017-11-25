@@ -12,10 +12,12 @@ aperture.config:
         camera_step_factor: 相机路径参数
         camera_rotate_factor: 相机倾斜参数
         camera_minema: Minema
-        camera_smooth_clamp: 修剪相机俯仰程度
         camera_path_default_interp: 默认插入路径类型
         camera_command_name: 相机命令名称
         camera_simulate_velocity: 模拟速率
+        camera_first_tick_zero: 第一帧为0
+        camera_debug_ticks: Debug ticks
+        camera_profile_render: 渲染相机配置
 
         gui_render_mouse: 在GUI中渲染出鼠标指针
 
