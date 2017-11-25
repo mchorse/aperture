@@ -18,6 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameType;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -151,9 +152,12 @@ public class KeyboardHandler
     @SubscribeEvent
     public void onKey(InputEvent.KeyInputEvent event)
     {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = this.mc.thePlayer;
 
-        if (ClientProxy.runner.getGameMode(player) == GameType.ADVENTURE)
+        /* Checking whether player is in ReplayMod's replay world */
+        boolean isReplayMod = this.mc.getCurrentServerData() == null && this.mc.theWorld != null && Loader.isModLoaded("replaymod");
+
+        if (ClientProxy.runner.getGameMode(player) == GameType.ADVENTURE || isReplayMod)
         {
             return;
         }
