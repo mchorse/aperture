@@ -1,27 +1,29 @@
 ![Aperture](https://i.imgur.com/Wras78u.png)
 
-[Planet Minecraft page](https://www.planetminecraft.com/mod/aperture-3978432/) – [Minecraft Forum thread](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2837982-aperture-an-advanced-camera-mod) – [CurseForge page](https://minecraft.curseforge.com/projects/aperture) – [Source code](https://github.com/mchorse/aperture) 
+[Planet Minecraft page](https://www.planetminecraft.com/mod/aperture-3978432/) – [Minecraft Forum thread](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2837982-aperture-an-advanced-camera-mod) – [CurseForge page](https://minecraft.curseforge.com/projects/aperture) – [Source code](https://github.com/mchorse/aperture) – [Wiki](https://github.com/mchorse/aperture/wiki) 
 
-**Aperture** is a Minecraft mod which allows you to create cinematics using GUI (or commands). It works with Forge for Minecraft 1.10.2, 1.11.2 and 1.12. 
+**Disclaimer**: this mod has nothing to do with Aperture Science from Portal games.
 
-Aperture's features are fully frame based, which allows you to record smooth footage using [Minema](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2790594-minema-unofficial-the-smooth-movie-recorder) mod. 
+**Aperture** is a Minecraft mod which allows you to create advanced camera movement (for cinematics or machinimas) using camera editor GUI. It works with Forge for Minecraft 1.10.2, 1.11.2 and 1.12.
 
-Here are some features which makes Aperture different from other camera mods:
+## Features
 
-* Camera profiles can be saved and loaded from config folder or the server (if the mod is installed).
-* Provides different camera behavior blocks (which are known as camera fixtures):
-    * Idle fixture – does nothing, just locks the camera
+**Aperture** mod provides a lot of features for flexible camera editing.
+
+* **Loadable and saveable camera profiles**. You don't need to worry about losing your camera setup. With Aperture's camera profiles, you can save your camera setup on the server (if the Aperture is installed on the server) or on the client (in `config/aperture/cameras` folder).
+* **Duration is measured in ticks**. A tick is basically an update in game's logic. Minecraft's logic loop running at 20 ticks per second. Why ticks? They're static, while frames depend on framerate, while can be easily converted into seconds.
+* **Flexible camera setup with multiple camera fixtures within camera profile**. Other camera mods usually gives you an ability to setup only one path at the time. Aperture allows you to have as much camera paths as you need to within same camera profile. There are few types of camera fixtures in Aperture: 
+    * Idle fixture – static camera
     * Path fixture – animates the camera through a set of points using one of the three interpolations: linear, cubic or hermite
-    * Look fixture – locks the camera at given position, and follows given entity (using entity selector) by looking at it
+    * Look fixture – locks the camera at given position, and looks at given entity (using entity selector)
     * Follow fixture – locks the camera relatively to the given entity (kind of like GoPro but fixed)
     * Circular fixture – circulate around the center point and facing at it
-* Provides a GUI which eases camera profile and fixtures editing a lot. There is also command interface, if needed.
-* Playback duration is measured in **ticks**, instead of frames or milliseconds, which makes editing more consistent. Tick is a unit which is in the middle between frames and milliseconds. They don't depend on the frame rate in the settings, meanwhile also can be easily converted to seconds. There are about 20 ticks per a second (depends on the lag).
-* Provides a smooth camera which is basically an analogue of vanilla cinematic camera, but Minema friendly.
+* **More camera perks with camera modifiers**. Camera modifiers are modular blocks which post-process camera fixture's output. You can add as much camera modifiers to a camera fixture. With these modifiers, you can add camera shake, apply math equation, make a GoPro-like behavior, look at given entity meanwhile traversing a path, and more. See [wiki](https://github.com/mchorse/aperture/wiki) for more information.
+* **Provides a smooth camera** as a Minema-friendly analogue of vanilla cinematic camera.
 
 ## Videos
 
-There is a playlist of videos which are about Aperture. At the moment of public release, there are two videos: mod's teaser and mod's tutorial.
+This playlist contains a list of videos about Aperture's updates and tutorials.
 
 <a href="https://youtu.be/y7-WsAq6Vlg?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/y7-WsAq6Vlg/0.jpg"></a> 
 
