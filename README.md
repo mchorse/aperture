@@ -19,7 +19,7 @@
     * Follow fixture – locks the camera relatively to the given entity (kind of like GoPro but fixed)
     * Circular fixture – circulate around the center point and facing at it
 * **More camera perks with camera modifiers**. Camera modifiers are modular blocks which post-process camera fixture's output. You can add as much camera modifiers to a camera fixture. With these modifiers, you can add camera shake, apply math equation, make a GoPro-like behavior, look at given entity meanwhile traversing a path, and more. See [wiki](https://github.com/mchorse/aperture/wiki) for more information.
-* **Provides a smooth camera** as a Minema-friendly analogue of vanilla cinematic camera.
+* **Provides a smooth camera** as a Minema-friendly alternative of vanilla cinematic camera.
 
 ## Videos
 
