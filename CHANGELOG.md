@@ -2,6 +2,33 @@
 
 Aperture's change log.
 
+## Aperture 1.1
+
+This update fixes a lot of issues and adds few features to camera editor, and introduces camera modifiers. Camera modifiers are special camera behavior modifiers which can be added to camera fixtures. They can process fixture's output in a lot of different ways like shaking camera, looking or following an entity (while still be in the path), apply math formulas and much more!
+
+* Added a camera option in camera editor to display camera properties (during camera playback or sync mode)
+* Added a trackpad field to change current frame in the camera editor 
+* Added `/aperture play` command (which can be used to force play a camera profile on the server side)
+* Added camera modifiers
+    * Shake modifier – can apply different kinds of shake to the camera
+    * Math modifier – allows users to specify a math equation which will modify camera based on that equation
+    * Look modifier – just like look fixture, but as modifier
+    * Follow modifier – just like follow fixture, but as modifier
+    * Translate modifier – translates the fixture by XYZ
+    * Angle modifier – modify the angle
+    * Orbit modifier – revolves around given entity, can also copy entity's rotation
+* Added `default` camera profile to camera editor for easier setup
+* Added rewind (going to `0` frame) when camera playback reaches the end
+* Added renaming of camera profiles in profile manager
+* Added `Ctrl + S` saving shortcut to camera editor
+* Changed color of highlighted point to a darker shade
+* Fixed CFM mirror camera orientation problem
+* Fixed scrubbing event not getting sent when pressing points in path fixture
+* Fixed server camera profiles not getting loaded into current camera editor camera profile
+* Fixed the way camera playback was working (it was fundamentally wrong)
+* Refactored camera fixture and modifier registration (modders can use an API to add their own fixtures or modifiers)
+* Switched camera profile rendering to a config option
+
 ## Aperture 1.0.1
 
 This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.
