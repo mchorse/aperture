@@ -145,4 +145,4 @@ aperture.commands:
                 |
                     {l}{6}/{r}camera path {8}remove{r} {7}<index> <point_index>{r}
 
-                    {r}在路径索引号 {7}<index>{r} 的路径里移除路径点索引号 {7}<point_index){r}。
+                    {r}在路径索引号 {7}<index>{r} 的路径里移除路径点索引号 {7}<point_index>{r}。
