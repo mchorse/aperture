@@ -78,6 +78,9 @@ aperture.gui:
             
             shake: Shake
             shake_amount: Amount
+            
+            relative: Relative?
+            at_block: Look at block?
 
     profiles:
         loaded: Loaded

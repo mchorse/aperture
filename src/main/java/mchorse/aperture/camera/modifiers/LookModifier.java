@@ -1,5 +1,8 @@
 package mchorse.aperture.camera.modifiers;
 
+import com.google.gson.annotations.Expose;
+
+import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import net.minecraft.util.math.MathHelper;
@@ -12,6 +15,15 @@ import net.minecraft.util.math.MathHelper;
  */
 public class LookModifier extends EntityModifier
 {
+    @Expose
+    public boolean relative;
+
+    @Expose
+    public boolean atBlock;
+
+    @Expose
+    public Point block = new Point(0, 0, 0);
+
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
     {
@@ -20,16 +32,29 @@ public class LookModifier extends EntityModifier
             this.tryFindingEntity();
         }
 
-        if (this.entity == null)
+        if (this.entity == null && !this.atBlock)
         {
             return;
         }
 
         fixture.applyFixture(0, 0, this.position);
 
-        double x = (this.entity.lastTickPosX + (this.entity.posX - this.entity.lastTickPosX) * partialTick);
-        double y = (this.entity.lastTickPosY + (this.entity.posY - this.entity.lastTickPosY) * partialTick);
-        double z = (this.entity.lastTickPosZ + (this.entity.posZ - this.entity.lastTickPosZ) * partialTick);
+        double x = 0;
+        double y = 0;
+        double z = 0;
+
+        if (this.atBlock)
+        {
+            x = this.block.x;
+            y = this.block.y;
+            z = this.block.z;
+        }
+        else
+        {
+            x = this.entity.lastTickPosX + (this.entity.posX - this.entity.lastTickPosX) * partialTick;
+            y = this.entity.lastTickPosY + (this.entity.posY - this.entity.lastTickPosY) * partialTick;
+            z = this.entity.lastTickPosZ + (this.entity.posZ - this.entity.lastTickPosZ) * partialTick;
+        }
 
         double dX = x - pos.point.x;
         double dY = y - pos.point.y;
@@ -39,8 +64,11 @@ public class LookModifier extends EntityModifier
         float yaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
         float pitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));
 
-        yaw += pos.angle.yaw - this.position.angle.yaw;
-        pitch += pos.angle.pitch - this.position.angle.pitch;
+        if (this.relative)
+        {
+            yaw += pos.angle.yaw - this.position.angle.yaw;
+            pitch += pos.angle.pitch - this.position.angle.pitch;
+        }
 
         pos.angle.set(yaw, pitch);
     }
