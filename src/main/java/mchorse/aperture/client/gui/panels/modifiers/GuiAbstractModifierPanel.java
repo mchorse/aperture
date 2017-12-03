@@ -69,6 +69,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
         {
             this.modifier.enabled = !this.modifier.enabled;
             this.updateEnable();
+            this.modifiers.editor.updateProfile();
         }
 
         if (this.remove.mousePressed(mc, mouseX, mouseY))
