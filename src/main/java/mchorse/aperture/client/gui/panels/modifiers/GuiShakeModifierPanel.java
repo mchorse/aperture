@@ -72,7 +72,14 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         this.shakeAmount.mouseClicked(mouseX, mouseY, mouseButton);
         this.active.mouseClicked(mouseX, mouseY, mouseButton);
 
+        byte active = this.modifier.active;
+
         this.modifier.active = this.active.value;
+
+        if (active != this.modifier.active)
+        {
+            this.modifiers.editor.updateProfile();
+        }
     }
 
     @Override

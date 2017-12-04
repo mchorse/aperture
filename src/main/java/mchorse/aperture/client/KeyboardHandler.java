@@ -1,5 +1,7 @@
 package mchorse.aperture.client;
 
+import java.lang.reflect.Field;
+
 import org.lwjgl.input.Keyboard;
 
 import mchorse.aperture.Aperture;
@@ -22,6 +24,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,6 +38,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class KeyboardHandler
 {
+    /**
+     * Whether it's in replay 
+     */
+    public static boolean inReplay;
+
     private Minecraft mc = Minecraft.getMinecraft();
 
     /* Camera profile keys */
@@ -68,6 +76,30 @@ public class KeyboardHandler
     /* Misc. */
     private KeyBinding cameraEditor;
     private KeyBinding smoothCamera;
+
+    /**
+     * Check whether ReplayMod's replay is currently running 
+     */
+    public static boolean checkReplayWorld()
+    {
+        try
+        {
+            Class replayMod = Class.forName("com.replaymod.replay.ReplayModReplay");
+            Field replayField = replayMod.getField("instance");
+            Field replayHandlerField = replayMod.getDeclaredField("replayHandler");
+
+            replayHandlerField.setAccessible(true);
+
+            if (replayHandlerField.get(replayField.get(null)) != null)
+            {
+                return true;
+            }
+        }
+        catch (Exception e)
+        {}
+
+        return false;
+    }
 
     /**
      * Create and register key bindings for mod
@@ -141,9 +173,23 @@ public class KeyboardHandler
     }
 
     @SubscribeEvent
+    public void onUserLogIn(ClientConnectedToServerEvent event)
+    {
+        if (Loader.isModLoaded("replaymod"))
+        {
+            inReplay = checkReplayWorld();
+        }
+    }
+
+    @SubscribeEvent
     public void onUserLogOut(ClientDisconnectionFromServerEvent event)
     {
         ClientProxy.control.reset();
+
+        if (Loader.isModLoaded("replaymod"))
+        {
+            inReplay = false;
+        }
     }
 
     /**
@@ -155,7 +201,7 @@ public class KeyboardHandler
         EntityPlayer player = this.mc.player;
 
         /* Checking whether player is in ReplayMod's replay world */
-        boolean isReplayMod = this.mc.getCurrentServerData() == null && this.mc.world != null && Loader.isModLoaded("replaymod");
+        boolean isReplayMod = inReplay;
 
         if (ClientProxy.runner.getGameMode(player) == GameType.ADVENTURE || isReplayMod)
         {

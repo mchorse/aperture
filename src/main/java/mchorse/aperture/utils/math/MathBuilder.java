@@ -44,8 +44,8 @@ public class MathBuilder
     public MathBuilder()
     {
         /* Some default values */
-        this.register(new Variable("pi", Math.PI));
-        this.register(new Variable("e", Math.E));
+        this.register(new Variable("PI", Math.PI));
+        this.register(new Variable("E", Math.E));
 
         /* Some default functions */
         this.functions.put("abs", Abs.class);
@@ -368,7 +368,13 @@ public class MathBuilder
                 }
                 else
                 {
-                    return this.variables.get(symbol);
+                    IValue value = this.variables.get(symbol);
+
+                    /* Avoid NPE */
+                    if (value != null)
+                    {
+                        return value;
+                    }
                 }
             }
         }

@@ -166,6 +166,7 @@ public class GuiModifiersManager
                 this.panels.add(panel);
 
                 this.area.scrollSize += panel.getHeight();
+                this.editor.updateProfile();
             }
             catch (Exception e)
             {
@@ -195,6 +196,7 @@ public class GuiModifiersManager
         this.panels.add(to, this.panels.remove(index));
         modifiers.add(to, modifiers.remove(index));
         this.recalcPanels();
+        this.editor.updateProfile();
         this.modified = true;
     }
 
@@ -205,6 +207,7 @@ public class GuiModifiersManager
 
         this.recalcPanels();
         this.area.clamp();
+        this.editor.updateProfile();
         this.modified = true;
     }
 
@@ -245,7 +248,7 @@ public class GuiModifiersManager
 
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (mouseX >= this.area.x + this.area.w - 5 && this.area.scrollSize > this.area.h)
+        if (this.area.isInside(mouseX, mouseY) && mouseX >= this.area.x + this.area.w - 5 && this.area.scrollSize > this.area.h)
         {
             this.area.dragging = true;
 
