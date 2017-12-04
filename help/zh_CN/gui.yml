@@ -78,6 +78,9 @@ aperture.gui:
 
             shake: 摇晃
             shake_amount: 数量值
+            
+            relative: 父级？
+            at_block: 看着方块？
 
     profiles:
         loaded: 已加载

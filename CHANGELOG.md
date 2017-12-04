@@ -6,6 +6,8 @@ Aperture's change log.
 
 This update fixes a lot of issues and adds few features to camera editor, and introduces camera modifiers. Camera modifiers are special camera behavior modifiers which can be added to camera fixtures. They can process fixture's output in a lot of different ways like shaking camera, looking or following an entity (while still be in the path), apply math formulas and much more!
 
+<a href="https://youtu.be/dKmurdnlj1A"><img src="https://img.youtube.com/vi/dKmurdnlj1A/0.jpg"></a> 
+
 * Added a camera option in camera editor to display camera properties (during camera playback or sync mode)
 * Added a trackpad field to change current frame in the camera editor 
 * Added `/aperture play` command (which can be used to force play a camera profile on the server side)

@@ -60,6 +60,7 @@ public class OrbitModifier extends EntityModifier
 
         float yaw = 0;
         float pitch = 0;
+        float distance = this.distance;
 
         /* Copy entity's yaw and pitch */
         if (this.copy)
@@ -75,12 +76,23 @@ public class OrbitModifier extends EntityModifier
             }
         }
 
-        /* Add relative and stored yaw and pitch */
-        yaw += this.yaw;
-        pitch += this.pitch;
+        float oldYaw = yaw;
 
+        /* Add relative and stored yaw, pitch and distance */
+        yaw += this.yaw;
         yaw += pos.angle.yaw - this.position.angle.yaw;
+
+        if (this.copy)
+        {
+            double factor = Math.abs((Math.abs(oldYaw - yaw) % 360) / 360 - 0.5) * 4 - 1;
+
+            pitch *= factor;
+        }
+
+        pitch += this.pitch;
         pitch += pos.angle.pitch - this.position.angle.pitch;
+
+        distance += pos.point.z - this.position.point.z;
 
         /* Calculate entity's position */
         float x = (float) (this.entity.lastTickPosX + (this.entity.posX - this.entity.lastTickPosX) * partialTick);
@@ -99,9 +111,9 @@ public class OrbitModifier extends EntityModifier
         pos.point.set(x, y, z);
 
         /* Add to entity's position orbit offset */
-        x += look.xCoord * this.distance;
-        y += look.yCoord * this.distance;
-        z += look.zCoord * this.distance;
+        x += look.xCoord * distance;
+        y += look.yCoord * distance;
+        z += look.zCoord * distance;
 
         /* Look at the origin */
         double dX = pos.point.x - x;

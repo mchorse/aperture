@@ -368,7 +368,13 @@ public class MathBuilder
                 }
                 else
                 {
-                    return this.variables.get(symbol);
+                    IValue value = this.variables.get(symbol);
+
+                    /* Avoid NPE */
+                    if (value != null)
+                    {
+                        return value;
+                    }
                 }
             }
         }

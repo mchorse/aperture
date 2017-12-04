@@ -804,7 +804,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
      */
     private boolean hasActiveTextfields()
     {
-        return this.profiles.hasAnyActiveTextfields() || this.modifiers.hasActiveTextfields() || (this.fixturePanel != null && this.fixturePanel.hasActiveTextfields());
+        return this.profiles.hasAnyActiveTextfields() || this.modifiers.hasActiveTextfields() || (this.fixturePanel != null && this.fixturePanel.hasActiveTextfields()) || this.frame.text.isFocused();
     }
 
     /**
@@ -1141,6 +1141,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             {
                 this.scrub.value = (int) this.runner.ticks;
                 this.scrub.value = MathHelper.clamp(this.scrub.value, this.scrub.min, this.scrub.max);
+                this.frame.setValue(this.scrub.value);
             }
 
             if (!running && this.playing)
