@@ -76,12 +76,22 @@ public class OrbitModifier extends EntityModifier
             }
         }
 
-        yaw += this.yaw;
-        pitch += this.pitch;
+        float oldYaw = yaw;
 
         /* Add relative and stored yaw, pitch and distance */
+        yaw += this.yaw;
         yaw += pos.angle.yaw - this.position.angle.yaw;
+
+        if (this.copy)
+        {
+            double factor = Math.abs((Math.abs(oldYaw - yaw) % 360) / 360 - 0.5) * 4 - 1;
+
+            pitch *= factor;
+        }
+
+        pitch += this.pitch;
         pitch += pos.angle.pitch - this.position.angle.pitch;
+
         distance += pos.point.z - this.position.point.z;
 
         /* Calculate entity's position */

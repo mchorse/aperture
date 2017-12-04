@@ -315,21 +315,21 @@ public class PathFixture extends AbstractFixture
         /* Interpolating the angle */
         if (this.interpolationAngle.equals(InterpolationType.CUBIC))
         {
-            yaw = Interpolations.cubicYaw(p0.angle.yaw, p1.angle.yaw, p2.angle.yaw, p3.angle.yaw, progress);
+            yaw = Interpolations.cubic(p0.angle.yaw, p1.angle.yaw, p2.angle.yaw, p3.angle.yaw, progress);
             pitch = Interpolations.cubic(p0.angle.pitch, p1.angle.pitch, p2.angle.pitch, p3.angle.pitch, progress);
             roll = Interpolations.cubic(p0.angle.roll, p1.angle.roll, p2.angle.roll, p3.angle.roll, progress);
             fov = Interpolations.cubic(p0.angle.fov, p1.angle.fov, p2.angle.fov, p3.angle.fov, progress);
         }
         else if (this.interpolationAngle.equals(InterpolationType.HERMITE))
         {
-            yaw = (float) Interpolations.cubicHermiteYaw(p0.angle.yaw, p1.angle.yaw, p2.angle.yaw, p3.angle.yaw, progress);
+            yaw = (float) Interpolations.cubicHermite(p0.angle.yaw, p1.angle.yaw, p2.angle.yaw, p3.angle.yaw, progress);
             pitch = (float) Interpolations.cubicHermite(p0.angle.pitch, p1.angle.pitch, p2.angle.pitch, p3.angle.pitch, progress);
             roll = (float) Interpolations.cubicHermite(p0.angle.roll, p1.angle.roll, p2.angle.roll, p3.angle.roll, progress);
             fov = (float) Interpolations.cubicHermite(p0.angle.fov, p1.angle.fov, p2.angle.fov, p3.angle.fov, progress);
         }
         else
         {
-            yaw = Interpolations.lerpYaw(p1.angle.yaw, p2.angle.yaw, progress);
+            yaw = Interpolations.lerp(p1.angle.yaw, p2.angle.yaw, progress);
             pitch = Interpolations.lerp(p1.angle.pitch, p2.angle.pitch, progress);
             roll = Interpolations.lerp(p1.angle.roll, p2.angle.roll, progress);
             fov = Interpolations.lerp(p1.angle.fov, p2.angle.fov, progress);
