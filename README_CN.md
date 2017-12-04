@@ -25,7 +25,7 @@
 
 这是一个关于Aperture的播放列表，内含更新和教程。（由Noble团队制作的[中文教程](http://www.bilibili.com/video/av15303499/)不代表McHorse观点）
 
-<a href="https://youtu.be/y7-WsAq6Vlg?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/y7-WsAq6Vlg/0.jpg"></a>
+<a href="https://youtu.be/dKmurdnlj1A?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/dKmurdnlj1A/0.jpg"></a>
 
 ## 安装
 
