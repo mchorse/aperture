@@ -10,10 +10,13 @@ import mchorse.aperture.network.common.PacketCameraProfileList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketCameraProfileList>
 {
     @Override
+    @SideOnly(Side.CLIENT)
     public void run(EntityPlayerSP player, PacketCameraProfileList message)
     {
         GuiScreen current = Minecraft.getMinecraft().currentScreen;
