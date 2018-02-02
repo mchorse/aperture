@@ -293,7 +293,7 @@ public class CameraRunner
 
                 if (dx * dx + dy * dy + dz * dz >= 10 * 10)
                 {
-                    this.mc.thePlayer.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                    this.mc.thePlayer.sendChatMessage("/minecraft:tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
                 }
             }
 
