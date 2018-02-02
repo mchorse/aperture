@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
  *
  * This mod provides a lot of tools related to camera.
  */
-@Mod(modid = Aperture.MODID, name = Aperture.MODNAME, version = Aperture.VERSION, guiFactory = Aperture.GUI_FACTORY, updateJSON = "https://raw.githubusercontent.com/ycwei982/aperture/master/version.json")
+@Mod(modid = Aperture.MODID, name = Aperture.MODNAME, version = Aperture.VERSION, guiFactory = Aperture.GUI_FACTORY, updateJSON = "https://raw.githubusercontent.com/mchorse/aperture/master/version.json")
 public class Aperture
 {
     /* Mod info */
