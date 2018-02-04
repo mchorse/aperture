@@ -3,20 +3,20 @@ aperture.info:
     camera:
         duration:
             fixture: "{f}在索引 %s{f} 的相机关键点持续时长为 %s{f} ticks。"
-            profile: "{f}摄像机配置时长为%s{f} ticks，并且有%s{f}个关键点。"
-        
+            profile: "{f}摄像机配置时长为 %s{f} ticks，并且有 %s{f} 个关键点。"
+
         # Camera roll and fov
-        fov: "{f}你的FOV为%s{f}度。"
-        roll: "{f}你的倾斜度为%s{f}度。"
-    
+        fov: "{f}你的 FOV 为 %s{f} 度。"
+        roll: "{f}你的倾斜度为 %s{f} 度。"
+
     # General command infos
     commands:
         load_chunks: "{f}已加载在渲染范围里的已创建区块。"
-        
+
         replace_texture: "{f}材质 %s{f} 已被材质 %s{f} 替换。"
         restore_texture: "{f}材质 %s{f} 已经还原为初始状态。"
 
-    
+
     # Camera profile
     profile:
         new: "{f}已创建一个新的相机配置文件，命名为 %s{f}。"
