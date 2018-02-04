@@ -293,8 +293,16 @@ public class CameraRunner
 
                 if (dx * dx + dy * dy + dz * dz >= 10 * 10)
                 {
-                    this.mc.thePlayer.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
-                    this.mc.thePlayer.sendChatMessage("/tppos " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                    /* Make it compatible with Essentials plugin, which replaced the native /tp command */
+                    if(Aperture.proxy.config.minecrafttp_teleport)
+                    {
+                        this.mc.thePlayer.sendChatMessage("/minecraft:tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                    }
+                    if(Aperture.proxy.config.tp_teleport)
+                    {
+                        this.mc.thePlayer.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                    }
+
                 }
             }
 

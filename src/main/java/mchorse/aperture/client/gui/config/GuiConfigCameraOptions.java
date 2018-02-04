@@ -20,6 +20,8 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     public GuiCheckBox sync;
     public GuiCheckBox flight;
     public GuiCheckBox displayPosition;
+    public GuiCheckBox minecrafttpTeleport;
+    public GuiCheckBox tpTeleport;
 
     public int max;
     public int x;
@@ -58,6 +60,19 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.buttons.add(this.sync);
         this.buttons.add(this.flight);
         this.buttons.add(this.displayPosition);
+
+        /* Show two tp commands' options if in multiplayer */
+        if (!Minecraft.getMinecraft().isSingleplayer())
+        {
+            this.minecrafttpTeleport = new GuiCheckBox(-7, 0, 0, I18n.format("aperture.gui.config.minecrafttp_teleport"), Aperture.proxy.config.minecrafttp_teleport);
+            this.minecrafttpTeleport.packedFGColour = 0xffffff;
+
+            this.tpTeleport = new GuiCheckBox(-8, 0, 0, I18n.format("aperture.gui.config.tp_teleport"), Aperture.proxy.config.tp_teleport);
+            this.tpTeleport.packedFGColour = 0xffffff;
+
+            this.buttons.add(this.minecrafttpTeleport);
+            this.buttons.add(this.tpTeleport);
+        }
 
         for (GuiButton button : this.buttons.buttons)
         {
@@ -103,6 +118,12 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.sync.setIsChecked(this.editor.syncing);
         this.flight.setIsChecked(this.editor.flight.enabled);
         this.displayPosition.setIsChecked(this.editor.displayPosition);
+
+        if (this.minecrafttpTeleport != null)
+        {
+            this.minecrafttpTeleport.setIsChecked(Aperture.proxy.config.minecrafttp_teleport);
+            this.tpTeleport.setIsChecked(Aperture.proxy.config.tp_teleport);
+        }
     }
 
     @Override
@@ -149,6 +170,20 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         else if (id == -6)
         {
             this.editor.displayPosition = !this.editor.displayPosition;
+        }
+        else if (id == -7)
+        {
+            Property prop = Aperture.proxy.forge.getCategory("camera").get("minecrafttp_teleport");
+
+            prop.set(this.minecrafttpTeleport.isChecked());
+            save = true;
+        }
+        else if (id == -8)
+        {
+            Property prop = Aperture.proxy.forge.getCategory("camera").get("tp_teleport");
+
+            prop.set(this.tpTeleport.isChecked());
+            save = true;
         }
 
         if (save)
