@@ -30,7 +30,7 @@ public class CameraRunner
     private Minecraft mc = Minecraft.getMinecraft();
 
     /**
-     * FOV used before camera playback 
+     * FOV used before camera playback
      */
     private float fov = 70.0F;
 
@@ -40,37 +40,37 @@ public class CameraRunner
     private GameType gameMode = GameType.NOT_SET;
 
     /**
-     * Whether it's first tick during the playback 
+     * Whether it's first tick during the playback
      */
     private boolean firstTick = false;
 
     /**
-     * Is camera runner waits for 0.0 partial tick 
+     * Is camera runner waits for 0.0 partial tick
      */
     private boolean firstTickZero = false;
 
     /**
-     * Whether partial tick 0.0 was detected 
+     * Whether partial tick 0.0 was detected
      */
     private boolean firstTickZeroStart = false;
 
     /**
-     * Is camera runner running? 
+     * Is camera runner running?
      */
     private boolean isRunning = false;
 
     /**
-     * The duration of camera profile 
+     * The duration of camera profile
      */
     private long duration;
 
     /**
-     * Camera profile which is getting currently played 
+     * Camera profile which is getting currently played
      */
     private CameraProfile profile;
 
     /**
-     * Position used to apply fixtures and modifiers upon 
+     * Position used to apply fixtures and modifiers upon
      */
     private Position position = new Position(0, 0, 0, 0, 0);
 
@@ -110,7 +110,7 @@ public class CameraRunner
     }
 
     /**
-     * Start the profile runner from the first tick 
+     * Start the profile runner from the first tick
      */
     public void start(CameraProfile profile)
     {
@@ -157,7 +157,7 @@ public class CameraRunner
     }
 
     /**
-     * Get game mode of the given player 
+     * Get game mode of the given player
      */
     public GameType getGameMode(EntityPlayer player)
     {
@@ -167,7 +167,7 @@ public class CameraRunner
     }
 
     /**
-     * Stop playback of camera profile 
+     * Stop playback of camera profile
      */
     public void stop()
     {
@@ -293,7 +293,16 @@ public class CameraRunner
 
                 if (dx * dx + dy * dy + dz * dz >= 10 * 10)
                 {
-                    this.mc.player.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                    /* Make it compatible with Essentials plugin, which replaced the native /tp command */
+                    if (Aperture.proxy.config.minecrafttp_teleport)
+                    {
+                        this.mc.player.sendChatMessage("/minecraft:tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                    }
+
+                    if (Aperture.proxy.config.tp_teleport)
+                    {
+                        this.mc.player.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
+                    }
                 }
             }
 
@@ -309,17 +318,17 @@ public class CameraRunner
 
     /**
      * Set player position
-     * 
-     * This method is responsible for setting player's position and rotation. 
-     * Why are these two methods invoked? Good question. 
-     * 
-     * {@link EntityPlayer#setLocationAndAngles(double, double, double, float, float)} 
-     * updates some client side values such as lastTick* and prevPos* values, 
-     * which makes the transition between two distant cameras, seamless, meanwhile 
-     * {@link EntityPlayer#setPositionAndRotation(double, double, double, float, float)} 
+     *
+     * This method is responsible for setting player's position and rotation.
+     * Why are these two methods invoked? Good question.
+     *
+     * {@link EntityPlayer#setLocationAndAngles(double, double, double, float, float)}
+     * updates some client side values such as lastTick* and prevPos* values,
+     * which makes the transition between two distant cameras, seamless, meanwhile
+     * {@link EntityPlayer#setPositionAndRotation(double, double, double, float, float)}
      * is responsible for fixing/clamping player's rotation.
-     * 
-     * By using only one of these methods wouldn't guarantee supreme quality of 
+     *
+     * By using only one of these methods wouldn't guarantee supreme quality of
      * the camera animation.
      */
     public void setPlayerPosition(EntityPlayer player, double x, double y, double z, Angle angle)

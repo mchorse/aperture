@@ -35,12 +35,12 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}new{r} {7}<client|server> <filename>{r}
 
-                {r}新建文件名为 {7}<filename>{r} 的相机配置文件到 {7}client(客户端){r} 或 {7}server(服务器){r}。
+                {r}新建文件名为 {7}<filename>{r} 的相机配置文件到 {7}client（客户端）{r} 或 {7}server（服务器）{r}。
         load:
             |
                 {l}{6}/{r}camera {8}load{r} {7}<client|server> <filename>{r}
 
-                {r}从 {7}client(客户端) {r} 或者 {7}server(服务器){r} 加载文件名为 {7}<filename>{r} 的相机配置文件。
+                {r}从 {7}client（客户端） {r} 或者 {7}server（服务器）{r} 加载文件名为 {7}<filename>{r} 的相机配置文件。
         save:
             |
                 {l}{6}/{r}camera {8}save{r} {7}[filename]{r}
@@ -50,18 +50,18 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}clear{r}
 
-                {r}清除相机配置文件 (会移除所有相机关键点)
+                {r}清除相机配置文件 （会移除所有相机关键点）
         goto:
             |
                 {l}{6}/{r}camera {8}goto{r} {7}<index> [progress]{r}
 
-                {r}传送你到索引 {7}<index>{r} 的相机关键点。你可以选择指定 {7}[progress]{r}(路程) (从 {7}0.0{r} 到 {7}1.0{r}) 这会允许你传送到相机路程的中间或者环绕点。
+                {r}传送你到索引 {7}<index>{r} 的相机关键点。你可以选择指定 {7}[progress]{r}（路程） （从 {7}0.0{r} 到 {7}1.0{r}） 这会允许你传送到相机路程的中间或者环绕点。
 
         default:
             |
                 {l}{6}/{r}camera {8}default{r}
 
-                {r}恢复相机的 {7}FOV{r} 和 {7}翻滚角度{r} 到默认设置({7}FOV 70.0{r} 和 {7}0.0{r} 度).
+                {r}恢复相机的 {7}FOV{r} 和 {7}翻滚角度{r} 到默认设置（{7}FOV 70.0{r} 和 {7}0.0{r} 度）.
         fov:
             |
                 {l}{6}/{r}camera {8}fov{r} {7}[fov]{r}
@@ -71,7 +71,7 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}roll{r} {7}[roll]{r}
 
-                {r}设定客户端相机的 {7}[roll]{r} ({7}Z轴{r}翻滚程度)。
+                {r}设定客户端相机的 {7}[roll]{r} （{7}Z轴{r}翻滚程度）。
 
         rotate:
             |
@@ -106,7 +106,7 @@ aperture.commands:
                 |
                     {l}{6}/{r}camera {8}duration{r} {7}[index] [duration]{r}
 
-                    {r}可以用来设置，或者获取整个相机配置或一个相机关键点的时长。如果所有的参数按照预设，命令会设置{7}[duration]{r} (tick单位)时长到索引号 {7}[index]{r} 的相机关键点。增减符号可以用在 {7}[duration]{r} 参数。
+                    {r}可以用来设置，或者获取整个相机配置或一个相机关键点的时长。如果所有的参数按照预设，命令会设置 {7}[duration]{r}（tick单位）时长到索引号 {7}[index]{r} 的相机关键点。增减符号可以用在 {7}[duration]{r} 参数。
 
             move:
                 |
@@ -121,7 +121,7 @@ aperture.commands:
                 |
                     {l}{6}/{r}camera path {8}add{r} {7}<index> [before_point]{r}
 
-                    {r}在索引号 {7}<index>{r} 的后面添加一个路径点，或者在指定 {7}[before_point]{r} 编号的前面(如果指定了)。
+                    {r}在索引号 {7}<index>{r} 的后面添加一个路径点，或者在指定 {7}[before_point]{r} 编号的前面（如果指定了）。
 
             edit:
                 |
