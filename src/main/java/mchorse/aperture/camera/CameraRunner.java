@@ -1,16 +1,29 @@
 package mchorse.aperture.camera;
 
+import com.mojang.authlib.GameProfile;
+
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.event.EntityViewRenderEvent.FogColors;
+import net.minecraftforge.client.event.EntityViewRenderEvent.FogDensity;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -79,6 +92,11 @@ public class CameraRunner
      */
     public long ticks;
 
+    /**
+     * Entity which is used as a camera in the outside camera mode 
+     */
+    public Entity camera;
+
     /* Used by camera renderer */
     public float yaw = 0.0F;
     public float pitch = 0.0F;
@@ -137,7 +155,7 @@ public class CameraRunner
             this.gameMode = this.getGameMode(this.mc.thePlayer);
             this.position.set(this.mc.thePlayer);
 
-            if (Aperture.proxy.config.camera_spectator && this.gameMode != GameType.SPECTATOR)
+            if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
             {
                 this.mc.thePlayer.sendChatMessage("/gamemode 3");
             }
@@ -154,6 +172,14 @@ public class CameraRunner
         this.firstTick = true;
         this.firstTickZero = Aperture.proxy.config.camera_first_tick_zero;
         this.firstTickZeroStart = false;
+
+        GuiIngameForge.renderCrosshairs = false;
+
+        if (Aperture.proxy.config.camera_outside)
+        {
+            this.camera = new EntityOtherPlayerMP(this.mc.theWorld, new GameProfile(null, "Fake"));
+            this.mc.setRenderViewEntity(this.camera);
+        }
     }
 
     /**
@@ -173,7 +199,7 @@ public class CameraRunner
     {
         if (this.isRunning)
         {
-            if (Aperture.proxy.config.camera_spectator && this.gameMode != GameType.SPECTATOR)
+            if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
             {
                 this.mc.thePlayer.sendChatMessage("/gamemode " + this.gameMode.getID());
             }
@@ -184,6 +210,7 @@ public class CameraRunner
             }
 
             this.mc.gameSettings.fovSetting = this.fov;
+            this.mc.gameSettings.hideGUI = false;
             this.gameMode = null;
 
             MinecraftForge.EVENT_BUS.unregister(this);
@@ -191,6 +218,10 @@ public class CameraRunner
 
         this.isRunning = false;
         this.profile = null;
+        this.camera = null;
+        this.mc.setRenderViewEntity(this.mc.thePlayer);
+
+        GuiIngameForge.renderCrosshairs = true;
 
         ClientProxy.control.resetRoll();
     }
@@ -212,6 +243,11 @@ public class CameraRunner
 
         if (event.phase == Phase.END)
         {
+            if (Aperture.proxy.config.camera_outside)
+            {
+                this.mc.setRenderViewEntity(this.mc.thePlayer);
+            }
+
             return;
         }
 
@@ -235,6 +271,8 @@ public class CameraRunner
         }
         else
         {
+            this.mc.setRenderViewEntity(this.mc.thePlayer);
+
             if (this.firstTickZero && event.renderTickTime == 0.0)
             {
                 this.firstTickZeroStart = true;
@@ -282,7 +320,7 @@ public class CameraRunner
             {
                 this.setPlayerPosition(player, point.x, y, point.z, angle);
 
-                player.motionX = player.motionY = player.motionZ = 0;
+                // player.motionX = player.motionY = player.motionZ = 0;
             }
 
             if (!this.mc.isSingleplayer())
@@ -294,11 +332,11 @@ public class CameraRunner
                 if (dx * dx + dy * dy + dz * dz >= 10 * 10)
                 {
                     /* Make it compatible with Essentials plugin, which replaced the native /tp command */
-                    if(Aperture.proxy.config.minecrafttp_teleport)
+                    if (Aperture.proxy.config.minecrafttp_teleport)
                     {
                         this.mc.thePlayer.sendChatMessage("/minecraft:tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
                     }
-                    if(Aperture.proxy.config.tp_teleport)
+                    if (Aperture.proxy.config.tp_teleport)
                     {
                         this.mc.thePlayer.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
                     }
@@ -333,8 +371,86 @@ public class CameraRunner
      */
     public void setPlayerPosition(EntityPlayer player, double x, double y, double z, Angle angle)
     {
-        player.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
-        player.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
+        // player.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
+        // player.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
+
+        this.camera.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
+        this.camera.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
+    }
+
+    @SubscribeEvent
+    public void onFogColor(FogColors event)
+    {
+        if (Aperture.proxy.config.camera_outside)
+        {
+            this.mc.gameSettings.thirdPersonView = 0;
+            this.mc.setRenderViewEntity(this.camera);
+        }
+    }
+
+    @SubscribeEvent
+    public void onFogDensity(FogDensity event)
+    {
+        if (Aperture.proxy.config.camera_outside && event.getDensity() == 0)
+        {
+            EntityPlayer player = this.mc.thePlayer;
+
+            double prevX = player.posX;
+            double prevY = player.posY;
+            double prevZ = player.posZ;
+            float rotX = player.rotationYaw;
+            float rotY = player.rotationPitch;
+
+            player.setPositionAndRotation(this.camera.posX, this.camera.posY, this.camera.posZ, this.camera.rotationYaw, this.camera.rotationPitch);
+            ActiveRenderInfo.updateRenderInfo(player, false);
+            player.setPositionAndRotation(prevX, prevY, prevZ, rotX, rotY);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPrePlayerRender(RenderPlayerEvent.Pre event)
+    {
+        if (Aperture.proxy.config.camera_outside && !Aperture.proxy.config.camera_outside_hide_player)
+        {
+            this.mc.getRenderManager().renderViewEntity = this.mc.thePlayer;
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPostPlayerRender(RenderPlayerEvent.Post event)
+    {
+        if (Aperture.proxy.config.camera_outside && !Aperture.proxy.config.camera_outside_hide_player)
+        {
+            this.mc.getRenderManager().renderViewEntity = this.camera;
+            this.mc.gameSettings.thirdPersonView = 0;
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderHands(RenderHandEvent event)
+    {
+        if (Aperture.proxy.config.camera_outside)
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPreRenderOverlay(RenderGameOverlayEvent.Pre event)
+    {
+        if (Aperture.proxy.config.camera_outside && event.getType() == ElementType.ALL)
+        {
+            this.mc.setRenderViewEntity(this.mc.thePlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPostRenderOverlay(RenderGameOverlayEvent.Post event)
+    {
+        if (Aperture.proxy.config.camera_outside && event.getType() == ElementType.ALL)
+        {
+            this.mc.setRenderViewEntity(this.camera);
+        }
     }
 
     /**

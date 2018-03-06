@@ -35,7 +35,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -371,8 +370,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.selectProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
 
-        GuiIngameForge.renderHotbar = false;
-        GuiIngameForge.renderCrosshairs = false;
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
 
         this.maxScrub = 0;
@@ -754,8 +751,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             if (keyCode == 1)
             {
-                GuiIngameForge.renderHotbar = true;
-                GuiIngameForge.renderCrosshairs = true;
                 Minecraft.getMinecraft().gameSettings.hideGUI = false;
 
                 this.mc.displayGuiScreen((GuiScreen) null);

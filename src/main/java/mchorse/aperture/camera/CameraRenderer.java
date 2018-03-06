@@ -97,6 +97,11 @@ public class CameraRenderer
         {
             event.setYaw(-180 + runner.yaw);
             event.setPitch(runner.pitch);
+
+            if (Aperture.proxy.config.camera_outside && !Aperture.proxy.config.camera_outside_hide_player)
+            {
+                this.mc.gameSettings.thirdPersonView = 1;
+            }
         }
         else if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
         {
