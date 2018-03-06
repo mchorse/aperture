@@ -4,7 +4,6 @@ import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -85,21 +84,20 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     }
 
     @Override
-    public void editFixture()
+    public void editFixture(EntityPlayer entity)
     {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         Entity mob = ((FollowFixture) this.fixture).getTarget();
 
         if (mob != null)
         {
-            float x = (float) (mob.posX - player.posX);
-            float y = (float) (mob.posY - player.posY);
-            float z = (float) (mob.posZ - player.posZ);
+            float x = (float) (mob.posX - entity.posX);
+            float y = (float) (mob.posY - entity.posY);
+            float z = (float) (mob.posZ - entity.posZ);
 
             this.fixture.position.point.set(x, y, z);
         }
 
-        super.editFixture();
+        super.editFixture(entity);
     }
 
     @Override

@@ -23,6 +23,7 @@ aperture.gui:
     config:
         title: Camera Options
 
+        outside: Outside mode
         minema: Minema
         spectator: Spectator
         show_path: Show path

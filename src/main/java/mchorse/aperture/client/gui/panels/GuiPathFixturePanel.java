@@ -15,6 +15,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 /**
@@ -202,13 +203,13 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
-    public void editFixture()
+    public void editFixture(EntityPlayer entity)
     {
         if (this.position != null)
         {
-            this.position.set(Minecraft.getMinecraft().thePlayer);
+            this.position.set(entity);
 
-            super.editFixture();
+            super.editFixture(entity);
         }
     }
 

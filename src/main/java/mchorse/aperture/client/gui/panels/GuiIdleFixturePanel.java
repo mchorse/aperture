@@ -5,10 +5,10 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Idle fixture panel
@@ -102,11 +102,11 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     }
 
     @Override
-    public void editFixture()
+    public void editFixture(EntityPlayer entity)
     {
-        this.fixture.position.set(Minecraft.getMinecraft().thePlayer);
+        this.fixture.position.set(entity);
 
-        super.editFixture();
+        super.editFixture(entity);
     }
 
     @Override

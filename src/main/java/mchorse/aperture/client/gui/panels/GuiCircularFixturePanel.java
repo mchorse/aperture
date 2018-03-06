@@ -5,10 +5,10 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modules.GuiCircularModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Circular fixture panel
@@ -103,11 +103,11 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     }
 
     @Override
-    public void editFixture()
+    public void editFixture(EntityPlayer entity)
     {
-        this.fixture.start.set(Minecraft.getMinecraft().thePlayer);
+        this.fixture.start.set(entity);
 
-        super.editFixture();
+        super.editFixture(entity);
     }
 
     @Override
