@@ -7,6 +7,7 @@ import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -79,6 +80,11 @@ public class CameraRunner
      */
     public long ticks;
 
+    /**
+     * This field is responsible for handling the outside mode 
+     */
+    public CameraOutside outside = new CameraOutside();
+
     /* Used by camera renderer */
     public float yaw = 0.0F;
     public float pitch = 0.0F;
@@ -93,6 +99,16 @@ public class CameraRunner
     public Position getPosition()
     {
         return this.position;
+    }
+
+    /**
+     * Get game mode of the given player
+     */
+    public GameType getGameMode(EntityPlayer player)
+    {
+        NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getGameProfile().getId());
+
+        return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
     }
 
     /* Playback methods (start/stop) */
@@ -137,12 +153,14 @@ public class CameraRunner
             this.gameMode = this.getGameMode(this.mc.player);
             this.position.set(this.mc.player);
 
-            if (Aperture.proxy.config.camera_spectator && this.gameMode != GameType.SPECTATOR)
+            if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode 3");
             }
 
             MinecraftForge.EVENT_BUS.register(this);
+
+            this.attachOutside();
         }
 
         this.position.set(this.mc.player);
@@ -157,23 +175,13 @@ public class CameraRunner
     }
 
     /**
-     * Get game mode of the given player
-     */
-    public GameType getGameMode(EntityPlayer player)
-    {
-        NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getGameProfile().getId());
-
-        return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
-    }
-
-    /**
      * Stop playback of camera profile
      */
     public void stop()
     {
         if (this.isRunning)
         {
-            if (Aperture.proxy.config.camera_spectator && this.gameMode != GameType.SPECTATOR)
+            if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode " + this.gameMode.getID());
             }
@@ -187,12 +195,36 @@ public class CameraRunner
             this.gameMode = null;
 
             MinecraftForge.EVENT_BUS.unregister(this);
+
+            this.detachOutside();
         }
 
         this.isRunning = false;
         this.profile = null;
 
         ClientProxy.control.resetRoll();
+    }
+
+    /**
+     * Attach outside mode handler 
+     */
+    public void attachOutside()
+    {
+        if (!this.outside.active && Aperture.proxy.config.camera_outside)
+        {
+            this.outside.start();
+        }
+    }
+
+    /**
+     * Detach outside mode handler 
+     */
+    public void detachOutside()
+    {
+        if (this.outside.active)
+        {
+            this.outside.stop();
+        }
     }
 
     /**
@@ -212,6 +244,11 @@ public class CameraRunner
 
         if (event.phase == Phase.END)
         {
+            if (this.outside.active)
+            {
+                this.mc.setRenderViewEntity(this.mc.player);
+            }
+
             return;
         }
 
@@ -235,6 +272,11 @@ public class CameraRunner
         }
         else
         {
+            if (this.outside.active)
+            {
+                this.mc.setRenderViewEntity(this.mc.player);
+            }
+
             if (this.firstTickZero && event.renderTickTime == 0.0)
             {
                 this.firstTickZeroStart = true;
@@ -267,11 +309,11 @@ public class CameraRunner
             {
                 if (this.ticks == 0)
                 {
-                    this.setPlayerPosition(player, point.x, y, point.z, angle);
+                    this.setCameraPosition(player, point.x, y, point.z, angle);
                 }
                 else
                 {
-                    this.setPlayerPosition(player, player.posX, player.posY, player.posZ, angle);
+                    this.setCameraPosition(player, player.posX, player.posY, player.posZ, angle);
                 }
 
                 player.motionX = this.position.point.x - prevX;
@@ -280,12 +322,15 @@ public class CameraRunner
             }
             else
             {
-                this.setPlayerPosition(player, point.x, y, point.z, angle);
+                this.setCameraPosition(player, point.x, y, point.z, angle);
 
-                player.motionX = player.motionY = player.motionZ = 0;
+                if (!this.outside.active)
+                {
+                    player.motionX = player.motionY = player.motionZ = 0;
+                }
             }
 
-            if (!this.mc.isSingleplayer())
+            if (!this.mc.isSingleplayer() && !this.outside.active)
             {
                 float dx = point.x - prevX;
                 float dy = point.y - prevY;
@@ -317,24 +362,26 @@ public class CameraRunner
     }
 
     /**
-     * Set player position
+     * Set camera position
      *
-     * This method is responsible for setting player's position and rotation.
+     * This method is responsible for setting camera's position and rotation.
      * Why are these two methods invoked? Good question.
      *
-     * {@link EntityPlayer#setLocationAndAngles(double, double, double, float, float)}
+     * {@link Entity#setLocationAndAngles(double, double, double, float, float)}
      * updates some client side values such as lastTick* and prevPos* values,
      * which makes the transition between two distant cameras, seamless, meanwhile
-     * {@link EntityPlayer#setPositionAndRotation(double, double, double, float, float)}
+     * {@link Entity#setPositionAndRotation(double, double, double, float, float)}
      * is responsible for fixing/clamping player's rotation.
      *
-     * By using only one of these methods wouldn't guarantee supreme quality of
-     * the camera animation.
+     * By using only one of these methods wouldn't guarantee supreme 
+     * quality of the camera animation.
      */
-    public void setPlayerPosition(EntityPlayer player, double x, double y, double z, Angle angle)
+    public void setCameraPosition(EntityPlayer player, double x, double y, double z, Angle angle)
     {
-        player.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
-        player.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
+        Entity camera = this.outside.active ? this.outside.camera : player;
+
+        camera.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
+        camera.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
     }
 
     /**

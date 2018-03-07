@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Base class for abstract fixture panel
@@ -155,7 +156,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         this.duration.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    public void editFixture()
+    public void editFixture(EntityPlayer entity)
     {
         this.select(this.fixture, -1);
         this.editor.updateProfile();

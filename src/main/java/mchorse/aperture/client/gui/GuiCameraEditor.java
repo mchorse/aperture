@@ -35,7 +35,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -371,19 +370,24 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.selectProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
 
-        GuiIngameForge.renderHotbar = false;
-        GuiIngameForge.renderCrosshairs = false;
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
 
         this.maxScrub = 0;
         this.visible = true;
         this.haveScrubbed = false;
         this.flight.enabled = false;
+
+        this.runner.attachOutside();
     }
 
     public CameraProfile getProfile()
     {
         return this.profile;
+    }
+
+    public EntityPlayer getCamera()
+    {
+        return this.runner.outside.active ? this.runner.outside.camera : this.mc.player;
     }
 
     /**
@@ -412,7 +416,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.position.set(player);
         this.profile.applyProfile(tick, ticks, this.position);
 
-        this.position.apply(player);
+        this.position.apply(this.getCamera());
         ClientProxy.control.setRollAndFOV(this.position.angle.roll, this.position.angle.fov);
     }
 
@@ -618,7 +622,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 7 && this.fixturePanel != null)
         {
-            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
+            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture(this.getCamera());
         }
         else if (id == 9 && this.profile != null)
         {
@@ -754,11 +758,14 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             if (keyCode == 1)
             {
-                GuiIngameForge.renderHotbar = true;
-                GuiIngameForge.renderCrosshairs = true;
                 Minecraft.getMinecraft().gameSettings.hideGUI = false;
 
                 this.mc.displayGuiScreen((GuiScreen) null);
+
+                if (!this.runner.isRunning())
+                {
+                    this.runner.detachOutside();
+                }
 
                 if (this.mc.currentScreen == null)
                 {
@@ -889,7 +896,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         else if (keyCode == Keyboard.KEY_B && this.fixturePanel != null)
         {
             /* Copy the position */
-            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
+            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture(this.getCamera());
         }
         else if (keyCode == Keyboard.KEY_O)
         {
@@ -1044,11 +1051,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (this.flight.enabled)
         {
             this.flight.animate(this.position);
-            this.position.apply(this.mc.player);
+            this.position.apply(this.getCamera());
 
             if (this.syncing && this.haveScrubbed && this.fixturePanel != null)
             {
-                ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
+                ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture(this.getCamera());
             }
         }
 
@@ -1096,7 +1103,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             super.drawScreen(mouseX, mouseY, partialTicks);
 
             /* Sync the player on current tick */
-            if (this.syncing && this.haveScrubbed && !this.flight.enabled)
+            if ((this.runner.outside.active || this.syncing && this.haveScrubbed) && !this.flight.enabled)
             {
                 this.updatePlayerCurrently(0.0F);
             }
@@ -1147,6 +1154,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (!running && this.playing)
             {
                 this.updatePlauseButton();
+                this.runner.attachOutside();
                 this.scrub.setValueFromScrub(0);
 
                 ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(false, this.scrub.value));
