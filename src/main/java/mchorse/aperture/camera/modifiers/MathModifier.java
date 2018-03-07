@@ -163,6 +163,22 @@ public class MathModifier extends ComponentModifier
     }
 
     @Override
+    public AbstractModifier clone()
+    {
+        MathModifier modifier = new MathModifier();
+
+        modifier.enabled = this.enabled;
+        modifier.active = this.active;
+
+        if (this.expression != null)
+        {
+            modifier.rebuildExpression(this.expression.toString());
+        }
+
+        return modifier;
+    }
+
+    @Override
     public void toJSON(JsonObject object)
     {
         if (this.expression != null)

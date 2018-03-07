@@ -41,6 +41,18 @@ public class IdleFixture extends AbstractFixture
         pos.copy(this.position);
     }
 
+    @Override
+    public AbstractFixture clone()
+    {
+        IdleFixture fixture = new IdleFixture(this.duration);
+
+        fixture.position = this.position.clone();
+
+        AbstractFixture.copyModifiers(this, fixture);
+
+        return fixture;
+    }
+
     /* Save/load methods */
 
     @Override

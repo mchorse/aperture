@@ -90,6 +90,19 @@ public class ShakeModifier extends ComponentModifier
     }
 
     @Override
+    public AbstractModifier clone()
+    {
+        ShakeModifier modifier = new ShakeModifier();
+
+        modifier.enabled = this.enabled;
+        modifier.active = this.active;
+        modifier.shake = this.shake;
+        modifier.shakeAmount = this.shakeAmount;
+
+        return modifier;
+    }
+
+    @Override
     public void toByteBuf(ByteBuf buffer)
     {
         super.toByteBuf(buffer);

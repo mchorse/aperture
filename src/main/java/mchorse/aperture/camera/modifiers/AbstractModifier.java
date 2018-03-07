@@ -31,6 +31,8 @@ public abstract class AbstractModifier
      */
     public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos);
 
+    public abstract AbstractModifier clone();
+
     public void toJSON(JsonObject object)
     {}
 

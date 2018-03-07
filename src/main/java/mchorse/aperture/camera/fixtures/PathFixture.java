@@ -414,6 +414,25 @@ public class PathFixture extends AbstractFixture
         }
     }
 
+    @Override
+    public AbstractFixture clone()
+    {
+        PathFixture fixture = new PathFixture(this.duration);
+
+        for (DurablePosition pos : this.points)
+        {
+            fixture.addPoint((DurablePosition) pos.clone());
+        }
+
+        fixture.perPointDuration = this.perPointDuration;
+        fixture.interpolationPos = this.interpolationPos;
+        fixture.interpolationAngle = this.interpolationAngle;
+
+        AbstractFixture.copyModifiers(this, fixture);
+
+        return fixture;
+    }
+
     /* Interpolation */
 
     public static InterpolationType interpFromInt(int number)
@@ -505,6 +524,12 @@ public class PathFixture extends AbstractFixture
         public void setDuration(long duration)
         {
             this.duration = duration < 0 ? 0 : duration;
+        }
+
+        @Override
+        public Position clone()
+        {
+            return new DurablePosition(this.duration, this.point.clone(), this.angle.clone());
         }
 
         @Override

@@ -2,6 +2,8 @@ package mchorse.aperture.camera;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gson.annotations.Expose;
 
@@ -10,6 +12,7 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.events.CameraProfileChangedEvent;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
 /**
@@ -21,6 +24,11 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public class CameraProfile
 {
+    /**
+     * Pattern for finding numbered
+     */
+    public static final Pattern NUMBERED_SUFFIX = Pattern.compile("_(\\d+)$");
+
     /**
      * List of profile's camera fixtures
      */
@@ -307,5 +315,36 @@ public class CameraProfile
         }
 
         this.setDirty(false);
+    }
+
+    /**
+     * Clone this camera profile 
+     */
+    public CameraProfile clone()
+    {
+        /* Increment filename */
+        ResourceLocation path = this.destination.toResourceLocation();
+        String filename = path.getResourcePath();
+        Matcher matcher = NUMBERED_SUFFIX.matcher(filename);
+
+        if (matcher.find())
+        {
+            filename = filename.substring(0, matcher.start()) + "_" + (Integer.parseInt(matcher.group(1)) + 1);
+        }
+        else
+        {
+            filename = filename + "_1";
+        }
+
+        AbstractDestination dest = AbstractDestination.fromResourceLocation(new ResourceLocation(path.getResourceDomain(), filename));
+        CameraProfile profile = new CameraProfile(dest);
+
+        /* Copy fixtures */
+        for (AbstractFixture fixture : this.fixtures)
+        {
+            profile.fixtures.add(fixture.clone());
+        }
+
+        return profile;
     }
 }
