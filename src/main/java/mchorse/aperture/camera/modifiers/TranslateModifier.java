@@ -27,6 +27,17 @@ public class TranslateModifier extends AbstractModifier
     }
 
     @Override
+    public AbstractModifier clone()
+    {
+        TranslateModifier modifier = new TranslateModifier();
+
+        modifier.enabled = this.enabled;
+        modifier.translate = this.translate.clone();
+
+        return modifier;
+    }
+
+    @Override
     public void toByteBuf(ByteBuf buffer)
     {
         super.toByteBuf(buffer);

@@ -83,6 +83,11 @@ public class Angle
         buffer.writeFloat(this.fov);
     }
 
+    public Angle clone()
+    {
+        return new Angle(this.yaw, this.pitch, this.roll, this.fov);
+    }
+
     @Override
     public String toString()
     {

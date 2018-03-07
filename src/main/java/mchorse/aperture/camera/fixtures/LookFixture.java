@@ -137,6 +137,19 @@ public class LookFixture extends IdleFixture
         }
     }
 
+    @Override
+    public AbstractFixture clone()
+    {
+        LookFixture fixture = new LookFixture(this.duration);
+
+        fixture.position = this.position.clone();
+        fixture.selector = this.selector;
+
+        AbstractFixture.copyModifiers(this, fixture);
+
+        return fixture;
+    }
+
     /* Save/load methods */
 
     @Override

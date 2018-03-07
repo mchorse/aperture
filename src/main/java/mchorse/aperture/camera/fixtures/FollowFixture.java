@@ -104,4 +104,17 @@ public class FollowFixture extends LookFixture
             this.oldZ = z;
         }
     }
+
+    @Override
+    public AbstractFixture clone()
+    {
+        FollowFixture fixture = new FollowFixture(this.duration);
+
+        fixture.position = this.position.clone();
+        fixture.selector = this.selector;
+
+        AbstractFixture.copyModifiers(this, fixture);
+
+        return fixture;
+    }
 }

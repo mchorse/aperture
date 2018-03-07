@@ -129,6 +129,21 @@ public class OrbitModifier extends EntityModifier
     }
 
     @Override
+    public AbstractModifier clone()
+    {
+        OrbitModifier modifier = new OrbitModifier();
+
+        modifier.enabled = this.enabled;
+        modifier.selector = this.selector;
+        modifier.yaw = this.yaw;
+        modifier.pitch = this.pitch;
+        modifier.distance = this.distance;
+        modifier.copy = this.copy;
+
+        return modifier;
+    }
+
+    @Override
     public void fromByteBuf(ByteBuf buffer)
     {
         super.fromByteBuf(buffer);

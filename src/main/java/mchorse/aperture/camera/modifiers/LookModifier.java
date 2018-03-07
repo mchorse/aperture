@@ -72,4 +72,18 @@ public class LookModifier extends EntityModifier
 
         pos.angle.set(yaw, pitch);
     }
+
+    @Override
+    public AbstractModifier clone()
+    {
+        LookModifier modifier = new LookModifier();
+
+        modifier.enabled = this.enabled;
+        modifier.selector = this.selector;
+        modifier.relative = this.relative;
+        modifier.atBlock = this.atBlock;
+        modifier.block = this.block.clone();
+
+        return modifier;
+    }
 }

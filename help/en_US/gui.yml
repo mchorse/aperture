@@ -51,6 +51,7 @@ aperture.gui:
         modifiers: Show modifiers panel (O)
         goto: Go to specific frame
         add: Add fixture
+        dupe: Duplicate fixture
         remove: Remove selected fixture
 
     editor:

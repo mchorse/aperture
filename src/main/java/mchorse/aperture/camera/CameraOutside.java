@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class CameraOutside
 {
     /**
-     * Entity which is used as a camera in the outside camera mode 
+     * Entity which is used as a camera in the outside mode 
      */
     public EntityPlayer camera;
 

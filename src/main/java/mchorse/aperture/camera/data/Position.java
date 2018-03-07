@@ -77,6 +77,11 @@ public class Position
         this.angle.toByteBuf(buffer);
     }
 
+    public Position clone()
+    {
+        return new Position(this.point.clone(), this.angle.clone());
+    }
+
     @Override
     public String toString()
     {
