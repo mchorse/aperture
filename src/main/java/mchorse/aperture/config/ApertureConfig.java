@@ -67,7 +67,7 @@ public class ApertureConfig
     public String camera_path_default_interp;
 
     /**
-     * Allows you to rebind /camera command's name (if you want to type less) 
+     * Allows you to rebind /camera command's name (if you want to type less)
      */
     public String camera_command_name;
 
@@ -77,7 +77,7 @@ public class ApertureConfig
     public boolean camera_simulate_velocity;
 
     /**
-     * Camera debug ticks 
+     * Camera debug ticks
      */
     public boolean camera_debug_ticks;
 
@@ -95,6 +95,34 @@ public class ApertureConfig
      * Render a custom mouse pointer in GUIs
      */
     public boolean gui_render_mouse;
+
+    /**
+     * Use "/minecraft:tp" in multiplayer's playback?
+     */
+    public boolean minecrafttp_teleport;
+
+    /**
+     * Use "/tp" in multiplayer's playback?
+     */
+    public boolean tp_teleport;
+
+    /**
+     * Whether camera should be played back from outside (allowing the 
+     * player to act as a body actor)
+     */
+    public boolean camera_outside;
+
+    /**
+     * Whether player should be hidden during playback of the camera 
+     * if outside mode is enabled
+     */
+    public boolean camera_outside_hide_player;
+
+    /**
+     * If enabled, it fixes the sky rendering, but hides the block 
+     * highlight
+     */
+    public boolean camera_outside_sky;
 
     /* Non conifg option stuff */
 
@@ -115,6 +143,7 @@ public class ApertureConfig
     public void reload()
     {
         String camera = "camera";
+        String outside = "outside";
         String prefix = "aperture.config.camera.";
 
         /* Camera */
@@ -132,6 +161,13 @@ public class ApertureConfig
         this.camera_debug_ticks = this.config.getBoolean("camera_debug_ticks", camera, false, "Write ticks to the log during camera playback", prefix + "camera_debug_ticks");
         this.camera_first_tick_zero = this.config.getBoolean("camera_first_tick_zero", camera, false, "When camera runner starts, start the actual playback when partial tick is exactly zero", prefix + "camera_first_tick_zero");
         this.camera_profile_render = this.config.getBoolean("camera_profile_render", camera, true, "Render camera profile in the world?", prefix + "camera_profile_render");
+        this.minecrafttp_teleport = this.config.getBoolean("minecrafttp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)", prefix + "minecrafttp_teleport");
+        this.tp_teleport = this.config.getBoolean("tp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /tp command (For Vanilla or Forge)", prefix + "tp_teleport");
+
+        /* Camera outside mode */
+        this.camera_outside = this.config.getBoolean("camera_outside", outside, false, "Whether camera should be played back from outside (allowing the player to act as a body actor)", prefix + "camera_outside");
+        this.camera_outside_hide_player = this.config.getBoolean("camera_outside_hide_player", outside, false, "Whether player should be hidden during playback of the camera if outside mode is enabled", prefix + "camera_outside_hide_player");
+        this.camera_outside_sky = this.config.getBoolean("camera_outside_sky", outside, true, "If enabled, it fixes the sky rendering, but hides the block highlight", prefix + "camera_outside_sky");
 
         /* Processing camera command name */
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");

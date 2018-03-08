@@ -2,33 +2,33 @@
 key.aperture:
     # Categories
     misc: Aperture
-    camera: Aperture 翻滚和FOV
-    
+    camera: Aperture 翻滚和 FOV
+
     camera_editor: 相机编辑器
     smooth_camera: 平滑相机
 
     # Camera control
-    control: 
+    control:
         title: Aperture 控制
-        
+
         stepUp: 向上移动
         stepDown: 向下移动
         stepLeft: 向左移动
         stepRight: 向右移动
         stepFront: 向前移动
         stepBack: 向后移动
-        
+
         rotateUp: 视角向上
         rotateDown: 视角向下
         rotateLeft: 视角向左
         rotateRight: 视角向右
-    
+
     # Roll controlling keys
     roll:
         add: 顺时针翻滚
         reduce: 逆时针翻滚
         reset: 重设翻滚
-    
+
     # Roll controlling keys
     fov:
         add: 增大 FOV

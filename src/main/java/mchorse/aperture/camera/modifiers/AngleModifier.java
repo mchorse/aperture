@@ -28,6 +28,17 @@ public class AngleModifier extends AbstractModifier
     }
 
     @Override
+    public AbstractModifier clone()
+    {
+        AngleModifier modifier = new AngleModifier();
+
+        modifier.enabled = this.enabled;
+        modifier.angle = this.angle.clone();
+
+        return modifier;
+    }
+
+    @Override
     public void toByteBuf(ByteBuf buffer)
     {
         super.toByteBuf(buffer);

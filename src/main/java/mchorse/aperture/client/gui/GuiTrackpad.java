@@ -98,11 +98,13 @@ public class GuiTrackpad
 
         this.text.textboxKeyTyped(typedChar, keyCode);
 
-        if (this.text.isFocused() && !this.text.equals(old))
+        String text = this.text.getText();
+
+        if (this.text.isFocused() && !text.equals(old))
         {
             try
             {
-                this.value = Float.parseFloat(this.text.getText());
+                this.value = text.isEmpty() ? 0 : Float.parseFloat(text);
 
                 if (this.listener != null)
                 {

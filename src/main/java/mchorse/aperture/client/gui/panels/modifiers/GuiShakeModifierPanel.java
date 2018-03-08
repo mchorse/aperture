@@ -55,6 +55,7 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
         this.shakeAmount.setValue(this.modifier.shakeAmount);
 
         this.active.area.set(x + 5, y + 50, w - 10, 20);
+        this.active.value = this.modifier.active;
     }
 
     @Override

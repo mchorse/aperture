@@ -1,4 +1,5 @@
-build_mod: copy_assets build_lang
+build_mod: copy_assets
+	mkdir -p src/main/resources/assets/aperture/lang
 	./gradlew build
 
 copy_assets:
@@ -10,7 +11,7 @@ copy_assets:
 
 build_lang:
 	mkdir -p src/main/resources/assets/aperture/lang
-	php php/help.php
+	./gradlew buildLangFiles
 
 check: build_lang
 	php php/language.php

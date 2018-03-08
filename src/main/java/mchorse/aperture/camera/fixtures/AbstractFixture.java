@@ -82,6 +82,17 @@ public abstract class AbstractFixture
     }
 
     /**
+     * Copy given fixture's modifiers to another fixture 
+     */
+    public static void copyModifiers(AbstractFixture from, AbstractFixture to)
+    {
+        for (AbstractModifier modifier : from.modifiers)
+        {
+            to.modifiers.add(modifier.clone());
+        }
+    }
+
+    /**
      * Default constructor. All subclasses must implement the same 
      * constructor, because {@link FixtureRegistry} depends on it. 
      */
@@ -244,4 +255,9 @@ public abstract class AbstractFixture
     {
         return this.modifiers;
     }
+
+    /**
+     * Clone this fixture
+     */
+    public abstract AbstractFixture clone();
 }

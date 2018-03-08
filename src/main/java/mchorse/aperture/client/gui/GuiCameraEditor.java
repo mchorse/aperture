@@ -153,6 +153,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     public GuiButton openProfiles;
 
     public GuiButton add;
+    public GuiButton dupe;
     public GuiButton remove;
 
     public GuiButton goTo;
@@ -182,9 +183,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     @Override
     public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub)
     {
-        this.frame.setValue(value);
+        if (!this.frame.text.isFocused())
+        {
+            this.frame.setValue(value);
+        }
 
-        if (!this.runner.isRunning() && this.syncing)
+        if (!this.runner.isRunning() && (this.syncing || this.runner.outside.active))
         {
             this.updatePlayer(value, 0.0F);
         }
@@ -328,7 +332,8 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.tooltips.put(12, I18n.format("aperture.gui.tooltips.modifiers"));
         this.tooltips.put(13, I18n.format("aperture.gui.tooltips.goto"));
         this.tooltips.put(50, I18n.format("aperture.gui.tooltips.add"));
-        this.tooltips.put(51, I18n.format("aperture.gui.tooltips.remove"));
+        this.tooltips.put(51, I18n.format("aperture.gui.tooltips.dupe"));
+        this.tooltips.put(52, I18n.format("aperture.gui.tooltips.remove"));
     }
 
     /**
@@ -371,14 +376,15 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.selectProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
 
-        GuiIngameForge.renderHotbar = false;
-        GuiIngameForge.renderCrosshairs = false;
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
+        GuiIngameForge.renderHotbar = false;
 
         this.maxScrub = 0;
         this.visible = true;
         this.haveScrubbed = false;
         this.flight.enabled = false;
+
+        this.runner.attachOutside();
     }
 
     public CameraProfile getProfile()
@@ -386,12 +392,17 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         return this.profile;
     }
 
+    public EntityPlayer getCamera()
+    {
+        return this.runner.outside.active ? this.runner.outside.camera : this.mc.player;
+    }
+
     /**
      * Update player to current value in the scrub
      */
     public void updatePlayerCurrently(float ticks)
     {
-        if (this.syncing && !this.runner.isRunning())
+        if ((this.syncing || this.runner.outside.active) && !this.runner.isRunning())
         {
             this.updatePlayer(this.scrub.value, ticks);
         }
@@ -412,7 +423,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.position.set(player);
         this.profile.applyProfile(tick, ticks, this.position);
 
-        this.position.apply(player);
+        this.position.apply(this.getCamera());
         ClientProxy.control.setRollAndFOV(this.position.angle.roll, this.position.angle.fov);
     }
 
@@ -490,10 +501,14 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.openModifiers = new GuiTextureButton(12, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(80, 32).setActiveTexPos(80, 48);
         x -= w;
         this.save = new GuiTextureButton(9, x + 2, y + 2, EDITOR_TEXTURE);
-        x -= w * 2;
+
+        x -= w * 3.5;
         this.add = new GuiTextureButton(50, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16);
-        x -= w;
-        this.remove = new GuiTextureButton(51, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(240, 0).setActiveTexPos(240, 16);
+        x += w;
+        this.dupe = new GuiTextureButton(51, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(176, 32).setActiveTexPos(176, 48);
+        x += w;
+        this.remove = new GuiTextureButton(52, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(240, 0).setActiveTexPos(240, 16);
+        y = 0;
 
         x = 80;
         this.goTo = new GuiTextureButton(13, x + 2, y + 2, EDITOR_TEXTURE).setTexPos(144, 32).setActiveTexPos(144, 48);
@@ -527,6 +542,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.buttonList.add(this.moveBackward);
 
         this.buttonList.add(this.add);
+        this.buttonList.add(this.dupe);
         this.buttonList.add(this.remove);
         this.buttonList.add(this.save);
         this.buttonList.add(this.openConfig);
@@ -588,6 +604,12 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             this.playing = this.runner.isRunning();
 
+            if (!this.playing)
+            {
+                this.runner.attachOutside();
+                this.updatePlayerCurrently(0.0F);
+            }
+
             ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(this.playing, this.scrub.value));
         }
         else if (id == 3)
@@ -618,7 +640,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         }
         else if (id == 7 && this.fixturePanel != null)
         {
-            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
+            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture(this.getCamera());
         }
         else if (id == 9 && this.profile != null)
         {
@@ -650,7 +672,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.showFrame = !this.showFrame;
         }
 
-        /* Add and remove */
+        /* Add, dupe and remove */
         if (id == 50)
         {
             this.popup.visible = !this.popup.visible;
@@ -658,7 +680,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             this.config.visible = false;
             this.modifiers.visible = false;
         }
-        else if (id == 51)
+        else if (id == 51 && this.scrub.index >= 0)
+        {
+            AbstractFixture fixture = this.profile.get(this.scrub.index).clone();
+
+            this.profile.add(fixture);
+            this.pickCameraFixture(fixture, 0);
+
+            this.updateValues();
+        }
+        else if (id == 52)
         {
             int index = this.scrub.index;
             int size = this.profile.getCount();
@@ -754,11 +785,15 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             if (keyCode == 1)
             {
-                GuiIngameForge.renderHotbar = true;
-                GuiIngameForge.renderCrosshairs = true;
                 Minecraft.getMinecraft().gameSettings.hideGUI = false;
+                GuiIngameForge.renderHotbar = true;
 
                 this.mc.displayGuiScreen((GuiScreen) null);
+
+                if (!this.runner.isRunning())
+                {
+                    this.runner.detachOutside();
+                }
 
                 if (this.mc.currentScreen == null)
                 {
@@ -816,7 +851,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             /* Toggle flight */
             this.cameraOptions.flight.playPressSound(this.mc.getSoundHandler());
-            this.cameraOptions.flight.mousePressed(mc, this.cameraOptions.flight.x + 1, this.cameraOptions.flight.y + 1);
+            this.cameraOptions.flight.mousePressed(this.mc, this.cameraOptions.flight.x + 1, this.cameraOptions.flight.y + 1);
             this.cameraOptions.actionButtonPerformed(this.cameraOptions.flight);
         }
 
@@ -839,10 +874,17 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             {
                 /* Toggle sync */
                 this.cameraOptions.sync.playPressSound(this.mc.getSoundHandler());
-                this.cameraOptions.sync.mousePressed(mc, this.cameraOptions.sync.x + 1, this.cameraOptions.sync.y + 1);
+                this.cameraOptions.sync.mousePressed(this.mc, this.cameraOptions.sync.x + 1, this.cameraOptions.sync.y + 1);
                 this.cameraOptions.actionButtonPerformed(this.cameraOptions.sync);
             }
 
+        }
+        else if (keyCode == Keyboard.KEY_O)
+        {
+            /* Toggle outside mode */
+            this.cameraOptions.outside.playPressSound(this.mc.getSoundHandler());
+            this.cameraOptions.outside.mousePressed(this.mc, this.cameraOptions.outside.x + 1, this.cameraOptions.outside.y + 1);
+            this.cameraOptions.actionButtonPerformed(this.cameraOptions.outside);
         }
         else if (keyCode == Keyboard.KEY_SPACE)
         {
@@ -890,7 +932,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         else if (keyCode == Keyboard.KEY_B && this.fixturePanel != null)
         {
             /* Copy the position */
-            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
+            ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture(this.getCamera());
         }
         else if (keyCode == Keyboard.KEY_O)
         {
@@ -1045,11 +1087,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         if (this.flight.enabled)
         {
             this.flight.animate(this.position);
-            this.position.apply(this.mc.player);
+            this.position.apply(this.getCamera());
 
             if (this.syncing && this.haveScrubbed && this.fixturePanel != null)
             {
-                ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture();
+                ((GuiAbstractFixturePanel<AbstractFixture>) this.fixturePanel).editFixture(this.getCamera());
             }
         }
 
@@ -1096,13 +1138,42 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             super.drawScreen(mouseX, mouseY, partialTicks);
 
+            boolean running = this.runner.isRunning();
+
+            if (running)
+            {
+                this.scrub.value = (int) this.runner.ticks;
+                this.scrub.value = MathHelper.clamp(this.scrub.value, this.scrub.min, this.scrub.max);
+                this.frame.setValue(this.scrub.value);
+            }
+
+            if (!running && this.playing)
+            {
+                this.updatePlauseButton();
+                this.runner.attachOutside();
+                this.scrub.setValueFromScrub(0);
+
+                ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(false, this.scrub.value));
+                this.playing = false;
+            }
+
             /* Sync the player on current tick */
-            if (this.syncing && this.haveScrubbed && !this.flight.enabled)
+            if ((this.runner.outside.active || (this.syncing && this.haveScrubbed)) && !this.flight.enabled)
             {
                 this.updatePlayerCurrently(0.0F);
             }
 
-            boolean running = this.runner.isRunning();
+            /* Display flight speed */
+            if (this.flight.enabled)
+            {
+                String speed = String.format(this.stringSpeed + ": %.1f", this.flight.speed);
+                int width = this.fontRenderer.getStringWidth(speed);
+                int x = this.width - 10 - width;
+                int y = this.height - 30;
+
+                Gui.drawRect(x - 2, y - 2, x + width + 2, y + 9, 0x88000000);
+                this.fontRenderer.drawStringWithShadow(speed, x, y, 0xffffff);
+            }
 
             /* Display camera attributes */
             if ((this.syncing || running) && this.displayPosition)
@@ -1124,34 +1195,6 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
                     i--;
                 }
-            }
-
-            /* Display flight speed */
-            if (this.flight.enabled)
-            {
-                String speed = String.format(this.stringSpeed + ": %.1f", this.flight.speed);
-                int width = this.fontRenderer.getStringWidth(speed);
-                int x = this.width - 10 - width;
-                int y = this.height - 30;
-
-                Gui.drawRect(x - 2, y - 2, x + width + 2, y + 9, 0x88000000);
-                this.fontRenderer.drawStringWithShadow(speed, x, y, 0xffffff);
-            }
-
-            if (running)
-            {
-                this.scrub.value = (int) this.runner.ticks;
-                this.scrub.value = MathHelper.clamp(this.scrub.value, this.scrub.min, this.scrub.max);
-                this.frame.setValue(this.scrub.value);
-            }
-
-            if (!running && this.playing)
-            {
-                this.updatePlauseButton();
-                this.scrub.setValueFromScrub(0);
-
-                ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(false, this.scrub.value));
-                this.playing = false;
             }
 
             /* Draw widgets */

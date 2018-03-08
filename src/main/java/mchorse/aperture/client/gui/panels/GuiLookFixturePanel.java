@@ -5,10 +5,10 @@ import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiTargetModule;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Look fixture panel
@@ -78,11 +78,11 @@ public class GuiLookFixturePanel extends GuiAbstractFixturePanel<LookFixture> im
     }
 
     @Override
-    public void editFixture()
+    public void editFixture(EntityPlayer entity)
     {
-        this.fixture.position.set(Minecraft.getMinecraft().player);
+        this.fixture.position.set(entity);
 
-        super.editFixture();
+        super.editFixture(entity);
     }
 
     @Override

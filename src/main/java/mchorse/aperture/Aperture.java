@@ -12,20 +12,20 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 /**
  * Main entry point of Aperture
- * 
- * This mod allows people to create Minecraft cinematics. It provides tools for 
- * managing camera profiles and camera fixtures withing camera profiles via 
+ *
+ * This mod allows people to create Minecraft cinematics. It provides tools for
+ * managing camera profiles and camera fixtures withing camera profiles via
  * command line (chat commands) or GUI (camera editor).
- * 
+ *
  * This mod provides a lot of tools related to camera.
  */
-@Mod(modid = Aperture.MODID, name = Aperture.MODNAME, version = Aperture.VERSION, guiFactory = Aperture.GUI_FACTORY)
+@Mod(modid = Aperture.MODID, name = Aperture.MODNAME, version = Aperture.VERSION, guiFactory = Aperture.GUI_FACTORY, updateJSON = "https://raw.githubusercontent.com/mchorse/aperture/master/version.json")
 public class Aperture
 {
     /* Mod info */
     public static final String MODID = "aperture";
     public static final String MODNAME = "Aperture";
-    public static final String VERSION = "1.1";
+    public static final String VERSION = "1.1.1";
     public static final String GUI_FACTORY = "mchorse.aperture.config.gui.GuiFactory";
 
     /* Proxies */

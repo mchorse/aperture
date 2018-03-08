@@ -14,12 +14,15 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
 {
     private String title = I18n.format("aperture.gui.config.title");
 
+    public GuiCheckBox outside;
     public GuiCheckBox minema;
     public GuiCheckBox spectator;
     public GuiCheckBox renderPath;
     public GuiCheckBox sync;
     public GuiCheckBox flight;
     public GuiCheckBox displayPosition;
+    public GuiCheckBox minecrafttpTeleport;
+    public GuiCheckBox tpTeleport;
 
     public int max;
     public int x;
@@ -29,14 +32,11 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     {
         super(editor);
 
-        /* Don't show that if Minema mod isn't present */
-        if (Loader.isModLoaded("minema"))
-        {
-            this.minema = new GuiCheckBox(-1, 0, 0, I18n.format("aperture.gui.config.minema"), Aperture.proxy.config.camera_minema);
-            this.minema.packedFGColour = 0xffffff;
+        this.outside = new GuiCheckBox(0, 0, 0, I18n.format("aperture.gui.config.outside"), Aperture.proxy.config.camera_outside);
+        this.outside.packedFGColour = 0xffffff;
 
-            this.buttons.add(this.minema);
-        }
+        this.minema = new GuiCheckBox(-1, 0, 0, I18n.format("aperture.gui.config.minema"), Aperture.proxy.config.camera_minema);
+        this.minema.packedFGColour = 0xffffff;
 
         this.spectator = new GuiCheckBox(-2, 0, 0, I18n.format("aperture.gui.config.spectator"), Aperture.proxy.config.camera_spectator);
         this.spectator.packedFGColour = 0xffffff;
@@ -53,16 +53,12 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.displayPosition = new GuiCheckBox(-6, 0, 0, I18n.format("aperture.gui.config.display_info"), this.editor.displayPosition);
         this.displayPosition.packedFGColour = 0xffffff;
 
-        this.buttons.add(this.spectator);
-        this.buttons.add(this.renderPath);
-        this.buttons.add(this.sync);
-        this.buttons.add(this.flight);
-        this.buttons.add(this.displayPosition);
+        this.minecrafttpTeleport = new GuiCheckBox(-7, 0, 0, I18n.format("aperture.gui.config.minecrafttp_teleport"), Aperture.proxy.config.minecrafttp_teleport);
+        this.minecrafttpTeleport.packedFGColour = 0xffffff;
 
-        for (GuiButton button : this.buttons.buttons)
-        {
-            this.max = Math.max(this.max, button.width);
-        }
+        this.tpTeleport = new GuiCheckBox(-8, 0, 0, I18n.format("aperture.gui.config.tp_teleport"), Aperture.proxy.config.tp_teleport);
+        this.tpTeleport.packedFGColour = 0xffffff;
+
     }
 
     @Override
@@ -81,6 +77,32 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     public void update(int x, int y)
     {
         int i = 0;
+        this.buttons.clear();
+
+        /* Don't show that if Minema mod isn't present */
+        if (Loader.isModLoaded("minema"))
+        {
+            this.buttons.add(this.minema);
+        }
+
+        this.buttons.add(this.outside);
+        this.buttons.add(this.spectator);
+        this.buttons.add(this.renderPath);
+        this.buttons.add(this.sync);
+        this.buttons.add(this.flight);
+        this.buttons.add(this.displayPosition);
+
+        /* Show tp buttons if in multiplayer */
+        if (!Minecraft.getMinecraft().isSingleplayer())
+        {
+            this.buttons.add(this.minecrafttpTeleport);
+            this.buttons.add(this.tpTeleport);
+        }
+
+        for (GuiButton button : this.buttons.buttons)
+        {
+            this.max = Math.max(this.max, button.width);
+        }
 
         for (GuiButton button : this.buttons.buttons)
         {
@@ -98,11 +120,14 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
             this.minema.setIsChecked(Aperture.proxy.config.camera_minema);
         }
 
+        this.outside.setIsChecked(Aperture.proxy.config.camera_outside);
         this.spectator.setIsChecked(Aperture.proxy.config.camera_spectator);
         this.renderPath.setIsChecked(Aperture.proxy.config.camera_profile_render);
         this.sync.setIsChecked(this.editor.syncing);
         this.flight.setIsChecked(this.editor.flight.enabled);
         this.displayPosition.setIsChecked(this.editor.displayPosition);
+        this.minecrafttpTeleport.setIsChecked(Aperture.proxy.config.minecrafttp_teleport);
+        this.tpTeleport.setIsChecked(Aperture.proxy.config.tp_teleport);
     }
 
     @Override
@@ -118,7 +143,26 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         int id = button.id;
         boolean save = false;
 
-        if (id == -1)
+        if (id == 0)
+        {
+            Property prop = Aperture.proxy.forge.getCategory("outside").get("camera_outside");
+
+            prop.set(this.outside.isChecked());
+
+            Aperture.proxy.forge.save();
+            Aperture.proxy.config.reload();
+
+            if (this.outside.isChecked())
+            {
+                ClientProxy.runner.attachOutside();
+                this.editor.updatePlayerCurrently(0.0F);
+            }
+            else
+            {
+                ClientProxy.runner.detachOutside();
+            }
+        }
+        else if (id == -1)
         {
             Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_minema");
 
@@ -149,6 +193,20 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         else if (id == -6)
         {
             this.editor.displayPosition = !this.editor.displayPosition;
+        }
+        else if (id == -7)
+        {
+            Property prop = Aperture.proxy.forge.getCategory("camera").get("minecrafttp_teleport");
+
+            prop.set(this.minecrafttpTeleport.isChecked());
+            save = true;
+        }
+        else if (id == -8)
+        {
+            Property prop = Aperture.proxy.forge.getCategory("camera").get("tp_teleport");
+
+            prop.set(this.tpTeleport.isChecked());
+            save = true;
         }
 
         if (save)

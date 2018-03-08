@@ -60,6 +60,11 @@ public class Point
         buffer.writeFloat(this.z);
     }
 
+    public Point clone()
+    {
+        return new Point(this.x, this.y, this.z);
+    }
+
     @Override
     public String toString()
     {

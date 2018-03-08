@@ -37,4 +37,15 @@ public class FollowModifier extends EntityModifier
 
         pos.point.set(x, y, z);
     }
+
+    @Override
+    public AbstractModifier clone()
+    {
+        FollowModifier modifier = new FollowModifier();
+
+        modifier.enabled = this.enabled;
+        modifier.selector = this.selector;
+
+        return null;
+    }
 }

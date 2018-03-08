@@ -1,0 +1,26 @@
+{
+   "homepage":"https://minecraft.curseforge.com/projects/aperture",
+   "1.10.2":{
+      "1.1":"This update fixes a lot of issues and adds few features to camera editor, and introduces camera modifiers. Camera modifiers are special camera behavior modifiers which can be added to camera fixtures. They can process fixture's output in a lot of different ways like shaking camera, looking or following an entity (while still be in the path), apply math formulas and much more!",
+      "1.0.1":"This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.",
+      "1.0":"First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
+   },
+   "1.11.2":{
+      "1.1":"This update fixes a lot of issues and adds few features to camera editor, and introduces camera modifiers. Camera modifiers are special camera behavior modifiers which can be added to camera fixtures. They can process fixture's output in a lot of different ways like shaking camera, looking or following an entity (while still be in the path), apply math formulas and much more!",
+      "1.0.1":"This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.",
+      "1.0":"First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
+   },
+   "1.12":{
+      "1.1":"This update fixes a lot of issues and adds few features to camera editor, and introduces camera modifiers. Camera modifiers are special camera behavior modifiers which can be added to camera fixtures. They can process fixture's output in a lot of different ways like shaking camera, looking or following an entity (while still be in the path), apply math formulas and much more!",
+      "1.0.1":"This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.",
+      "1.0":"First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
+   },
+   "promos":{
+      "1.10.2-latest":"1.1",
+      "1.10.2-recommended":"1.1",
+      "1.11.2-latest":"1.1",
+      "1.11.2-recommended":"1.1",
+      "1.12-latest":"1.1",
+      "1.12-recommended":"1.1"
+   }
+}

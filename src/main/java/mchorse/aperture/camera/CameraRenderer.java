@@ -97,6 +97,11 @@ public class CameraRenderer
         {
             event.setYaw(-180 + runner.yaw);
             event.setPitch(runner.pitch);
+
+            if (Aperture.proxy.config.camera_outside && !Aperture.proxy.config.camera_outside_hide_player)
+            {
+                this.mc.gameSettings.thirdPersonView = 1;
+            }
         }
         else if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
         {
@@ -191,17 +196,18 @@ public class CameraRenderer
     public void onLastRender(RenderWorldLastEvent event)
     {
         CameraProfile profile = ClientProxy.control.currentProfile;
+        CameraRunner runner = ClientProxy.runner;
 
         boolean badProfile = profile == null || profile.getCount() < 1;
 
         if (!Aperture.proxy.config.camera_profile_render) return;
-        if (ClientProxy.runner.isRunning()) return;
+        if (runner.isRunning()) return;
         if (badProfile) return;
 
         Position prev = new Position(0, 0, 0, 0, 0);
         Position next = new Position(0, 0, 0, 0, 0);
 
-        EntityPlayer player = this.mc.player;
+        EntityPlayer player = runner.outside.active ? runner.outside.camera : this.mc.player;
         float ticks = event.getPartialTicks();
 
         this.playerX = player.prevPosX + (player.posX - player.prevPosX) * ticks;
