@@ -8,6 +8,7 @@ import mchorse.aperture.camera.data.Position;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -246,7 +247,7 @@ public class CameraRunner
         {
             if (this.outside.active)
             {
-                this.mc.setRenderViewEntity(this.mc.thePlayer);
+                this.mc.setRenderViewEntity(Aperture.proxy.config.camera_outside_sky ? this.mc.thePlayer : this.outside.camera);
             }
 
             return;
@@ -274,7 +275,7 @@ public class CameraRunner
         {
             if (this.outside.active)
             {
-                this.mc.setRenderViewEntity(this.mc.thePlayer);
+                this.mc.setRenderViewEntity(Aperture.proxy.config.camera_outside_sky ? this.outside.camera : this.mc.thePlayer);
             }
 
             if (this.firstTickZero && event.renderTickTime == 0.0)
@@ -378,10 +379,11 @@ public class CameraRunner
      */
     public void setCameraPosition(EntityPlayer player, double x, double y, double z, Angle angle)
     {
-        Entity camera = this.outside.active ? this.outside.camera : player;
+        EntityLivingBase camera = this.outside.active ? this.outside.camera : player;
 
         camera.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
         camera.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
+        camera.rotationYawHead = camera.prevRotationYawHead = angle.yaw;
     }
 
     /**

@@ -35,6 +35,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -376,6 +377,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.profiles.init();
 
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
+        GuiIngameForge.renderHotbar = false;
 
         this.maxScrub = 0;
         this.visible = true;
@@ -784,6 +786,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (keyCode == 1)
             {
                 Minecraft.getMinecraft().gameSettings.hideGUI = false;
+                GuiIngameForge.renderHotbar = true;
 
                 this.mc.displayGuiScreen((GuiScreen) null);
 
@@ -848,7 +851,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         {
             /* Toggle flight */
             this.cameraOptions.flight.playPressSound(this.mc.getSoundHandler());
-            this.cameraOptions.flight.mousePressed(mc, this.cameraOptions.flight.xPosition + 1, this.cameraOptions.flight.yPosition + 1);
+            this.cameraOptions.flight.mousePressed(this.mc, this.cameraOptions.flight.xPosition + 1, this.cameraOptions.flight.yPosition + 1);
             this.cameraOptions.actionButtonPerformed(this.cameraOptions.flight);
         }
 
@@ -871,9 +874,16 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             {
                 /* Toggle sync */
                 this.cameraOptions.sync.playPressSound(this.mc.getSoundHandler());
-                this.cameraOptions.sync.mousePressed(mc, this.cameraOptions.sync.xPosition + 1, this.cameraOptions.sync.yPosition + 1);
+                this.cameraOptions.sync.mousePressed(this.mc, this.cameraOptions.sync.xPosition + 1, this.cameraOptions.sync.yPosition + 1);
                 this.cameraOptions.actionButtonPerformed(this.cameraOptions.sync);
             }
+        }
+        else if (keyCode == Keyboard.KEY_O)
+        {
+            /* Toggle outside mode */
+            this.cameraOptions.outside.playPressSound(this.mc.getSoundHandler());
+            this.cameraOptions.outside.mousePressed(this.mc, this.cameraOptions.outside.xPosition + 1, this.cameraOptions.outside.yPosition + 1);
+            this.cameraOptions.actionButtonPerformed(this.cameraOptions.outside);
         }
         else if (keyCode == Keyboard.KEY_SPACE)
         {

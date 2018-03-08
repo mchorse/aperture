@@ -42,9 +42,9 @@ public class GuiCameraConfig implements IGuiModule
             }
 
             width += options.getWidth();
+            options.update(x + w - width, y);
             height = Math.max(height, options.getHeight());
 
-            options.update(x + w - width, y);
             this.activeOptions.add(options);
         }
 
