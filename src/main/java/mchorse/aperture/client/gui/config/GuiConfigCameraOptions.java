@@ -32,7 +32,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     {
         super(editor);
 
-        this.outside = new GuiCheckBox(0, 0, 0, I18n.format("aperture.gui.config.outside"), Aperture.proxy.config.camera_minema);
+        this.outside = new GuiCheckBox(0, 0, 0, I18n.format("aperture.gui.config.outside"), Aperture.proxy.config.camera_outside);
         this.outside.packedFGColour = 0xffffff;
 
         this.minema = new GuiCheckBox(-1, 0, 0, I18n.format("aperture.gui.config.minema"), Aperture.proxy.config.camera_minema);
@@ -128,7 +128,6 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
         this.displayPosition.setIsChecked(this.editor.displayPosition);
         this.minecrafttpTeleport.setIsChecked(Aperture.proxy.config.minecrafttp_teleport);
         this.tpTeleport.setIsChecked(Aperture.proxy.config.tp_teleport);
-
     }
 
     @Override
@@ -146,10 +145,22 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
 
         if (id == 0)
         {
-            Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_outside");
+            Property prop = Aperture.proxy.forge.getCategory("outside").get("camera_outside");
 
             prop.set(this.outside.isChecked());
-            save = true;
+
+            Aperture.proxy.forge.save();
+            Aperture.proxy.config.reload();
+
+            if (this.outside.isChecked())
+            {
+                ClientProxy.runner.attachOutside();
+                this.editor.updatePlayerCurrently(0.0F);
+            }
+            else
+            {
+                ClientProxy.runner.detachOutside();
+            }
         }
         else if (id == -1)
         {

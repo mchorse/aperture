@@ -36,6 +36,11 @@ public class CameraOutside
      */
     public boolean active;
 
+    /**
+     * Counter used to determine stage of the fog stages
+     */
+    public int counter = 0;
+
     private Minecraft mc = Minecraft.getMinecraft();
 
     /**
@@ -70,11 +75,10 @@ public class CameraOutside
     @SubscribeEvent
     public void onFogColor(FogColors event)
     {
-        if (Aperture.proxy.config.camera_outside)
-        {
-            this.mc.gameSettings.thirdPersonView = 0;
-            this.mc.setRenderViewEntity(this.camera);
-        }
+        this.mc.gameSettings.thirdPersonView = 0;
+        this.mc.setRenderViewEntity(this.camera);
+
+        this.counter = 0;
     }
 
     /**
@@ -87,17 +91,22 @@ public class CameraOutside
     @SubscribeEvent
     public void onFogDensity(FogDensity event)
     {
-        EntityPlayer player = this.mc.player;
+        if (this.counter == 0)
+        {
+            EntityPlayer player = this.mc.player;
 
-        double prevX = player.posX;
-        double prevY = player.posY;
-        double prevZ = player.posZ;
-        float rotX = player.rotationYaw;
-        float rotY = player.rotationPitch;
+            double prevX = player.posX;
+            double prevY = player.posY;
+            double prevZ = player.posZ;
+            float rotX = player.rotationYaw;
+            float rotY = player.rotationPitch;
 
-        player.setPositionAndRotation(this.camera.posX, this.camera.posY, this.camera.posZ, this.camera.rotationYaw, this.camera.rotationPitch);
-        ActiveRenderInfo.updateRenderInfo(player, false);
-        player.setPositionAndRotation(prevX, prevY, prevZ, rotX, rotY);
+            player.setPositionAndRotation(this.camera.posX, this.camera.posY, this.camera.posZ, this.camera.rotationYaw, this.camera.rotationPitch);
+            ActiveRenderInfo.updateRenderInfo(player, false);
+            player.setPositionAndRotation(prevX, prevY, prevZ, rotX, rotY);
+        }
+
+        this.counter++;
     }
 
     /**
