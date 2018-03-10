@@ -22,6 +22,8 @@ aperture.config.comments:
         camera_outside: Whether camera should be played back from outside (allowing the player to act as a body actor)
         camera_outside_hide_player: Whether player should be hidden during playback of the camera if outside mode is enabled
         camera_outside_sky: If enabled, fixes the sky, but disables block selection (due to a bug)
+        camera_outside_hide_guis: Prevent GUI screens from rendering during outside mode
+        camera_outside_hide_overlays: Prevent rendering screen overlays (such as pumpkin overlay, fire when burning, water and etc.) during outside mode
 
     smooth:
         camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range? WUB WUB WUB
