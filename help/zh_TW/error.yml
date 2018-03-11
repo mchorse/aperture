@@ -1,0 +1,23 @@
+aperture.error:
+    # General command errors
+    commands:
+        load_chunks: 無法加載渲染範圍裏所有已創建的區塊！詳情錯誤記錄在日誌裏。
+    
+    # Camera fixtures errors
+    fixture:
+        few_args: "{f}這個命令的參數給少了！"
+        wrong_type: "{f}相機關鍵點類型 %s{f} 不存在！"
+        no_entity: "{f}妳應該看著某個實體來創建這個相機關鍵點！"
+        
+        empty: "{f}這個攝像機配置文件是空的！"
+    
+    # Camera profile errors
+    profile:
+        empty_filename: "{f}這個相機配置文件沒有名字！要解決此問題，請指定參數 {7}[filename]{f} 。"
+        cant_save: "{f}無法以文件名 %s{f} 保存攝像機配置。"
+        cant_load: "{f}無法以文件名 %s{f} 加載攝像機配置。"
+        
+        not_path: "{f}在索引號 %s{f} 的關鍵點不是路徑關鍵點！"
+        not_exists: "{f}在目前的相機配置文件裏沒有相機關鍵點在 %s{f} 索引號裏！"
+        no_path_point: "{f}路徑索引號 %s{f} 裏在索引號 %s{f} 裏沒有路徑定點！"
+        move_no_path_point: "{f}路徑索引號 %s{f} 裏在索引號 %s{f} 或 %s{f} 裏沒有定點！"
