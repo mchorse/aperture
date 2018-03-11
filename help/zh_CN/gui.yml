@@ -12,7 +12,7 @@ aperture.gui:
     remove: 移除
     detach: 分离
     record: 录制
-    pick: 选择伪装...
+    pick: 选择伪装…
     duplicate: 拷贝
     search: "搜索:"
     cancel: 取消
@@ -23,6 +23,7 @@ aperture.gui:
     config:
         title: 相机选项
 
+        outside: 分离摄像机模式（O）
         minema: Minema
         spectator: 观看者
         show_path: 显示路径
@@ -50,10 +51,11 @@ aperture.gui:
         modifiers: 打开调整器面板（O）
         goto: 前往指定的帧
         add: 添加关键点
+        dupe: 拷贝关键点
         remove: 移除选择的关键点
 
     editor:
-        f1: 请按F1来再次展示界面...
+        f1: 请按F1来再次展示界面…
         speed: 速度
 
     fixtures:
@@ -65,7 +67,7 @@ aperture.gui:
 
     modifiers:
         title: 调整器
-        select: 选择相机关键点......
+        select: 选择相机关键点……
 
         shake: 摇晃
         math: 数学
