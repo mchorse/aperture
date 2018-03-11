@@ -18,12 +18,22 @@ aperture.config:
         camera_first_tick_zero: 第一帧为 0
         camera_debug_ticks: Debug ticks
         camera_profile_render: 渲染相机配置
+        
+        camera_outside: 分离摄像机模式
+        camera_outside_hide_player: 隐藏玩家
+        camera_outside_sky: 修复天空
+        camera_outside_hide_guis: 隐藏 GUI
+        camera_outside_hide_overlays: 隐藏附加层
 
         gui_render_mouse: 在 GUI 中渲染出鼠标指针
 
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
 
+    outside: 
+        title: 分离摄像机模式
+        tooltip: 属于分离摄像机的设置项
+        
     smooth:
         title: 平滑相机
         tooltip: 平滑相机配置
