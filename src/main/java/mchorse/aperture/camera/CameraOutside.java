@@ -48,7 +48,10 @@ public class CameraOutside
      */
     public void start()
     {
+        EntityPlayer player = this.mc.thePlayer;
+
         this.camera = new EntityOtherPlayerMP(this.mc.theWorld, new GameProfile(null, "Camera"));
+        this.camera.setPositionAndRotation(player.posX, player.posY, player.posZ, 0, 0);
         this.active = true;
         this.mc.setRenderViewEntity(this.camera);
 
