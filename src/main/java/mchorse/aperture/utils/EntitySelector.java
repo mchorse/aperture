@@ -110,7 +110,7 @@ public class EntitySelector
     {
         Matcher matcher = TOKEN_PATTERN.matcher(token);
 
-        if (matcher.matches() && sender.canUseCommand(1, "@"))
+        if (matcher.matches())
         {
             Map<String, String> map = getArgumentMap(matcher.group(2));
 

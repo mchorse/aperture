@@ -1,0 +1,123 @@
+# GUI
+
+aperture.gui:
+    # General strings
+    done: 完成
+    next: 下個
+    previous: 上個
+    restore: 恢復默認
+    reset: 重設
+    add: 添加
+    edit: 編輯
+    remove: 移除
+    detach: 分離
+    record: 錄制
+    pick: 選擇偽裝…
+    duplicate: 拷貝
+    search: "搜索:"
+    cancel: 取消
+    break: 破壞
+    select: 選擇
+    ok: 好
+
+    config:
+        title: 相機選項
+
+        outside: 分離攝像機模式（O）
+        minema: Minema
+        spectator: 觀看者
+        show_path: 顯示路徑
+        sync: 同步（S）
+        flight: 飛行模式（F）
+        display_info: 顯示位置
+        minecrafttp_teleport: 使用 /minecraft:tp
+        tp_teleport: 使用 /tp
+
+    tooltips:
+        jump_next_fixture: 跳到下壹個關鍵點（Shift + 右）
+        jump_next_frame: 跳到下壹幀（右）
+        plause: 播放/暫停（空格）
+        jump_prev_frame: 跳到上壹幀（左）
+        jump_prev_fixture: 跳到上壹個關鍵點（Shift + 左）
+
+        move_up: 將關鍵點向前移動
+        move_duration: 將持續時間移動到光標（M）
+        copy_position: 拷貝玩家的位置（B）
+        move_down: 將關鍵點向後移動
+
+        save: 保存相機配置（Ctrl+S）
+        profiles: 顯示相機配置
+        config: 顯示相機編輯器選項
+        modifiers: 打開調整器面板（O）
+        goto: 前往指定的幀
+        add: 添加關鍵點
+        dupe: 拷貝關鍵點
+        remove: 移除選擇的關鍵點
+
+    editor:
+        f1: 請按F1來再次展示界面…
+        speed: 速度
+
+    fixtures:
+        idle: 靜止
+        path: 路徑
+        look: 跟著看
+        follow: 跟著走
+        circular: 環形
+
+    modifiers:
+        title: 調整器
+        select: 選擇相機關鍵點……
+
+        shake: 搖晃
+        math: 數學
+        look: 看
+        follow: 跟蹤
+        translate: 翻譯
+        angle: 角度
+        orbit: 軌道
+
+        panels:
+            copy_entity: 復制實體
+
+            shake: 搖晃
+            shake_amount: 數量值
+
+            relative: 是絕對的？
+            at_block: 看著方塊？
+
+    profiles:
+        loaded: 已加載
+        load: 加載
+        new: 新建
+        tooltip: 新相機名稱
+        rename_profile: 重命名配置
+        rename: 重命名
+
+    panels:
+        duration: 持續長度
+
+        x: X
+        y: "Y"
+        z: Z
+
+        yaw: 偏航
+        pitch: 俯仰
+        roll: 翻滾
+        fov: FOV
+
+        offset: 延遲
+        circles: 圓圈
+        distance: 長度
+
+        path_points: 路徑點
+        position: 位置
+        angle: 角度
+        circle: 圓圈
+        selector: 選擇器
+        per_point: 持續長度/節點
+
+        interps:
+            linear: 線性
+            cubic: 三次曲線
+            hermite: 艾米插值

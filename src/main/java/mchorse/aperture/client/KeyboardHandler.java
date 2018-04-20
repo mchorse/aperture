@@ -17,7 +17,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameType;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -201,9 +200,7 @@ public class KeyboardHandler
         EntityPlayer player = this.mc.player;
 
         /* Checking whether player is in ReplayMod's replay world */
-        boolean isReplayMod = inReplay;
-
-        if (ClientProxy.runner.getGameMode(player) == GameType.ADVENTURE || isReplayMod)
+        if (inReplay)
         {
             return;
         }
@@ -287,7 +284,7 @@ public class KeyboardHandler
         /* Camera control keys handling */
         if (player != null)
         {
-            if (ClientProxy.runner.getGameMode(player) == GameType.ADVENTURE)
+            if (inReplay)
             {
                 return;
             }
