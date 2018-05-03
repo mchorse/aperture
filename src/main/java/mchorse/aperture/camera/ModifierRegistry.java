@@ -1,6 +1,5 @@
 package mchorse.aperture.camera;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.BiMap;
@@ -33,7 +32,7 @@ public class ModifierRegistry
      * Client information about camera modifier 
      */
     @SideOnly(Side.CLIENT)
-    public static final Map<Class<? extends AbstractModifier>, ModifierInfo> CLIENT = new HashMap<Class<? extends AbstractModifier>, ModifierInfo>();
+    public static Map<Class<? extends AbstractModifier>, ModifierInfo> CLIENT;
 
     /**
      * Next available id 
