@@ -39,7 +39,7 @@ public class FixtureRegistry
      * Client information about camera fixtures, such as title, color, etc.
      */
     @SideOnly(Side.CLIENT)
-    public static final Map<Class<? extends AbstractFixture>, FixtureInfo> CLIENT = new HashMap<Class<? extends AbstractFixture>, FixtureInfo>();
+    public static Map<Class<? extends AbstractFixture>, FixtureInfo> CLIENT;
 
     /**
      * Next available id 
