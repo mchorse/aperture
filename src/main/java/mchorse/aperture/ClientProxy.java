@@ -1,17 +1,22 @@
 package mchorse.aperture;
 
 import java.io.File;
+import java.util.HashMap;
 
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.CameraRunner;
 import mchorse.aperture.camera.FixtureRegistry;
+import mchorse.aperture.camera.FixtureRegistry.FixtureInfo;
 import mchorse.aperture.camera.ModifierRegistry;
+import mchorse.aperture.camera.ModifierRegistry.ModifierInfo;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.modifiers.AngleModifier;
 import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
@@ -121,6 +126,9 @@ public class ClientProxy extends CommonProxy
     @Override
     public void preLoad(FMLPreInitializationEvent event)
     {
+        FixtureRegistry.CLIENT = new HashMap<Class<? extends AbstractFixture>, FixtureInfo>();
+        ModifierRegistry.CLIENT = new HashMap<Class<? extends AbstractModifier>, ModifierInfo>();
+
         String path = event.getSuggestedConfigurationFile().getAbsolutePath();
         path = path.substring(0, path.length() - 4);
 
