@@ -8,6 +8,6 @@
         "updateJSON": "https://raw.githubusercontent.com/mchorse/aperture/master/version.json",
         "url": "https://github.com/mchorse/aperture",
         "authorList": ["mchorse"],
-        "credits": "Badr"
+        "credits": "Badr. Special thanks to ycwei982 (Chinese) and Andruxioid (Russian) for mod's translations."
     }
 ]

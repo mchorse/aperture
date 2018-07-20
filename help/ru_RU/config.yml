@@ -1,0 +1,51 @@
+# Config strings
+aperture.config:
+    camera:
+        title: Камера
+        tooltip: Общие настройки камеры
+
+        camera_duration_step: Продолжительность движения
+        camera_duration: Продолжительность клипа по умолчанию
+        camera_interpolate_target: Интерполировать целевые клипы
+        camera_interpolate_target_value: Значение цели интерполяции
+        camera_spectator: Переключиться на наблюдателя
+        camera_step_factor: Фактор передвижения камеры
+        camera_rotate_factor: Фактор вращения камеры
+        camera_minema: Минема
+        camera_path_default_interp: Интерполяция траектории по умолчанию
+        camera_command_name: Имя команды камеры
+        camera_simulate_velocity: Симуляция скорости
+        camera_first_tick_zero: Нулевой кадр
+        camera_debug_ticks: Тики отладки
+        camera_profile_render: Отображать профиль камеры
+        
+        camera_outside: Внешний режим
+        camera_outside_hide_player: Спрятать игрока
+        camera_outside_sky: Исправить небо
+        camera_outside_hide_guis: Спрятать интерфейс
+        camera_outside_hide_overlays: Спрятать оверлей
+
+        gui_render_mouse: Отображать курсор мыши в интерфейсе
+
+        minecrafttp_teleport: Используйте /minecraft:tp
+        tp_teleport: Используйте /tp
+
+    outside: 
+        title: Внешний режим
+        tooltip: Настройки связанные с внешним режимом
+
+    smooth:
+        title: Гладкое движение камеры
+        tooltip: Настройки гладкого движения камеры
+
+        camera_smooth_clamp: Ограничить тангаж
+
+        roll_speed: Скорость крена
+        roll_friction: Ослабление крена
+
+        fov_speed: Скорость поля зрения
+        fov_friction: Ослабление поля зрения
+
+        smooth_enabled: Гладкое движение камеры включено
+        mouse_x_friction: Ослабление оси X
+        mouse_y_friction: Ослабление оси Y

@@ -61,13 +61,17 @@ public class CameraAPI
     public static List<String> getClientProfiles()
     {
         List<String> files = new ArrayList<String>();
+        File profiles = ClientProxy.getClientCameras();
 
-        for (File file : ClientProxy.getClientCameras().listFiles(new JSONFileFilter()))
+        if (profiles != null)
         {
-            String filename = file.getName();
+            for (File file : profiles.listFiles(new JSONFileFilter()))
+            {
+                String filename = file.getName();
 
-            filename = filename.substring(0, filename.lastIndexOf(".json"));
-            files.add(filename);
+                filename = filename.substring(0, filename.lastIndexOf(".json"));
+                files.add(filename);
+            }
         }
 
         return files;
