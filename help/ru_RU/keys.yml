@@ -1,0 +1,45 @@
+# Keys localization
+key.aperture:
+    # Categories
+    misc: Aperture
+    camera: Крен и поле зрения Aperture
+    
+    camera_editor: Редактор камеры
+    smooth_camera: Гладкое движение камеры
+
+    # Camera control
+    control: 
+        title: Управление Aperture
+        
+        stepUp: Шаг вверх
+        stepDown: Шаг вниз
+        stepLeft: Шаг влево
+        stepRight: Шаг вправо
+        stepFront: Шаг вперед
+        stepBack: Шаг назад
+        
+        rotateUp: Вразение вверх
+        rotateDown: Вращение вниз
+        rotateLeft: Вращение влево
+        rotateRight: Вращение вправо
+    
+    # Roll controlling keys
+    roll:
+        add: Кренить по часовой стрелке
+        reduce: Кренить против часовой стрелки
+        reset: Сбросить крен
+    
+    # Roll controlling keys
+    fov:
+        add: Увеличить поле зрения
+        reduce: Уменьшить поле зрения
+        reset: Сбросить поле зрения
+
+    # Profile management keys
+    profile:
+        title: Камеры Aperture
+
+        toggle: Включить отображение профиля камеры
+
+        start: Воспроизвеси профиль камеры
+        stop: Остановить профиль камеры

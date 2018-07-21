@@ -1,0 +1,124 @@
+# GUI
+
+aperture.gui:
+    # General strings
+    done: Готово
+    next: Следующий
+    previous: Предыдущий
+    restore: Сбросить по умолчанию
+    reset: Сбросить
+    add: Добавить
+    edit: Редактировать
+    remove: Убрать
+    detach: Отделить
+    record: Записать
+    pick: Выбрать морф...
+    duplicate: Дублировать
+    search: "Искать:"
+    cancel: Отменить
+    break: Сломать
+    select: Выбрать
+    ok: OK
+
+    config:
+        title: Опции камеры
+
+        outside: Внешний режим (O)
+        minema: Минема
+        spectator: Наблюдатель
+        show_path: Показать траекторию
+        sync: Синхронизация (S)
+        flight: Режим полёта(F)
+        display_info: Отобразить позицию
+        minecrafttp_teleport: Используйте /minecraft:tp
+        tp_teleport: Используйте /tp
+
+    tooltips:
+        jump_next_fixture: Перейти к следующему клипу (Shift + Right)
+        jump_next_frame: Перейти к следующему кадру (Right)
+        plause: Воспроизвести/Остановить (Space)
+        jump_prev_frame: Перейти к предыдущему кадру (Left)
+        jump_prev_fixture: Перейти к предыдущему клипу (Shift + Left)
+
+        move_up: Передвинуть клип вперед
+        move_duration: Установить длительность по курсору (M)
+        copy_position: Скопировать позицию игрока (B)
+        move_down: Передвинуть клип назад
+
+        save: Сохранить профиль камеры (Ctrl + S)
+        profiles: Показать профили камер
+        config: Показать опции редактора камер
+        modifiers: Показать панель модификаторов (O)
+        goto: Перейти к конкретному кадру
+        add: Добавить клип
+        dupe: Дублировать клип
+        remove: Убрать выбранный клип
+
+    editor:
+        f1: Нажмите F1 что бы открыть интерфейс...
+        speed: Скорость
+
+    fixtures:
+        idle: Вид
+        path: Путь
+        look: Следить
+        follow: Следовать
+        circular: Круг
+
+    modifiers:
+        title: Модификаторы
+        select: Выберите клип...
+
+        shake: Тряска
+        math: Выражение
+        look: Следить
+        follow: Следовать
+        translate: Перемещение
+        angle: Угол
+        orbit: Орбита
+
+        panels:
+            copy_entity: Копировать сущность
+
+            shake: Тряска
+            shake_amount: Количество
+
+            relative: Относительно?
+            at_block: Смотреть на блок?
+
+    profiles:
+        loaded: Загружено
+        load: Загрузить
+        new: Новая
+        tooltip: Имя новой камеры
+        rename_profile: Переименовать профиль
+        rename: Переименовать
+
+    panels:
+        name: Имя
+        duration: Длительность
+
+        x: X
+        y: "Y"
+        z: Z
+
+        yaw: Рыскание
+        pitch: Тангаж
+        roll: Крен
+        fov: Поле зрения
+
+        offset: Смещение
+        circles: Циклы
+        distance: Дистанция
+
+        path_points: Точки траектории
+        position: Позиция
+        angle: Угол
+        circle: Круг
+        selector: Селектор
+        per_point: Поточечная длительность
+
+        interps:
+            linear: Линейная
+            cubic: Куюическая
+            hermite: Сплайновая
