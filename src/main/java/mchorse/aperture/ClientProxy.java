@@ -129,11 +129,8 @@ public class ClientProxy extends CommonProxy
         FixtureRegistry.CLIENT = new HashMap<Class<? extends AbstractFixture>, FixtureInfo>();
         ModifierRegistry.CLIENT = new HashMap<Class<? extends AbstractModifier>, ModifierInfo>();
 
-        String path = event.getSuggestedConfigurationFile().getAbsolutePath();
-        path = path.substring(0, path.length() - 4);
-
-        config = new File(path);
-        cameras = new File(path + "/aperture/cameras/");
+        config = new File(event.getModConfigurationDirectory(), "aperture");
+        cameras = new File(config, "cameras");
 
         super.preLoad(event);
 
