@@ -96,6 +96,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     private boolean showFrame;
 
     /**
+     * FOV which was user had before entering the GUI 
+     */
+    private float lastFov = 70.0F;
+
+    /**
      * This property saves state for the sync option, to allow more friendly
      */
     public boolean haveScrubbed;
@@ -378,11 +383,13 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
         GuiIngameForge.renderHotbar = false;
+        GuiIngameForge.renderCrosshairs = false;
 
         this.maxScrub = 0;
         this.visible = true;
         this.haveScrubbed = false;
         this.flight.enabled = false;
+        this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
 
         this.runner.attachOutside();
     }
@@ -551,7 +558,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         /* Setup areas of widgets */
         this.scrub.area.set(10, this.height - 20, this.width - 20, 20);
-        this.popup.update(width - 20 * 6 - 42, 20, 62, 102);
+        this.popup.update(this.add.xPosition - 44, 20, 62, 102);
 
         if (this.fixturePanel != null)
         {
@@ -786,7 +793,9 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (keyCode == 1)
             {
                 Minecraft.getMinecraft().gameSettings.hideGUI = false;
+                Minecraft.getMinecraft().gameSettings.fovSetting = this.lastFov;
                 GuiIngameForge.renderHotbar = true;
+                GuiIngameForge.renderCrosshairs = true;
 
                 this.mc.displayGuiScreen((GuiScreen) null);
 
@@ -1127,7 +1136,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             if (this.popup.visible)
             {
-                Gui.drawRect(width - 120, 0, width - 100, 20, 0xaa000000);
+                Gui.drawRect(this.add.xPosition - 2, 0, this.add.xPosition + 18, 20, 0xaa000000);
             }
 
             if (this.showFrame)
