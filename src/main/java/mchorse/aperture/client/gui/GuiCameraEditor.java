@@ -558,7 +558,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         /* Setup areas of widgets */
         this.scrub.area.set(10, this.height - 20, this.width - 20, 20);
-        this.popup.update(this.add.xPosition - 44, 20, 62, 102);
+        this.popup.update(this.add.x - 44, 20, 62, 102);
 
         if (this.fixturePanel != null)
         {
@@ -1136,7 +1136,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
             if (this.popup.visible)
             {
-                Gui.drawRect(this.add.xPosition - 2, 0, this.add.xPosition + 18, 20, 0xaa000000);
+                Gui.drawRect(this.add.x - 2, 0, this.add.x + 18, 20, 0xaa000000);
             }
 
             if (this.showFrame)
