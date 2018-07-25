@@ -102,6 +102,8 @@ public class CameraRenderer
             {
                 this.mc.gameSettings.thirdPersonView = 1;
             }
+
+            player.rotationPitch = player.prevRotationPitch = runner.pitch;
         }
         else if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
         {
