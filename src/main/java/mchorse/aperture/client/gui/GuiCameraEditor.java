@@ -96,6 +96,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
     private boolean showFrame;
 
     /**
+     * FOV which was user had before entering the GUI 
+     */
+    private float lastFov = 70.0F;
+
+    /**
      * This property saves state for the sync option, to allow more friendly
      */
     public boolean haveScrubbed;
@@ -384,6 +389,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
         this.visible = true;
         this.haveScrubbed = false;
         this.flight.enabled = false;
+        this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
 
         this.runner.attachOutside();
     }
@@ -787,6 +793,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
             if (keyCode == 1)
             {
                 Minecraft.getMinecraft().gameSettings.hideGUI = false;
+                Minecraft.getMinecraft().gameSettings.fovSetting = this.lastFov;
                 GuiIngameForge.renderHotbar = true;
                 GuiIngameForge.renderCrosshairs = true;
 
