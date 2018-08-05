@@ -102,21 +102,20 @@ public class ClientProxy extends CommonProxy
         if (data != null)
         {
             /* Removing port, because this will distort the folder name */
-            file = new File(cameras, data.serverIP.replaceAll(":[\\w]{1,5}$", ""));
+            file = new File(cameras, data.serverIP.replaceAll(":[\\w]{1,5}$", "").replaceAll("[^\\w\\d_\\- ]", "_"));
         }
         else if (mc.isSingleplayer())
         {
-            file = new File(cameras, mc.getIntegratedServer().getWorldName());
+            /* I probably should've used getFolderName() in the beginning ... */
+            file = new File(cameras, mc.getIntegratedServer().getWorldName().replaceAll("[^\\w\\d_\\- ]", "_"));
         }
 
         if (file != null)
         {
             file.mkdirs();
-
-            return file;
         }
 
-        return null;
+        return file;
     }
 
     /**

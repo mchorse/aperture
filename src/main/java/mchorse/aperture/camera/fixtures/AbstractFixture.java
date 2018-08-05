@@ -88,7 +88,12 @@ public abstract class AbstractFixture
     {
         for (AbstractModifier modifier : from.modifiers)
         {
-            to.modifiers.add(modifier.clone());
+            AbstractModifier copy = modifier.clone();
+
+            if (copy != null)
+            {
+                to.modifiers.add(copy);
+            }
         }
     }
 
