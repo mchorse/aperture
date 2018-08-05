@@ -46,6 +46,6 @@ public class FollowModifier extends EntityModifier
         modifier.enabled = this.enabled;
         modifier.selector = this.selector;
 
-        return null;
+        return modifier;
     }
 }
