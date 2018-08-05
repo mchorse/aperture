@@ -76,6 +76,12 @@ public class CommandCamera extends SubCommandBase
     }
 
     @Override
+    public int getRequiredPermissionLevel()
+    {
+        return 0;
+    }
+
+    @Override
     public String getCommandName()
     {
         return Aperture.proxy.config.camera_command_name;
