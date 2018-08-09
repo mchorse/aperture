@@ -176,6 +176,15 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
         this.buttons.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
+    @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {
+        if (this.area.isInside(x, y))
+        {
+            this.area.scrollBy((int) Math.copySign(10, scroll));
+        }
+    }
+
     /**
      * Mouse button was released
      *

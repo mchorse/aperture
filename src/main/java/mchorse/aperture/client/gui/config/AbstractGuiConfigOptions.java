@@ -32,6 +32,10 @@ public abstract class AbstractGuiConfigOptions implements IGuiModule, IButtonLis
     }
 
     @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {}
+
+    @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {}
 

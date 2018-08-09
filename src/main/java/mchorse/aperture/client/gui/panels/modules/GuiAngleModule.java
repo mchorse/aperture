@@ -59,6 +59,10 @@ public class GuiAngleModule implements IGuiModule
     }
 
     @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {}
+
+    @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
         this.yaw.mouseReleased(mouseX, mouseY, state);
