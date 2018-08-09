@@ -21,3 +21,5 @@ aperture.error:
         not_exists: "{f}在目前的相机配置文件里没有相机关键点在 %s{f} 索引号里！"
         no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 里没有路径定点！"
         move_no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 或 %s{f} 里没有定点！"
+
+        wrong_filename: "{f}无法保存摄像机配置文件，因为文件名 \"%s\" 包含非法字符。 只允许使用字母，数字，下划线，短划线和空格！"
