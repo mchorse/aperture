@@ -2,6 +2,23 @@
 
 Aperture's change log.
 
+## Aperture 1.1.1
+
+This is a minor update which fixes some stuff and adds some random stuff regarding the camera. The highlight of this update is the outside mode, which can be used to playback camera while also body acting (detaching yourself from the camera). In some situations it might be glitchy, causing a chunk freeze, but this can be easily fixed by changing render distance.
+
+* Added version updater (added by ycwei982)
+* Added outside mode to camera options (it allows to act while being in camera, but it can be glitchy sometimes)
+* Added `drag` modifier
+* Added reset of FOV back in camera editor (reported by KazerLight)
+* Added mouse wheel scrolling in `path` fixture's points widget (suggested by Andruxioid)
+* Added `/minecraft:tp` and `/tp` config options for the server camera playback (added by ycwei982)
+* Added Russian localization (thanks to Andruxioid)
+* Fixed server crash related to `CLIENT`
+* Fixed issue with crash related to inability to create a client camera profile folder with illegal filename characters (thanks to ItsRitchieW)
+* Fixed player's pitch not going over 90 when running a camera profile
+* Fixed sync issues with cloning `follow` modifier and saving `shake` modifier toggle
+* Fixed crosshair appearing in the camera editor
+
 ## Aperture 1.1
 
 This update fixes a lot of issues and adds few features to camera editor, and introduces camera modifiers. Camera modifiers are special camera behavior modifiers which can be added to camera fixtures. They can process fixture's output in a lot of different ways like shaking camera, looking or following an entity (while still be in the path), apply math formulas and much more!

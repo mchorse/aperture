@@ -41,9 +41,9 @@ public class Color
     {
         int hex = 0;
 
-        hex += (int) (blue * 256);
-        hex += (int) (green * 256) << 8;
-        hex += (int) (red * 256) << 16;
+        hex += (int) (this.blue * 255);
+        hex += (int) (this.green * 255) << 8;
+        hex += (int) (this.red * 255) << 16;
 
         return hex;
     }

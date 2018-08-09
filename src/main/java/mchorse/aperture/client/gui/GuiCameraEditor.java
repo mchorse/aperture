@@ -960,6 +960,11 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         if (scroll != 0)
         {
+            if (this.fixturePanel != null)
+            {
+                this.fixturePanel.mouseScroll(x, y, scroll);
+            }
+
             if (this.profiles.visible)
             {
                 this.profiles.mouseScroll(x, y, scroll);

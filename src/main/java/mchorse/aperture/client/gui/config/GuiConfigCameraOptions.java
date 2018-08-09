@@ -58,7 +58,6 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
 
         this.tpTeleport = new GuiCheckBox(-8, 0, 0, I18n.format("aperture.gui.config.tp_teleport"), Aperture.proxy.config.tp_teleport);
         this.tpTeleport.packedFGColour = 0xffffff;
-
     }
 
     @Override
@@ -77,6 +76,7 @@ public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
     public void update(int x, int y)
     {
         int i = 0;
+        this.max = 0;
         this.buttons.clear();
 
         /* Don't show that if Minema mod isn't present */

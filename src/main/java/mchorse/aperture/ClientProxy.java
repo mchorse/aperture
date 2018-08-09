@@ -18,6 +18,7 @@ import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.modifiers.AngleModifier;
+import mchorse.aperture.camera.modifiers.DragModifier;
 import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
@@ -35,6 +36,7 @@ import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAngleModifierPanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiDragModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiFollowModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiMathModifierPanel;
@@ -166,6 +168,7 @@ public class ClientProxy extends CommonProxy
         GuiModifiersManager.PANELS.put(TranslateModifier.class, GuiTranslateModifierPanel.class);
         GuiModifiersManager.PANELS.put(AngleModifier.class, GuiAngleModifierPanel.class);
         GuiModifiersManager.PANELS.put(OrbitModifier.class, GuiOrbitModifierPanel.class);
+        GuiModifiersManager.PANELS.put(DragModifier.class, GuiDragModifierPanel.class);
 
         ModifierRegistry.registerClient(ShakeModifier.class, I18n.format("aperture.gui.modifiers.shake"), new Color(0.085F, 0.62F, 0.395F));
         ModifierRegistry.registerClient(MathModifier.class, I18n.format("aperture.gui.modifiers.math"), new Color(0.408F, 0.128F, 0.681F));
@@ -174,6 +177,7 @@ public class ClientProxy extends CommonProxy
         ModifierRegistry.registerClient(TranslateModifier.class, I18n.format("aperture.gui.modifiers.translate"), new Color(0.298F, 0.631F, 0.247F));
         ModifierRegistry.registerClient(AngleModifier.class, I18n.format("aperture.gui.modifiers.angle"), new Color(0.847F, 0.482F, 0.043F));
         ModifierRegistry.registerClient(OrbitModifier.class, I18n.format("aperture.gui.modifiers.orbit"), new Color(0.874F, 0.184F, 0.625F));
+        ModifierRegistry.registerClient(DragModifier.class, I18n.format("aperture.gui.modifiers.drag"), new Color(0.1F, 0.5F, 1F));
 
         cameraEditor = new GuiCameraEditor(runner);
 

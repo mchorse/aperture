@@ -12,6 +12,13 @@ public class ServerHandlerCameraProfile extends ServerMessageHandler<PacketCamer
     @Override
     public void run(EntityPlayerMP player, PacketCameraProfile message)
     {
+        if (!message.filename.matches("^[\\w\\d_ -]+$"))
+        {
+            L10n.error(player, "profile.wrong_filename", message.filename);
+
+            return;
+        }
+
         if (CameraUtils.saveCameraProfile(message.filename, CameraUtils.toJSON(message.profile), player))
         {
             ICamera recording = Camera.get(player);
