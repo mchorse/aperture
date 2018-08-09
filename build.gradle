@@ -41,6 +41,17 @@ minecraft
     replace "@VERSION@", project.version
 }
 
+task deobfJar(type: Jar) 
+{  
+    from sourceSets.main.output 
+    classifier = 'dev'  
+}   
+
+artifacts 
+{    
+    archives deobfJar   
+}
+
 processResources
 {
     inputs.property "version", project.version
