@@ -87,6 +87,8 @@ aperture.gui:
             relative: Относительно?
             at_block: Смотреть на блок?
 
+            factor: Фактор
+
     profiles:
         loaded: Загружено
         load: Загрузить
@@ -118,8 +120,6 @@ aperture.gui:
         circle: Круг
         selector: Селектор
         per_point: Поточечная длительность
-
-        factor: Фактор
 
         interps:
             linear: Линейная
