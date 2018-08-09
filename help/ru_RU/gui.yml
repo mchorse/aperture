@@ -76,6 +76,7 @@ aperture.gui:
         translate: Перемещение
         angle: Угол
         orbit: Орбита
+        drag: Сглаживание
 
         panels:
             copy_entity: Копировать сущность
@@ -117,6 +118,8 @@ aperture.gui:
         circle: Круг
         selector: Селектор
         per_point: Поточечная длительность
+
+        factor: Фактор
 
         interps:
             linear: Линейная
