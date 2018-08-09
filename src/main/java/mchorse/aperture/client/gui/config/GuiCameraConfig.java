@@ -64,6 +64,10 @@ public class GuiCameraConfig implements IGuiModule
     }
 
     @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {}
+
+    @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
         if (this.visible)

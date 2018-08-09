@@ -88,6 +88,10 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
         }
     }
 
+    @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {}
+
     public int getHeight()
     {
         return 20;

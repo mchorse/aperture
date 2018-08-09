@@ -136,6 +136,12 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         this.editor = (GuiCameraEditor) screen;
     }
 
+    public void editFixture(EntityPlayer entity)
+    {
+        this.select(this.fixture, -1);
+        this.editor.updateProfile();
+    }
+
     @Override
     public boolean hasActiveTextfields()
     {
@@ -156,11 +162,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         this.duration.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    public void editFixture(EntityPlayer entity)
-    {
-        this.select(this.fixture, -1);
-        this.editor.updateProfile();
-    }
+    @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {}
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)

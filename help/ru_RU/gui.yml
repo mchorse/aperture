@@ -76,6 +76,7 @@ aperture.gui:
         translate: Перемещение
         angle: Угол
         orbit: Орбита
+        drag: Сглаживание
 
         panels:
             copy_entity: Копировать сущность
@@ -85,6 +86,8 @@ aperture.gui:
 
             relative: Относительно?
             at_block: Смотреть на блок?
+
+            factor: Фактор
 
     profiles:
         loaded: Загружено

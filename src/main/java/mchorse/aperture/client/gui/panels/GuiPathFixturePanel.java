@@ -257,6 +257,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {
+        this.points.mouseScroll(x, y, scroll);
+    }
+
+    @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
         super.mouseReleased(mouseX, mouseY, state);

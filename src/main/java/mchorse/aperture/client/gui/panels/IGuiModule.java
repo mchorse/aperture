@@ -14,6 +14,11 @@ public interface IGuiModule
     public void mouseClicked(int mouseX, int mouseY, int mouseButton);
 
     /**
+     * Mouse wheel was scrolled
+     */
+    public void mouseScroll(int x, int y, int scroll);
+
+    /**
      * Mouse was released
      */
     public void mouseReleased(int mouseX, int mouseY, int state);
