@@ -1,8 +1,11 @@
 package mchorse.aperture.camera.fixtures;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
@@ -83,6 +86,18 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
+    public void fromJSON(JsonObject object)
+    {
+        this.x.sort();
+        this.y.sort();
+        this.z.sort();
+        this.yaw.sort();
+        this.pitch.sort();
+        this.roll.sort();
+        this.fov.sort();
+    }
+
+    @Override
     public void fromByteBuf(ByteBuf buffer)
     {
         super.fromByteBuf(buffer);
@@ -110,6 +125,12 @@ public class KeyframeFixture extends AbstractFixture
         this.fov.toByteBuf(buffer);
     }
 
+    /**
+     * Keyframe channel
+     * 
+     * This class is responsible for storing individual keyframes and also 
+     * interpolating between them.
+     */
     public static class KeyframeChannel
     {
         @Expose
@@ -120,6 +141,9 @@ public class KeyframeFixture extends AbstractFixture
             return this.keyframes.isEmpty();
         }
 
+        /**
+         * Calculate the value at given tick 
+         */
         public float interpolate(float ticks)
         {
             Keyframe prev = this.keyframes.get(0);
@@ -135,9 +159,7 @@ public class KeyframeFixture extends AbstractFixture
             {
                 if (prev != null && ticks >= prev.tick && ticks < frame.tick)
                 {
-                    float x = (ticks - prev.tick) / (frame.tick - prev.tick);
-
-                    return Interpolations.lerp(prev.value, frame.value, x);
+                    return prev.interpolate(frame, (ticks - prev.tick) / (frame.tick - prev.tick));
                 }
 
                 prev = frame;
@@ -146,6 +168,11 @@ public class KeyframeFixture extends AbstractFixture
             return prev.value;
         }
 
+        /**
+         * Insert a keyframe at given tick with given value
+         * 
+         * This method is useful as it's not 
+         */
         public void insert(long tick, float value)
         {
             Keyframe prev = null;
@@ -172,6 +199,24 @@ public class KeyframeFixture extends AbstractFixture
             this.keyframes.add(index, new Keyframe(tick, value));
         }
 
+        /**
+         * Sorts keyframes based on their ticks. This method should be used 
+         * when you modify individual tick values of keyframes. 
+         * {@link #interpolate(float)} and other methods assume the order of 
+         * the keyframes to be chronologically correct.
+         */
+        public void sort()
+        {
+            Collections.sort(this.keyframes, new Comparator<Keyframe>()
+            {
+                @Override
+                public int compare(Keyframe a, Keyframe b)
+                {
+                    return (int) (a.tick - b.tick);
+                }
+            });
+        }
+
         public void copy(KeyframeChannel channel)
         {
             this.keyframes.clear();
@@ -190,6 +235,7 @@ public class KeyframeFixture extends AbstractFixture
             {
                 Keyframe frame = new Keyframe(buffer.readLong(), buffer.readFloat());
 
+                frame.fromByteBuf(buffer);
                 this.keyframes.add(frame);
             }
         }
@@ -205,6 +251,12 @@ public class KeyframeFixture extends AbstractFixture
         }
     }
 
+    /**
+     * Keyframe class
+     * 
+     * This class is responsible for storing individual keyframe properties such 
+     * as tick at which its located, value, interpolation, easing type, etc.
+     */
     public static class Keyframe
     {
         @Expose
@@ -219,12 +271,20 @@ public class KeyframeFixture extends AbstractFixture
             this.value = value;
         }
 
+        public float interpolate(Keyframe frame, float x)
+        {
+            return Interpolations.lerp(this.value, frame.value, x);
+        }
+
         public Keyframe clone()
         {
             Keyframe keyframe = new Keyframe(this.tick, this.value);
 
             return keyframe;
         }
+
+        public void fromByteBuf(ByteBuf buffer)
+        {}
 
         public void toByteBuf(ByteBuf buffer)
         {

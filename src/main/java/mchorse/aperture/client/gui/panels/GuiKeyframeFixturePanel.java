@@ -8,17 +8,21 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.utils.GuiUtils;
+import mchorse.aperture.client.gui.widgets.GuiButtonList;
 import mchorse.aperture.utils.Area;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
+public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture> implements IButtonListener
 {
     public KeyframeChannel active;
     public int selected = -1;
@@ -27,14 +31,52 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public GuiTrackpad value;
     public Area frames = new Area();
 
+    public GuiButtonList buttons;
+    public GuiButton x;
+    public GuiButton y;
+    public GuiButton z;
+    public GuiButton yaw;
+    public GuiButton pitch;
+    public GuiButton roll;
+    public GuiButton fov;
+
+    public GuiButton add;
+    public GuiButton remove;
+
+    private boolean dragging = false;
+
     public GuiKeyframeFixturePanel(FontRenderer font)
     {
         super(font);
 
         this.tick = new GuiTrackpad(this, font);
-        this.tick.title = "Tick";
+        this.tick.title = I18n.format("aperture.gui.panels.tick");
         this.value = new GuiTrackpad(this, font);
-        this.value.title = "Value";
+        this.value.title = I18n.format("aperture.gui.panels.value");
+
+        this.buttons = new GuiButtonList(Minecraft.getMinecraft(), this);
+
+        this.x = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.x"));
+        this.y = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.y"));
+        this.z = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.z"));
+        this.yaw = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.yaw"));
+        this.pitch = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.pitch"));
+        this.roll = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.roll"));
+        this.fov = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.fov"));
+
+        this.add = new GuiButton(0, 0, 0, I18n.format("aperture.gui.add"));
+        this.remove = new GuiButton(0, 0, 0, I18n.format("aperture.gui.remove"));
+
+        this.buttons.add(this.x);
+        this.buttons.add(this.y);
+        this.buttons.add(this.z);
+        this.buttons.add(this.yaw);
+        this.buttons.add(this.pitch);
+        this.buttons.add(this.roll);
+        this.buttons.add(this.fov);
+
+        this.buttons.add(this.add);
+        this.buttons.add(this.remove);
     }
 
     @Override
@@ -43,6 +85,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         if (trackpad == this.tick)
         {
             this.active.keyframes.get(this.selected).tick = (long) value;
+            this.dragging = true;
         }
         else if (trackpad == this.value)
         {
@@ -53,12 +96,53 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
+    public void actionButtonPerformed(GuiButton button)
+    {
+        if (button == this.x) this.selectChannel(this.fixture.x);
+        else if (button == this.y) this.selectChannel(this.fixture.y);
+        else if (button == this.z) this.selectChannel(this.fixture.z);
+        else if (button == this.yaw) this.selectChannel(this.fixture.yaw);
+        else if (button == this.pitch) this.selectChannel(this.fixture.pitch);
+        else if (button == this.roll) this.selectChannel(this.fixture.roll);
+        else if (button == this.fov) this.selectChannel(this.fixture.fov);
+        else if (button == this.add) this.addKeyframe();
+        else if (button == this.remove) this.removeKeyframe();
+    }
+
+    private void addKeyframe()
+    {
+        Position pos = new Position(Minecraft.getMinecraft().thePlayer);
+        float value = pos.point.x;
+
+        if (this.active == this.fixture.y) value = pos.point.y;
+        if (this.active == this.fixture.z) value = pos.point.z;
+        if (this.active == this.fixture.yaw) value = pos.angle.yaw;
+        if (this.active == this.fixture.pitch) value = pos.angle.pitch;
+        if (this.active == this.fixture.roll) value = pos.angle.roll;
+        if (this.active == this.fixture.fov) value = pos.angle.fov;
+
+        this.active.insert(this.editor.scrub.value - this.currentOffset(), value);
+    }
+
+    private void removeKeyframe()
+    {
+        this.active.keyframes.remove(this.selected);
+        this.selected -= 1;
+        this.editor.updateProfile();
+    }
+
+    @Override
     public void select(KeyframeFixture fixture, long duration)
     {
+        boolean same = this.fixture == fixture;
+
         super.select(fixture, duration);
 
-        this.active = fixture.x;
-        this.selected = -1;
+        if (!same)
+        {
+            this.active = fixture.x;
+            this.selected = -1;
+        }
 
         if (duration != -1)
         {
@@ -86,6 +170,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
     }
 
+    public void selectChannel(KeyframeChannel channel)
+    {
+        this.active = channel;
+        this.selected = -1;
+    }
+
     @Override
     public void update(GuiScreen screen)
     {
@@ -97,9 +187,36 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.value.update(x, this.area.y + 35, 80, 20);
 
         int h = this.editor.height;
+        int i = 0;
 
         this.frames.set(0, h - (h - this.duration.area.y - 25), this.editor.width, 0);
-        this.frames.h = h - this.frames.y - 20;
+        this.frames.h = h - this.frames.y - 50;
+
+        x = 10;
+
+        for (GuiButton button : this.buttons.buttons)
+        {
+            if (i > 6)
+            {
+                break;
+            }
+
+            button.xPosition = x;
+            button.yPosition = h - 45;
+            button.width = this.font.getStringWidth(button.displayString) + 15;
+            button.height = 20;
+
+            x += button.width + 5;
+            i += 1;
+        }
+
+        this.add.yPosition = this.remove.yPosition = this.x.yPosition;
+        this.add.height = this.remove.height = 20;
+        this.add.width = 30;
+        this.remove.width = 50;
+
+        this.add.xPosition = this.editor.width - 95;
+        this.remove.xPosition = this.add.xPosition + this.add.width + 5;
     }
 
     @Override
@@ -147,6 +264,42 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             this.tick.mouseClicked(mouseX, mouseY, mouseButton);
             this.value.mouseClicked(mouseX, mouseY, mouseButton);
         }
+
+        /* Select current point with a mouse click */
+        if (this.frames.isInside(mouseX, mouseY))
+        {
+            Keyframe prev = null;
+            int ry = 0;
+            int index = 0;
+            float c = this.frames.y + this.frames.h / 2;
+
+            for (Keyframe frame : this.active.keyframes)
+            {
+                if (prev == null)
+                {
+                    ry = (int) frame.value;
+                    prev = frame;
+                }
+
+                int x = (int) (frame.tick * 2);
+                int y = (int) (-(frame.value - ry) + c);
+
+                double d = Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2);
+
+                if (Math.sqrt(d) < 4)
+                {
+                    this.selected = index;
+                    this.tick.setValue(frame.tick);
+                    this.value.setValue(frame.value);
+
+                    break;
+                }
+
+                index++;
+            }
+        }
+
+        this.buttons.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -158,6 +311,16 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             this.tick.mouseReleased(mouseX, mouseY, state);
             this.value.mouseReleased(mouseX, mouseY, state);
+
+            if (this.dragging)
+            {
+                /* Resort after dragging the tick thing */
+                Keyframe frame = this.active.keyframes.get(this.selected);
+
+                this.active.sort();
+                this.dragging = false;
+                this.selected = this.active.keyframes.indexOf(frame);
+            }
         }
     }
 
@@ -170,9 +333,31 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         Gui.drawRect(this.frames.x, this.frames.y, this.frames.x + this.frames.w, this.frames.y + this.frames.h, 0x88000000);
         GuiUtils.scissor(this.frames.x, this.frames.y, this.frames.w, this.frames.h, w, h);
 
+        this.drawGraph(w, h);
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+        if (this.selected != -1)
+        {
+            this.tick.draw(mouseX, mouseY, partialTicks);
+            this.value.draw(mouseX, mouseY, partialTicks);
+        }
+
+        this.buttons.draw(mouseX, mouseY);
+
+        super.draw(mouseX, mouseY, partialTicks);
+    }
+
+    private void drawGraph(int w, int h)
+    {
+        if (this.active.isEmpty())
+        {
+            return;
+        }
+
         /* Draw graph of the keyframe channel */
         GL11.glLineWidth(2);
-        GL11.glPointSize(6);
+        GL11.glPointSize(8);
         GlStateManager.disableTexture2D();
 
         VertexBuffer vb = Tessellator.getInstance().getBuffer();
@@ -193,21 +378,21 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             if (prev != null)
             {
-                vb.pos(prev.tick * 2, prev.value - y + c, 0).endVertex();
-                vb.pos(frame.tick * 2, frame.value - y + c, 0).endVertex();
+                vb.pos(prev.tick * 2, -(prev.value - y) + c, 0).endVertex();
+                vb.pos(frame.tick * 2, -(frame.value - y) + c, 0).endVertex();
             }
 
             if (prev == null)
             {
                 y = frame.value;
-                vb.pos(frame.tick * 2, frame.value - y + c, 0).endVertex();
+                vb.pos(frame.tick * 2, -(frame.value - y) + c, 0).endVertex();
             }
 
             prev = frame;
         }
 
-        vb.pos(prev.tick * 2, prev.value - y + c, 0).endVertex();
-        vb.pos(w, prev.value - y + c, 0).endVertex();
+        vb.pos(prev.tick * 2, -(prev.value - y) + c, 0).endVertex();
+        vb.pos(w, -(prev.value - y) + c, 0).endVertex();
 
         Tessellator.getInstance().draw();
 
@@ -226,23 +411,28 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 GL11.glColor3f(1, 1, 1);
             }
 
-            GL11.glVertex2f(frame.tick * 2, frame.value - y + c);
+            GL11.glVertex2f(frame.tick * 2, -(frame.value - y) + c);
             GL11.glEnd();
 
             i++;
         }
 
-        GlStateManager.disableBlend();
+        /* Draw current point at the scrub */
+        int cx = (int) (this.editor.scrub.value - this.currentOffset());
+        int cy = (int) (-(this.active.interpolate(cx) - y) + c);
+
+        cx *= 2;
+
+        Gui.drawRect(cx - 1, cy, cx + 1, h, 0xff57f52a);
+
+        GlStateManager.disableTexture2D();
+        GL11.glBegin(GL11.GL_POINTS);
+        GL11.glColor3f(0x57 / 255F, 0xf5 / 255F, 0x2a / 255F);
+        GL11.glVertex2f(cx, cy);
+        GL11.glEnd();
         GlStateManager.enableTexture2D();
 
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-
-        if (this.selected != -1)
-        {
-            this.tick.draw(mouseX, mouseY, partialTicks);
-            this.value.draw(mouseX, mouseY, partialTicks);
-        }
-
-        super.draw(mouseX, mouseY, partialTicks);
+        GlStateManager.disableBlend();
+        GlStateManager.enableTexture2D();
     }
 }

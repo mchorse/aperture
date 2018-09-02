@@ -121,6 +121,9 @@ aperture.gui:
         circle: Circle
         selector: Selector
         per_point: Per point duration
+        
+        tick: Tick
+        value: Value
 
         interps:
             linear: Linear
