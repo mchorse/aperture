@@ -171,9 +171,13 @@ public class KeyframeFixture extends AbstractFixture
         /**
          * Insert a keyframe at given tick with given value
          * 
-         * This method is useful as it's not 
+         * This method is useful as it's not creating keyframes every time you 
+         * need to add some value, but rather inserts in correct order or 
+         * overwrites existing keyframe.
+         * 
+         * Also it returns index at which it was inserted.
          */
-        public void insert(long tick, float value)
+        public int insert(long tick, float value)
         {
             Keyframe prev = null;
             int index = 0;
@@ -184,7 +188,7 @@ public class KeyframeFixture extends AbstractFixture
                 {
                     frame.value = value;
 
-                    return;
+                    return index;
                 }
 
                 if (prev != null && tick > prev.tick && tick < frame.tick)
@@ -197,6 +201,8 @@ public class KeyframeFixture extends AbstractFixture
             }
 
             this.keyframes.add(index, new Keyframe(tick, value));
+
+            return index;
         }
 
         /**
@@ -265,6 +271,8 @@ public class KeyframeFixture extends AbstractFixture
         @Expose
         public float value;
 
+        public Interpolation interp = Interpolation.LINEAR;
+
         public Keyframe(long tick, float value)
         {
             this.tick = tick;
@@ -273,7 +281,7 @@ public class KeyframeFixture extends AbstractFixture
 
         public float interpolate(Keyframe frame, float x)
         {
-            return Interpolations.lerp(this.value, frame.value, x);
+            return this.interp.interpolate(this, frame, x);
         }
 
         public Keyframe clone()
@@ -291,5 +299,65 @@ public class KeyframeFixture extends AbstractFixture
             buffer.writeLong(this.tick);
             buffer.writeFloat(this.value);
         }
+    }
+
+    public static enum Interpolation
+    {
+        CONST
+        {
+            @Override
+            public float interpolate(Keyframe a, Keyframe b, float x)
+            {
+                return a.value;
+            }
+        },
+        LINEAR
+        {
+            @Override
+            public float interpolate(Keyframe a, Keyframe b, float x)
+            {
+                return Interpolations.lerp(a.value, b.value, x);
+            }
+        },
+        QUAD
+        {
+            @Override
+            public float interpolate(Keyframe a, Keyframe b, float x)
+            {
+                return a.value + (b.value - a.value) * x * x;
+            }
+        },
+        CUBIC
+        {
+            @Override
+            public float interpolate(Keyframe a, Keyframe b, float x)
+            {
+                return a.value + (b.value - a.value) * x * x * x;
+            }
+        },
+        EXP
+        {
+            @Override
+            public float interpolate(Keyframe a, Keyframe b, float x)
+            {
+                return a.value + (b.value - a.value) * (float) Math.pow(2, 10 * (x - 1));
+            }
+        },
+        BEZIER
+        {
+            @Override
+            public float interpolate(Keyframe a, Keyframe b, float x)
+            {
+                /* TODO: actually implement it */
+                return Interpolations.lerp(a.value, b.value, x);
+            }
+        };
+
+        public abstract float interpolate(Keyframe a, Keyframe b, float x);
+    }
+
+    public static enum Easing
+    {
+        IN, OUT, INOUT;
     }
 }

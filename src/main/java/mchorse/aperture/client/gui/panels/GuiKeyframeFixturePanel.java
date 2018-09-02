@@ -4,11 +4,13 @@ import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.client.gui.widgets.GuiButtonList;
+import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
 import mchorse.aperture.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -42,6 +44,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     public GuiButton add;
     public GuiButton remove;
+    public GuiCirculate interp;
 
     private boolean dragging = false;
 
@@ -66,6 +69,13 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.add = new GuiButton(0, 0, 0, I18n.format("aperture.gui.add"));
         this.remove = new GuiButton(0, 0, 0, I18n.format("aperture.gui.remove"));
+        this.interp = new GuiCirculate(0, 0, 0, 80, 20);
+        this.interp.addLabel("Constant");
+        this.interp.addLabel("Linear");
+        this.interp.addLabel("Quadratic");
+        this.interp.addLabel("Cubic");
+        this.interp.addLabel("Exponential");
+        this.interp.addLabel("Bezier");
 
         this.buttons.add(this.x);
         this.buttons.add(this.y);
@@ -77,6 +87,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.buttons.add(this.add);
         this.buttons.add(this.remove);
+        this.buttons.add(this.interp);
     }
 
     @Override
@@ -107,6 +118,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         else if (button == this.fov) this.selectChannel(this.fixture.fov);
         else if (button == this.add) this.addKeyframe();
         else if (button == this.remove) this.removeKeyframe();
+        else if (button == this.interp) this.changeInterpolation();
     }
 
     private void addKeyframe()
@@ -121,7 +133,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         if (this.active == this.fixture.roll) value = pos.angle.roll;
         if (this.active == this.fixture.fov) value = pos.angle.fov;
 
-        this.active.insert(this.editor.scrub.value - this.currentOffset(), value);
+        this.selected = this.active.insert(this.editor.scrub.value - this.currentOffset(), value);
     }
 
     private void removeKeyframe()
@@ -129,6 +141,14 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.active.keyframes.remove(this.selected);
         this.selected -= 1;
         this.editor.updateProfile();
+    }
+
+    private void changeInterpolation()
+    {
+        if (this.selected != -1)
+        {
+            this.active.keyframes.get(this.selected).interp = Interpolation.values()[this.interp.getValue()];
+        }
     }
 
     @Override
@@ -163,11 +183,15 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         if (this.selected != -1)
         {
-            Keyframe frame = this.active.keyframes.get(this.selected);
-
-            this.tick.setValue(frame.tick);
-            this.value.setValue(frame.value);
+            this.fillData(this.active.keyframes.get(this.selected));
         }
+    }
+
+    public void fillData(Keyframe frame)
+    {
+        this.tick.setValue(frame.tick);
+        this.value.setValue(frame.value);
+        this.interp.setValue(frame.interp.ordinal());
     }
 
     public void selectChannel(KeyframeChannel channel)
@@ -217,6 +241,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.add.xPosition = this.editor.width - 95;
         this.remove.xPosition = this.add.xPosition + this.add.width + 5;
+
+        this.interp.yPosition = this.tick.area.y;
+        this.interp.xPosition = this.tick.area.x - 90;
     }
 
     @Override
@@ -289,8 +316,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 if (Math.sqrt(d) < 4)
                 {
                     this.selected = index;
-                    this.tick.setValue(frame.tick);
-                    this.value.setValue(frame.value);
+                    this.fillData(frame);
 
                     break;
                 }
@@ -378,8 +404,22 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             if (prev != null)
             {
-                vb.pos(prev.tick * 2, -(prev.value - y) + c, 0).endVertex();
-                vb.pos(frame.tick * 2, -(frame.value - y) + c, 0).endVertex();
+                int px = (int) prev.tick * 2;
+                int fx = (int) frame.tick * 2;
+
+                if (prev.interp == Interpolation.LINEAR)
+                {
+                    vb.pos(px, -(prev.value - y) + c, 0).endVertex();
+                    vb.pos(fx, -(frame.value - y) + c, 0).endVertex();
+                }
+                else
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        vb.pos(px + (fx - px) * (i / 10F), -(prev.interpolate(frame, i / 10F) - y) + c, 0).endVertex();
+                        vb.pos(px + (fx - px) * ((i + 1) / 10F), -(prev.interpolate(frame, (i + 1) / 10F) - y) + c, 0).endVertex();
+                    }
+                }
             }
 
             if (prev == null)
