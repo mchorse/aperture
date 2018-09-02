@@ -14,6 +14,7 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
+import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
@@ -33,6 +34,7 @@ import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
+import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAngleModifierPanel;
@@ -153,12 +155,14 @@ public class ClientProxy extends CommonProxy
         GuiCameraEditor.PANELS.put(LookFixture.class, new GuiLookFixturePanel(font));
         GuiCameraEditor.PANELS.put(FollowFixture.class, new GuiFollowFixturePanel(font));
         GuiCameraEditor.PANELS.put(CircularFixture.class, new GuiCircularFixturePanel(font));
+        GuiCameraEditor.PANELS.put(KeyframeFixture.class, new GuiKeyframeFixturePanel(font));
 
         FixtureRegistry.registerClient(IdleFixture.class, I18n.format("aperture.gui.fixtures.idle"), new Color(0.085F, 0.62F, 0.395F));
         FixtureRegistry.registerClient(PathFixture.class, I18n.format("aperture.gui.fixtures.path"), new Color(0.408F, 0.128F, 0.681F));
         FixtureRegistry.registerClient(LookFixture.class, I18n.format("aperture.gui.fixtures.look"), new Color(0.298F, 0.690F, 0.972F));
         FixtureRegistry.registerClient(FollowFixture.class, I18n.format("aperture.gui.fixtures.follow"), new Color(0.85F, 0.137F, 0.329F));
         FixtureRegistry.registerClient(CircularFixture.class, I18n.format("aperture.gui.fixtures.circular"), new Color(0.298F, 0.631F, 0.247F));
+        FixtureRegistry.registerClient(KeyframeFixture.class, I18n.format("aperture.gui.fixtures.keyframe"), Color.fromHex(0xFF6423));
 
         /* Register camera modifiers */
         GuiModifiersManager.PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);

@@ -64,6 +64,7 @@ aperture.gui:
         look: Look
         follow: Follow
         circular: Circular
+        keyframe: Keyframe
 
     modifiers:
         title: Modifiers
