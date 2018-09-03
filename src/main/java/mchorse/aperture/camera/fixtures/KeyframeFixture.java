@@ -271,7 +271,11 @@ public class KeyframeFixture extends AbstractFixture
         @Expose
         public float value;
 
+        @Expose
         public Interpolation interp = Interpolation.LINEAR;
+
+        @Expose
+        public Easing easing = Easing.IN;
 
         public Keyframe(long tick, float value)
         {
@@ -292,12 +296,17 @@ public class KeyframeFixture extends AbstractFixture
         }
 
         public void fromByteBuf(ByteBuf buffer)
-        {}
+        {
+            this.interp = Interpolation.values()[buffer.readInt()];
+            this.easing = Easing.values()[buffer.readInt()];
+        }
 
         public void toByteBuf(ByteBuf buffer)
         {
             buffer.writeLong(this.tick);
             buffer.writeFloat(this.value);
+            buffer.writeInt(this.interp.ordinal());
+            buffer.writeInt(this.easing.ordinal());
         }
     }
 
@@ -324,7 +333,16 @@ public class KeyframeFixture extends AbstractFixture
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
             {
-                return a.value + (b.value - a.value) * x * x;
+                if (a.easing == Easing.IN) return a.value + (b.value - a.value) * x * x;
+                if (a.easing == Easing.OUT) return a.value - (b.value - a.value) * x * (x - 2);
+
+                x *= 2;
+
+                if (x < 1F) return a.value + (b.value - a.value) / 2 * x * x;
+
+                x -= 1;
+
+                return a.value - (b.value - a.value) / 2 * (x * (x - 2) - 1);
             }
         },
         CUBIC
@@ -332,7 +350,20 @@ public class KeyframeFixture extends AbstractFixture
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
             {
-                return a.value + (b.value - a.value) * x * x * x;
+                if (a.easing == Easing.IN) return a.value + (b.value - a.value) * x * x * x;
+                if (a.easing == Easing.OUT)
+                {
+                    x -= 1;
+                    return a.value + (b.value - a.value) * (x * x * x + 1);
+                }
+
+                x *= 2;
+
+                if (x < 1F) return a.value + (b.value - a.value) / 2 * x * x * x;
+
+                x -= 2;
+
+                return a.value + (b.value - a.value) / 2 * (x * x * x + 2);
             }
         },
         EXP
@@ -340,7 +371,19 @@ public class KeyframeFixture extends AbstractFixture
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
             {
-                return a.value + (b.value - a.value) * (float) Math.pow(2, 10 * (x - 1));
+                if (a.easing == Easing.IN) return a.value + (b.value - a.value) * (float) Math.pow(2, 10 * (x - 1));
+                if (a.easing == Easing.OUT) return a.value + (b.value - a.value) * (float) (-Math.pow(2, -10 * x) + 1);
+
+                if (x == 0) return a.value;
+                if (x == 1) return b.value;
+
+                x *= 2;
+
+                if (x < 1F) return a.value + (b.value - a.value) / 2 * (float) Math.pow(2, 10 * (x - 1));
+
+                x -= 1;
+
+                return a.value + (b.value - a.value) / 2 * (float) (-Math.pow(2, -10 * x) + 2);
             }
         },
         BEZIER
