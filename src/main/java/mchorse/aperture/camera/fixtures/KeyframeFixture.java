@@ -286,6 +286,18 @@ public class KeyframeFixture extends AbstractFixture
         @Expose
         public Easing easing = Easing.IN;
 
+        @Expose
+        public float rx = 5;
+
+        @Expose
+        public float ry;
+
+        @Expose
+        public float lx = 5;
+
+        @Expose
+        public float ly;
+
         public Keyframe(long tick, float value)
         {
             this.tick = tick;
@@ -403,8 +415,13 @@ public class KeyframeFixture extends AbstractFixture
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
             {
-                /* TODO: actually implement it */
-                return Interpolations.lerp(a.value, b.value, x);
+                float y1 = Interpolations.lerp(a.value, a.value + a.ry, x);
+                float y2 = Interpolations.lerp(a.value + a.ry, b.value + b.ly, x);
+                float y3 = Interpolations.lerp(b.value + b.ly, b.value, x);
+                float y4 = Interpolations.lerp(y1, y2, x);
+                float y5 = Interpolations.lerp(y2, y3, x);
+
+                return Interpolations.lerp(y4, y5, x);
             }
         };
 

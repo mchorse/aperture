@@ -55,8 +55,18 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     private boolean dragging = false;
     private boolean moving = false;
+    private boolean scrolling = false;
+    private int which = 0;
     private int lastX;
     private int lastY;
+    private int lastH;
+    private int lastV;
+    private int lastSX;
+    private int lastSY;
+
+    private int shiftX = 0;
+    private int shiftY = 0;
+    private int zoomY = 1;
 
     public GuiKeyframeFixturePanel(FontRenderer font)
     {
@@ -180,6 +190,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
 
         this.fillData(this.active.keyframes.get(this.selected));
+
+        if (this.active.keyframes.size() == 1)
+        {
+            this.shiftX = 0;
+            this.shiftY = (int) this.active.keyframes.get(0).value;
+        }
     }
 
     private void removeKeyframe()
@@ -221,6 +237,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         if (!same)
         {
+            this.shiftX = 0;
             this.selectChannel(fixture.x);
         }
 
@@ -267,6 +284,13 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         if (channel == this.fixture.pitch) this.channel = 4;
         if (channel == this.fixture.roll) this.channel = 5;
         if (channel == this.fixture.fov) this.channel = 6;
+
+        this.shiftY = 0;
+
+        if (!channel.isEmpty())
+        {
+            this.shiftY = (int) channel.keyframes.get(0).value;
+        }
     }
 
     @Override
@@ -368,41 +392,54 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         /* Select current point with a mouse click */
         if (this.frames.isInside(mouseX, mouseY))
         {
-            Keyframe prev = null;
-            int ry = 0;
-            int index = 0;
-            float c = this.frames.y + this.frames.h / 2;
-
-            for (Keyframe frame : this.active.keyframes)
+            if (mouseButton == 0)
             {
-                if (prev == null)
+                Keyframe prev = null;
+                int index = 0;
+
+                for (Keyframe frame : this.active.keyframes)
                 {
-                    ry = (int) frame.value;
+                    boolean l = prev != null && prev.interp == Interpolation.BEZIER && this.isInside(frame.tick - frame.lx, frame.value + frame.ly, mouseX, mouseY);
+                    boolean r = frame.interp == Interpolation.BEZIER && this.isInside(frame.tick + frame.rx, frame.value + frame.ry, mouseX, mouseY);
+                    boolean p = this.isInside(frame.tick, frame.value, mouseX, mouseY);
+
+                    if (l || r || p)
+                    {
+                        this.which = l ? 1 : (r ? 2 : 0);
+                        this.selected = index;
+                        this.fillData(frame);
+
+                        this.lastX = mouseX;
+                        this.lastY = mouseY;
+                        this.dragging = true;
+
+                        break;
+                    }
+
                     prev = frame;
+                    index++;
                 }
-
-                int x = (int) (frame.tick * 2);
-                int y = (int) (-(frame.value - ry) + c);
-
-                double d = Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2);
-
-                if (Math.sqrt(d) < 4)
-                {
-                    this.selected = index;
-                    this.fillData(frame);
-
-                    this.lastX = mouseX;
-                    this.lastY = mouseY;
-                    this.dragging = true;
-
-                    break;
-                }
-
-                index++;
+            }
+            else if (mouseButton == 2)
+            {
+                this.scrolling = true;
+                this.lastH = mouseX;
+                this.lastV = mouseY;
+                this.lastSX = this.shiftX;
+                this.lastSY = this.shiftY;
             }
         }
 
         this.buttons.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    private boolean isInside(float tick, float value, int mouseX, int mouseY)
+    {
+        int x = this.toGraphX(tick);
+        int y = this.toGraphY(value);
+        double d = Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2);
+
+        return Math.sqrt(d) < 4;
     }
 
     @Override
@@ -433,6 +470,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             this.dragging = false;
             this.moving = false;
         }
+
+        this.scrolling = false;
     }
 
     @Override
@@ -476,6 +515,37 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             return;
         }
 
+        if (this.scrolling)
+        {
+            this.shiftX = this.lastSX - (mouseX - this.lastH);
+            this.shiftY = this.lastSY + (mouseY - this.lastV);
+        }
+        /* Move the current keyframe */
+        else if (this.moving)
+        {
+            Keyframe frame = this.active.keyframes.get(this.selected);
+            long x = this.fromGraphX(mouseX);
+            float y = this.fromGraphY(mouseY);
+
+            if (this.which == 0)
+            {
+                frame.tick = x;
+                frame.value = y;
+            }
+            else if (this.which == 1)
+            {
+                frame.lx = -(x - frame.tick);
+                frame.ly = y - frame.value;
+            }
+            else if (this.which == 2)
+            {
+                frame.rx = x - frame.tick;
+                frame.ry = y - frame.value;
+            }
+
+            this.fillData(frame);
+        }
+
         /* Draw graph of the keyframe channel */
         GL11.glLineWidth(2);
         GL11.glPointSize(8);
@@ -485,6 +555,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         GlStateManager.enableBlend();
 
+        /* Colorize the graph for given channel */
         if (this.channel == 0) GlStateManager.color(0.9F, 0.1F, 0.2F, 0.9F);
         else if (this.channel == 1) GlStateManager.color(0.1F, 0.9F, 0.2F, 0.9F);
         else if (this.channel == 2) GlStateManager.color(0.2F, 0.1F, 0.9F, 0.9F);
@@ -492,65 +563,64 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         else if (this.channel == 4) GlStateManager.color(0.8F, 0.1F, 0.9F, 0.9F);
         else if (this.channel == 5) GlStateManager.color(0.9F, 0.8F, 0.1F, 0.9F);
         else if (this.channel == 6) GlStateManager.color(0, 0, 0, 1);
-        else GlStateManager.color(1, 1, 1, 0.75F);
+        else GlStateManager.color(1, 1, 1, 0.9F);
 
         /* Draw lines */
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
 
         Keyframe prev = null;
-        float y = 0;
-        float c = this.frames.y + this.frames.h / 2;
-
-        vb.pos(0, c, 0).endVertex();
 
         for (Keyframe frame : this.active.keyframes)
         {
             if (prev != null)
             {
-                int px = (int) prev.tick * 2;
-                int fx = (int) frame.tick * 2;
+                int px = this.toGraphX(prev.tick);
+                int fx = this.toGraphX(frame.tick);
 
                 if (prev.interp == Interpolation.LINEAR)
                 {
-                    vb.pos(px, -(prev.value - y) + c, 0).endVertex();
-                    vb.pos(fx, -(frame.value - y) + c, 0).endVertex();
+                    vb.pos(px, this.toGraphY(prev.value), 0).endVertex();
+                    vb.pos(fx, this.toGraphY(frame.value), 0).endVertex();
                 }
                 else
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        vb.pos(px + (fx - px) * (i / 10F), -(prev.interpolate(frame, i / 10F) - y) + c, 0).endVertex();
-                        vb.pos(px + (fx - px) * ((i + 1) / 10F), -(prev.interpolate(frame, (i + 1) / 10F) - y) + c, 0).endVertex();
+                        vb.pos(px + (fx - px) * (i / 10F), this.toGraphY(prev.interpolate(frame, i / 10F)), 0).endVertex();
+                        vb.pos(px + (fx - px) * ((i + 1) / 10F), this.toGraphY(prev.interpolate(frame, (i + 1) / 10F)), 0).endVertex();
                     }
+                }
+
+                if (prev.interp == Interpolation.BEZIER)
+                {
+                    vb.pos(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly), 0).endVertex();
+                    vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
                 }
             }
 
             if (prev == null)
             {
-                y = frame.value;
-                vb.pos(frame.tick * 2, -(frame.value - y) + c, 0).endVertex();
+                vb.pos(0, this.toGraphY(frame.value), 0).endVertex();
+                vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
+            }
+
+            if (frame.interp == Interpolation.BEZIER)
+            {
+                vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
+                vb.pos(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry), 0).endVertex();
             }
 
             prev = frame;
         }
 
-        vb.pos(prev.tick * 2, -(prev.value - y) + c, 0).endVertex();
-        vb.pos(w, -(prev.value - y) + c, 0).endVertex();
+        vb.pos(this.toGraphX(prev.tick), this.toGraphY(prev.value), 0).endVertex();
+        vb.pos(w, this.toGraphY(prev.value), 0).endVertex();
 
         Tessellator.getInstance().draw();
 
-        /* Move the current keyframe */
-        if (this.moving)
-        {
-            Keyframe frame = this.active.keyframes.get(this.selected);
-
-            frame.tick = mouseX / 2;
-            frame.value = -(mouseY - c) + y;
-            this.fillData(frame);
-        }
-
         /* Draw points */
         int i = 0;
+        prev = null;
 
         for (Keyframe frame : this.active.keyframes)
         {
@@ -564,17 +634,29 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 GL11.glColor3f(1, 1, 1);
             }
 
-            GL11.glVertex2f(frame.tick * 2, -(frame.value - y) + c);
+            GL11.glVertex2f(this.toGraphX(frame.tick), this.toGraphY(frame.value));
+
+            if (frame.interp == Interpolation.BEZIER)
+            {
+                GL11.glVertex2f(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry));
+            }
+
+            if (prev != null && prev.interp == Interpolation.BEZIER)
+            {
+                GL11.glVertex2f(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly));
+            }
+
             GL11.glEnd();
 
+            prev = frame;
             i++;
         }
 
         /* Draw current point at the scrub */
         int cx = (int) (this.editor.scrub.value - this.currentOffset());
-        int cy = (int) (-(this.active.interpolate(cx) - y) + c);
+        int cy = this.toGraphY(this.active.interpolate(cx));
 
-        cx *= 2;
+        cx = this.toGraphX(cx);
 
         Gui.drawRect(cx - 1, cy, cx + 1, h, 0xff57f52a);
 
@@ -587,5 +669,25 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
+    }
+
+    private int toGraphX(float tick)
+    {
+        return (int) tick * 2 - this.shiftX;
+    }
+
+    private int toGraphY(float value)
+    {
+        return (int) -(value - this.shiftY) + (this.frames.y + this.frames.h / 2);
+    }
+
+    private long fromGraphX(int mouseX)
+    {
+        return (long) (mouseX + this.shiftX) / 2;
+    }
+
+    private float fromGraphY(int mouseY)
+    {
+        return (float) -(mouseY - (this.frames.y + this.frames.h / 2)) + this.shiftY;
     }
 }
