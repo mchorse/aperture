@@ -46,7 +46,7 @@ public class GuiFixturesPopup
     {
         this.area.set(x, y, w, h);
 
-        int bh = (h - 2) / 5;
+        int bh = (h - 2) / 6;
         int bw = (w - 2);
         int i = 0;
 

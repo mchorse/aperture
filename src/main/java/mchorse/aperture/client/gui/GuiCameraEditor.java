@@ -558,7 +558,7 @@ public class GuiCameraEditor extends GuiScreen implements IScrubListener, IFixtu
 
         /* Setup areas of widgets */
         this.scrub.area.set(10, this.height - 20, this.width - 20, 20);
-        this.popup.update(this.add.x - 44, 20, 62, 102);
+        this.popup.update(this.add.x - 44, 20, 62, 122);
 
         if (this.fixturePanel != null)
         {
