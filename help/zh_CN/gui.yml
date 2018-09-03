@@ -76,7 +76,7 @@ aperture.gui:
         translate: 翻译
         angle: 角度
         orbit: 轨道
-		drag: 拖拽
+        drag: 拖拽
 
         panels:
             copy_entity: 复制实体
@@ -86,8 +86,8 @@ aperture.gui:
 
             relative: 是绝对的？
             at_block: 看着方块？
-			
-			factor: 因素
+
+            factor: 因素
 
     profiles:
         loaded: 已加载
