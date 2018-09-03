@@ -179,7 +179,16 @@ public class KeyframeFixture extends AbstractFixture
          */
         public int insert(long tick, float value)
         {
-            Keyframe prev = null;
+            Keyframe prev = this.keyframes.get(0);
+
+            if (tick < prev.tick)
+            {
+                this.keyframes.add(0, new Keyframe(tick, value));
+
+                return 0;
+            }
+
+            prev = null;
             int index = 0;
 
             for (Keyframe frame : this.keyframes)
@@ -290,9 +299,12 @@ public class KeyframeFixture extends AbstractFixture
 
         public Keyframe clone()
         {
-            Keyframe keyframe = new Keyframe(this.tick, this.value);
+            Keyframe frame = new Keyframe(this.tick, this.value);
 
-            return keyframe;
+            frame.interp = this.interp;
+            frame.easing = this.easing;
+
+            return frame;
         }
 
         public void fromByteBuf(ByteBuf buffer)
