@@ -323,6 +323,10 @@ public class KeyframeFixture extends AbstractFixture
         {
             this.interp = Interpolation.values()[buffer.readInt()];
             this.easing = Easing.values()[buffer.readInt()];
+            this.rx = buffer.readFloat();
+            this.ry = buffer.readFloat();
+            this.lx = buffer.readFloat();
+            this.ly = buffer.readFloat();
         }
 
         public void toByteBuf(ByteBuf buffer)
@@ -331,6 +335,10 @@ public class KeyframeFixture extends AbstractFixture
             buffer.writeFloat(this.value);
             buffer.writeInt(this.interp.ordinal());
             buffer.writeInt(this.easing.ordinal());
+            buffer.writeFloat(this.rx);
+            buffer.writeFloat(this.ry);
+            buffer.writeFloat(this.lx);
+            buffer.writeFloat(this.ly);
         }
     }
 

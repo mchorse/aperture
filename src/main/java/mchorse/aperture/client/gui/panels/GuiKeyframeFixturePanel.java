@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.MathHelper;
 
 public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture> implements IButtonListener
 {
@@ -66,7 +67,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     private int shiftX = 0;
     private int shiftY = 0;
-    private int zoomY = 1;
+    private float zoomY = 1;
 
     public GuiKeyframeFixturePanel(FontRenderer font)
     {
@@ -238,6 +239,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         if (!same)
         {
             this.shiftX = 0;
+            this.zoomY = 1;
             this.selectChannel(fixture.x);
         }
 
@@ -443,6 +445,15 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
+    public void mouseScroll(int x, int y, int scroll)
+    {
+        super.mouseScroll(x, y, scroll);
+
+        this.zoomY += Math.copySign(0.2F, scroll);
+        this.zoomY = MathHelper.clamp_float(this.zoomY, 0.1F, 100);
+    }
+
+    @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
         super.mouseReleased(mouseX, mouseY, state);
@@ -515,10 +526,16 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             return;
         }
 
+        int leftBorder = this.toGraphX(0);
+        int rightBorder = this.toGraphX(this.fixture.getDuration());
+
+        if (leftBorder > 0) Gui.drawRect(0, this.frames.y, leftBorder, this.frames.y + this.frames.h, 0x88000000);
+        if (rightBorder < w) Gui.drawRect(rightBorder, this.frames.y, w, this.frames.y + this.frames.h, 0x88000000);
+
         if (this.scrolling)
         {
             this.shiftX = this.lastSX - (mouseX - this.lastH);
-            this.shiftY = this.lastSY + (mouseY - this.lastV);
+            this.shiftY = this.lastSY + (int) ((mouseY - this.lastV) / this.zoomY);
         }
         /* Move the current keyframe */
         else if (this.moving)
@@ -678,7 +695,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     private int toGraphY(float value)
     {
-        return (int) -(value - this.shiftY) + (this.frames.y + this.frames.h / 2);
+        return (int) (-(value - this.shiftY) * this.zoomY) + (this.frames.y + this.frames.h / 2);
     }
 
     private long fromGraphX(int mouseX)
@@ -688,6 +705,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     private float fromGraphY(int mouseY)
     {
-        return (float) -(mouseY - (this.frames.y + this.frames.h / 2)) + this.shiftY;
+        return (float) (-(mouseY - (this.frames.y + this.frames.h / 2)) / this.zoomY) + this.shiftY;
     }
 }
