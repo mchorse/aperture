@@ -162,7 +162,7 @@ public class ClientProxy extends CommonProxy
         FixtureRegistry.registerClient(LookFixture.class, I18n.format("aperture.gui.fixtures.look"), new Color(0.298F, 0.690F, 0.972F));
         FixtureRegistry.registerClient(FollowFixture.class, I18n.format("aperture.gui.fixtures.follow"), new Color(0.85F, 0.137F, 0.329F));
         FixtureRegistry.registerClient(CircularFixture.class, I18n.format("aperture.gui.fixtures.circular"), new Color(0.298F, 0.631F, 0.247F));
-        FixtureRegistry.registerClient(KeyframeFixture.class, I18n.format("aperture.gui.fixtures.keyframe"), Color.fromHex(0x32db8c));
+        FixtureRegistry.registerClient(KeyframeFixture.class, I18n.format("aperture.gui.fixtures.keyframe"), new Color(0.874F, 0.184F, 0.625F));
 
         /* Register camera modifiers */
         GuiModifiersManager.PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);

@@ -179,13 +179,18 @@ public class KeyframeFixture extends AbstractFixture
          */
         public int insert(long tick, float value)
         {
-            Keyframe prev = this.keyframes.get(0);
+            Keyframe prev = null;
 
-            if (tick < prev.tick)
+            if (!this.keyframes.isEmpty())
             {
-                this.keyframes.add(0, new Keyframe(tick, value));
+                prev = this.keyframes.get(0);
 
-                return 0;
+                if (tick < prev.tick)
+                {
+                    this.keyframes.add(0, new Keyframe(tick, value));
+
+                    return 0;
+                }
             }
 
             prev = null;
