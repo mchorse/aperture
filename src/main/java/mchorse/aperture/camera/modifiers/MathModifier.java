@@ -5,9 +5,9 @@ import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.utils.math.IValue;
-import mchorse.aperture.utils.math.MathBuilder;
-import mchorse.aperture.utils.math.Variable;
+import mchorse.mclib.math.IValue;
+import mchorse.mclib.math.MathBuilder;
+import mchorse.mclib.math.Variable;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**

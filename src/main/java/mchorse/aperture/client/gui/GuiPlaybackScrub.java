@@ -4,7 +4,7 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.utils.Area;
+import mchorse.mclib.client.gui.utils.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;

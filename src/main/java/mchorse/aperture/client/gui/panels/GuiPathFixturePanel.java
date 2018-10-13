@@ -2,14 +2,14 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
-import mchorse.aperture.client.gui.GuiTrackpad;
-import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
-import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
+import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;

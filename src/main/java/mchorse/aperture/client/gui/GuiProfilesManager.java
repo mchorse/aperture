@@ -17,8 +17,8 @@ import mchorse.aperture.client.gui.panels.IGuiModule;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketRequestCameraProfiles;
-import mchorse.aperture.utils.Area;
-import mchorse.aperture.utils.ScrollArea;
+import mchorse.mclib.client.gui.utils.Area;
+import mchorse.mclib.client.gui.utils.ScrollArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -235,6 +235,7 @@ public class GuiProfilesManager implements IGuiModule
         this.name.setCursorPositionZero();
     }
 
+    @Override
     public void mouseScroll(int mouseX, int mouseY, int scroll)
     {
         ScrollArea area = this.showLoaded ? this.scrollLoaded : this.scrollLoad;

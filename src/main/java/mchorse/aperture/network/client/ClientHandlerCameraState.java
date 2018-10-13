@@ -3,6 +3,7 @@ package mchorse.aperture.network.client;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.network.common.PacketCameraState;
+import mchorse.mclib.network.ClientMessageHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

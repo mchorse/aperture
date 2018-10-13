@@ -2,10 +2,10 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.client.gui.GuiTrackpad;
-import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.utils.Area;
+import mchorse.mclib.client.gui.utils.Area;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;

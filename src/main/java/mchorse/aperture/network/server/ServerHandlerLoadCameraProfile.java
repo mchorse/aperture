@@ -2,6 +2,7 @@ package mchorse.aperture.network.server;
 
 import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.network.common.PacketLoadCameraProfile;
+import mchorse.mclib.network.ServerMessageHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ServerHandlerLoadCameraProfile extends ServerMessageHandler<PacketLoadCameraProfile>

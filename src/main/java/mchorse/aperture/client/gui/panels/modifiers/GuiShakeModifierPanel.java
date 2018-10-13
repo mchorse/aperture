@@ -2,9 +2,9 @@ package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
-import mchorse.aperture.client.gui.GuiTrackpad;
-import mchorse.aperture.client.gui.GuiTrackpad.ITrackpadListener;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 
