@@ -5,7 +5,7 @@ import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
 import mchorse.aperture.client.gui.panels.IButtonListener;
 import mchorse.aperture.client.gui.panels.IGuiModule;
 import mchorse.aperture.client.gui.widgets.GuiButtonList;
-import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
+import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;

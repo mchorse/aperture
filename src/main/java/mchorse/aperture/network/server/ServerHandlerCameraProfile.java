@@ -5,6 +5,7 @@ import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.utils.L10n;
+import mchorse.mclib.network.ServerMessageHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ServerHandlerCameraProfile extends ServerMessageHandler<PacketCameraProfile>

@@ -3,6 +3,7 @@ package mchorse.aperture.network.server;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.common.PacketCameraReset;
+import mchorse.mclib.network.ServerMessageHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**

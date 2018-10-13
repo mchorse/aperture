@@ -2,8 +2,8 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
-import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;

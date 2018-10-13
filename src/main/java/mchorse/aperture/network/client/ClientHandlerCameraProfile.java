@@ -6,6 +6,7 @@ import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.utils.L10n;
+import mchorse.mclib.network.ClientMessageHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;

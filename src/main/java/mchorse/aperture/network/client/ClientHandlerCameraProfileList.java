@@ -7,6 +7,7 @@ import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
 import mchorse.aperture.network.common.PacketCameraProfileList;
+import mchorse.mclib.network.ClientMessageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
