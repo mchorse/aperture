@@ -8,11 +8,11 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
-import mchorse.aperture.client.gui.GuiTrackpad;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.client.gui.widgets.GuiButtonList;
-import mchorse.aperture.client.gui.widgets.buttons.GuiCirculate;
-import mchorse.aperture.utils.Area;
+import mchorse.mclib.client.gui.utils.Area;
+import mchorse.mclib.client.gui.widgets.GuiTrackpad;
+import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -705,6 +705,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     private float fromGraphY(int mouseY)
     {
-        return (float) (-(mouseY - (this.frames.y + this.frames.h / 2)) / this.zoomY) + this.shiftY;
+        return -(mouseY - (this.frames.y + this.frames.h / 2)) / this.zoomY + this.shiftY;
     }
 }
