@@ -14,6 +14,6 @@ public class ClientHandlerRenameCameraProfile extends ClientMessageHandler<Packe
     @SideOnly(Side.CLIENT)
     public void run(EntityPlayerSP player, PacketRenameCameraProfile message)
     {
-        ClientProxy.cameraEditor.profiles.rename(new ServerDestination(message.from), message.to);
+        ClientProxy.getCameraEditor().profiles.rename(new ServerDestination(message.from), message.to);
     }
 }

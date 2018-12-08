@@ -48,7 +48,7 @@ aperture.gui:
         save: 保存相機配置（Ctrl+S）
         profiles: 顯示相機配置
         config: 顯示相機編輯器選項
-        modifiers: 打開調整器面板（O）
+        modifiers: 打開調整器面板 (N)
         goto: 前往指定的幀
         add: 添加關鍵點
         dupe: 拷貝關鍵點

@@ -3,91 +3,87 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
-public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier> implements ITrackpadListener
+public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 {
-    public GuiTextField selector;
-    public String old = "";
+    public GuiTextElement selector;
 
-    public GuiTrackpad x;
-    public GuiTrackpad y;
-    public GuiTrackpad z;
+    public GuiTrackpadElement x;
+    public GuiTrackpadElement y;
+    public GuiTrackpadElement z;
 
-    public GuiCheckBox relative;
-    public GuiCheckBox atBlock;
+    public GuiButtonElement<GuiCheckBox> relative;
+    public GuiButtonElement<GuiCheckBox> atBlock;
 
-    public GuiLookModifierPanel(LookModifier modifier, GuiModifiersManager modifiers, FontRenderer font)
+    public GuiLookModifierPanel(Minecraft mc, LookModifier modifier, GuiModifiersManager modifiers)
     {
-        super(modifier, modifiers, font);
+        super(mc, modifier, modifiers);
 
-        this.selector = new GuiTextField(0, font, 0, 0, 0, 0);
-        this.selector.setMaxStringLength(500);
+        this.selector = new GuiTextElement(mc, 500, (str) ->
+        {
+            this.modifier.selector = str;
+            this.modifier.tryFindingEntity();
+            this.modifiers.editor.updateProfile();
+        });
 
-        this.x = new GuiTrackpad(this, font);
-        this.x.title = I18n.format("aperture.gui.panels.x");
-
-        this.y = new GuiTrackpad(this, font);
-        this.y.title = I18n.format("aperture.gui.panels.y");
-
-        this.z = new GuiTrackpad(this, font);
-        this.z.title = I18n.format("aperture.gui.panels.z");
-
-        this.relative = new GuiCheckBox(0, 0, 0, I18n.format("aperture.gui.modifiers.panels.relative"), false);
-        this.atBlock = new GuiCheckBox(0, 0, 0, I18n.format("aperture.gui.modifiers.panels.at_block"), false);
-    }
-
-    @Override
-    public void setTrackpadValue(GuiTrackpad trackpad, float value)
-    {
-        if (trackpad == this.x)
+        this.x = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.x"), (value) ->
         {
             this.modifier.block.x = value;
-        }
-        else if (trackpad == this.y)
+            this.modifiers.editor.updateProfile();
+        });
+
+        this.y = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.y"), (value) ->
         {
             this.modifier.block.y = value;
-        }
-        else if (trackpad == this.z)
+            this.modifiers.editor.updateProfile();
+        });
+
+        this.z = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.z"), (value) ->
         {
             this.modifier.block.z = value;
-        }
+            this.modifiers.editor.updateProfile();
+        });
 
-        this.modifiers.editor.updateProfile();
+        this.relative = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.relative"), false, (b) ->
+        {
+            this.modifier.relative = b.button.isChecked();
+            this.modifiers.editor.updateProfile();
+        });
+
+        this.atBlock = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.at_block"), false, (b) ->
+        {
+            this.modifier.atBlock = b.button.isChecked();
+            this.modifiers.editor.updateProfile();
+        });
+
+        this.selector.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
+        this.x.resizer().parent(this.area).set(5, 25, 0, 20).w(0.5F, -10);
+        this.y.resizer().parent(this.area).set(5, 25, 0, 20).x(0.5F, 5).w(0.5F, -10);
+        this.z.resizer().parent(this.area).set(5, 50, 0, 20).w(1, -10);
+        this.relative.resizer().parent(this.area).set(5, 80, this.relative.button.width, 11);
+        this.atBlock.resizer().parent(this.area).set(5, 80, this.atBlock.button.width, 11).x(0.5F, 5);
+
+        this.children.add(this.selector, this.x, this.y, this.z, this.relative, this.atBlock);
     }
 
     @Override
-    public void update(int x, int y, int w)
+    public void resize(int width, int height)
     {
-        super.update(x, y, w);
-
-        GuiUtils.setSize(this.selector, x + 5, y + 25, w - 10, 20);
-
-        int width = (w - 20) / 2;
+        super.resize(width, height);
 
         this.selector.setText(this.modifier.selector);
-        this.selector.setCursorPositionZero();
-
-        this.x.update(x + 5, y + 25, width, 20);
-        this.y.update(x + w - 5 - width, y + 25, width, 20);
-        this.z.update(x + 5, y + 50, w - 10, 20);
-
-        this.relative.xPosition = x + 5;
-        this.relative.yPosition = y + 80;
-        this.atBlock.xPosition = x + 10 + width;
-        this.atBlock.yPosition = y + 80;
-
         this.x.setValue(this.modifier.block.x);
         this.y.setValue(this.modifier.block.y);
         this.z.setValue(this.modifier.block.z);
-        this.relative.setIsChecked(this.modifier.relative);
-        this.atBlock.setIsChecked(this.modifier.atBlock);
+        this.relative.button.setIsChecked(this.modifier.relative);
+        this.atBlock.button.setIsChecked(this.modifier.atBlock);
     }
 
     @Override
@@ -97,100 +93,13 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-        if (this.modifier.atBlock)
+        if (this.selector.isVisible() && !this.selector.field.isFocused())
         {
-            this.x.mouseClicked(mouseX, mouseY, mouseButton);
-            this.y.mouseClicked(mouseX, mouseY, mouseButton);
-            this.z.mouseClicked(mouseX, mouseY, mouseButton);
+            GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.area.x + this.selector.area.w - 4, this.selector.area.y + 5, 0xffaaaaaa);
         }
-        else
-        {
-            this.selector.mouseClicked(mouseX, mouseY, mouseButton);
-        }
-
-        Minecraft mc = Minecraft.getMinecraft();
-
-        if (this.relative.mousePressed(mc, mouseX, mouseY))
-        {
-            this.modifier.relative = this.relative.isChecked();
-            this.modifiers.editor.updateProfile();
-        }
-        else if (this.atBlock.mousePressed(mc, mouseX, mouseY))
-        {
-            this.modifier.atBlock = this.atBlock.isChecked();
-            this.modifiers.editor.updateProfile();
-        }
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        if (this.modifier.atBlock)
-        {
-            this.x.mouseReleased(mouseX, mouseY, state);
-            this.y.mouseReleased(mouseX, mouseY, state);
-            this.z.mouseReleased(mouseX, mouseY, state);
-        }
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        if (this.modifier.atBlock)
-        {
-            this.x.keyTyped(typedChar, keyCode);
-            this.y.keyTyped(typedChar, keyCode);
-            this.z.keyTyped(typedChar, keyCode);
-        }
-        else
-        {
-            this.selector.textboxKeyTyped(typedChar, keyCode);
-
-            String text = this.selector.getText();
-
-            if (this.selector.isFocused() && !text.equals(this.old) && !text.isEmpty())
-            {
-                this.modifier.selector = text;
-                this.modifier.tryFindingEntity();
-                this.modifiers.editor.updateProfile();
-            }
-        }
-    }
-
-    @Override
-    public boolean hasActiveTextfields()
-    {
-        return this.selector.isFocused() || this.x.text.isFocused() || this.y.text.isFocused() || this.z.text.isFocused();
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(mouseX, mouseY, partialTicks);
-
-        if (this.modifier.atBlock)
-        {
-            this.x.draw(mouseX, mouseY, partialTicks);
-            this.y.draw(mouseX, mouseY, partialTicks);
-            this.z.draw(mouseX, mouseY, partialTicks);
-        }
-        else
-        {
-            this.selector.drawTextBox();
-
-            if (!this.selector.isFocused())
-            {
-                GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.xPosition + this.selector.width - 4, this.selector.yPosition + 5, 0xffaaaaaa);
-            }
-        }
-
-        Minecraft mc = Minecraft.getMinecraft();
-
-        this.relative.drawButton(mc, mouseX, mouseY);
-        this.atBlock.drawButton(mc, mouseX, mouseY);
     }
 }

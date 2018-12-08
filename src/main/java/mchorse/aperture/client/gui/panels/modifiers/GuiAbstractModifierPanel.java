@@ -4,51 +4,58 @@ import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiModifiersManager;
-import mchorse.aperture.client.gui.panels.IGuiModule;
-import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.utils.Area;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
 
-public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> implements IGuiModule
+public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> extends GuiElement
 {
     public T modifier;
     public GuiModifiersManager modifiers;
-    public FontRenderer font;
 
     public String title = "";
-    public Area area = new Area();
 
-    public GuiButton remove;
-    public GuiTextureButton enable;
-    public GuiButton moveUp;
-    public GuiButton moveDown;
+    public GuiButtonElement<GuiTextureButton> enable;
+    public GuiButtonElement<GuiTextureButton> remove;
+    public GuiButtonElement<GuiTextureButton> moveUp;
+    public GuiButtonElement<GuiTextureButton> moveDown;
 
-    public GuiAbstractModifierPanel(T modifier, GuiModifiersManager modifiers, FontRenderer font)
+    public GuiAbstractModifierPanel(Minecraft mc, T modifier, GuiModifiersManager modifiers)
     {
+        super(mc);
+
         this.modifier = modifier;
         this.modifiers = modifiers;
-        this.font = font;
 
-        this.remove = new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(32, 32).setActiveTexPos(32, 48);
-        this.enable = new GuiTextureButton(1, 0, 0, GuiCameraEditor.EDITOR_TEXTURE);
-        this.moveUp = new GuiTextureButton(2, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(96, 32).setActiveTexPos(96, 48);
-        this.moveDown = new GuiTextureButton(3, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(96, 40).setActiveTexPos(96, 56);
+        this.createChildren();
+        this.enable = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 0, 0, 0, 0, (b) ->
+        {
+            this.modifier.enabled = !this.modifier.enabled;
+            this.updateEnable();
+            this.modifiers.editor.updateProfile();
+        });
+        this.remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 32, 32, 32, 48, (b) -> this.modifiers.removeModifier(this));
+        this.moveUp = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 96, 32, 96, 48, (b) -> this.modifiers.moveModifier(this, -1));
+        this.moveDown = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 96, 40, 96, 56, (b) -> this.modifiers.moveModifier(this, 1));
 
-        this.title = ModifierRegistry.CLIENT.get(modifier.getClass()).title;
+        this.remove.resizer().parent(this.area).set(0, 2, 16, 16).x(1, -18);
+        this.enable.resizer().relative(this.remove.resizer()).set(-20, 0, 16, 16);
+        this.moveUp.resizer().relative(this.enable.resizer()).set(-20, 0, 16, 8);
+        this.moveDown.resizer().relative(this.enable.resizer()).set(-20, 8, 16, 8);
+
+        this.children.add(this.enable, this.remove, this.moveUp, this.moveDown);
+
+        this.title = I18n.format(ModifierRegistry.CLIENT.get(modifier.getClass()).title);
     }
 
-    public void update(int x, int y, int w)
+    @Override
+    public void resize(int width, int height)
     {
-        this.area.set(x, y, w, this.getHeight());
-
-        GuiUtils.setSize(this.remove, x + w - 18, y + 2, 16, 16);
-        GuiUtils.setSize(this.enable, x + w - 38, y + 2, 16, 16);
-        GuiUtils.setSize(this.moveUp, x + w - 58, y + 2, 16, 8);
-        GuiUtils.setSize(this.moveDown, x + w - 58, y + 2 + 8, 16, 8);
+        super.resize(width, height);
 
         this.updateEnable();
     }
@@ -57,66 +64,29 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> imple
     {
         int x = this.modifier.enabled ? 128 : 112;
 
-        this.enable.setTexPos(x, 32).setActiveTexPos(x, 48);
+        this.enable.button.setTexPos(x, 32).setActiveTexPos(x, 48);
     }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        Minecraft mc = this.modifiers.editor.mc;
-
-        if (this.enable.mousePressed(mc, mouseX, mouseY))
-        {
-            this.modifier.enabled = !this.modifier.enabled;
-            this.updateEnable();
-            this.modifiers.editor.updateProfile();
-        }
-
-        if (this.remove.mousePressed(mc, mouseX, mouseY))
-        {
-            this.modifiers.removeModifier(this);
-        }
-
-        if (this.moveUp.mousePressed(mc, mouseX, mouseY))
-        {
-            this.modifiers.moveModifier(this, -1);
-        }
-
-        if (this.moveDown.mousePressed(mc, mouseX, mouseY))
-        {
-            this.modifiers.moveModifier(this, 1);
-        }
-    }
-
-    @Override
-    public void mouseScroll(int x, int y, int scroll)
-    {}
 
     public int getHeight()
     {
         return 20;
     }
 
-    public boolean hasActiveTextfields()
-    {
-        return false;
-    }
-
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        int h = this.getHeight();
         int color = 0xaa000000 + ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getHex();
 
         Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + 20, color);
         this.font.drawStringWithShadow(this.title, this.area.x + 5, this.area.y + 7, 0xffffff);
 
-        if (mouseX >= this.area.x && mouseY >= this.area.y && mouseX <= this.area.x + this.area.w && mouseY <= this.area.y + h)
-        {
-            this.remove.drawButton(this.modifiers.editor.mc, mouseX, mouseY);
-            this.enable.drawButton(this.modifiers.editor.mc, mouseX, mouseY);
-            this.moveUp.drawButton(this.modifiers.editor.mc, mouseX, mouseY);
-            this.moveDown.drawButton(this.modifiers.editor.mc, mouseX, mouseY);
-        }
+        boolean within = this.area.isInside(mouseX, mouseY);
+
+        this.remove.setVisible(within);
+        this.enable.setVisible(within);
+        this.moveUp.setVisible(within);
+        this.moveDown.setVisible(within);
+
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
     }
 }

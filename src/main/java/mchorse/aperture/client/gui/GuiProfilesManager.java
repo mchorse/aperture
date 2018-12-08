@@ -13,16 +13,17 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
-import mchorse.aperture.client.gui.panels.IGuiModule;
-import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketRequestCameraProfiles;
-import mchorse.mclib.client.gui.utils.Area;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.ScrollArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
@@ -32,35 +33,56 @@ import net.minecraft.client.resources.I18n;
  * This GUI is responsible managing currently loaded and possible for loading 
  * camera profiles. 
  */
-public class GuiProfilesManager implements IGuiModule
+public class GuiProfilesManager extends GuiElement
 {
-    private Minecraft mc = Minecraft.getMinecraft();
-
-    public Area rect = new Area();
     public ScrollArea scrollLoaded = new ScrollArea(20);
     public ScrollArea scrollLoad = new ScrollArea(20);
+
     public GuiCameraEditor editor;
-    public boolean visible;
     public boolean showLoaded = true;
     public boolean rename = false;
     public boolean error = false;
     public List<AbstractDestination> destToLoad = new ArrayList<AbstractDestination>();
 
-    public GuiButton loaded;
-    public GuiButton load;
-    public GuiButton add;
+    public GuiButtonElement<GuiButton> loaded;
+    public GuiButtonElement<GuiButton> load;
+    public GuiButtonElement<GuiButton> add;
 
-    public GuiTextField name;
+    public GuiTextElement name;
 
-    public GuiProfilesManager(GuiCameraEditor editor)
+    public GuiProfilesManager(Minecraft mc, GuiCameraEditor editor)
     {
+        super(mc);
+
         this.editor = editor;
+        this.createChildren();
 
-        this.loaded = new GuiButton(1, 0, 0, I18n.format("aperture.gui.profiles.loaded"));
-        this.load = new GuiButton(2, 0, 0, I18n.format("aperture.gui.profiles.load"));
-        this.add = new GuiButton(3, 0, 0, I18n.format("aperture.gui.profiles.new"));
+        this.loaded = GuiButtonElement.button(mc, I18n.format("aperture.gui.profiles.loaded"), (b) ->
+        {
+            this.showLoaded = !this.showLoaded;
+            this.updateButtons();
+        });
 
-        this.name = new GuiTextField(0, this.mc.fontRendererObj, 0, 0, 0, 0);
+        this.load = GuiButtonElement.button(mc, I18n.format("aperture.gui.profiles.load"), (b) ->
+        {
+            this.showLoaded = !this.showLoaded;
+            this.updateButtons();
+        });
+
+        this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.profiles.new"), (b) ->
+        {
+            this.createCameraProfile(this.name.field.getText());
+        });
+
+        this.name = new GuiTextElement(mc, 80, null);
+
+        this.loaded.resizer().parent(this.area).set(5, 5, 0, 20).w(0.5F, -6);
+        this.load.resizer().parent(this.area).set(0, 5, 0, 20).w(0.5F, -6).x(0.5F, 1);
+        this.add.resizer().parent(this.area).set(0, 0, 40, 20).x(1, -45).y(1, -25);
+        this.name.resizer().parent(this.area).set(5, 0, 0, 20).y(1, -25).w(1, -55);
+
+        this.loaded.setEnabled(false);
+        this.children.add(this.loaded, this.load, this.add, this.name);
     }
 
     public void init()
@@ -76,58 +98,31 @@ public class GuiProfilesManager implements IGuiModule
         Dispatcher.sendToServer(new PacketRequestCameraProfiles());
     }
 
-    public void update(int x, int y, int w, int h)
+    @Override
+    public void resize(int width, int height)
     {
-        this.rect.set(x, y, w, h);
-        this.scrollLoad.set(x + 5, y + 30, w - 10, h - 60);
-        this.scrollLoaded.set(x + 5, y + 30, w - 10, h - 60);
+        super.resize(width, height);
+
+        this.scrollLoad.set(this.area.x + 5, this.area.y + 30, this.area.w - 10, this.area.h - 60);
+        this.scrollLoaded.set(this.area.x + 5, this.area.y + 30, this.area.w - 10, this.area.h - 60);
         this.scrollLoaded.setSize(ClientProxy.control.profiles.size());
-
-        int span = (w - 12) / 2;
-
-        GuiUtils.setSize(this.loaded, x + 5, y + 5, span, 20);
-        GuiUtils.setSize(this.load, x + span + 7, y + 5, span, 20);
-
-        GuiUtils.setSize(this.add, x + w - 45, y + h - 25, 40, 20);
-        GuiUtils.setSize(this.name, x + 5, y + h - 25, w - 55, 20);
-        this.updateButtons();
-
     }
 
     private void updateButtons()
     {
-        this.loaded.enabled = !this.showLoaded;
-        this.load.enabled = this.showLoaded;
+        this.loaded.setEnabled(!this.showLoaded);
+        this.load.setEnabled(this.showLoaded);
 
-        this.add.displayString = this.rename ? I18n.format("aperture.gui.profiles.rename") : I18n.format("aperture.gui.profiles.new");
-        this.name.setTextColor(0xffffff);
-    }
-
-    /**
-     * Is mouse pointer inside 
-     */
-    public boolean isInside(int x, int y)
-    {
-        return this.visible && this.rect.isInside(x, y);
+        this.add.button.displayString = this.rename ? I18n.format("aperture.gui.profiles.rename") : I18n.format("aperture.gui.profiles.new");
+        this.name.field.setTextColor(0xffffff);
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (!this.visible)
+        if (super.mouseClicked(mouseX, mouseY, mouseButton))
         {
-            return;
-        }
-
-        if (this.load.mousePressed(mc, mouseX, mouseY) || this.loaded.mousePressed(mc, mouseX, mouseY))
-        {
-            this.showLoaded = !this.showLoaded;
-            this.updateButtons();
-        }
-
-        if (this.add.mousePressed(mc, mouseX, mouseY))
-        {
-            this.createCameraProfile(this.name.getText());
+            return true;
         }
 
         if (this.scrollLoaded.isInside(mouseX, mouseY))
@@ -176,8 +171,6 @@ public class GuiProfilesManager implements IGuiModule
                             this.updateButtons();
 
                             this.name.setText(profile.getDestination().getFilename());
-                            this.name.setCursorPositionZero();
-
                             this.editor.selectProfile(ClientProxy.control.profiles.get(index));
                         }
                         else
@@ -198,7 +191,7 @@ public class GuiProfilesManager implements IGuiModule
             }
         }
 
-        this.name.mouseClicked(mouseX, mouseY, mouseButton);
+        return false;
     }
 
     private void createCameraProfile(String text)
@@ -232,40 +225,39 @@ public class GuiProfilesManager implements IGuiModule
         }
 
         this.name.setText("");
-        this.name.setCursorPositionZero();
     }
 
     @Override
-    public void mouseScroll(int mouseX, int mouseY, int scroll)
+    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
+        if (super.mouseScrolled(mouseX, mouseY, scroll))
+        {
+            return true;
+        }
+
         ScrollArea area = this.showLoaded ? this.scrollLoaded : this.scrollLoad;
 
         if (area.isInside(mouseX, mouseY))
         {
             area.scrollBy(scroll);
-        }
-    }
 
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {}
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     public void keyTyped(char typedChar, int keyCode)
     {
-        if (!this.visible)
-        {
-            return;
-        }
-
         if (keyCode == Keyboard.KEY_RETURN)
         {
-            this.createCameraProfile(this.name.getText());
+            this.createCameraProfile(this.name.field.getText());
 
             return;
         }
 
-        this.name.textboxKeyTyped(typedChar, keyCode);
+        super.keyTyped(typedChar, keyCode);
 
         /* Canceling renaming */
         if (this.rename)
@@ -285,21 +277,21 @@ public class GuiProfilesManager implements IGuiModule
 
     private void updateRename()
     {
-        this.name.setTextColor(0xffffff);
+        this.name.field.setTextColor(0xffffff);
         this.error = false;
 
         CameraProfile profile = this.editor.getProfile();
 
         if (profile != null)
         {
-            String name = this.name.getText();
+            String name = this.name.field.getText();
             AbstractDestination profileDest = profile.getDestination();
 
             for (AbstractDestination dest : this.destToLoad)
             {
                 if (dest.getFilename().equals(name) && !dest.equals(profileDest))
                 {
-                    this.name.setTextColor(0xff2244);
+                    this.name.field.setTextColor(0xff2244);
                     this.error = true;
 
                     break;
@@ -309,25 +301,16 @@ public class GuiProfilesManager implements IGuiModule
     }
 
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        if (!this.visible)
-        {
-            return;
-        }
-
-        Gui.drawRect(this.rect.x, this.rect.y, this.rect.x + this.rect.w, this.rect.y + this.rect.h, 0xaa000000);
+        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xaa000000);
         Gui.drawRect(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.x + this.scrollLoaded.w, this.scrollLoaded.y + this.scrollLoaded.h, 0x88000000);
 
-        this.loaded.drawButton(mc, mouseX, mouseY);
-        this.load.drawButton(mc, mouseX, mouseY);
-        this.add.drawButton(mc, mouseX, mouseY);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-        this.name.drawTextBox();
-
-        if (!this.name.isFocused() && this.name.getText().isEmpty())
+        if (!this.name.field.isFocused() && this.name.field.getText().isEmpty())
         {
-            this.mc.fontRendererObj.drawStringWithShadow(this.rename ? I18n.format("aperture.gui.profiles.rename_profile") : I18n.format("aperture.gui.profiles.tooltip"), this.name.xPosition + 4, this.name.yPosition + 5, 0xaaaaaa);
+            this.font.drawStringWithShadow(this.rename ? I18n.format("aperture.gui.profiles.rename_profile") : I18n.format("aperture.gui.profiles.tooltip"), this.name.area.x + 4, this.name.area.y + 6, 0xaaaaaa);
         }
 
         GuiUtils.scissor(this.scrollLoaded.x, this.scrollLoaded.y, this.scrollLoaded.w, this.scrollLoaded.h, this.editor.width, this.editor.height);
@@ -432,23 +415,6 @@ public class GuiProfilesManager implements IGuiModule
 
             Gui.drawRect(x, y, x + 2, y + h, 0x88ffffff);
         }
-    }
-
-    /**
-     * This dude is responsible for listening for an event of camera profile 
-     * selection. 
-     */
-    public static interface IProfileListener
-    {
-        public void selectProfile(CameraProfile profile);
-    }
-
-    /**
-     * Check whether this widget has any focused text fields 
-     */
-    public boolean hasAnyActiveTextfields()
-    {
-        return this.visible && this.name.isFocused();
     }
 
     /**

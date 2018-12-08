@@ -3,58 +3,52 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
-import net.minecraft.client.gui.FontRenderer;
+import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
-public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifier> implements ITrackpadListener
+public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifier>
 {
-    public GuiTrackpad shake;
-    public GuiTrackpad shakeAmount;
+    public GuiTrackpadElement shake;
+    public GuiTrackpadElement shakeAmount;
     public GuiActiveWidget active;
 
-    public GuiShakeModifierPanel(ShakeModifier modifier, GuiModifiersManager panel, FontRenderer font)
+    public GuiShakeModifierPanel(Minecraft mc, ShakeModifier modifier, GuiModifiersManager panel)
     {
-        super(modifier, panel, font);
+        super(mc, modifier, panel);
 
-        this.shake = new GuiTrackpad(this, font);
-        this.shakeAmount = new GuiTrackpad(this, font);
-        this.active = new GuiActiveWidget();
-
-        this.shake.title = I18n.format("aperture.gui.modifiers.panels.shake");
-        this.shakeAmount.title = I18n.format("aperture.gui.modifiers.panels.shake_amount");
-    }
-
-    @Override
-    public void setTrackpadValue(GuiTrackpad trackpad, float value)
-    {
-        if (trackpad == this.shake && value != 0)
+        this.shake = new GuiTrackpadElement(mc, I18n.format("aperture.gui.modifiers.panels.shake"), (value) ->
         {
             this.modifier.shake = value;
             this.modifiers.editor.updateProfile();
-        }
-        else if (trackpad == this.shakeAmount)
+        });
+
+        this.shakeAmount = new GuiTrackpadElement(mc, I18n.format("aperture.gui.modifiers.panels.shake_amount"), (value) ->
         {
             this.modifier.shakeAmount = value;
             this.modifiers.editor.updateProfile();
-        }
+        });
+
+        this.active = new GuiActiveWidget(mc, (value) ->
+        {
+            this.modifier.active = value;
+            this.modifiers.editor.updateProfile();
+        });
+
+        this.shake.resizer().parent(this.area).set(5, 25, 0, 20).w(0.5F, -10);
+        this.shakeAmount.resizer().parent(this.area).set(0, 25, 0, 20).x(0.5F, 5).w(0.5F, -10);
+        this.active.resizer().parent(this.area).set(5, 50, 0, 20).w(1, -10);
+
+        this.children.add(this.shake, this.shakeAmount, this.active);
     }
 
     @Override
-    public void update(int x, int y, int w)
+    public void resize(int width, int height)
     {
-        super.update(x, y, w);
-
-        int width = ((w - 20) / 2);
-
-        this.shake.update(x + 5, y + 25, width, 20);
-        this.shakeAmount.update(x + w - 5 - width, y + 25, width, 20);
+        super.resize(width, height);
 
         this.shake.setValue(this.modifier.shake);
         this.shakeAmount.setValue(this.modifier.shakeAmount);
-
-        this.active.area.set(x + 5, y + 50, w - 10, 20);
         this.active.value = this.modifier.active;
     }
 
@@ -62,54 +56,5 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     public int getHeight()
     {
         return 75;
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-
-        this.shake.mouseClicked(mouseX, mouseY, mouseButton);
-        this.shakeAmount.mouseClicked(mouseX, mouseY, mouseButton);
-        this.active.mouseClicked(mouseX, mouseY, mouseButton);
-
-        byte active = this.modifier.active;
-
-        this.modifier.active = this.active.value;
-
-        if (active != this.modifier.active)
-        {
-            this.modifiers.editor.updateProfile();
-        }
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        this.shake.mouseReleased(mouseX, mouseY, state);
-        this.shakeAmount.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        this.shake.keyTyped(typedChar, keyCode);
-        this.shakeAmount.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public boolean hasActiveTextfields()
-    {
-        return this.shake.text.isFocused() || this.shakeAmount.text.isFocused();
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(mouseX, mouseY, partialTicks);
-
-        this.shake.draw(mouseX, mouseY, partialTicks);
-        this.shakeAmount.draw(mouseX, mouseY, partialTicks);
-        this.active.draw(mouseX, mouseY, partialTicks);
     }
 }

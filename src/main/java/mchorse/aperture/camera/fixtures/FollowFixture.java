@@ -110,10 +110,10 @@ public class FollowFixture extends LookFixture
     {
         FollowFixture fixture = new FollowFixture(this.duration);
 
+        AbstractFixture.copyModifiers(this, fixture);
+        fixture.name = this.name;
         fixture.position = this.position.clone();
         fixture.selector = this.selector;
-
-        AbstractFixture.copyModifiers(this, fixture);
 
         return fixture;
     }

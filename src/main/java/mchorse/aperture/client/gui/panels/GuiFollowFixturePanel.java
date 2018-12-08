@@ -2,10 +2,10 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.LookFixture;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,34 +21,11 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
 {
     public GuiAngleModule angle;
 
-    public GuiFollowFixturePanel(FontRenderer font)
+    public GuiFollowFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
-        super(font);
+        super(mc, editor);
 
-        this.angle = new GuiAngleModule(this, font);
-    }
-
-    @Override
-    public void setTrackpadValue(GuiTrackpad trackpad, float value)
-    {
-        if (trackpad == this.angle.yaw)
-        {
-            this.fixture.position.angle.yaw = trackpad.value;
-        }
-        else if (trackpad == this.angle.pitch)
-        {
-            this.fixture.position.angle.pitch = trackpad.value;
-        }
-        else if (trackpad == this.angle.roll)
-        {
-            this.fixture.position.angle.roll = trackpad.value;
-        }
-        else if (trackpad == this.angle.fov)
-        {
-            this.fixture.position.angle.fov = trackpad.value;
-        }
-
-        super.setTrackpadValue(trackpad, value);
+        this.angle = new GuiAngleModule(mc, editor);
     }
 
     @Override
@@ -60,27 +37,18 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     }
 
     @Override
-    public void update(GuiScreen screen)
+    public void resize(int width, int height)
     {
-        boolean height = screen.height - 60 > 200;
+        boolean h = this.editor.height - 60 > 200;
 
-        this.height = height ? 200 : 100;
+        this.angle.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -170);
 
-        super.update(screen);
-
-        int x = this.area.x + this.area.w - 80;
-        int y = this.area.y + 10;
-
-        if (height)
+        if (h)
         {
-            y += 110;
-        }
-        else
-        {
-            x -= 80 + 10;
+            this.angle.resizer().x(1, -80).y(120);
         }
 
-        this.angle.update(x, y);
+        super.resize(width, height);
     }
 
     @Override
@@ -101,42 +69,10 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-        this.angle.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        super.mouseReleased(mouseX, mouseY, state);
-
-        this.angle.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
-    public boolean hasActiveTextfields()
-    {
-        return super.hasActiveTextfields() || this.angle.hasActiveTextfields();
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        super.keyTyped(typedChar, keyCode);
-
-        this.angle.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(mouseX, mouseY, partialTicks);
-
-        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.yaw.area.x + this.angle.yaw.area.w / 2, this.angle.yaw.area.y - 14, 0xffffffff);
-
-        this.angle.draw(mouseX, mouseY, partialTicks);
+        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w / 2, this.angle.area.y - 14, 0xffffffff);
     }
 }

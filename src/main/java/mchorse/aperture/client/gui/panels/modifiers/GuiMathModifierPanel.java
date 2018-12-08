@@ -4,37 +4,44 @@ import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 {
-    public GuiTextField math;
+    public GuiTextElement math;
     public GuiActiveWidget active;
-    public String old = "";
 
-    public GuiMathModifierPanel(MathModifier modifier, GuiModifiersManager modifiers, FontRenderer font)
+    public GuiMathModifierPanel(Minecraft mc, MathModifier modifier, GuiModifiersManager modifiers)
     {
-        super(modifier, modifiers, font);
+        super(mc, modifier, modifiers);
 
-        this.math = new GuiTextField(0, font, 0, 0, 148, 18);
-        this.math.setMaxStringLength(500);
+        this.math = new GuiTextElement(mc, 500, (str) ->
+        {
+            this.math.field.setTextColor(this.modifier.rebuildExpression(str) ? 0xffffff : 0xff2244);
+            this.modifiers.editor.updateProfile();
+        });
 
-        this.active = new GuiActiveWidget();
+        this.active = new GuiActiveWidget(mc, (value) ->
+        {
+            this.modifier.active = value;
+            this.modifiers.editor.updateProfile();
+        });
+
+        this.math.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
+        this.active.resizer().parent(this.area).set(5, 45, 0, 20).w(1, -10);
+
+        this.children.add(this.math, this.active);
     }
 
     @Override
-    public void update(int x, int y, int w)
+    public void resize(int width, int height)
     {
-        super.update(x, y, w);
+        super.resize(width, height);
 
-        GuiUtils.setSize(this.math, x + 5, y + 25, w - 10, 20);
-
-        this.math.setText(this.modifier.expression != null ? this.modifier.expression.toString() : "");
-        this.math.setCursorPositionZero();
-
-        this.active.area.set(x + 5, y + 45, w - 10, 20);
+        this.math.setText(this.modifier.expression == null ? "" : this.modifier.expression.toString());
         this.active.value = this.modifier.active;
     }
 
@@ -45,58 +52,13 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-        this.math.mouseClicked(mouseX, mouseY, mouseButton);
-        this.active.mouseClicked(mouseX, mouseY, mouseButton);
-
-        byte active = this.modifier.active;
-
-        this.modifier.active = this.active.value;
-
-        if (active != this.modifier.active)
+        if (!this.math.field.isFocused())
         {
-            this.modifiers.editor.updateProfile();
-        }
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {}
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        this.math.textboxKeyTyped(typedChar, keyCode);
-
-        String text = this.math.getText();
-
-        if (this.math.isFocused() && !text.equals(this.old) && !text.isEmpty())
-        {
-            this.math.setTextColor(this.modifier.rebuildExpression(text) ? 0xffffff : 0xff2244);
-            this.modifiers.editor.updateProfile();
-        }
-    }
-
-    @Override
-    public boolean hasActiveTextfields()
-    {
-        return this.math.isFocused();
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(mouseX, mouseY, partialTicks);
-
-        this.math.drawTextBox();
-        this.active.draw(mouseX, mouseY, partialTicks);
-
-        if (!this.math.isFocused())
-        {
-            GuiUtils.drawRightString(font, I18n.format("aperture.gui.modifiers.math"), this.math.xPosition + this.math.width - 4, this.math.yPosition + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(font, I18n.format("aperture.gui.modifiers.math"), this.math.area.x + this.math.area.w - 4, this.math.area.y + 6, 0xffaaaaaa);
         }
     }
 }

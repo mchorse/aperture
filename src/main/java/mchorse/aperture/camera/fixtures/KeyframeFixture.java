@@ -74,6 +74,7 @@ public class KeyframeFixture extends AbstractFixture
         KeyframeFixture fixture = new KeyframeFixture(this.duration);
 
         AbstractFixture.copyModifiers(this, fixture);
+        fixture.name = this.name;
         fixture.x.copy(this.x);
         fixture.y.copy(this.y);
         fixture.z.copy(this.z);
@@ -314,6 +315,7 @@ public class KeyframeFixture extends AbstractFixture
             return this.interp.interpolate(this, frame, x);
         }
 
+        @Override
         public Keyframe clone()
         {
             Keyframe frame = new Keyframe(this.tick, this.value);

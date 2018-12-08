@@ -48,7 +48,7 @@ aperture.gui:
         save: Save camera profile (Ctrl + S)
         profiles: Show camera profiles
         config: Show camera editor options
-        modifiers: Show modifiers panel (O)
+        modifiers: Show modifiers panel (N)
         goto: Go to specific frame
         add: Add fixture
         dupe: Duplicate fixture

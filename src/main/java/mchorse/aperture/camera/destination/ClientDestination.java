@@ -37,7 +37,7 @@ public class ClientDestination extends AbstractDestination
 
         if (from.renameTo(to))
         {
-            ClientProxy.cameraEditor.profiles.rename(this, name);
+            ClientProxy.getCameraEditor().profiles.rename(this, name);
         }
     }
 

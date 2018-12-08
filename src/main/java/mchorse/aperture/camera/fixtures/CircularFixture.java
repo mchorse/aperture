@@ -119,13 +119,13 @@ public class CircularFixture extends AbstractFixture
     {
         CircularFixture fixture = new CircularFixture(this.duration);
 
+        AbstractFixture.copyModifiers(this, fixture);
+        fixture.name = this.name;
         fixture.start = this.start.clone();
         fixture.offset = this.offset;
         fixture.distance = this.distance;
         fixture.circles = this.circles;
         fixture.pitch = this.pitch;
-
-        AbstractFixture.copyModifiers(this, fixture);
 
         return fixture;
     }

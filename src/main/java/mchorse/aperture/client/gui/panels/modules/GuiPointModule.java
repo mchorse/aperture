@@ -1,10 +1,9 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.data.Point;
-import mchorse.aperture.client.gui.panels.IGuiModule;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
-import net.minecraft.client.gui.FontRenderer;
+import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 /**
@@ -13,77 +12,51 @@ import net.minecraft.client.resources.I18n;
  * This class unifies three trackpads into one object which edits a {@link Point},
  * and makes it way easier to reuse in other classes.
  */
-public class GuiPointModule implements IGuiModule
+public class GuiPointModule extends GuiAbstractModule
 {
-    public GuiTrackpad x;
-    public GuiTrackpad y;
-    public GuiTrackpad z;
+    public GuiTrackpadElement x;
+    public GuiTrackpadElement y;
+    public GuiTrackpadElement z;
 
-    public GuiPointModule(ITrackpadListener listener, FontRenderer font)
+    public Point point;
+
+    public GuiPointModule(Minecraft mc, GuiCameraEditor editor)
     {
-        this.x = new GuiTrackpad(listener, font);
-        this.y = new GuiTrackpad(listener, font);
-        this.z = new GuiTrackpad(listener, font);
+        super(mc, editor);
 
-        this.x.title = I18n.format("aperture.gui.panels.x");
-        this.y.title = I18n.format("aperture.gui.panels.y");
-        this.z.title = I18n.format("aperture.gui.panels.z");
+        this.x = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.x"), (value) ->
+        {
+            this.point.x = value;
+            this.editor.updateProfile();
+        });
 
-        this.x.amplitude = this.y.amplitude = this.z.amplitude = 0.1F;
+        this.y = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.y"), (value) ->
+        {
+            this.point.y = value;
+            this.editor.updateProfile();
+        });
+
+        this.z = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.z"), (value) ->
+        {
+            this.point.z = value;
+            this.editor.updateProfile();
+        });
+
+        this.x.resizer().parent(this.area).set(0, 0, 0, 20).w(1, 0);
+        this.y.resizer().parent(this.area).set(0, 30, 0, 20).w(1, 0);
+        this.z.resizer().parent(this.area).set(0, 60, 0, 20).w(1, 0);
+
+        this.x.trackpad.amplitude = this.y.trackpad.amplitude = this.z.trackpad.amplitude = 0.1F;
+
+        this.children.add(this.x, this.y, this.z);
     }
 
     public void fill(Point point)
     {
+        this.point = point;
+
         this.x.setValue(point.x);
         this.y.setValue(point.y);
         this.z.setValue(point.z);
-    }
-
-    public void update(int x, int y)
-    {
-        this.x.update(x, y, 80, 20);
-        this.y.update(x, y + 30, 80, 20);
-        this.z.update(x, y + 60, 80, 20);
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        this.x.mouseClicked(mouseX, mouseY, mouseButton);
-        this.y.mouseClicked(mouseX, mouseY, mouseButton);
-        this.z.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void mouseScroll(int x, int y, int scroll)
-    {}
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        this.x.mouseReleased(mouseX, mouseY, state);
-        this.y.mouseReleased(mouseX, mouseY, state);
-        this.z.mouseReleased(mouseX, mouseY, state);
-    }
-
-    public boolean hasActiveTextfields()
-    {
-        return this.x.text.isFocused() || this.y.text.isFocused() || this.z.text.isFocused();
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        this.x.keyTyped(typedChar, keyCode);
-        this.y.keyTyped(typedChar, keyCode);
-        this.z.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        this.x.draw(mouseX, mouseY, partialTicks);
-        this.y.draw(mouseX, mouseY, partialTicks);
-        this.z.draw(mouseX, mouseY, partialTicks);
     }
 }

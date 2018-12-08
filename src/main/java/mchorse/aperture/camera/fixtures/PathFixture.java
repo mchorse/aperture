@@ -419,16 +419,16 @@ public class PathFixture extends AbstractFixture
     {
         PathFixture fixture = new PathFixture(this.duration);
 
+        AbstractFixture.copyModifiers(this, fixture);
         for (DurablePosition pos : this.points)
         {
             fixture.addPoint((DurablePosition) pos.clone());
         }
 
+        fixture.name = this.name;
         fixture.perPointDuration = this.perPointDuration;
         fixture.interpolationPos = this.interpolationPos;
         fixture.interpolationAngle = this.interpolationAngle;
-
-        AbstractFixture.copyModifiers(this, fixture);
 
         return fixture;
     }
