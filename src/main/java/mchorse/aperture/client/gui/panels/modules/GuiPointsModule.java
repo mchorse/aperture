@@ -6,18 +6,14 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
-import mchorse.aperture.client.gui.panels.IButtonListener;
-import mchorse.aperture.client.gui.panels.IGuiModule;
-import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.client.gui.widgets.GuiButtonList;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.ScrollArea;
 import mchorse.mclib.client.gui.utils.ScrollArea.ScrollDirection;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
 /**
@@ -26,69 +22,52 @@ import net.minecraft.client.resources.I18n;
  * This module is responsible for displaying "buttons" for picking up path
  * fixture's points, and also an ability to add or remove them.
  */
-public class GuiPointsModule implements IGuiModule, IButtonListener
+public class GuiPointsModule extends GuiAbstractModule
 {
     /* Input */
     public PathFixture path;
     public GuiPathFixturePanel picker;
 
     /* GUI */
-    public ScrollArea area = new ScrollArea(20);
-    public FontRenderer font;
-    public GuiScreen screen;
-    public GuiButtonList buttons;
-
-    /* Scrolling variables */
-    private int lastY;
+    public ScrollArea scroll = new ScrollArea(20);
 
     /**
      * Currently selected button (shouldn't be deselected, i.e. can't be -1)
      */
     public int index = 0;
 
-    public GuiPointsModule(GuiPathFixturePanel picker, FontRenderer font)
+    public GuiPointsModule(Minecraft mc, GuiCameraEditor editor, GuiPathFixturePanel picker)
     {
+        super(mc, editor);
+
         this.picker = picker;
-        this.font = font;
 
-        this.buttons = new GuiButtonList(Minecraft.getMinecraft(), this);
-        this.buttons.add(new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(160, 0).setActiveTexPos(160, 16));
-        this.buttons.add(new GuiTextureButton(1, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16));
-
-        this.buttons.add(new GuiTextureButton(2, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(240, 0).setActiveTexPos(240, 16));
-        this.buttons.add(new GuiTextureButton(3, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(144, 0).setActiveTexPos(144, 16));
-
-        this.area.direction = ScrollDirection.HORIZONTAL;
-    }
-
-    @Override
-    public void actionButtonPerformed(GuiButton button)
-    {
-        int size = this.path.getCount();
-
-        if (button.id == 0 && this.index > 0)
+        GuiButtonElement<GuiTextureButton> back = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 160, 0, 160, 16, (b) ->
         {
-            /* Move point backward */
             this.path.movePoint(this.index, this.index - 1);
             this.index--;
-        }
-        else if (button.id == 1)
+            this.editor.updateProfile();
+        });
+
+        GuiButtonElement<GuiTextureButton> add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) ->
         {
             /* Add a point based on player attributes */
             this.path.addPoint(new DurablePosition(Minecraft.getMinecraft().player), this.index + 1);
 
             this.index++;
-            this.area.setSize(this.path.getCount());
-            this.area.scrollTo((int) (this.index / (float) this.path.getCount() * this.area.scrollSize));
+            this.scroll.setSize(this.path.getCount());
+            this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
 
             if (this.picker != null)
             {
                 this.picker.pickPoint(this, this.index);
             }
-        }
-        else if (button.id == 2 && size > 1)
+
+            this.editor.updateProfile();
+        });
+
+        GuiButtonElement<GuiTextureButton> remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 240, 0, 240, 16, (b) ->
         {
-            /* Remove a point and update scroll */
             this.path.removePoint(this.index);
 
             if (this.index > 0)
@@ -96,22 +75,31 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
                 this.index--;
             }
 
-            this.area.setSize(this.path.getCount());
-            this.area.scrollTo((int) (this.index / (float) this.path.getCount() * this.area.scrollSize));
+            this.scroll.setSize(this.path.getCount());
+            this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
 
             if (this.picker != null)
             {
                 this.picker.pickPoint(this, this.index);
             }
-        }
-        else if (button.id == 3 && this.index < size - 1)
+
+            this.editor.updateProfile();
+        });
+
+        GuiButtonElement<GuiTextureButton> forward = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 144, 0, 144, 16, (b) ->
         {
-            /* Move point forward */
             this.path.movePoint(this.index, this.index + 1);
             this.index++;
-        }
+            this.editor.updateProfile();
+        });
 
-        this.picker.editor.getProfile().dirty();
+        back.resizer().parent(this.area).set(-38, 2, 16, 16);
+        add.resizer().parent(this.area).set(-18, 2, 16, 16);
+        remove.resizer().parent(this.area).set(0, 2, 16, 16).x(1, 2);
+        forward.resizer().parent(this.area).set(0, 2, 16, 16).x(1, 22);
+
+        this.children.add(back, add, remove, forward);
+        this.scroll.direction = ScrollDirection.HORIZONTAL;
     }
 
     /**
@@ -122,20 +110,16 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     {
         this.path = path;
         this.index = 0;
-        this.area.scrollTo(0);
-        this.area.setSize(path.getCount());
+        this.scroll.setSize(path.getCount());
+        this.scroll.clamp();
     }
 
-    public void update(GuiScreen screen, int x, int y, int w, int h)
+    @Override
+    public void resize(int width, int height)
     {
-        this.screen = screen;
-        this.area.set(x, y, w, h);
+        super.resize(width, height);
 
-        GuiUtils.setSize(this.buttons.buttons.get(0), x - 38, y + 2, 16, 16);
-        GuiUtils.setSize(this.buttons.buttons.get(2), x - 18, y + 2, 16, 16);
-
-        GuiUtils.setSize(this.buttons.buttons.get(1), x + w + 2, y + 2, 16, 16);
-        GuiUtils.setSize(this.buttons.buttons.get(3), x + w + 22, y + 2, 16, 16);
+        this.scroll.copy(this.area);
     }
 
     /**
@@ -145,19 +129,24 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
      * fixture and initiating scrolling.
      */
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.area.isInside(mouseX, mouseY))
+        if (super.mouseClicked(mouseX, mouseY, mouseButton))
+        {
+            return true;
+        }
+
+        if (this.scroll.isInside(mouseX, mouseY))
         {
             if (mouseButton == 1)
             {
-                /* Initiate dragging */
-                this.area.dragging = true;
-                this.lastY = mouseX;
+                this.scroll.dragging = true;
+
+                return true;
             }
             else if (mouseButton == 0)
             {
-                int index = this.area.getIndex(mouseX, mouseY);
+                int index = this.scroll.getIndex(mouseX, mouseY);
                 int size = this.path.getCount();
 
                 if (index >= 0 && index < size)
@@ -171,18 +160,17 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
                     }
                 }
             }
+
+            return true;
         }
 
-        this.buttons.mouseClicked(mouseX, mouseY, mouseButton);
+        return false;
     }
 
     @Override
-    public void mouseScroll(int x, int y, int scroll)
+    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
-        if (this.area.isInside(x, y))
-        {
-            this.area.scrollBy((int) Math.copySign(10, scroll));
-        }
+        return super.mouseScrolled(mouseX, mouseY, scroll) || this.scroll.mouseScroll(mouseX, mouseY, scroll);
     }
 
     /**
@@ -195,7 +183,7 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
-        this.area.dragging = false;
+        this.scroll.dragging = false;
     }
 
     @Override
@@ -209,28 +197,23 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
      * the buttons. It also responsible for scrolling.
      */
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
         /* Scroll this view */
-        if (this.area.dragging && this.area.scrollSize > this.area.w)
-        {
-            this.area.scrollBy(this.lastY - mouseX);
+        this.scroll.drag(mouseX, mouseY);
 
-            this.lastY = mouseX;
-        }
-
-        int x = this.area.x;
-        int y = this.area.y;
+        int x = this.scroll.x;
+        int y = this.scroll.y;
         int c = this.path.getCount();
 
         /* Draw background and buttons */
-        Gui.drawRect(x, y, x + this.area.w, y + this.area.h, 0x88000000);
-        GuiUtils.scissor(this.area.x, this.area.y, this.area.w, this.area.h, this.screen.width, this.screen.height);
+        Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.h, 0x88000000);
+        GuiUtils.scissor(this.scroll.x, this.scroll.y, this.scroll.w, this.scroll.h, this.editor.width, this.editor.height);
 
         for (int i = 0; i < c; i++)
         {
             String label = String.valueOf(i);
-            int xx = this.area.x + i * this.area.scrollItemSize - (int) this.area.scroll;
+            int xx = this.scroll.x + i * this.scroll.scrollItemSize - this.scroll.scroll;
             int w = this.font.getStringWidth(label);
 
             Gui.drawRect(xx, y, xx + 20, y + 20, this.index == i ? 0xffcc1170 : 0xffff2280);
@@ -241,33 +224,33 @@ public class GuiPointsModule implements IGuiModule, IButtonListener
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         /* Display scroll bar */
-        int mw = this.area.w;
-        int scroll = this.area.getScrollBar(mw);
+        int mw = this.scroll.w;
+        int scroll = this.scroll.getScrollBar(mw);
 
         if (scroll != 0)
         {
-            int bx = this.area.x + (int) (this.area.scroll / (float) (this.area.scrollSize - this.area.w) * (mw - scroll));
-            int by = y + this.area.h + 2;
+            int bx = this.scroll.x + (int) (this.scroll.scroll / (float) (this.scroll.scrollSize - this.scroll.w) * (mw - scroll));
+            int by = y + this.scroll.h + 2;
 
             Gui.drawRect(bx, by, bx + scroll, by + 2, 0x88000000);
         }
 
         /* Overlay "shadows" for informing the user that  */
-        if (this.area.scroll > 0 && this.area.scrollSize >= this.area.w - 40)
+        if (this.scroll.scroll > 0 && this.scroll.scrollSize >= this.scroll.w - 40)
         {
-            GuiUtils.drawHorizontalGradientRect(x, y, x + 4, y + this.area.h, 0x88000000, 0x0, 0);
+            GuiUtils.drawHorizontalGradientRect(x, y, x + 4, y + this.scroll.h, 0x88000000, 0x0, 0);
         }
 
-        if (this.area.scroll < this.area.scrollSize - this.area.w && this.area.scrollSize >= this.area.w)
+        if (this.scroll.scroll < this.scroll.scrollSize - this.scroll.w && this.scroll.scrollSize >= this.scroll.w)
         {
-            GuiUtils.drawHorizontalGradientRect(x + this.area.w - 4, y, x + this.area.w, y + this.area.h, 0x0, 0x88000000, 0);
+            GuiUtils.drawHorizontalGradientRect(x + this.scroll.w - 4, y, x + this.scroll.w, y + this.scroll.h, 0x0, 0x88000000, 0);
         }
 
-        this.buttons.draw(mouseX, mouseY, partialTicks);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
         String label = I18n.format("aperture.gui.panels.path_points");
         int w = this.font.getStringWidth(label);
-        this.font.drawStringWithShadow(label, this.area.x + this.area.w / 2 - w / 2, this.area.y - 14, 0xffffff);
+        this.font.drawStringWithShadow(label, this.scroll.x + this.scroll.w / 2 - w / 2, this.scroll.y - 14, 0xffffff);
     }
 
     /**

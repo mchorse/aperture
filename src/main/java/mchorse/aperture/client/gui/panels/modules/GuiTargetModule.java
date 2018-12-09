@@ -1,11 +1,11 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.LookFixture;
-import mchorse.aperture.client.gui.panels.IGuiModule;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
-import net.minecraft.client.gui.GuiTextField;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 /**
@@ -15,70 +15,42 @@ import net.minecraft.client.resources.I18n;
  * {@link LookFixture}'s target based properties, and makes it way easier to
  * reuse in other classes.
  */
-public class GuiTargetModule implements IGuiModule
+public class GuiTargetModule extends GuiAbstractModule
 {
-    public GuiTextField selector;
+    public GuiTextElement selector;
+    public LookFixture fixture;
 
-    public FontRenderer font;
-
-    public GuiTargetModule(GuiResponder responder, FontRenderer font, int selector)
+    public GuiTargetModule(Minecraft mc, GuiCameraEditor editor)
     {
-        this.selector = new GuiTextField(selector, font, 0, 0, 0, 0);
-        this.selector.setGuiResponder(responder);
+        super(mc, editor);
 
-        this.font = font;
+        this.selector = new GuiTextElement(mc, 200, (str) ->
+        {
+            this.fixture.selector = str;
+            this.fixture.tryFindingEntity();
+            this.editor.updateProfile();
+        });
+
+        this.selector.resizer().parent(this.area).set(0, 0, 0, 20).w(1, 0);
+
+        this.children.add(this.selector);
     }
 
     public void fill(LookFixture fixture)
     {
-        this.selector.setMaxStringLength(200);
+        this.fixture = fixture;
 
         this.selector.setText(fixture.selector);
-        this.selector.setCursorPositionZero();
-    }
-
-    public void update(int x, int y)
-    {
-        this.selector.x = x + 1;
-        this.selector.y = y + 1;
-
-        this.selector.width = 98;
-        this.selector.height = 18;
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        this.selector.mouseClicked(mouseX, mouseY, mouseButton);
-    }
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-    @Override
-    public void mouseScroll(int x, int y, int scroll)
-    {}
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {}
-
-    public boolean hasActiveTextfields()
-    {
-        return this.selector.isFocused();
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        this.selector.textboxKeyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        this.selector.drawTextBox();
-
-        if (!this.selector.isFocused())
+        if (!this.selector.field.isFocused())
         {
-            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.selector"), this.selector.x + this.selector.width - 4, this.selector.y + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.selector"), this.selector.area.x + this.selector.area.w - 4, this.selector.area.y + 6, 0xffaaaaaa);
         }
     }
 }

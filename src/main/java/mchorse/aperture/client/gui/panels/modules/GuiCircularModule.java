@@ -1,10 +1,9 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.client.gui.panels.IGuiModule;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
-import net.minecraft.client.gui.FontRenderer;
+import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 /**
@@ -14,84 +13,58 @@ import net.minecraft.client.resources.I18n;
  * {@link CircularFixture}'s other properties, and makes it way easier to reuse
  * in other classes.
  */
-public class GuiCircularModule implements IGuiModule
+public class GuiCircularModule extends GuiAbstractModule
 {
-    public GuiTrackpad offset;
-    public GuiTrackpad pitch;
-    public GuiTrackpad circles;
-    public GuiTrackpad distance;
+    public GuiTrackpadElement offset;
+    public GuiTrackpadElement pitch;
+    public GuiTrackpadElement circles;
+    public GuiTrackpadElement distance;
 
-    public GuiCircularModule(ITrackpadListener listener, FontRenderer font)
+    public CircularFixture fixture;
+
+    public GuiCircularModule(Minecraft mc, GuiCameraEditor editor)
     {
-        this.offset = new GuiTrackpad(listener, font);
-        this.pitch = new GuiTrackpad(listener, font);
-        this.circles = new GuiTrackpad(listener, font);
-        this.distance = new GuiTrackpad(listener, font);
+        super(mc, editor);
 
-        this.offset.title = I18n.format("aperture.gui.panels.offset");
-        this.pitch.title = I18n.format("aperture.gui.panels.pitch");
-        this.circles.title = I18n.format("aperture.gui.panels.circles");
-        this.distance.title = I18n.format("aperture.gui.panels.distance");
+        this.offset = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.offset"), (value) ->
+        {
+            this.fixture.offset = value;
+            this.editor.updateProfile();
+        });
+
+        this.pitch = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.pitch"), (value) ->
+        {
+            this.fixture.pitch = value;
+            this.editor.updateProfile();
+        });
+
+        this.circles = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.circles"), (value) ->
+        {
+            this.fixture.circles = value;
+            this.editor.updateProfile();
+        });
+
+        this.distance = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.distance"), (value) ->
+        {
+            this.fixture.distance = value;
+            this.editor.updateProfile();
+        });
+
+        this.offset.resizer().parent(this.area).set(0, 0, 0, 20).w(1, 0);
+        this.pitch.resizer().parent(this.area).set(0, 20, 0, 20).w(1, 0);
+        this.circles.resizer().parent(this.area).set(0, 40, 0, 20).w(1, 0);
+        this.distance.resizer().parent(this.area).set(0, 60, 0, 20).w(1, 0);
+
+        this.children.add(this.offset, this.pitch, this.circles, this.distance);
     }
 
     public void fill(CircularFixture fixture)
     {
+        this.fixture = fixture;
+
         this.offset.setValue(fixture.offset);
         this.pitch.setValue(fixture.pitch);
         this.circles.setValue(fixture.circles);
         this.distance.setValue(fixture.distance);
-    }
-
-    public void update(int x, int y)
-    {
-        this.offset.update(x, y, 80, 20);
-        this.pitch.update(x, y + 20, 80, 20);
-        this.circles.update(x, y + 40, 80, 20);
-        this.distance.update(x, y + 60, 80, 20);
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        this.offset.mouseClicked(mouseX, mouseY, mouseButton);
-        this.pitch.mouseClicked(mouseX, mouseY, mouseButton);
-        this.circles.mouseClicked(mouseX, mouseY, mouseButton);
-        this.distance.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void mouseScroll(int x, int y, int scroll)
-    {}
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        this.offset.mouseReleased(mouseX, mouseY, state);
-        this.pitch.mouseReleased(mouseX, mouseY, state);
-        this.circles.mouseReleased(mouseX, mouseY, state);
-        this.distance.mouseReleased(mouseX, mouseY, state);
-    }
-
-    public boolean hasActiveTextfields()
-    {
-        return this.offset.text.isFocused() || this.pitch.text.isFocused() || this.circles.text.isFocused() || this.distance.text.isFocused();
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        this.offset.keyTyped(typedChar, keyCode);
-        this.pitch.keyTyped(typedChar, keyCode);
-        this.circles.keyTyped(typedChar, keyCode);
-        this.distance.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        this.offset.draw(mouseX, mouseY, partialTicks);
-        this.pitch.draw(mouseX, mouseY, partialTicks);
-        this.circles.draw(mouseX, mouseY, partialTicks);
-        this.distance.draw(mouseX, mouseY, partialTicks);
     }
 }

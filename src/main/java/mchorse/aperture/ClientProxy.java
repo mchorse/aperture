@@ -49,9 +49,7 @@ import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
 import mchorse.aperture.utils.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -76,7 +74,6 @@ public class ClientProxy extends CommonProxy
     public static CameraControl control = new CameraControl();
     public static CameraRunner runner;
 
-    public static GuiCameraEditor cameraEditor;
     public static KeyboardHandler keys;
 
     /**
@@ -88,6 +85,24 @@ public class ClientProxy extends CommonProxy
     /* Files */
     public static File config;
     public static File cameras;
+
+    /**
+     * An instance of camera editor 
+     */
+    private static GuiCameraEditor cameraEditor;
+
+    /**
+     * Get camera editor
+     */
+    public static GuiCameraEditor getCameraEditor()
+    {
+        if (cameraEditor == null)
+        {
+            cameraEditor = new GuiCameraEditor(Minecraft.getMinecraft(), runner);
+        }
+
+        return cameraEditor;
+    }
 
     /**
      * Get client cameras storage location
@@ -148,21 +163,19 @@ public class ClientProxy extends CommonProxy
     public void load(FMLInitializationEvent event)
     {
         /* Register camera fixtures */
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        GuiCameraEditor.PANELS.put(IdleFixture.class, GuiIdleFixturePanel.class);
+        GuiCameraEditor.PANELS.put(PathFixture.class, GuiPathFixturePanel.class);
+        GuiCameraEditor.PANELS.put(LookFixture.class, GuiLookFixturePanel.class);
+        GuiCameraEditor.PANELS.put(FollowFixture.class, GuiFollowFixturePanel.class);
+        GuiCameraEditor.PANELS.put(CircularFixture.class, GuiCircularFixturePanel.class);
+        GuiCameraEditor.PANELS.put(KeyframeFixture.class, GuiKeyframeFixturePanel.class);
 
-        GuiCameraEditor.PANELS.put(IdleFixture.class, new GuiIdleFixturePanel(font));
-        GuiCameraEditor.PANELS.put(PathFixture.class, new GuiPathFixturePanel(font));
-        GuiCameraEditor.PANELS.put(LookFixture.class, new GuiLookFixturePanel(font));
-        GuiCameraEditor.PANELS.put(FollowFixture.class, new GuiFollowFixturePanel(font));
-        GuiCameraEditor.PANELS.put(CircularFixture.class, new GuiCircularFixturePanel(font));
-        GuiCameraEditor.PANELS.put(KeyframeFixture.class, new GuiKeyframeFixturePanel(font));
-
-        FixtureRegistry.registerClient(IdleFixture.class, I18n.format("aperture.gui.fixtures.idle"), new Color(0.085F, 0.62F, 0.395F));
-        FixtureRegistry.registerClient(PathFixture.class, I18n.format("aperture.gui.fixtures.path"), new Color(0.408F, 0.128F, 0.681F));
-        FixtureRegistry.registerClient(LookFixture.class, I18n.format("aperture.gui.fixtures.look"), new Color(0.298F, 0.690F, 0.972F));
-        FixtureRegistry.registerClient(FollowFixture.class, I18n.format("aperture.gui.fixtures.follow"), new Color(0.85F, 0.137F, 0.329F));
-        FixtureRegistry.registerClient(CircularFixture.class, I18n.format("aperture.gui.fixtures.circular"), new Color(0.298F, 0.631F, 0.247F));
-        FixtureRegistry.registerClient(KeyframeFixture.class, I18n.format("aperture.gui.fixtures.keyframe"), new Color(0.874F, 0.184F, 0.625F));
+        FixtureRegistry.registerClient(IdleFixture.class, "aperture.gui.fixtures.idle", new Color(0.085F, 0.62F, 0.395F));
+        FixtureRegistry.registerClient(PathFixture.class, "aperture.gui.fixtures.path", new Color(0.408F, 0.128F, 0.681F));
+        FixtureRegistry.registerClient(LookFixture.class, "aperture.gui.fixtures.look", new Color(0.298F, 0.690F, 0.972F));
+        FixtureRegistry.registerClient(FollowFixture.class, "aperture.gui.fixtures.follow", new Color(0.85F, 0.137F, 0.329F));
+        FixtureRegistry.registerClient(CircularFixture.class, "aperture.gui.fixtures.circular", new Color(0.298F, 0.631F, 0.247F));
+        FixtureRegistry.registerClient(KeyframeFixture.class, "aperture.gui.fixtures.keyframe", new Color(0.874F, 0.184F, 0.625F));
 
         /* Register camera modifiers */
         GuiModifiersManager.PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);
@@ -174,16 +187,14 @@ public class ClientProxy extends CommonProxy
         GuiModifiersManager.PANELS.put(OrbitModifier.class, GuiOrbitModifierPanel.class);
         GuiModifiersManager.PANELS.put(DragModifier.class, GuiDragModifierPanel.class);
 
-        ModifierRegistry.registerClient(ShakeModifier.class, I18n.format("aperture.gui.modifiers.shake"), new Color(0.085F, 0.62F, 0.395F));
-        ModifierRegistry.registerClient(MathModifier.class, I18n.format("aperture.gui.modifiers.math"), new Color(0.408F, 0.128F, 0.681F));
-        ModifierRegistry.registerClient(LookModifier.class, I18n.format("aperture.gui.modifiers.look"), new Color(0.298F, 0.690F, 0.972F));
-        ModifierRegistry.registerClient(FollowModifier.class, I18n.format("aperture.gui.modifiers.follow"), new Color(0.85F, 0.137F, 0.329F));
-        ModifierRegistry.registerClient(TranslateModifier.class, I18n.format("aperture.gui.modifiers.translate"), new Color(0.298F, 0.631F, 0.247F));
-        ModifierRegistry.registerClient(AngleModifier.class, I18n.format("aperture.gui.modifiers.angle"), new Color(0.847F, 0.482F, 0.043F));
-        ModifierRegistry.registerClient(OrbitModifier.class, I18n.format("aperture.gui.modifiers.orbit"), new Color(0.874F, 0.184F, 0.625F));
-        ModifierRegistry.registerClient(DragModifier.class, I18n.format("aperture.gui.modifiers.drag"), new Color(0.1F, 0.5F, 1F));
-
-        cameraEditor = new GuiCameraEditor(runner);
+        ModifierRegistry.registerClient(ShakeModifier.class, "aperture.gui.modifiers.shake", new Color(0.085F, 0.62F, 0.395F));
+        ModifierRegistry.registerClient(MathModifier.class, "aperture.gui.modifiers.math", new Color(0.408F, 0.128F, 0.681F));
+        ModifierRegistry.registerClient(LookModifier.class, "aperture.gui.modifiers.look", new Color(0.298F, 0.690F, 0.972F));
+        ModifierRegistry.registerClient(FollowModifier.class, "aperture.gui.modifiers.follow", new Color(0.85F, 0.137F, 0.329F));
+        ModifierRegistry.registerClient(TranslateModifier.class, "aperture.gui.modifiers.translate", new Color(0.298F, 0.631F, 0.247F));
+        ModifierRegistry.registerClient(AngleModifier.class, "aperture.gui.modifiers.angle", new Color(0.847F, 0.482F, 0.043F));
+        ModifierRegistry.registerClient(OrbitModifier.class, "aperture.gui.modifiers.orbit", new Color(0.874F, 0.184F, 0.625F));
+        ModifierRegistry.registerClient(DragModifier.class, "aperture.gui.modifiers.drag", new Color(0.1F, 0.5F, 1F));
 
         super.load(event);
 

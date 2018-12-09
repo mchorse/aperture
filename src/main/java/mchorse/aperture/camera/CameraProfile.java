@@ -178,7 +178,7 @@ public class CameraProfile
      */
     public AbstractFixture get(int index)
     {
-        return this.fixtures.get(index);
+        return this.has(index) ? this.fixtures.get(index) : null;
     }
 
     /**
@@ -320,6 +320,7 @@ public class CameraProfile
     /**
      * Clone this camera profile 
      */
+    @Override
     public CameraProfile clone()
     {
         /* Increment filename */

@@ -79,6 +79,26 @@ public class CameraControl
     }
 
     /**
+     * Remove camera profile 
+     */
+    public void removeProfile(CameraProfile profile)
+    {
+        this.profiles.remove(profile);
+
+        if (profile == this.currentProfile)
+        {
+            this.currentProfile = null;
+
+            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+
+            if (screen instanceof GuiCameraEditor)
+            {
+                ((GuiCameraEditor) screen).selectProfile(null);
+            }
+        }
+    }
+
+    /**
      * Insert camera profile (just add it to the list of camera profiles) 
      */
     public void insertProfile(CameraProfile newProfile)

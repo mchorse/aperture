@@ -4,9 +4,9 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.mclib.client.gui.utils.Area;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -16,15 +16,12 @@ import net.minecraft.util.math.MathHelper;
  *
  * This class is responsible for rendering and controlling the playback
  */
-public class GuiPlaybackScrub
+public class GuiPlaybackScrub extends GuiElement
 {
     /**
      * Vanilla buttons resource location
      */
     public static final ResourceLocation VANILLA_BUTTONS = new ResourceLocation("textures/gui/widgets.png");
-
-    /* Box of the scrub */
-    public Area area = new Area();
 
     public boolean scrubbing;
     public int value;
@@ -34,13 +31,13 @@ public class GuiPlaybackScrub
 
     public IScrubListener listener;
     public CameraProfile profile;
-    public FontRenderer font;
 
-    public GuiPlaybackScrub(IScrubListener listener, CameraProfile profile)
+    public GuiPlaybackScrub(Minecraft mc, IScrubListener listener, CameraProfile profile)
     {
+        super(mc);
+
         this.listener = listener;
         this.profile = profile;
-        this.font = Minecraft.getMinecraft().fontRenderer;
     }
 
     /* Public API methods  */
@@ -105,7 +102,8 @@ public class GuiPlaybackScrub
     /**
      * Mouse was clicked
      */
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.area.isInside(mouseX, mouseY))
         {
@@ -113,6 +111,8 @@ public class GuiPlaybackScrub
             {
                 this.scrubbing = true;
                 this.setValueFromScrub(this.calcValueFromMouse(mouseX));
+
+                return true;
             }
             else if (mouseButton == 1 && this.profile != null)
             {
@@ -124,13 +124,18 @@ public class GuiPlaybackScrub
 
                 editor.pickCameraFixture(fixture, tick - this.profile.calculateOffset(fixture));
                 this.index = index;
+
+                return true;
             }
         }
+
+        return false;
     }
 
     /**
      * Mouse was released
      */
+    @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
         this.scrubbing = false;
@@ -142,7 +147,8 @@ public class GuiPlaybackScrub
      * This scrub looks quite simple. The line part is inspired by Blender's
      * timeline thingy. Scrub also renders all of available camera fixtures.
      */
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    @Override
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
         if (this.scrubbing)
         {

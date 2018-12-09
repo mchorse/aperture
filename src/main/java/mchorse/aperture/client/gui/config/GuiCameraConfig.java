@@ -1,107 +1,111 @@
 package mchorse.aperture.client.gui.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.lwjgl.opengl.GL11;
 
-import mchorse.aperture.client.gui.panels.IGuiModule;
-import mchorse.mclib.client.gui.utils.Area;
+import mchorse.aperture.ClientProxy;
+import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.events.CameraEditorEvent;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElements;
+import mchorse.mclib.client.gui.utils.GuiUtils;
+import mchorse.mclib.client.gui.utils.ScrollArea;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 
-public class GuiCameraConfig implements IGuiModule
+public class GuiCameraConfig extends GuiElement
 {
-    public Area area = new Area();
+    public GuiElements<GuiAbstractConfigOptions> options = new GuiElements<>();
+    public GuiCameraEditor editor;
 
-    /**
-     * TODO: rename to <code>public static final OPTIONS</code> 
-     */
-    public List<AbstractGuiConfigOptions> options = new ArrayList<AbstractGuiConfigOptions>();
-    public List<AbstractGuiConfigOptions> activeOptions = new ArrayList<AbstractGuiConfigOptions>();
+    public ScrollArea scroll = new ScrollArea(0);
 
-    public boolean visible;
-
-    /**
-     * Is mouse pointer inside 
-     */
-    public boolean isInside(int x, int y)
+    public GuiCameraConfig(Minecraft mc, GuiCameraEditor editor)
     {
-        return this.visible && this.area.isInside(x, y);
+        super(mc);
+
+        this.editor = editor;
+        this.createChildren();
+        this.options.add(new GuiConfigCameraOptions(mc, editor));
+
+        CameraEditorEvent.Options event = new CameraEditorEvent.Options(editor);
+        ClientProxy.EVENT_BUS.post(event);
+
+        for (GuiAbstractConfigOptions option : event.options)
+        {
+            this.options.add(option);
+        }
     }
 
-    public void update(int x, int y, int w, int h)
+    @Override
+    public void resize(int width, int height)
     {
-        int width = 0;
-        int height = 0;
+        int max = 0;
+        int y = 0;
 
-        this.activeOptions.clear();
-
-        for (AbstractGuiConfigOptions options : this.options)
+        for (GuiAbstractConfigOptions option : this.options.elements)
         {
-            if (!options.isActive())
+            option.setVisible(option.isActive());
+
+            if (!option.isVisible())
             {
                 continue;
             }
 
-            width += options.getWidth();
-            options.update(x + w - width, y);
-            height = Math.max(height, options.getHeight());
-
-            this.activeOptions.add(options);
+            option.resizer().parent(this.area).set(0, y, 0, option.getHeight()).w(1, 0);
+            max = Math.max(max, option.getWidth());
+            y += option.getHeight();
         }
 
-        this.area.set(x + w - width, y, width, height);
+        super.resize(width, height);
+
+        int x = this.area.x;
+        int w = this.area.w;
+
+        this.area.setPos(x + w - max, this.area.y);
+        this.area.setSize(max, Math.min(y, this.area.h));
+
+        this.options.resize(width, height);
+
+        this.scroll.scrollSize = y;
+        this.scroll.copy(this.area);
+        this.scroll.clamp();
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.visible)
-        {
-            for (AbstractGuiConfigOptions options : this.activeOptions)
-            {
-                options.mouseClicked(mouseX, mouseY, mouseButton);
-            }
-        }
+        return super.mouseClicked(mouseX, mouseY, mouseButton) || this.options.mouseClicked(mouseX, mouseY + this.scroll.scroll, mouseButton);
     }
 
     @Override
-    public void mouseScroll(int x, int y, int scroll)
-    {}
+    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
+    {
+        return super.mouseScrolled(mouseX, mouseY, scroll) || this.options.mouseScrolled(mouseX, mouseY + this.scroll.scroll, scroll);
+    }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
-        if (this.visible)
-        {
-            for (AbstractGuiConfigOptions options : this.activeOptions)
-            {
-                options.mouseReleased(mouseX, mouseY, state);
-            }
-        }
+        super.mouseReleased(mouseX, mouseY, state);
+        this.options.mouseReleased(mouseX, mouseY + this.scroll.scroll, state);
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        if (this.visible)
-        {
-            for (AbstractGuiConfigOptions options : this.activeOptions)
-            {
-                options.keyTyped(typedChar, keyCode);
-            }
-        }
-    }
+        Gui.drawRect(this.scroll.x, this.scroll.y, this.scroll.getX(1), this.scroll.getY(1), 0xaa000000);
 
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        if (this.visible)
-        {
-            Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xaa000000);
+        GuiUtils.scissor(this.scroll.x, this.scroll.y, this.scroll.w, this.scroll.h, this.editor.width, this.editor.height);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, -this.scroll.scroll, 0);
 
-            for (AbstractGuiConfigOptions options : this.activeOptions)
-            {
-                options.draw(mouseX, mouseY, partialTicks);
-            }
-        }
+        this.options.draw(tooltip, mouseX, mouseY + this.scroll.scroll, partialTicks);
+
+        GlStateManager.popMatrix();
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
     }
 }

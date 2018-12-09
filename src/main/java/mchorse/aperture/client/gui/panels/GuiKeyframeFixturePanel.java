@@ -8,16 +8,17 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
-import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.aperture.client.gui.widgets.GuiButtonList;
+import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElements;
+import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Area;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -26,29 +27,30 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
-public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture> implements IButtonListener
+public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
 {
     public KeyframeChannel active;
     public int selected = -1;
 
-    public GuiTrackpad tick;
-    public GuiTrackpad value;
+    public GuiTrackpadElement tick;
+    public GuiTrackpadElement value;
     public Area frames = new Area();
 
-    public GuiButtonList buttons;
-    public GuiButtonList frameButtons;
-    public GuiButton x;
-    public GuiButton y;
-    public GuiButton z;
-    public GuiButton yaw;
-    public GuiButton pitch;
-    public GuiButton roll;
-    public GuiButton fov;
+    public GuiElements<GuiButtonElement> buttons;
+    public GuiElements<GuiButtonElement> frameButtons;
 
-    public GuiButton add;
-    public GuiButton remove;
-    public GuiCirculate interp;
-    public GuiCirculate easing;
+    public GuiButtonElement<GuiButton> x;
+    public GuiButtonElement<GuiButton> y;
+    public GuiButtonElement<GuiButton> z;
+    public GuiButtonElement<GuiButton> yaw;
+    public GuiButtonElement<GuiButton> pitch;
+    public GuiButtonElement<GuiButton> roll;
+    public GuiButtonElement<GuiButton> fov;
+
+    public GuiButtonElement<GuiButton> add;
+    public GuiButtonElement<GuiButton> remove;
+    public GuiButtonElement<GuiCirculate> interp;
+    public GuiButtonElement<GuiCirculate> easing;
 
     private boolean sliding = false;
     private int channel = 0;
@@ -69,39 +71,45 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     private int shiftY = 0;
     private float zoomY = 1;
 
-    public GuiKeyframeFixturePanel(FontRenderer font)
+    public GuiKeyframeFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
-        super(font);
+        super(mc, editor);
 
-        this.tick = new GuiTrackpad(this, font);
-        this.tick.title = I18n.format("aperture.gui.panels.tick");
-        this.value = new GuiTrackpad(this, font);
-        this.value.title = I18n.format("aperture.gui.panels.value");
+        this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) ->
+        {
+            this.active.keyframes.get(this.selected).tick = value.longValue();
+            this.sliding = true;
+        });
 
-        this.buttons = new GuiButtonList(Minecraft.getMinecraft(), this);
-        this.frameButtons = new GuiButtonList(Minecraft.getMinecraft(), this);
+        this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) ->
+        {
+            this.active.keyframes.get(this.selected).value = value;
+        });
 
-        this.x = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.x"));
-        this.y = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.y"));
-        this.z = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.z"));
-        this.yaw = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.yaw"));
-        this.pitch = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.pitch"));
-        this.roll = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.roll"));
-        this.fov = new GuiButton(0, 0, 0, I18n.format("aperture.gui.panels.fov"));
+        this.buttons = new GuiElements<>();
+        this.frameButtons = new GuiElements<>();
 
-        this.add = new GuiButton(0, 0, 0, I18n.format("aperture.gui.add"));
-        this.remove = new GuiButton(0, 0, 0, I18n.format("aperture.gui.remove"));
-        this.interp = new GuiCirculate(0, 0, 0, 80, 20);
-        this.interp.addLabel("Constant");
-        this.interp.addLabel("Linear");
-        this.interp.addLabel("Quadratic");
-        this.interp.addLabel("Cubic");
-        this.interp.addLabel("Exponential");
-        this.interp.addLabel("Bezier");
-        this.easing = new GuiCirculate(0, 0, 0, 80, 20);
-        this.easing.addLabel("Ease in");
-        this.easing.addLabel("Ease out");
-        this.easing.addLabel("Ease in/out");
+        this.x = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
+        this.y = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
+        this.z = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
+        this.yaw = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.yaw"), (b) -> this.selectChannel(this.fixture.yaw));
+        this.pitch = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch));
+        this.roll = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll));
+        this.fov = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov));
+
+        this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.add"), (b) -> this.addKeyframe());
+        this.remove = GuiButtonElement.button(mc, I18n.format("aperture.gui.remove"), (b) -> this.removeKeyframe());
+        this.interp = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeInterpolation());
+        this.interp.button.addLabel("Constant");
+        this.interp.button.addLabel("Linear");
+        this.interp.button.addLabel("Quadratic");
+        this.interp.button.addLabel("Cubic");
+        this.interp.button.addLabel("Exponential");
+        this.interp.button.addLabel("Bezier");
+        this.easing = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeEasing());
+        this.easing.button.addLabel("Ease in");
+        this.easing.button.addLabel("Ease out");
+        this.easing.button.addLabel("Ease in/out");
 
         this.buttons.add(this.x);
         this.buttons.add(this.y);
@@ -113,45 +121,48 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.buttons.add(this.add);
         this.buttons.add(this.remove);
+
         this.frameButtons.add(this.interp);
         this.frameButtons.add(this.easing);
 
         for (int i = 0; i < this.titles.length; i++)
         {
-            this.titles[i] = this.buttons.buttons.get(i).displayString;
+            this.titles[i] = this.buttons.elements.get(i).button.displayString;
         }
+
+        this.tick.resizer().parent(this.area).set(0, 10, 80, 20).x(1, -80);
+        this.value.resizer().parent(this.area).set(0, 35, 80, 20).x(1, -80);
+
+        int i = 0;
+        int x = 0;
+
+        for (GuiButtonElement button : this.buttons.elements)
+        {
+            if (i > 6) break;
+
+            button.resizer().parent(this.area).set(x, 0, this.font.getStringWidth(button.button.displayString) + 15, 20).y(1, -20);
+
+            x += button.resizer().getW() + 5;
+            i++;
+        }
+
+        this.add.resizer().parent(this.area).set(0, 0, 30, 20).y(1, -20).x(1, -85);
+        this.remove.resizer().parent(this.area).set(0, 0, 50, 20).y(1, -20).x(1, -50);
+        this.interp.resizer().relative(this.tick.resizer()).set(-90, 0, 80, 20);
+        this.easing.resizer().relative(this.value.resizer()).set(-90, 0, 80, 20);
+
+        this.children.add(this.buttons, this.frameButtons, this.tick, this.value);
     }
 
     @Override
-    public void setTrackpadValue(GuiTrackpad trackpad, float value)
+    public void resize(int width, int height)
     {
-        if (trackpad == this.tick)
-        {
-            this.active.keyframes.get(this.selected).tick = (long) value;
-            this.sliding = true;
-        }
-        else if (trackpad == this.value)
-        {
-            this.active.keyframes.get(this.selected).value = value;
-        }
+        super.resize(width, height);
 
-        super.setTrackpadValue(trackpad, value);
-    }
+        int h = this.editor.height;
 
-    @Override
-    public void actionButtonPerformed(GuiButton button)
-    {
-        if (button == this.x) this.selectChannel(this.fixture.x);
-        else if (button == this.y) this.selectChannel(this.fixture.y);
-        else if (button == this.z) this.selectChannel(this.fixture.z);
-        else if (button == this.yaw) this.selectChannel(this.fixture.yaw);
-        else if (button == this.pitch) this.selectChannel(this.fixture.pitch);
-        else if (button == this.roll) this.selectChannel(this.fixture.roll);
-        else if (button == this.fov) this.selectChannel(this.fixture.fov);
-        else if (button == this.add) this.addKeyframe();
-        else if (button == this.remove) this.removeKeyframe();
-        else if (button == this.interp) this.changeInterpolation();
-        else if (button == this.easing) this.changeEasing();
+        this.frames.set(0, this.area.y + this.area.h / 2, this.editor.width, 0);
+        this.frames.h = this.area.getY(1) - this.frames.y - 25;
     }
 
     private void addKeyframe()
@@ -201,6 +212,11 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     private void removeKeyframe()
     {
+        if (this.selected == -1)
+        {
+            return;
+        }
+
         this.active.keyframes.remove(this.selected);
         this.selected -= 1;
         this.editor.updateProfile();
@@ -215,7 +231,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         if (this.selected != -1)
         {
-            this.active.keyframes.get(this.selected).interp = Interpolation.values()[this.interp.getValue()];
+            this.active.keyframes.get(this.selected).interp = Interpolation.values()[this.interp.button.getValue()];
             this.editor.updateProfile();
         }
     }
@@ -224,7 +240,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         if (this.selected != -1)
         {
-            this.active.keyframes.get(this.selected).easing = Easing.values()[this.easing.getValue()];
+            this.active.keyframes.get(this.selected).easing = Easing.values()[this.easing.button.getValue()];
             this.editor.updateProfile();
         }
     }
@@ -270,8 +286,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         this.tick.setValue(frame.tick);
         this.value.setValue(frame.value);
-        this.interp.setValue(frame.interp.ordinal());
-        this.easing.setValue(frame.easing.ordinal());
+        this.interp.button.setValue(frame.interp.ordinal());
+        this.easing.button.setValue(frame.easing.ordinal());
     }
 
     public void selectChannel(KeyframeChannel channel)
@@ -293,55 +309,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             this.shiftY = (int) channel.keyframes.get(0).value;
         }
-    }
-
-    @Override
-    public void update(GuiScreen screen)
-    {
-        super.update(screen);
-
-        int x = this.area.x + this.area.w - 80;
-
-        this.tick.update(x, this.area.y + 10, 80, 20);
-        this.value.update(x, this.area.y + 35, 80, 20);
-
-        int h = this.editor.height;
-        int i = 0;
-
-        this.frames.set(0, h - (h - this.duration.area.y - 25), this.editor.width, 0);
-        this.frames.h = h - this.frames.y - 50;
-
-        x = 10;
-
-        for (GuiButton button : this.buttons.buttons)
-        {
-            if (i > 6)
-            {
-                break;
-            }
-
-            button.x = x;
-            button.y = h - 45;
-            button.width = this.font.getStringWidth(button.displayString) + 15;
-            button.height = 20;
-
-            x += button.width + 5;
-            i += 1;
-        }
-
-        this.add.y = this.remove.y = this.x.y;
-        this.add.height = this.remove.height = 20;
-        this.add.width = 30;
-        this.remove.width = 50;
-
-        this.add.x = this.editor.width - 95;
-        this.remove.x = this.add.x + this.add.width + 5;
-
-        this.interp.y = this.tick.area.y;
-        this.interp.x = this.tick.area.x - 90;
-
-        this.easing.y = this.value.area.y;
-        this.easing.x = this.value.area.x - 90;
     }
 
     @Override
@@ -374,21 +341,11 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
-    public boolean hasActiveTextfields()
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        return this.selected != -1 && (this.tick.text.isFocused() || this.value.text.isFocused());
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-
-        if (this.selected != -1)
+        if (super.mouseClicked(mouseX, mouseY, mouseButton))
         {
-            this.tick.mouseClicked(mouseX, mouseY, mouseButton);
-            this.value.mouseClicked(mouseX, mouseY, mouseButton);
-            this.frameButtons.mouseClicked(mouseX, mouseY, mouseButton);
+            return true;
         }
 
         /* Select current point with a mouse click */
@@ -430,9 +387,11 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 this.lastSX = this.shiftX;
                 this.lastSY = this.shiftY;
             }
+
+            return true;
         }
 
-        this.buttons.mouseClicked(mouseX, mouseY, mouseButton);
+        return false;
     }
 
     private boolean isInside(float tick, float value, int mouseX, int mouseY)
@@ -445,12 +404,22 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
-    public void mouseScroll(int x, int y, int scroll)
+    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
-        super.mouseScroll(x, y, scroll);
+        if (super.mouseScrolled(mouseX, mouseY, scroll))
+        {
+            return true;
+        }
 
-        this.zoomY += Math.copySign(0.2F, scroll);
-        this.zoomY = MathHelper.clamp(this.zoomY, 0.1F, 100);
+        if (this.area.isInside(mouseX, mouseY))
+        {
+            this.zoomY += Math.copySign(0.2F, scroll);
+            this.zoomY = MathHelper.clamp(this.zoomY, 0.1F, 100);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -460,9 +429,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         if (this.selected != -1)
         {
-            this.tick.mouseReleased(mouseX, mouseY, state);
-            this.value.mouseReleased(mouseX, mouseY, state);
-
             if (this.sliding)
             {
                 /* Resort after dragging the tick thing */
@@ -486,7 +452,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
         int w = this.editor.width;
         int h = this.editor.height;
@@ -505,32 +471,20 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         /* Draw title of the channel */
-        this.editor.drawCenteredString(this.font, this.titles[this.channel], w / 2, h - 65, 0xffffff);
+        this.editor.drawCenteredString(this.font, this.titles[this.channel], w / 2, h - 45, 0xffffff);
 
-        if (this.selected != -1)
-        {
-            this.tick.draw(mouseX, mouseY, partialTicks);
-            this.value.draw(mouseX, mouseY, partialTicks);
-            this.frameButtons.draw(mouseX, mouseY, partialTicks);
-        }
-
-        this.buttons.draw(mouseX, mouseY, partialTicks);
-
-        super.draw(mouseX, mouseY, partialTicks);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
     }
 
+    /**
+     * Render the graph 
+     */
     private void drawGraph(int mouseX, int mouseY, int w, int h)
     {
         if (this.active.isEmpty())
         {
             return;
         }
-
-        int leftBorder = this.toGraphX(0);
-        int rightBorder = this.toGraphX(this.fixture.getDuration());
-
-        if (leftBorder > 0) Gui.drawRect(0, this.frames.y, leftBorder, this.frames.y + this.frames.h, 0x88000000);
-        if (rightBorder < w) Gui.drawRect(rightBorder, this.frames.y, w, this.frames.y + this.frames.h, 0x88000000);
 
         if (this.scrolling)
         {
@@ -563,6 +517,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             this.fillData(frame);
         }
 
+        int leftBorder = this.toGraphX(0);
+        int rightBorder = this.toGraphX(this.fixture.getDuration());
+
+        if (leftBorder > 0) Gui.drawRect(0, this.frames.y, leftBorder, this.frames.y + this.frames.h, 0x88000000);
+        if (rightBorder < w) Gui.drawRect(rightBorder, this.frames.y, w, this.frames.y + this.frames.h, 0x88000000);
+
         /* Draw graph of the keyframe channel */
         GL11.glLineWidth(2);
         GL11.glPointSize(8);
@@ -579,7 +539,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         else if (this.channel == 3) GlStateManager.color(0.1F, 0.8F, 0.9F, 0.9F);
         else if (this.channel == 4) GlStateManager.color(0.8F, 0.1F, 0.9F, 0.9F);
         else if (this.channel == 5) GlStateManager.color(0.9F, 0.8F, 0.1F, 0.9F);
-        else if (this.channel == 6) GlStateManager.color(0, 0, 0, 1);
+        else if (this.channel == 6) GlStateManager.color(0.75F, 0.75F, 0.75F, 1);
         else GlStateManager.color(1, 1, 1, 0.9F);
 
         /* Draw lines */

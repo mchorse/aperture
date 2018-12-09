@@ -48,7 +48,7 @@ aperture.gui:
         save: 保存相机配置（Ctrl+S）
         profiles: 显示相机配置
         config: 显示相机编辑器选项
-        modifiers: 打开调整器面板（O）
+        modifiers: 打开调整器面板 (N)
         goto: 前往指定的帧
         add: 添加关键点
         dupe: 拷贝关键点

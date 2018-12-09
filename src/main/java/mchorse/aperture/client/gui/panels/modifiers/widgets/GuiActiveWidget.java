@@ -2,21 +2,24 @@ package mchorse.aperture.client.gui.panels.modifiers.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-import mchorse.aperture.client.gui.panels.IGuiModule;
-import mchorse.mclib.client.gui.utils.Area;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
 
-public class GuiActiveWidget implements IGuiModule
+public class GuiActiveWidget extends GuiElement
 {
-    public Area area = new Area();
     public byte value;
     public List<String> labels = new ArrayList<String>();
+    public Consumer<Byte> callback;
 
-    public GuiActiveWidget()
+    public GuiActiveWidget(Minecraft mc, Consumer<Byte> callback)
     {
+        super(mc);
+
         this.labels.add(I18n.format("aperture.gui.panels.x"));
         this.labels.add(I18n.format("aperture.gui.panels.y"));
         this.labels.add(I18n.format("aperture.gui.panels.z"));
@@ -24,34 +27,35 @@ public class GuiActiveWidget implements IGuiModule
         this.labels.add(I18n.format("aperture.gui.panels.pitch"));
         this.labels.add(I18n.format("aperture.gui.panels.roll"));
         this.labels.add(I18n.format("aperture.gui.panels.fov"));
+
+        this.callback = callback;
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.area.isInside(mouseX, mouseY))
         {
             int index = (mouseX - this.area.x) / (this.area.w / 7);
 
             this.value ^= 1 << index;
+
+            if (this.callback != null)
+            {
+                this.callback.accept(this.value);
+            }
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void mouseScroll(int x, int y, int scroll)
-    {}
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {}
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {}
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
+
         Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0x88000000);
         int w = (this.area.w / 7);
 
@@ -78,7 +82,7 @@ public class GuiActiveWidget implements IGuiModule
                 Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, 0x880088ff);
             }
 
-            Minecraft.getMinecraft().currentScreen.drawCenteredString(Minecraft.getMinecraft().fontRenderer, this.labels.get(i), x + w / 2, this.area.y + 7, 0xffffff);
+            this.drawCenteredString(this.font, this.labels.get(i), x + w / 2, this.area.y + 7, 0xffffff);
         }
     }
 }

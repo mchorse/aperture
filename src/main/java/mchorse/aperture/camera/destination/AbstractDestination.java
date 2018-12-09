@@ -81,6 +81,11 @@ public abstract class AbstractDestination
     public abstract void load();
 
     /**
+     * Remove a camera profile 
+     */
+    public abstract void remove();
+
+    /**
      * Create a resource location out of destination 
      */
     public abstract ResourceLocation toResourceLocation();

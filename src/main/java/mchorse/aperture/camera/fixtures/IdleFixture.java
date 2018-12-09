@@ -46,9 +46,9 @@ public class IdleFixture extends AbstractFixture
     {
         IdleFixture fixture = new IdleFixture(this.duration);
 
-        fixture.position = this.position.clone();
-
         AbstractFixture.copyModifiers(this, fixture);
+        fixture.name = this.name;
+        fixture.position = this.position.clone();
 
         return fixture;
     }

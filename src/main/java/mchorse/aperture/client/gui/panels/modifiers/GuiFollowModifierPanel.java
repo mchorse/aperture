@@ -3,32 +3,37 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModifier>
 {
-    public GuiTextField selector;
-    public String old = "";
+    public GuiTextElement selector;
 
-    public GuiFollowModifierPanel(FollowModifier modifier, GuiModifiersManager modifiers, FontRenderer font)
+    public GuiFollowModifierPanel(Minecraft mc, FollowModifier modifier, GuiModifiersManager modifiers)
     {
-        super(modifier, modifiers, font);
+        super(mc, modifier, modifiers);
 
-        this.selector = new GuiTextField(0, font, 0, 0, 0, 0);
-        this.selector.setMaxStringLength(500);
+        this.selector = new GuiTextElement(mc, 500, (str) ->
+        {
+            this.modifier.selector = str;
+            this.modifier.tryFindingEntity();
+            this.modifiers.editor.updateProfile();
+        });
+
+        this.selector.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
+
+        this.children.add(this.selector);
     }
 
     @Override
-    public void update(int x, int y, int w)
+    public void resize(int width, int height)
     {
-        super.update(x, y, w);
-
-        GuiUtils.setSize(this.selector, x + 5, y + 25, w - 10, 20);
+        super.resize(width, height);
 
         this.selector.setText(this.modifier.selector);
-        this.selector.setCursorPositionZero();
     }
 
     @Override
@@ -38,48 +43,13 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-        this.selector.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {}
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        this.selector.textboxKeyTyped(typedChar, keyCode);
-
-        String text = this.selector.getText();
-
-        if (this.selector.isFocused() && !text.equals(this.old) && !text.isEmpty())
+        if (!this.selector.field.isFocused())
         {
-            this.modifier.selector = text;
-            this.modifier.tryFindingEntity();
-            this.modifiers.editor.updateProfile();
-        }
-    }
-
-    @Override
-    public boolean hasActiveTextfields()
-    {
-        return this.selector.isFocused();
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(mouseX, mouseY, partialTicks);
-
-        this.selector.drawTextBox();
-
-        if (!this.selector.isFocused())
-        {
-            GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.x + this.selector.width - 4, this.selector.y + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.area.x + this.selector.area.w - 4, this.selector.area.y + 5, 0xffaaaaaa);
         }
     }
 }
