@@ -53,6 +53,7 @@ public class GuiCameraConfig extends GuiElement
                 continue;
             }
 
+            option.update();
             option.resizer().parent(this.area).set(0, y, 0, option.getHeight()).w(1, 0);
             max = Math.max(max, option.getWidth());
             y += option.getHeight();
@@ -76,13 +77,13 @@ public class GuiCameraConfig extends GuiElement
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        return super.mouseClicked(mouseX, mouseY, mouseButton) || this.options.mouseClicked(mouseX, mouseY + this.scroll.scroll, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, mouseButton) || this.options.mouseClicked(mouseX, mouseY + this.scroll.scroll, mouseButton) || this.scroll.mouseClicked(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
-        return super.mouseScrolled(mouseX, mouseY, scroll) || this.options.mouseScrolled(mouseX, mouseY + this.scroll.scroll, scroll);
+        return super.mouseScrolled(mouseX, mouseY, scroll) || this.options.mouseScrolled(mouseX, mouseY + this.scroll.scroll, scroll) || this.scroll.mouseScroll(mouseX, mouseY, scroll);
     }
 
     @Override
@@ -90,11 +91,14 @@ public class GuiCameraConfig extends GuiElement
     {
         super.mouseReleased(mouseX, mouseY, state);
         this.options.mouseReleased(mouseX, mouseY + this.scroll.scroll, state);
+        this.scroll.mouseReleased(mouseX, mouseY);
     }
 
     @Override
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
+        this.scroll.drag(mouseX, mouseX);
+
         Gui.drawRect(this.scroll.x, this.scroll.y, this.scroll.getX(1), this.scroll.getY(1), 0xaa000000);
 
         GuiUtils.scissor(this.scroll.x, this.scroll.y, this.scroll.w, this.scroll.h, this.editor.width, this.editor.height);
@@ -107,5 +111,7 @@ public class GuiCameraConfig extends GuiElement
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         super.draw(tooltip, mouseX, mouseY, partialTicks);
+
+        this.scroll.drawScrollbar();
     }
 }
