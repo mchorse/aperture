@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.events.CameraEditorOptionsEvent;
+import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiCameraConfig extends GuiElement
 {
-    public GuiElements<AbstractGuiConfigOptions> options = new GuiElements<>();
+    public GuiElements<GuiAbstractConfigOptions> options = new GuiElements<>();
     public GuiCameraEditor editor;
 
     public ScrollArea scroll = new ScrollArea(0);
@@ -29,10 +29,10 @@ public class GuiCameraConfig extends GuiElement
         this.createChildren();
         this.options.add(new GuiConfigCameraOptions(mc, editor));
 
-        CameraEditorOptionsEvent event = new CameraEditorOptionsEvent(editor);
+        CameraEditorEvent.Options event = new CameraEditorEvent.Options(editor);
         ClientProxy.EVENT_BUS.post(event);
 
-        for (AbstractGuiConfigOptions option : event.options)
+        for (GuiAbstractConfigOptions option : event.options)
         {
             this.options.add(option);
         }
@@ -44,7 +44,7 @@ public class GuiCameraConfig extends GuiElement
         int max = 0;
         int y = 0;
 
-        for (AbstractGuiConfigOptions option : this.options.elements)
+        for (GuiAbstractConfigOptions option : this.options.elements)
         {
             option.setVisible(option.isActive());
 

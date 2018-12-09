@@ -27,10 +27,11 @@ public class MouseRenderer
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0, 1000);
-
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableAlpha();
         Minecraft.getMinecraft().renderEngine.bindTexture(MOUSE_POINTER);
         Gui.drawModalRectWithCustomSizedTexture(event.getMouseX(), event.getMouseY(), 0, 0, 16, 16, 16, 16);
+        GlStateManager.disableAlpha();
         GlStateManager.popMatrix();
     }
 }

@@ -85,7 +85,10 @@ public class GuiModifiersManager extends GuiElement
 
         this.add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) ->
         {
-            this.addButtons.setVisible(!this.addButtons.isVisible());
+            if (this.fixture != null)
+            {
+                this.addButtons.setVisible(!this.addButtons.isVisible());
+            }
         });
 
         int i = 0;
@@ -101,6 +104,11 @@ public class GuiModifiersManager extends GuiElement
 
             GuiButtonElement<GuiFlatButton> button = new GuiButtonElement<GuiFlatButton>(mc, new GuiFlatButton(info.type, 0, 0, 0, 0, color, 0xff000000 + dark.getHex(), I18n.format(info.title)), (b) ->
             {
+                if (this.fixture == null)
+                {
+                    return;
+                }
+
                 this.addCameraModifier(b.button.id, this.fixture.getModifiers());
                 this.addButtons.setVisible(false);
             });

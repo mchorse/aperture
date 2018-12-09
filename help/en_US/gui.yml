@@ -91,12 +91,17 @@ aperture.gui:
             factor: Factor
 
     profiles:
-        loaded: Loaded
-        load: Load
-        new: New
-        tooltip: New camera name
-        rename_profile: Rename profile
+        title: Profiles
         rename: Rename
+        
+        add_modal: Type in a name for a new camera profile.
+        rename_modal: Type in a new name to rename current camera profile.
+        remove_modal: Are you sure you want to remove this camera profile (it won't possible to restore it)?
+        
+        add_tooltip: Add a profile
+        convert_tooltip: Convert profile
+        rename_tooltip: Rename profile
+        remove_tooltip: Remove profile
 
     panels:
         name: Name

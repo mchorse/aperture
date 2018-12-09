@@ -28,20 +28,21 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
 
             for (String profile : message.cameras)
             {
-                manager.destToLoad.add(new ServerDestination(profile));
+                manager.profiles.add(manager.createEntry(new ServerDestination(profile)));
             }
-
-            manager.scrollLoad.setSize(manager.destToLoad.size());
 
             if (!ClientProxy.control.logged)
             {
-                if (manager.destToLoad.isEmpty())
+                if (manager.profiles.getList().isEmpty())
                 {
                     ClientProxy.control.addProfile(new CameraProfile(AbstractDestination.create("default")));
                 }
 
                 ClientProxy.control.logged = true;
             }
+
+            manager.profiles.sort();
+            manager.selectProfile(ClientProxy.control.currentProfile);
         }
     }
 }

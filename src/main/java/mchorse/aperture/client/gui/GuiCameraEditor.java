@@ -17,8 +17,7 @@ import mchorse.aperture.client.gui.GuiPlaybackScrub.IScrubListener;
 import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
-import mchorse.aperture.events.CameraEditorPlaybackStateEvent;
-import mchorse.aperture.events.CameraEditorScrubbedEvent;
+import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.GuiTooltip.TooltipDirection;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
@@ -164,7 +163,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiConfigCameraOptions cameraOptions;
     public GuiModifiersManager modifiers;
     public GuiDelegateElement<GuiAbstractFixturePanel<AbstractFixture>> panel;
-
     public GuiElements<IGuiElement> hidden = new GuiElements<IGuiElement>();
 
     /**
@@ -203,7 +201,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 this.updatePlayerCurrently(0.0F);
             }
 
-            ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(this.playing, this.scrub.value));
+            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.scrub.value));
         }).tooltip(I18n.format("aperture.gui.tooltips.plause"), TooltipDirection.BOTTOM);
         this.prevFrame = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 48, 0, 48, 16, (b) -> this.jumpToPrevFrame()).tooltip(I18n.format("aperture.gui.tooltips.jump_prev_frame"), TooltipDirection.BOTTOM);
         this.toPrevFixture = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 80, 0, 80, 16, (b) -> this.jumpToPrevFixture()).tooltip(I18n.format("aperture.gui.tooltips.jump_prev_fixture"), TooltipDirection.BOTTOM);
@@ -275,6 +273,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.frame.setVisible(false);
 
         this.elements.add(this.hidden, this.openProfiles, this.profiles);
+
+        /* Let other classes have fun with camera editor's fields' 
+         * position and such */
+        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Init(this));
     }
 
     /**
@@ -302,7 +304,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.haveScrubbed = true;
 
-            ClientProxy.EVENT_BUS.post(new CameraEditorScrubbedEvent(this.runner.isRunning(), this.scrub.value));
+            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Scrubbed(this, this.runner.isRunning(), this.scrub.value));
         }
     }
 
@@ -454,6 +456,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         boolean isOldSame = this.profile == profile;
 
         this.profile = profile;
+        this.profiles.selectProfile(profile);
         this.scrub.setProfile(profile);
         this.hidden.setVisible(profile != null);
 
@@ -866,7 +869,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 this.runner.attachOutside();
                 this.scrub.setValueFromScrub(0);
 
-                ClientProxy.EVENT_BUS.post(new CameraEditorPlaybackStateEvent(false, this.scrub.value));
+                ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, false, this.scrub.value));
                 this.playing = false;
             }
 

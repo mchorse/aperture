@@ -78,6 +78,12 @@ public class ClientDestination extends AbstractDestination
     }
 
     @Override
+    public void remove()
+    {
+        new File(ClientProxy.getClientCameras(), this.filename + ".json").delete();
+    }
+
+    @Override
     public ResourceLocation toResourceLocation()
     {
         return new ResourceLocation("client", this.filename);

@@ -13,7 +13,7 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.common.Loader;
 
-public class GuiConfigCameraOptions extends AbstractGuiConfigOptions
+public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 {
     private String title = I18n.format("aperture.gui.config.title");
 
