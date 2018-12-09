@@ -37,7 +37,7 @@ public class ClientDestination extends AbstractDestination
 
         if (from.renameTo(to))
         {
-            ClientProxy.cameraEditor.profiles.rename(this, name);
+            ClientProxy.getCameraEditor().profiles.rename(this, name);
         }
     }
 
@@ -75,6 +75,12 @@ public class ClientDestination extends AbstractDestination
         {
             L10n.error(Minecraft.getMinecraft().player, "profile.client_cant_load", this.filename);
         }
+    }
+
+    @Override
+    public void remove()
+    {
+        new File(ClientProxy.getClientCameras(), this.filename + ".json").delete();
     }
 
     @Override

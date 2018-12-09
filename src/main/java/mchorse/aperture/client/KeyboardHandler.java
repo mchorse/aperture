@@ -217,10 +217,11 @@ public class KeyboardHandler
         /* Misc. */
         if (this.cameraEditor.isPressed())
         {
-            ClientProxy.cameraEditor.updateCameraEditor(player);
+            GuiCameraEditor editor = ClientProxy.getCameraEditor();
 
+            editor.updateCameraEditor(player);
             player.setVelocity(0, 0, 0);
-            this.mc.displayGuiScreen(ClientProxy.cameraEditor);
+            this.mc.displayGuiScreen(editor);
         }
 
         if (this.smoothCamera.isPressed())

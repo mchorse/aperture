@@ -1,12 +1,11 @@
 package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.fixtures.IdleFixture;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -16,54 +15,19 @@ import net.minecraft.entity.player.EntityPlayer;
  * This panel is responsible for editing an idle fixture. This panel uses basic
  * point and angle modules for manipulating idle fixture's position.
  */
-public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> implements ITrackpadListener
+public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture>
 {
     public GuiPointModule point;
     public GuiAngleModule angle;
 
-    public GuiIdleFixturePanel(FontRenderer font)
+    public GuiIdleFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
-        super(font);
+        super(mc, editor);
 
-        this.point = new GuiPointModule(this, font);
-        this.angle = new GuiAngleModule(this, font);
+        this.point = new GuiPointModule(mc, editor);
+        this.angle = new GuiAngleModule(mc, editor);
 
-        this.height = 100;
-    }
-
-    @Override
-    public void setTrackpadValue(GuiTrackpad trackpad, float value)
-    {
-        if (trackpad == this.point.x)
-        {
-            this.fixture.position.point.x = trackpad.value;
-        }
-        else if (trackpad == this.point.y)
-        {
-            this.fixture.position.point.y = trackpad.value;
-        }
-        else if (trackpad == this.point.z)
-        {
-            this.fixture.position.point.z = trackpad.value;
-        }
-        else if (trackpad == this.angle.yaw)
-        {
-            this.fixture.position.angle.yaw = trackpad.value;
-        }
-        else if (trackpad == this.angle.pitch)
-        {
-            this.fixture.position.angle.pitch = trackpad.value;
-        }
-        else if (trackpad == this.angle.roll)
-        {
-            this.fixture.position.angle.roll = trackpad.value;
-        }
-        else if (trackpad == this.angle.fov)
-        {
-            this.fixture.position.angle.fov = trackpad.value;
-        }
-
-        super.setTrackpadValue(trackpad, value);
+        this.children.add(this.point, this.angle);
     }
 
     @Override
@@ -76,29 +40,19 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     }
 
     @Override
-    public void update(GuiScreen screen)
+    public void resize(int width, int height)
     {
-        boolean height = screen.height - 60 > 200;
+        boolean h = this.editor.height - 60 > 200;
 
-        this.height = height ? 200 : 100;
+        this.point.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -80);
+        this.angle.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -170);
 
-        super.update(screen);
-
-        int x = this.area.x + this.area.w - 80;
-        int y = this.area.y + 10;
-
-        this.point.update(x, y);
-
-        if (height)
+        if (h)
         {
-            y += 110;
-        }
-        else
-        {
-            x -= 80 + 10;
+            this.angle.resizer().x(1, -80).y(120);
         }
 
-        this.angle.update(x, y);
+        super.resize(width, height);
     }
 
     @Override
@@ -110,47 +64,11 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture> im
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-        this.point.mouseClicked(mouseX, mouseY, mouseButton);
-        this.angle.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        super.mouseReleased(mouseX, mouseY, state);
-
-        this.point.mouseReleased(mouseX, mouseY, state);
-        this.angle.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
-    public boolean hasActiveTextfields()
-    {
-        return super.hasActiveTextfields() || this.point.hasActiveTextfields();
-    }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        super.keyTyped(typedChar, keyCode);
-
-        this.point.keyTyped(typedChar, keyCode);
-        this.angle.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(mouseX, mouseY, partialTicks);
-
-        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.x.area.x + this.point.x.area.w / 2, this.point.x.area.y - 14, 0xffffffff);
-        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.yaw.area.x + this.angle.yaw.area.w / 2, this.angle.yaw.area.y - 14, 0xffffffff);
-
-        this.point.draw(mouseX, mouseY, partialTicks);
-        this.angle.draw(mouseX, mouseY, partialTicks);
+        this.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.area.x + this.point.area.w / 2, this.point.area.y - 14, 0xffffffff);
+        this.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w / 2, this.angle.area.y - 14, 0xffffffff);
     }
 }

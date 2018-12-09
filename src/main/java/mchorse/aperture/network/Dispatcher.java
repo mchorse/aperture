@@ -5,16 +5,19 @@ import mchorse.aperture.network.client.ClientHandlerCameraProfile;
 import mchorse.aperture.network.client.ClientHandlerCameraProfileList;
 import mchorse.aperture.network.client.ClientHandlerCameraState;
 import mchorse.aperture.network.client.ClientHandlerRenameCameraProfile;
+import mchorse.aperture.network.client.ClientHandlerRemoveCameraProfile;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketCameraProfileList;
 import mchorse.aperture.network.common.PacketCameraReset;
 import mchorse.aperture.network.common.PacketCameraState;
 import mchorse.aperture.network.common.PacketLoadCameraProfile;
+import mchorse.aperture.network.common.PacketRemoveCameraProfile;
 import mchorse.aperture.network.common.PacketRenameCameraProfile;
 import mchorse.aperture.network.common.PacketRequestCameraProfiles;
 import mchorse.aperture.network.server.ServerHandlerCameraProfile;
 import mchorse.aperture.network.server.ServerHandlerCameraReset;
 import mchorse.aperture.network.server.ServerHandlerLoadCameraProfile;
+import mchorse.aperture.network.server.ServerHandlerRemoveCameraProfile;
 import mchorse.aperture.network.server.ServerHandlerRenameCameraProfile;
 import mchorse.aperture.network.server.ServerHandlerRequestCameraProfiles;
 import mchorse.mclib.network.AbstractDispatcher;
@@ -42,8 +45,12 @@ public class Dispatcher
             this.register(PacketLoadCameraProfile.class, ServerHandlerLoadCameraProfile.class, Side.SERVER);
             this.register(PacketRequestCameraProfiles.class, ServerHandlerRequestCameraProfiles.class, Side.SERVER);
             this.register(PacketCameraProfileList.class, ClientHandlerCameraProfileList.class, Side.CLIENT);
+
             this.register(PacketRenameCameraProfile.class, ClientHandlerRenameCameraProfile.class, Side.CLIENT);
             this.register(PacketRenameCameraProfile.class, ServerHandlerRenameCameraProfile.class, Side.SERVER);
+
+            this.register(PacketRemoveCameraProfile.class, ClientHandlerRemoveCameraProfile.class, Side.CLIENT);
+            this.register(PacketRemoveCameraProfile.class, ServerHandlerRemoveCameraProfile.class, Side.SERVER);
         }
     };
 

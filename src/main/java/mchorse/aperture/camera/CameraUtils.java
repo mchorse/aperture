@@ -204,4 +204,14 @@ public class CameraUtils
 
         return fromFile.renameTo(toFile);
     }
+
+    /**
+     * Rename camera profile 
+     */
+    public static boolean removeProfile(String profile)
+    {
+        File file = new File(cameraFile(profile));
+
+        return file.delete();
+    }
 }

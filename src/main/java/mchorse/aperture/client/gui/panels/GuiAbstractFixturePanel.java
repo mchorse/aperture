@@ -3,14 +3,11 @@ package mchorse.aperture.client.gui.panels;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.utils.Area;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad;
-import mchorse.mclib.client.gui.widgets.GuiTrackpad.ITrackpadListener;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -20,79 +17,47 @@ import net.minecraft.entity.player.EntityPlayer;
  * This panel adds inputs for only two properties (which has every camera
  * fixture): name and duration.
  */
-public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> implements IFixturePanel<T>, ITrackpadListener, GuiResponder
+public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends GuiElement implements IFixturePanel<T>
 {
-    private Minecraft mc = Minecraft.getMinecraft();
-
     /**
      * Currently editing camera fixture
      */
     public T fixture;
 
     /* Stuff */
-    public Area area = new Area();
-    public FontRenderer font;
     public GuiCameraEditor editor;
 
     /* GUI fields */
-    public GuiTextField name;
-    public GuiTrackpad duration;
+    public GuiTextElement name;
+    public GuiTrackpadElement duration;
 
-    /* Dynamic height which can be modified by subclasses */
-    public int height = 140;
-
-    public GuiAbstractFixturePanel(FontRenderer font)
+    public GuiAbstractFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
-        this.name = new GuiTextField(0, font, 0, 0, 0, 0);
-        this.name.setGuiResponder(this);
+        super(mc);
 
-        this.duration = new GuiTrackpad(this, font);
-        this.duration.title = I18n.format("aperture.gui.panels.duration");
-        this.duration.amplitude = 1.0F;
-        this.duration.min = 1;
-
-        this.font = font;
-    }
-
-    /**
-     * Why I gotta implement this junk?
-     */
-    @Override
-    public void setEntryValue(int id, boolean value)
-    {}
-
-    /**
-     * Why I gotta implement this junk?
-     */
-    @Override
-    public void setEntryValue(int id, float value)
-    {}
-
-    /**
-     * This method is responsible for setting a value of camera fixture
-     */
-    @Override
-    public void setEntryValue(int id, String value)
-    {
-        if (id == 0)
+        this.createChildren();
+        this.name = new GuiTextElement(mc, 80, (str) ->
         {
-            this.fixture.setName(value);
-        }
+            this.fixture.setName(str);
+            this.editor.updateValues();
+            this.editor.updateProfile();
+        });
 
-        this.editor.updateValues();
-        this.editor.updateProfile();
-    }
-
-    @Override
-    public void setTrackpadValue(GuiTrackpad trackpad, float value)
-    {
-        if (trackpad == this.duration)
+        this.duration = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.duration"), (value) ->
         {
-            this.updateDuration((long) value);
-        }
+            this.updateDuration(value.longValue());
+            this.editor.updatePlayerCurrently(0.0F);
+            this.editor.updateProfile();
+        });
+        this.duration.trackpad.amplitude = 1.0F;
+        this.duration.trackpad.min = 1;
 
-        this.editor.updatePlayerCurrently(0.0F);
-        this.editor.updateProfile();
+        this.name.resizer().parent(this.area).set(0, 10, 100, 20);
+        this.duration.resizer().parent(this.area).set(0, 35, 100, 20);
+
+        this.children.add(this.name, this.duration);
+
+        this.editor = editor;
     }
 
     protected void updateDuration(long value)
@@ -107,8 +72,6 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         this.fixture = fixture;
 
         this.name.setText(fixture.getName());
-        this.name.setCursorPositionZero();
-
         this.duration.setValue(fixture.getDuration());
     }
 
@@ -118,24 +81,6 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
         return this.editor.getProfile().calculateOffset(this.fixture);
     }
 
-    @Override
-    public void update(GuiScreen screen)
-    {
-        this.area.set(10, screen.height / 2 - this.height / 2, screen.width - 20, this.height);
-
-        int x = this.area.x;
-        int y = this.area.y + 10;
-
-        this.name.xPosition = x + 1;
-        this.name.yPosition = y + 1;
-        this.name.width = 98;
-        this.name.height = 18;
-
-        this.duration.update(x, y + 25, 100, 20);
-
-        this.editor = (GuiCameraEditor) screen;
-    }
-
     public void editFixture(EntityPlayer entity)
     {
         this.select(this.fixture, -1);
@@ -143,44 +88,13 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> impleme
     }
 
     @Override
-    public boolean hasActiveTextfields()
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        return this.name.isFocused() || this.duration.text.isFocused();
-    }
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        this.name.textboxKeyTyped(typedChar, keyCode);
-        this.duration.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        this.name.mouseClicked(mouseX, mouseY, mouseButton);
-        this.duration.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public void mouseScroll(int x, int y, int scroll)
-    {}
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        this.duration.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        this.name.drawTextBox();
-        this.duration.draw(mouseX, mouseY, partialTicks);
-
-        if (!this.name.isFocused())
+        if (!this.name.field.isFocused())
         {
-            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.name"), this.name.xPosition + this.name.width - 4, this.name.yPosition + 5, 0xffaaaaaa);
+            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.name"), this.name.area.x + this.name.area.w - 4, this.name.area.y + 6, 0xffaaaaaa);
         }
     }
 }

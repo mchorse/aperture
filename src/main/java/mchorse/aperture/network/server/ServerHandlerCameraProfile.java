@@ -22,10 +22,10 @@ public class ServerHandlerCameraProfile extends ServerMessageHandler<PacketCamer
 
         if (CameraUtils.saveCameraProfile(message.filename, CameraUtils.toJSON(message.profile), player))
         {
-            ICamera recording = Camera.get(player);
+            ICamera cap = Camera.get(player);
 
-            recording.setCurrentProfile(message.filename);
-            recording.setCurrentProfileTimestamp(System.currentTimeMillis());
+            cap.setCurrentProfile(message.filename);
+            cap.setCurrentProfileTimestamp(System.currentTimeMillis());
 
             L10n.success(player, "profile.save", message.filename);
         }

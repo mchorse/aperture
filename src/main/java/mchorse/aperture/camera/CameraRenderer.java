@@ -14,6 +14,7 @@ import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -105,9 +106,9 @@ public class CameraRenderer
 
             player.rotationPitch = player.prevRotationPitch = runner.pitch;
         }
-        else if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
+        else if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
         {
-            Position position = ClientProxy.cameraEditor.position;
+            Position position = ClientProxy.getCameraEditor().position;
 
             event.setYaw(-180 + position.angle.yaw);
             event.setPitch(position.angle.pitch);
@@ -313,9 +314,9 @@ public class CameraRenderer
         GL11.glNormal3f(0, 1, 0);
         GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
 
-        if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
         {
-            Position pos = ClientProxy.cameraEditor.position;
+            Position pos = ClientProxy.getCameraEditor().position;
 
             GlStateManager.rotate(-pos.angle.yaw, 0, 1, 0);
             GlStateManager.rotate(pos.angle.pitch, 1, 0, 0);
@@ -408,9 +409,9 @@ public class CameraRenderer
         GL11.glNormal3f(0, 1, 0);
         GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
 
-        if (Minecraft.getMinecraft().currentScreen == ClientProxy.cameraEditor)
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
         {
-            Position position = ClientProxy.cameraEditor.position;
+            Position position = ClientProxy.getCameraEditor().position;
 
             GlStateManager.rotate(-position.angle.yaw, 0, 1, 0);
             GlStateManager.rotate(position.angle.pitch, 1, 0, 0);

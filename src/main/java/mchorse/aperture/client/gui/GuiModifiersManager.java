@@ -13,29 +13,26 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.GuiFixturesPopup.GuiFlatButton;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
-import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.aperture.utils.Color;
+import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElements;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.ScrollArea;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 
-public class GuiModifiersManager
+public class GuiModifiersManager extends GuiElement
 {
     /**
      * Registry of camera modifier panels 
      */
-    public static final Map<Class<? extends AbstractModifier>, Class<? extends GuiAbstractModifierPanel<? extends AbstractModifier>>> PANELS = new HashMap<Class<? extends AbstractModifier>, Class<? extends GuiAbstractModifierPanel<? extends AbstractModifier>>>();
-
-    /**
-     * Current list of panels 
-     */
-    public List<GuiAbstractModifierPanel<AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<AbstractModifier>>();
+    public static final Map<Class<? extends AbstractModifier>, Class<? extends GuiAbstractModifierPanel<? extends AbstractModifier>>> PANELS = new HashMap<>();
 
     /* Strings */
     private String stringTitle = I18n.format("aperture.gui.modifiers.title");
@@ -47,42 +44,54 @@ public class GuiModifiersManager
     public AbstractFixture fixture;
 
     /**
-     * Whether this module visible 
+     * Whether one of the modifier was removed, added or moved, so the 
+     * manager knew that there is something going on.
      */
-    public boolean visible;
-
-    /**
-     * Whether adding
-     */
-    public boolean adding;
-
     public boolean modified = false;
 
     /**
      * Modifier's panel are 
      */
-    public ScrollArea area = new ScrollArea(0);
+    public ScrollArea scroll = new ScrollArea(0);
 
     /**
      * Add buttons (which add different {@link AbstractModifier}s to a 
      * fixture 
      */
-    public List<GuiButton> addButtons = new ArrayList<GuiButton>();
+    @SuppressWarnings("rawtypes")
+    public GuiElements<GuiButtonElement> addButtons = new GuiElements<>();
+
+    /**
+     * Modifier panels 
+     */
+    public GuiElements<GuiAbstractModifierPanel<AbstractModifier>> panels = new GuiElements<>();
 
     /**
      * Button to show add buttons 
      */
-    public GuiButton add;
+    public GuiButtonElement<GuiTextureButton> add;
 
     /**
      * Reference to the parent screen (the camera editor) 
      */
     public GuiCameraEditor editor;
 
-    public GuiModifiersManager(GuiCameraEditor editor)
+    public GuiModifiersManager(Minecraft mc, GuiCameraEditor editor)
     {
+        super(mc);
+
         this.editor = editor;
-        this.add = new GuiTextureButton(0, 0, 0, GuiCameraEditor.EDITOR_TEXTURE).setTexPos(224, 0).setActiveTexPos(224, 16);
+        this.createChildren();
+
+        this.add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) ->
+        {
+            if (this.fixture != null)
+            {
+                this.addButtons.setVisible(!this.addButtons.isVisible());
+            }
+        });
+
+        int i = 0;
 
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
@@ -93,36 +102,27 @@ public class GuiModifiersManager
             dark.green *= 0.9;
             dark.blue *= 0.9;
 
-            this.addButtons.add(new GuiFlatButton(info.type, 0, 0, 0, 0, color, 0xff000000 + dark.getHex(), info.title));
-        }
-    }
+            GuiButtonElement<GuiFlatButton> button = new GuiButtonElement<GuiFlatButton>(mc, new GuiFlatButton(info.type, 0, 0, 0, 0, color, 0xff000000 + dark.getHex(), I18n.format(info.title)), (b) ->
+            {
+                if (this.fixture == null)
+                {
+                    return;
+                }
 
-    public boolean isInside(int x, int y)
-    {
-        return this.visible && this.area.isInside(x, y) && y - this.area.y < this.area.scrollSize;
-    }
+                this.addCameraModifier(b.button.id, this.fixture.getModifiers());
+                this.addButtons.setVisible(false);
+            });
 
-    /**
-     * Update, I guess
-     */
-    public void update(int x, int y, int w, int h)
-    {
-        this.area.set(x, y, w, h);
-        this.area.scrollSize = 20;
-        this.recalcPanels();
-
-        GuiUtils.setSize(this.add, x + w - 20 + 2, y + 2, 16, 16);
-
-        int i = 0;
-
-        for (GuiButton button : this.addButtons)
-        {
-            GuiUtils.setSize(button, x + w - 80, y + 20 + i * 20, 80, 20);
+            button.resizer().parent(this.area).set(0, 20 + i * 20, 80, 20).x(1, -80);
+            this.addButtons.add(button);
 
             i++;
         }
 
-        this.area.clamp();
+        this.addButtons.setVisible(false);
+
+        this.add.resizer().parent(this.area).set(0, 2, 16, 16).x(1, -18);
+        this.children.add(this.add, this.addButtons);
     }
 
     /**
@@ -132,12 +132,12 @@ public class GuiModifiersManager
     {
         if (fixture == null)
         {
-            this.panels.clear();
+            this.panels.elements.clear();
         }
         else if (fixture != this.fixture)
         {
-            this.panels.clear();
-            this.area.scrollSize = 20;
+            this.panels.elements.clear();
+            this.scroll.scrollSize = 20;
 
             for (AbstractModifier modifier : fixture.getModifiers())
             {
@@ -151,6 +151,7 @@ public class GuiModifiersManager
     /**
      * Add a camera modifier for current
      */
+    @SuppressWarnings("unchecked")
     public void addModifier(AbstractModifier modifier)
     {
         Class<? extends GuiAbstractModifierPanel<? extends AbstractModifier>> clazz = PANELS.get(modifier.getClass());
@@ -159,14 +160,13 @@ public class GuiModifiersManager
         {
             try
             {
-                FontRenderer font = this.editor.mc.fontRendererObj;
-                GuiAbstractModifierPanel<AbstractModifier> panel = (GuiAbstractModifierPanel<AbstractModifier>) clazz.getConstructor(modifier.getClass(), GuiModifiersManager.class, FontRenderer.class).newInstance(modifier, this, font);
+                GuiAbstractModifierPanel<AbstractModifier> panel = (GuiAbstractModifierPanel<AbstractModifier>) clazz.getConstructor(Minecraft.class, modifier.getClass(), GuiModifiersManager.class).newInstance(this.mc, modifier, this);
 
-                panel.update(this.area.x, this.area.y + this.area.scrollSize, this.area.w);
+                panel.resizer().parent(this.scroll).set(0, this.scroll.scrollSize, 0, panel.getHeight()).w(1, 0);
+                panel.resize(this.editor.width, this.editor.height);
                 this.panels.add(panel);
 
-                this.area.scrollSize += panel.getHeight();
-                this.editor.updateProfile();
+                this.scroll.scrollSize += panel.getHeight();
             }
             catch (Exception e)
             {
@@ -177,7 +177,7 @@ public class GuiModifiersManager
 
     public void moveModifier(GuiAbstractModifierPanel<? extends AbstractModifier> panel, int direction)
     {
-        int index = this.panels.indexOf(panel);
+        int index = this.panels.elements.indexOf(panel);
 
         if (index == -1)
         {
@@ -186,14 +186,14 @@ public class GuiModifiersManager
 
         int to = index + direction;
 
-        if (to < 0 || to >= this.panels.size())
+        if (to < 0 || to >= this.panels.elements.size())
         {
             return;
         }
 
         List<AbstractModifier> modifiers = this.fixture.getModifiers();
 
-        this.panels.add(to, this.panels.remove(index));
+        this.panels.elements.add(to, this.panels.elements.remove(index));
         modifiers.add(to, modifiers.remove(index));
         this.recalcPanels();
         this.editor.updateProfile();
@@ -202,11 +202,11 @@ public class GuiModifiersManager
 
     public void removeModifier(GuiAbstractModifierPanel<? extends AbstractModifier> panel)
     {
-        this.panels.remove(panel);
+        this.panels.elements.remove(panel);
         this.fixture.getModifiers().remove(panel.modifier);
 
         this.recalcPanels();
-        this.area.clamp();
+        this.scroll.clamp();
         this.editor.updateProfile();
         this.modified = true;
     }
@@ -229,58 +229,36 @@ public class GuiModifiersManager
     {
         int h = 0;
 
-        for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
+        for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels.elements)
         {
-            panel.update(this.area.x, this.area.y + 20 + h, this.area.w);
+            panel.resizer().parent(this.scroll).set(0, h + 20, 0, panel.getHeight()).w(1, 0);
+            panel.resize(this.editor.width, this.editor.height);
 
             h += panel.getHeight();
         }
 
-        this.area.scrollSize = h + 20;
+        this.scroll.scrollSize = h + 20;
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    @Override
+    public void resize(int width, int height)
     {
-        if (!this.visible || this.fixture == null)
+        super.resize(width, height);
+
+        this.scroll.copy(this.area);
+        this.recalcPanels();
+    }
+
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        if (super.mouseClicked(mouseX, mouseY, mouseButton) || this.scroll.mouseClicked(mouseX, mouseY))
         {
-            return;
-        }
-
-        Minecraft mc = Minecraft.getMinecraft();
-
-        if (this.area.isInside(mouseX, mouseY) && mouseX >= this.area.x + this.area.w - 5 && this.area.scrollSize > this.area.h)
-        {
-            this.area.dragging = true;
-
-            return;
-        }
-
-        if (this.adding)
-        {
-            List<AbstractModifier> modifiers = this.fixture.getModifiers();
-
-            for (GuiButton button : this.addButtons)
-            {
-                if (button.mousePressed(mc, mouseX, mouseY))
-                {
-                    this.addCameraModifier(button.id, modifiers);
-
-                    break;
-                }
-            }
-
-            this.adding = false;
-
-            return;
-        }
-
-        if (this.add.mousePressed(mc, mouseX, mouseY))
-        {
-            this.adding = !this.adding;
+            return true;
         }
 
         /* Create a copy of button arrays */
-        List<GuiAbstractModifierPanel<? extends AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<? extends AbstractModifier>>(this.panels);
+        List<GuiAbstractModifierPanel<? extends AbstractModifier>> panels = new ArrayList<GuiAbstractModifierPanel<? extends AbstractModifier>>(this.panels.elements);
 
         for (GuiAbstractModifierPanel<? extends AbstractModifier> panel : panels)
         {
@@ -289,94 +267,48 @@ public class GuiModifiersManager
                 break;
             }
 
-            panel.mouseClicked(mouseX, mouseY + this.area.scroll, mouseButton);
+            panel.mouseClicked(mouseX, mouseY + this.scroll.scroll, mouseButton);
         }
 
         this.modified = false;
-    }
-
-    /**
-     * Mouse was released
-     */
-    public void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        if (!this.visible)
-        {
-            return;
-        }
-
-        this.area.dragging = false;
-
-        for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
-        {
-            panel.mouseReleased(mouseX, mouseY + this.area.scroll, state);
-        }
-    }
-
-    public void mouseScroll(int x, int y, int scroll)
-    {
-        if (this.area.isInside(x, y))
-        {
-            this.area.scrollBy(scroll / 5);
-        }
-    }
-
-    /**
-     * Key press handling 
-     */
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        if (!this.visible)
-        {
-            return;
-        }
-
-        for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
-        {
-            panel.keyTyped(typedChar, keyCode);
-        }
-    }
-
-    /**
-     * Whether this manager has any active text fields (used to determine 
-     * whether it's okay to handle shortcuts). 
-     */
-    public boolean hasActiveTextfields()
-    {
-        if (this.visible)
-        {
-            for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
-            {
-                if (panel.hasActiveTextfields())
-                {
-                    return true;
-                }
-            }
-        }
 
         return false;
     }
 
-    /**
-     * Draw modifiers panel on the screen  
-     */
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    @Override
+    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
-        if (!this.visible)
-        {
-            return;
-        }
+        return super.mouseScrolled(mouseX, mouseY, scroll) || this.panels.mouseScrolled(mouseX, mouseY + this.scroll.scroll, scroll) || this.scroll.mouseScroll(mouseX, mouseY, scroll);
+    }
 
-        if (this.area.dragging)
-        {
-            float factor = (mouseY - (this.area.y + 20)) / (float) (this.area.h - 20);
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int state)
+    {
+        super.mouseReleased(mouseX, mouseY, state);
+        this.scroll.mouseReleased(mouseX, mouseY);
+        this.panels.mouseReleased(mouseX, mouseY + this.scroll.scroll, state);
+    }
 
-            this.area.scroll = (int) (factor * (this.area.scrollSize - this.area.h));
-            this.area.clamp();
-        }
+    @Override
+    public void keyTyped(char typedChar, int keyCode)
+    {
+        super.keyTyped(typedChar, keyCode);
 
-        Minecraft mc = Minecraft.getMinecraft();
-        int h = MathHelper.clamp(this.area.scrollSize, 20, this.area.h);
+        this.panels.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    public boolean hasActiveTextfields()
+    {
+        return super.hasActiveTextfields() || this.panels.hasActiveTextfields();
+    }
+
+    @Override
+    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    {
+        this.scroll.drag(mouseX, mouseY);
+
+        int h = MathHelper.clamp(this.scroll.scrollSize, 20, this.scroll.h);
 
         if (this.fixture == null)
         {
@@ -384,51 +316,40 @@ public class GuiModifiersManager
         }
 
         /* Background */
-        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + h, 0xaa000000);
-        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + 20, 0x88000000);
-        mc.fontRendererObj.drawStringWithShadow(this.stringTitle, this.area.x + 6, this.area.y + 7, 0xffffff);
-
-        this.add.drawButton(mc, mouseX, mouseY);
+        Gui.drawRect(this.scroll.x, this.scroll.y, this.scroll.x + this.scroll.w, this.scroll.y + h, 0xaa000000);
+        Gui.drawRect(this.scroll.x, this.scroll.y, this.scroll.x + this.scroll.w, this.scroll.y + 20, 0x88000000);
+        this.font.drawStringWithShadow(this.stringTitle, this.scroll.x + 6, this.scroll.y + 7, 0xffffff);
 
         if (this.fixture == null)
         {
-            int x = this.area.x + this.area.w / 2;
-            int y = this.area.y + 28;
+            int x = this.scroll.x + this.scroll.w / 2;
+            int y = this.scroll.y + 28;
 
-            this.editor.drawCenteredString(mc.fontRendererObj, this.stringSelect, x, y, 0xcccccc);
+            this.editor.drawCenteredString(this.font, this.stringSelect, x, y, 0xcccccc);
         }
         else if (h > 0)
         {
-            GuiUtils.scissor(this.area.x, this.area.y + 20, this.area.w, h - 20, mc.currentScreen.width, mc.currentScreen.height);
+            GuiUtils.scissor(this.scroll.x, this.scroll.y + 20, this.scroll.w, h - 20, this.editor.width, this.editor.height);
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, -this.area.scroll, 0);
+            GlStateManager.translate(0, -this.scroll.scroll, 0);
 
-            for (GuiAbstractModifierPanel<AbstractModifier> panel : this.panels)
-            {
-                panel.draw(mouseX, mouseY + this.area.scroll, partialTicks);
-            }
+            this.panels.draw(tooltip, mouseX, mouseY + this.scroll.scroll, partialTicks);
 
             GlStateManager.popMatrix();
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-            if (this.adding)
+            if (this.scroll.scrollSize > this.scroll.h)
             {
-                for (GuiButton button : this.addButtons)
-                {
-                    button.drawButton(mc, mouseX, mouseY);
-                }
-            }
+                float factor = this.scroll.scroll / (float) (this.scroll.scrollSize - this.scroll.h);
 
-            if (this.area.scrollSize > this.area.h)
-            {
-                float factor = this.area.scroll / (float) (this.area.scrollSize - this.area.h);
-
-                int bx = this.area.x + this.area.w - 5;
-                int bh = this.area.getScrollBar(40);
-                int by = this.area.y + 20 + (int) (factor * (this.area.h - bh - 20));
+                int bx = this.scroll.x + this.scroll.w - 5;
+                int bh = this.scroll.getScrollBar(40);
+                int by = this.scroll.y + 20 + (int) (factor * (this.scroll.h - bh - 20));
 
                 Gui.drawRect(bx, by, bx + 5, by + bh, 0xffaaaaaa);
             }
         }
+
+        super.draw(tooltip, mouseX, mouseY, partialTicks);
     }
 }
