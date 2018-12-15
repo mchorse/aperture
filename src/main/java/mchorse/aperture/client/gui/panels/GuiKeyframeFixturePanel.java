@@ -159,8 +159,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         super.resize(width, height);
 
-        int h = this.editor.height;
-
         this.frames.set(0, this.area.y + this.area.h / 2, this.editor.width, 0);
         this.frames.h = this.area.getY(1) - this.frames.y - 25;
     }

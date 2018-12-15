@@ -39,7 +39,7 @@ public class GuiFollowFixturePanel extends GuiLookFixturePanel
     @Override
     public void resize(int width, int height)
     {
-        boolean h = this.editor.height - 60 > 200;
+        boolean h = this.resizer().getH() > 200;
 
         this.angle.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -170);
 
