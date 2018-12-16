@@ -51,8 +51,14 @@ public class GuiPointsModule extends GuiAbstractModule
 
         GuiButtonElement<GuiTextureButton> add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) ->
         {
-            /* Add a point based on player attributes */
-            this.path.addPoint(new DurablePosition(Minecraft.getMinecraft().player), this.index + 1);
+            if (this.index + 1 == this.path.getPoints().size())
+            {
+                this.path.addPoint(new DurablePosition(Minecraft.getMinecraft().player));
+            }
+            else
+            {
+                this.path.addPoint(new DurablePosition(Minecraft.getMinecraft().player), this.index + 1);
+            }
 
             this.index++;
             this.scroll.setSize(this.path.getCount());
@@ -68,6 +74,11 @@ public class GuiPointsModule extends GuiAbstractModule
 
         GuiButtonElement<GuiTextureButton> remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 240, 0, 240, 16, (b) ->
         {
+            if (this.path.getPoints().size() == 1)
+            {
+                return;
+            }
+
             this.path.removePoint(this.index);
 
             if (this.index > 0)
