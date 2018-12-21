@@ -246,6 +246,12 @@ public class GuiPlaybackScrub extends GuiElement
         /* Draw the marker */
         Gui.drawRect(tx, y + 1, tx + 2, y + h - 1, 0xff57f52a);
 
+        /* Draw the "how far into fixture" tick */
+        String offset = String.valueOf(this.value - this.profile.calculateOffset(this.value, false));
+        int ow = this.font.getStringWidth(offset);
+
+        this.font.drawStringWithShadow(offset, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
+
         /* Move the tick line left, so it won't overflow the scrub */
         if (tx + 3 - x + width > w)
         {
