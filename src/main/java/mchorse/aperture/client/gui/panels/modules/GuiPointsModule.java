@@ -105,8 +105,8 @@ public class GuiPointsModule extends GuiAbstractModule
         });
 
         back.resizer().parent(this.area).set(-38, 2, 16, 16);
-        add.resizer().parent(this.area).set(-18, 2, 16, 16);
-        remove.resizer().parent(this.area).set(0, 2, 16, 16).x(1, 2);
+        remove.resizer().parent(this.area).set(-18, 2, 16, 16);
+        add.resizer().parent(this.area).set(0, 2, 16, 16).x(1, 2);
         forward.resizer().parent(this.area).set(0, 2, 16, 16).x(1, 22);
 
         this.children.add(back, add, remove, forward);
