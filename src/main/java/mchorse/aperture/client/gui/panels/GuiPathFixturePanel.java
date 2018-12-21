@@ -1,7 +1,10 @@
 package mchorse.aperture.client.gui.panels;
 
+import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
+import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
@@ -11,6 +14,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
@@ -30,6 +34,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiPointsModule points;
     public GuiInterpModule interp;
     public GuiButtonElement<GuiCheckBox> perPointDuration;
+    public GuiButtonElement<GuiButton> toKeyframe;
 
     public DurablePosition position;
 
@@ -46,13 +51,48 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.fixture.perPointDuration = b.button.isChecked();
             this.editor.updateProfile();
         });
+        this.toKeyframe = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
 
         this.point.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -80);
         this.interp.resizer().parent(this.area).set(0, 60, 80, 45);
         this.points.resizer().parent(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
         this.perPointDuration.resizer().parent(this.area).set(0, 110, this.perPointDuration.button.width, 11);
+        this.toKeyframe.resizer().relative(this.perPointDuration.resizer()).set(0, 16, 100, 20);
 
-        this.children.add(this.point, this.angle, this.points, this.interp, this.perPointDuration);
+        this.children.add(this.point, this.angle, this.points, this.interp, this.perPointDuration, this.toKeyframe);
+    }
+
+    private void toKeyframe()
+    {
+        long duration = this.fixture.getDuration();
+        KeyframeFixture fixture = new KeyframeFixture(duration);
+        Interpolation pos = this.fixture.interpolationPos == InterpolationType.LINEAR ? Interpolation.LINEAR : Interpolation.BEZIER;
+        Interpolation angle = this.fixture.interpolationAngle == InterpolationType.LINEAR ? Interpolation.LINEAR : Interpolation.BEZIER;
+
+        long x = 0;
+
+        for (DurablePosition point : this.fixture.getPoints())
+        {
+            int index = fixture.x.insert(x, point.point.x);
+            fixture.y.insert(x, point.point.y);
+            fixture.z.insert(x, point.point.z);
+            fixture.yaw.insert(x, point.angle.yaw);
+            fixture.pitch.insert(x, point.angle.pitch);
+            fixture.roll.insert(x, point.angle.roll);
+            fixture.fov.insert(x, point.angle.fov);
+
+            fixture.x.get(index).interp = pos;
+            fixture.y.get(index).interp = pos;
+            fixture.z.get(index).interp = pos;
+            fixture.yaw.get(index).interp = angle;
+            fixture.pitch.get(index).interp = angle;
+            fixture.roll.get(index).interp = angle;
+            fixture.fov.get(index).interp = angle;
+
+            x += this.fixture.perPointDuration ? point.getDuration() : duration / this.fixture.getCount();
+        }
+
+        this.editor.createFixture(fixture);
     }
 
     @Override
