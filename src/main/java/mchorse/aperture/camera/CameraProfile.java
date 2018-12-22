@@ -207,6 +207,23 @@ public class CameraProfile
     }
 
     /**
+     * Add a fixture in the camera profile after given index
+     */
+    public void add(AbstractFixture fixture, int index)
+    {
+        if (index + 1 < this.fixtures.size())
+        {
+            this.fixtures.add(index, fixture);
+        }
+        else
+        {
+            this.fixtures.add(fixture);
+        }
+
+        this.dirty();
+    }
+
+    /**
      * Move fixture on index {@code from} to index {@code to}
      */
     public void move(int from, int to)

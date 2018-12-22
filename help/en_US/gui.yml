@@ -126,7 +126,9 @@ aperture.gui:
         circle: Circle
         selector: Selector
         per_point: Per point duration
-        
+        to_keyframe: Generate keyframe
+
+        all: All
         tick: Tick
         value: Value
 
