@@ -170,9 +170,14 @@ public class KeyframeFixture extends AbstractFixture
             return this.keyframes;
         }
 
+        public boolean has(int index)
+        {
+            return index >= 0 && index < this.keyframes.size();
+        }
+
         public Keyframe get(int index)
         {
-            return this.keyframes.get(index);
+            return this.has(index) ? this.keyframes.get(index) : null;
         }
 
         public void remove(int index)

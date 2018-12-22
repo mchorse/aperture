@@ -291,6 +291,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             int i = 0;
 
+            this.selected = -1;
+
             for (Keyframe frame : this.active.getKeyframes())
             {
                 if (frame.tick >= duration)
