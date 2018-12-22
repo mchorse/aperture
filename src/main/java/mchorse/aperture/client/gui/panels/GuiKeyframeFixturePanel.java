@@ -711,7 +711,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             this.fixture = fixture;
 
             this.keyframes.clear();
-            this.init = true;
 
             for (KeyframeChannel channel : fixture.channels)
             {
@@ -725,8 +724,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                     allStar.interp = kf.interp;
                 }
             }
-
-            this.init = false;
         }
 
         @Override
