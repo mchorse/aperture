@@ -364,12 +364,22 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void createFixture(AbstractFixture fixture)
     {
-        if (fixture != null)
+        if (fixture == null)
+        {
+            return;
+        }
+
+        if (this.panel.delegate == null)
         {
             this.profile.add(fixture);
-            this.updateValues();
-            this.pickCameraFixture(fixture, 0);
         }
+        else
+        {
+            this.profile.add(fixture, this.scrub.index);
+        }
+
+        this.updateValues();
+        this.pickCameraFixture(fixture, 0);
     }
 
     /**

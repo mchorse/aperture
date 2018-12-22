@@ -45,9 +45,27 @@ public class KeyframeFixture extends AbstractFixture
     @Expose
     public final KeyframeChannel fov = new KeyframeChannel();
 
+    public KeyframeChannel[] channels;
+
     public KeyframeFixture(long duration)
     {
         super(duration);
+
+        this.channels = new KeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
+    }
+
+    @Override
+    public void fromPlayer(EntityPlayer player)
+    {
+        Position pos = new Position(player);
+
+        this.x.insert(0, pos.point.x);
+        this.y.insert(0, pos.point.y);
+        this.z.insert(0, pos.point.z);
+        this.yaw.insert(0, pos.angle.yaw);
+        this.pitch.insert(0, pos.angle.pitch);
+        this.roll.insert(0, pos.angle.roll);
+        this.fov.insert(0, pos.angle.fov);
     }
 
     @Override
@@ -135,11 +153,31 @@ public class KeyframeFixture extends AbstractFixture
     public static class KeyframeChannel
     {
         @Expose
-        public final List<Keyframe> keyframes = new ArrayList<Keyframe>();
+        protected final List<Keyframe> keyframes = new ArrayList<Keyframe>();
+
+        protected Keyframe create(long tick, float value)
+        {
+            return new Keyframe(tick, value);
+        }
 
         public boolean isEmpty()
         {
             return this.keyframes.isEmpty();
+        }
+
+        public List<Keyframe> getKeyframes()
+        {
+            return this.keyframes;
+        }
+
+        public Keyframe get(int index)
+        {
+            return this.keyframes.get(index);
+        }
+
+        public void remove(int index)
+        {
+            this.keyframes.remove(index);
         }
 
         /**
@@ -188,7 +226,7 @@ public class KeyframeFixture extends AbstractFixture
 
                 if (tick < prev.tick)
                 {
-                    this.keyframes.add(0, new Keyframe(tick, value));
+                    this.keyframes.add(0, this.create(tick, value));
 
                     return 0;
                 }
@@ -215,7 +253,7 @@ public class KeyframeFixture extends AbstractFixture
                 prev = frame;
             }
 
-            this.keyframes.add(index, new Keyframe(tick, value));
+            this.keyframes.add(index, this.create(tick, value));
 
             return index;
         }
@@ -308,6 +346,26 @@ public class KeyframeFixture extends AbstractFixture
         {
             this.tick = tick;
             this.value = value;
+        }
+
+        public void setTick(long tick)
+        {
+            this.tick = tick;
+        }
+
+        public void setValue(float value)
+        {
+            this.value = value;
+        }
+
+        public void setInterpolation(Interpolation interp)
+        {
+            this.interp = interp;
+        }
+
+        public void setEasing(Easing easing)
+        {
+            this.easing = easing;
         }
 
         public float interpolate(Keyframe frame, float x)
