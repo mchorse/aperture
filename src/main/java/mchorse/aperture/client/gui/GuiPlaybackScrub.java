@@ -204,6 +204,7 @@ public class GuiPlaybackScrub extends GuiElement
             this.setValueFromScrub(this.calcValueFromMouse(mouseX));
         }
 
+        /* Visual duration resize */
         if (this.resize && this.profile != null)
         {
             long start = this.profile.calculateOffset(this.start);
@@ -266,14 +267,14 @@ public class GuiPlaybackScrub extends GuiElement
             int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getHex();
 
             boolean selected = i == this.index;
-            float ff = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
-            float fb = (float) (pos - this.min) / (float) (this.max - this.min);
-            int fx = x + 1 + (int) ((w - 3) * ff);
-            int fbx = x + 1 + (int) ((w - 3) * fb);
+            float leftFactor = (float) (pos - this.min) / (float) (this.max - this.min);
+            float rightFactor = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
+            int leftMargin = x + 1 + (int) ((w - 3) * leftFactor);
+            int rightMargin = x + 1 + (int) ((w - 3) * rightFactor);
 
             /* Draw fixture's  */
-            Gui.drawRect(fbx + 1, y + 15, fx, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
-            Gui.drawRect(fx, y + 1, fx + 1, y + h - 1, 0xff000000 + color);
+            Gui.drawRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
+            Gui.drawRect(rightMargin, y + 1, rightMargin + 1, y + h - 1, 0xff000000 + color);
 
             String name = fixture.getName();
 
@@ -292,8 +293,8 @@ public class GuiPlaybackScrub extends GuiElement
 
                         for (int j = 1; j < c; j++)
                         {
-                            int fract = (int) ((fx - fbx) * ((float) frame / duration));
-                            int px = fbx + fract;
+                            int fract = (int) ((rightMargin - leftMargin) * ((float) frame / duration));
+                            int px = leftMargin + fract;
 
                             Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
 
@@ -302,11 +303,11 @@ public class GuiPlaybackScrub extends GuiElement
                     }
                     else
                     {
-                        int fract = (fx - fbx) / c;
+                        int fract = (rightMargin - leftMargin) / c;
 
                         for (int j = 1; j < c; j++)
                         {
-                            int px = fbx + fract * j;
+                            int px = leftMargin + fract * j;
 
                             Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
                         }
@@ -317,12 +318,12 @@ public class GuiPlaybackScrub extends GuiElement
             /* Draw resizing markers */
             if (this.area.isInside(mouseX, mouseY) && !this.resize && !drawnMarker)
             {
-                boolean left = Math.abs(fbx - mouseX) < 5;
-                boolean right = Math.abs(fx - mouseX) < 5;
+                boolean left = Math.abs(leftMargin - mouseX) < 5;
+                boolean right = Math.abs(rightMargin - mouseX) < 5;
 
                 if ((left || right) && !this.resize)
                 {
-                    int markerOffset = (left ? fbx : fx);
+                    int markerOffset = (left ? leftMargin : rightMargin);
 
                     Gui.drawRect(markerOffset - 4, this.area.y - 1, markerOffset + 5, this.area.y, 0xaaffffff);
                     Gui.drawRect(markerOffset - 5, this.area.y - 1 - 2, markerOffset - 4, this.area.y + 2, 0xaaffffff);
@@ -337,13 +338,13 @@ public class GuiPlaybackScrub extends GuiElement
                 int lw = this.font.getStringWidth(name);
                 int textColor = selected ? 16777120 : 0xffffff;
 
-                if (lw + 4 < fx - fbx)
+                if (lw + 4 < rightMargin - leftMargin)
                 {
-                    this.font.drawStringWithShadow(name, fbx + 4, y + 6, textColor);
+                    this.font.drawStringWithShadow(name, leftMargin + 4, y + 6, textColor);
                 }
                 else
                 {
-                    this.font.drawStringWithShadow("...", fbx + 4, y + 6, textColor);
+                    this.font.drawStringWithShadow("...", leftMargin + 4, y + 6, textColor);
                 }
             }
 

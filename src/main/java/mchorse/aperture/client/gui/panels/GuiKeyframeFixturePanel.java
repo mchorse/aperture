@@ -1,5 +1,8 @@
 package mchorse.aperture.client.gui.panels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.data.Position;
@@ -39,6 +42,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public GuiElements<GuiButtonElement> buttons;
     public GuiElements<GuiButtonElement> frameButtons;
 
+    public GuiButtonElement<GuiButton> all;
     public GuiButtonElement<GuiButton> x;
     public GuiButtonElement<GuiButton> y;
     public GuiButtonElement<GuiButton> z;
@@ -54,7 +58,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     private boolean sliding = false;
     private int channel = 0;
-    private String[] titles = new String[7];
+    private String[] titles = new String[8];
 
     private boolean dragging = false;
     private boolean moving = false;
@@ -70,6 +74,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     private int shiftX = 0;
     private int shiftY = 0;
     private float zoomY = 1;
+    private AllKeyframeChannel allChannel = new AllKeyframeChannel();
 
     public GuiKeyframeFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
@@ -77,18 +82,19 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) ->
         {
-            this.active.keyframes.get(this.selected).tick = value.longValue();
+            this.active.get(this.selected).setTick(value.longValue());
             this.sliding = true;
         });
 
         this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) ->
         {
-            this.active.keyframes.get(this.selected).value = value;
+            this.active.get(this.selected).setValue(value);
         });
 
         this.buttons = new GuiElements<>();
         this.frameButtons = new GuiElements<>();
 
+        this.all = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
         this.x = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
         this.y = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
         this.z = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
@@ -111,6 +117,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.easing.button.addLabel("Ease out");
         this.easing.button.addLabel("Ease in/out");
 
+        this.buttons.add(this.all);
         this.buttons.add(this.x);
         this.buttons.add(this.y);
         this.buttons.add(this.z);
@@ -138,7 +145,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         for (GuiButtonElement button : this.buttons.elements)
         {
-            if (i > 6) break;
+            if (i > 7) break;
 
             button.resizer().parent(this.area).set(x, 0, this.font.getStringWidth(button.button.displayString) + 15, 20).y(1, -20);
 
@@ -166,8 +173,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     private void addKeyframe()
     {
         Position pos = new Position(Minecraft.getMinecraft().thePlayer);
-        float value = pos.point.x;
+        float value = 0;
 
+        if (this.active == this.fixture.x) value = pos.point.x;
         if (this.active == this.fixture.y) value = pos.point.y;
         if (this.active == this.fixture.z) value = pos.point.z;
         if (this.active == this.fixture.yaw) value = pos.angle.yaw;
@@ -182,7 +190,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         if (this.selected != -1)
         {
-            Keyframe frame = this.active.keyframes.get(this.selected);
+            Keyframe frame = this.active.get(this.selected);
 
             easing = frame.easing;
             interp = frame.interp;
@@ -191,20 +199,40 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.selected = this.active.insert(tick, value);
 
-        if (oldTick != tick)
+        if (this.active == this.allChannel)
         {
-            Keyframe frame = this.active.keyframes.get(this.selected);
+            AllKeyframe allStar = (AllKeyframe) this.allChannel.get(this.selected);
 
-            frame.easing = easing;
-            frame.interp = interp;
+            for (KeyframeChannel channel : this.fixture.channels)
+            {
+                if (channel == this.fixture.x) value = pos.point.x;
+                if (channel == this.fixture.y) value = pos.point.y;
+                if (channel == this.fixture.z) value = pos.point.z;
+                if (channel == this.fixture.yaw) value = pos.angle.yaw;
+                if (channel == this.fixture.pitch) value = pos.angle.pitch;
+                if (channel == this.fixture.roll) value = pos.angle.roll;
+                if (channel == this.fixture.fov) value = pos.angle.fov;
+
+                int index = channel.insert(tick, value);
+
+                allStar.keyframes.add(new KeyframeCell(channel.getKeyframes().get(index), channel));
+            }
         }
 
-        this.fillData(this.active.keyframes.get(this.selected));
+        if (oldTick != tick)
+        {
+            Keyframe frame = this.active.get(this.selected);
 
-        if (this.active.keyframes.size() == 1)
+            frame.setEasing(easing);
+            frame.setInterpolation(interp);
+        }
+
+        this.fillData(this.active.get(this.selected));
+
+        if (this.active.getKeyframes().size() == 1)
         {
             this.shiftX = 0;
-            this.shiftY = (int) this.active.keyframes.get(0).value;
+            this.shiftY = (int) this.active.get(0).value;
         }
     }
 
@@ -215,13 +243,13 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             return;
         }
 
-        this.active.keyframes.remove(this.selected);
+        this.active.remove(this.selected);
         this.selected -= 1;
         this.editor.updateProfile();
 
         if (this.selected != -1)
         {
-            this.fillData(this.active.keyframes.get(this.selected));
+            this.fillData(this.active.get(this.selected));
         }
     }
 
@@ -229,7 +257,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         if (this.selected != -1)
         {
-            this.active.keyframes.get(this.selected).interp = Interpolation.values()[this.interp.button.getValue()];
+            this.active.get(this.selected).setInterpolation(Interpolation.values()[this.interp.button.getValue()]);
             this.editor.updateProfile();
         }
     }
@@ -238,7 +266,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         if (this.selected != -1)
         {
-            this.active.keyframes.get(this.selected).easing = Easing.values()[this.easing.button.getValue()];
+            this.active.get(this.selected).setEasing(Easing.values()[this.easing.button.getValue()]);
             this.editor.updateProfile();
         }
     }
@@ -249,6 +277,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         boolean same = this.fixture == fixture;
 
         super.select(fixture, duration);
+
+        this.allChannel.setFixture(fixture);
 
         if (!same)
         {
@@ -261,7 +291,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             int i = 0;
 
-            for (Keyframe frame : this.active.keyframes)
+            for (Keyframe frame : this.active.getKeyframes())
             {
                 if (frame.tick >= duration)
                 {
@@ -276,7 +306,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         if (this.selected != -1)
         {
-            this.fillData(this.active.keyframes.get(this.selected));
+            this.fillData(this.active.get(this.selected));
         }
     }
 
@@ -294,18 +324,24 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.selected = -1;
         this.channel = 0;
 
-        if (channel == this.fixture.y) this.channel = 1;
-        if (channel == this.fixture.z) this.channel = 2;
-        if (channel == this.fixture.yaw) this.channel = 3;
-        if (channel == this.fixture.pitch) this.channel = 4;
-        if (channel == this.fixture.roll) this.channel = 5;
-        if (channel == this.fixture.fov) this.channel = 6;
+        if (channel == this.fixture.x) this.channel = 1;
+        if (channel == this.fixture.y) this.channel = 2;
+        if (channel == this.fixture.z) this.channel = 3;
+        if (channel == this.fixture.yaw) this.channel = 4;
+        if (channel == this.fixture.pitch) this.channel = 5;
+        if (channel == this.fixture.roll) this.channel = 6;
+        if (channel == this.fixture.fov) this.channel = 7;
+
+        if (this.active == this.allChannel)
+        {
+            this.allChannel.setFixture(this.fixture);
+        }
 
         this.shiftY = 0;
 
         if (!channel.isEmpty())
         {
-            this.shiftY = (int) channel.keyframes.get(0).value;
+            this.shiftY = (int) channel.get(0).value;
         }
     }
 
@@ -322,6 +358,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.fixture.pitch.insert(tick, pos.angle.pitch);
         this.fixture.roll.insert(tick, pos.angle.roll);
         this.fixture.fov.insert(tick, pos.angle.fov);
+        this.allChannel.setFixture(this.fixture);
 
         this.editor.updateProfile();
     }
@@ -354,15 +391,15 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 Keyframe prev = null;
                 int index = 0;
 
-                for (Keyframe frame : this.active.keyframes)
+                for (Keyframe frame : this.active.getKeyframes())
                 {
-                    boolean l = prev != null && prev.interp == Interpolation.BEZIER && this.isInside(frame.tick - frame.lx, frame.value + frame.ly, mouseX, mouseY);
-                    boolean r = frame.interp == Interpolation.BEZIER && this.isInside(frame.tick + frame.rx, frame.value + frame.ry, mouseX, mouseY);
-                    boolean p = this.isInside(frame.tick, frame.value, mouseX, mouseY);
+                    boolean left = prev != null && prev.interp == Interpolation.BEZIER && this.isInside(frame.tick - frame.lx, frame.value + frame.ly, mouseX, mouseY);
+                    boolean right = frame.interp == Interpolation.BEZIER && this.isInside(frame.tick + frame.rx, frame.value + frame.ry, mouseX, mouseY);
+                    boolean point = this.isInside(frame.tick, frame.value, mouseX, mouseY);
 
-                    if (l || r || p)
+                    if ((left || right && this.active != this.allChannel) || point)
                     {
-                        this.which = l ? 1 : (r ? 2 : 0);
+                        this.which = left ? 1 : (right ? 2 : 0);
                         this.selected = index;
                         this.fillData(frame);
 
@@ -430,11 +467,11 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             if (this.sliding)
             {
                 /* Resort after dragging the tick thing */
-                Keyframe frame = this.active.keyframes.get(this.selected);
+                Keyframe frame = this.active.get(this.selected);
 
                 this.active.sort();
                 this.sliding = false;
-                this.selected = this.active.keyframes.indexOf(frame);
+                this.selected = this.active.getKeyframes().indexOf(frame);
             }
 
             if (this.moving)
@@ -469,7 +506,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         /* Draw title of the channel */
-        this.editor.drawCenteredString(this.font, this.titles[this.channel], w / 2, h - 45, 0xffffff);
+        this.editor.drawCenteredString(this.font, this.titles[this.channel], w / 2, this.frames.y - this.font.FONT_HEIGHT - 5, 0xffffff);
 
         super.draw(tooltip, mouseX, mouseY, partialTicks);
     }
@@ -492,14 +529,14 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         /* Move the current keyframe */
         else if (this.moving)
         {
-            Keyframe frame = this.active.keyframes.get(this.selected);
+            Keyframe frame = this.active.get(this.selected);
             long x = this.fromGraphX(mouseX);
             float y = this.fromGraphY(mouseY);
 
             if (this.which == 0)
             {
-                frame.tick = x;
-                frame.value = y;
+                frame.setTick(x);
+                frame.setValue(y);
             }
             else if (this.which == 1)
             {
@@ -531,21 +568,23 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         GlStateManager.enableBlend();
 
         /* Colorize the graph for given channel */
-        if (this.channel == 0) GlStateManager.color(0.9F, 0.1F, 0.2F, 0.9F);
-        else if (this.channel == 1) GlStateManager.color(0.1F, 0.9F, 0.2F, 0.9F);
-        else if (this.channel == 2) GlStateManager.color(0.2F, 0.1F, 0.9F, 0.9F);
-        else if (this.channel == 3) GlStateManager.color(0.1F, 0.8F, 0.9F, 0.9F);
-        else if (this.channel == 4) GlStateManager.color(0.8F, 0.1F, 0.9F, 0.9F);
-        else if (this.channel == 5) GlStateManager.color(0.9F, 0.8F, 0.1F, 0.9F);
-        else if (this.channel == 6) GlStateManager.color(0.75F, 0.75F, 0.75F, 1);
+        if (this.channel == 0) GlStateManager.color(1F, 0.078F, 0.576F, 0.9F);
+        else if (this.channel == 1) GlStateManager.color(0.9F, 0.1F, 0.2F, 0.9F);
+        else if (this.channel == 2) GlStateManager.color(0.1F, 0.9F, 0.2F, 0.9F);
+        else if (this.channel == 3) GlStateManager.color(0.2F, 0.1F, 0.9F, 0.9F);
+        else if (this.channel == 4) GlStateManager.color(0.1F, 0.8F, 0.9F, 0.9F);
+        else if (this.channel == 5) GlStateManager.color(0.8F, 0.1F, 0.9F, 0.9F);
+        else if (this.channel == 6) GlStateManager.color(0.9F, 0.8F, 0.1F, 0.9F);
+        else if (this.channel == 7) GlStateManager.color(0.75F, 0.75F, 0.75F, 0.9F);
         else GlStateManager.color(1, 1, 1, 0.9F);
 
         /* Draw lines */
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
 
         Keyframe prev = null;
+        boolean all = this.active == this.allChannel;
 
-        for (Keyframe frame : this.active.keyframes)
+        for (Keyframe frame : this.active.getKeyframes())
         {
             if (prev != null)
             {
@@ -566,7 +605,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                     }
                 }
 
-                if (prev.interp == Interpolation.BEZIER)
+                if (prev.interp == Interpolation.BEZIER && !all)
                 {
                     vb.pos(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly), 0).endVertex();
                     vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
@@ -579,7 +618,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
             }
 
-            if (frame.interp == Interpolation.BEZIER)
+            if (frame.interp == Interpolation.BEZIER && !all)
             {
                 vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
                 vb.pos(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry), 0).endVertex();
@@ -597,7 +636,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         int i = 0;
         prev = null;
 
-        for (Keyframe frame : this.active.keyframes)
+        for (Keyframe frame : this.active.getKeyframes())
         {
             GL11.glBegin(GL11.GL_POINTS);
             if (this.selected == i)
@@ -611,12 +650,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
             GL11.glVertex2f(this.toGraphX(frame.tick), this.toGraphY(frame.value));
 
-            if (frame.interp == Interpolation.BEZIER)
+            if (frame.interp == Interpolation.BEZIER && !all)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry));
             }
 
-            if (prev != null && prev.interp == Interpolation.BEZIER)
+            if (prev != null && prev.interp == Interpolation.BEZIER && !all)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly));
             }
@@ -633,14 +672,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         cx = this.toGraphX(cx);
 
-        Gui.drawRect(cx - 1, cy, cx + 1, h, 0xff57f52a);
-
-        GlStateManager.disableTexture2D();
-        GL11.glBegin(GL11.GL_POINTS);
-        GL11.glColor3f(0x57 / 255F, 0xf5 / 255F, 0x2a / 255F);
-        GL11.glVertex2f(cx, cy);
-        GL11.glEnd();
-        GlStateManager.enableTexture2D();
+        Gui.drawRect(cx - 1, cy - 1, cx + 1, h, 0xff57f52a);
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
@@ -664,5 +696,126 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     private float fromGraphY(int mouseY)
     {
         return -(mouseY - (this.frames.y + this.frames.h / 2)) / this.zoomY + this.shiftY;
+    }
+
+    /* All channel abstraction classes
+     * 
+     * Those classes allow to imitate behavior of keyframe channels 
+     * while also be able to modify individual keyframes within those 
+     * channels for every keyframe at specific time, the all keyframe 
+     * channel will create a fake keyframe which will keep the reference
+     * to the original keyframes at same timestamp */
+
+    public static class AllKeyframeChannel extends KeyframeChannel
+    {
+        public KeyframeFixture fixture;
+
+        @Override
+        protected Keyframe create(long tick, float value)
+        {
+            return new AllKeyframe(tick);
+        }
+
+        public void setFixture(KeyframeFixture fixture)
+        {
+            this.fixture = fixture;
+
+            this.keyframes.clear();
+
+            for (KeyframeChannel channel : fixture.channels)
+            {
+                for (Keyframe kf : channel.getKeyframes())
+                {
+                    int index = this.insert(kf.tick, 0);
+                    AllKeyframe allStar = (AllKeyframe) this.keyframes.get(index);
+
+                    allStar.keyframes.add(new KeyframeCell(kf, channel));
+                    allStar.setEasing(kf.easing);
+                    allStar.setInterpolation(kf.interp);
+                }
+            }
+        }
+
+        @Override
+        public void sort()
+        {
+            super.sort();
+
+            for (KeyframeChannel channel : this.fixture.channels)
+            {
+                channel.sort();
+            }
+        }
+
+        @Override
+        public void remove(int index)
+        {
+            AllKeyframe kf = (AllKeyframe) this.keyframes.remove(index);
+
+            for (KeyframeCell cell : kf.keyframes)
+            {
+                cell.channel.remove(cell.channel.getKeyframes().indexOf(cell.keyframe));
+            }
+        }
+    }
+
+    public static class AllKeyframe extends Keyframe
+    {
+        public List<KeyframeCell> keyframes = new ArrayList<KeyframeCell>();
+
+        public AllKeyframe(long tick)
+        {
+            super(tick, 0);
+        }
+
+        @Override
+        public void setTick(long tick)
+        {
+            super.tick = tick;
+
+            for (KeyframeCell cell : this.keyframes)
+            {
+                cell.keyframe.setTick(tick);
+            }
+        }
+
+        /* Nope */
+        @Override
+        public void setValue(float value)
+        {}
+
+        @Override
+        public void setEasing(Easing easing)
+        {
+            super.setEasing(easing);
+
+            for (KeyframeCell cell : this.keyframes)
+            {
+                cell.keyframe.setEasing(easing);
+            }
+        }
+
+        @Override
+        public void setInterpolation(Interpolation interp)
+        {
+            super.setInterpolation(interp);
+
+            for (KeyframeCell cell : this.keyframes)
+            {
+                cell.keyframe.setInterpolation(interp);
+            }
+        }
+    }
+
+    public static class KeyframeCell
+    {
+        public Keyframe keyframe;
+        public KeyframeChannel channel;
+
+        public KeyframeCell(Keyframe keyframe, KeyframeChannel channel)
+        {
+            this.keyframe = keyframe;
+            this.channel = channel;
+        }
     }
 }
