@@ -4,6 +4,7 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import net.minecraft.client.Minecraft;
@@ -29,14 +30,18 @@ public class GuiPlaybackScrub extends GuiElement
     public int max;
     public int index;
 
-    public IScrubListener listener;
+    public GuiCameraEditor editor;
     public CameraProfile profile;
 
-    public GuiPlaybackScrub(Minecraft mc, IScrubListener listener, CameraProfile profile)
+    private boolean resize;
+    private AbstractFixture start;
+    private AbstractFixture end;
+
+    public GuiPlaybackScrub(Minecraft mc, GuiCameraEditor editor, CameraProfile profile)
     {
         super(mc);
 
-        this.listener = listener;
+        this.editor = editor;
         this.profile = profile;
     }
 
@@ -65,9 +70,9 @@ public class GuiPlaybackScrub extends GuiElement
         this.value = value;
         this.value = MathHelper.clamp_int(this.value, this.min, this.max);
 
-        if (this.value != old && this.listener != null)
+        if (this.value != old)
         {
-            this.listener.scrubbed(this, this.value, fromScrub);
+            this.editor.scrubbed(this, this.value, fromScrub);
         }
     }
 
@@ -97,6 +102,16 @@ public class GuiPlaybackScrub extends GuiElement
         return (int) (factor * (this.max - this.min)) + this.min;
     }
 
+    /**
+     * Calculate mouse X from given value
+     */
+    public int calcMouseFromValue(int value)
+    {
+        float factor = (value - this.min) / (float) (this.max - this.min);
+
+        return (int) (factor * this.area.w) + this.area.x - 1;
+    }
+
     /* GUI interactions */
 
     /**
@@ -116,13 +131,40 @@ public class GuiPlaybackScrub extends GuiElement
             }
             else if (mouseButton == 1 && this.profile != null)
             {
-                /* Select camera fixture */
                 int tick = this.calcValueFromMouse(mouseX);
-                GuiCameraEditor editor = (GuiCameraEditor) this.listener;
                 AbstractFixture fixture = this.profile.atTick(tick);
+                long offset = this.profile.calculateOffset(fixture);
+
+                if (fixture != null)
+                {
+                    boolean left = Math.abs(this.calcMouseFromValue((int) offset) - mouseX) < 5;
+                    boolean right = Math.abs(this.calcMouseFromValue((int) (offset + fixture.getDuration())) - mouseX) < 5;
+
+                    if (left || right)
+                    {
+                        int index = this.profile.getAll().indexOf(fixture);
+
+                        if (left && index > 0)
+                        {
+                            this.resize = true;
+                            this.start = this.profile.get(index - 1);
+                            this.end = fixture;
+                        }
+                        else if (right)
+                        {
+                            this.resize = true;
+                            this.start = fixture;
+                            this.end = this.profile.has(index + 1) ? this.profile.get(index + 1) : null;
+                        }
+
+                        return true;
+                    }
+                }
+
+                /* Select camera fixture */
                 int index = this.profile.getAll().indexOf(fixture);
 
-                editor.pickCameraFixture(fixture, tick - this.profile.calculateOffset(fixture));
+                this.editor.pickCameraFixture(fixture, tick - offset);
                 this.index = index;
 
                 return true;
@@ -138,7 +180,14 @@ public class GuiPlaybackScrub extends GuiElement
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
+        if (this.resize)
+        {
+            this.profile.dirty();
+            this.editor.updateValues();
+        }
+
         this.scrubbing = false;
+        this.resize = false;
     }
 
     /**
@@ -153,6 +202,44 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.scrubbing)
         {
             this.setValueFromScrub(this.calcValueFromMouse(mouseX));
+        }
+
+        if (this.resize && this.profile != null)
+        {
+            long start = this.profile.calculateOffset(this.start);
+            long end = start + this.start.getDuration();
+
+            if (this.end != null)
+            {
+                end += this.end.getDuration();
+            }
+
+            long value = this.calcValueFromMouse(mouseX);
+
+            if (value >= start + 5 && (this.end == null ? true : value <= end - 5))
+            {
+                this.start.setDuration(value - start);
+
+                if (this.end != null)
+                {
+                    this.end.setDuration(end - value);
+                }
+
+                /* Update the values */
+                GuiAbstractFixturePanel<AbstractFixture> delegate = this.editor.panel.delegate;
+
+                if (delegate != null)
+                {
+                    if (delegate.fixture == this.start)
+                    {
+                        delegate.duration.setValue(this.start.getDuration());
+                    }
+                    else if (delegate.fixture == this.end)
+                    {
+                        delegate.duration.setValue(this.end.getDuration());
+                    }
+                }
+            }
         }
 
         int x = this.area.x;
@@ -172,6 +259,7 @@ public class GuiPlaybackScrub extends GuiElement
         /* Draw fixtures */
         int pos = 0;
         int i = 0;
+        boolean drawnMarker = false;
 
         for (AbstractFixture fixture : this.profile.getAll())
         {
@@ -183,11 +271,13 @@ public class GuiPlaybackScrub extends GuiElement
             int fx = x + 1 + (int) ((w - 3) * ff);
             int fbx = x + 1 + (int) ((w - 3) * fb);
 
+            /* Draw fixture's  */
             Gui.drawRect(fbx + 1, y + 15, fx, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
             Gui.drawRect(fx, y + 1, fx + 1, y + h - 1, 0xff000000 + color);
 
             String name = fixture.getName();
 
+            /* Draw path's fixture separators */
             if (fixture instanceof PathFixture)
             {
                 PathFixture path = (PathFixture) fixture;
@@ -224,6 +314,24 @@ public class GuiPlaybackScrub extends GuiElement
                 }
             }
 
+            /* Draw resizing markers */
+            if (this.area.isInside(mouseX, mouseY) && !this.resize && !drawnMarker)
+            {
+                boolean left = Math.abs(fbx - mouseX) < 5;
+                boolean right = Math.abs(fx - mouseX) < 5;
+
+                if ((left || right) && !this.resize)
+                {
+                    int markerOffset = (left ? fbx : fx);
+
+                    Gui.drawRect(markerOffset - 4, this.area.y - 1, markerOffset + 5, this.area.y, 0xaaffffff);
+                    Gui.drawRect(markerOffset - 5, this.area.y - 1 - 2, markerOffset - 4, this.area.y + 2, 0xaaffffff);
+                    Gui.drawRect(markerOffset + 5, this.area.y - 1 - 2, markerOffset + 6, this.area.y + 2, 0xaaffffff);
+                    drawnMarker = true;
+                }
+            }
+
+            /* Draw fixture's title */
             if (!name.isEmpty())
             {
                 int lw = this.font.getStringWidth(name);
@@ -247,10 +355,10 @@ public class GuiPlaybackScrub extends GuiElement
         Gui.drawRect(tx, y + 1, tx + 2, y + h - 1, 0xff57f52a);
 
         /* Draw the "how far into fixture" tick */
-        String offset = String.valueOf(this.value - this.profile.calculateOffset(this.value, false));
-        int ow = this.font.getStringWidth(offset);
+        String offsetLabel = String.valueOf(this.value - this.profile.calculateOffset(this.value, false));
+        int ow = this.font.getStringWidth(offsetLabel);
 
-        this.font.drawStringWithShadow(offset, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
+        this.font.drawStringWithShadow(offsetLabel, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
 
         /* Move the tick line left, so it won't overflow the scrub */
         if (tx + 3 - x + width > w)
