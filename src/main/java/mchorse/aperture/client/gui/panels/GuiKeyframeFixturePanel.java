@@ -366,18 +366,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        super.keyTyped(typedChar, keyCode);
-
-        if (this.selected != -1)
-        {
-            this.tick.keyTyped(typedChar, keyCode);
-            this.value.keyTyped(typedChar, keyCode);
-        }
-    }
-
-    @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (super.mouseClicked(mouseX, mouseY, mouseButton))
@@ -723,6 +711,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             this.fixture = fixture;
 
             this.keyframes.clear();
+            this.init = true;
 
             for (KeyframeChannel channel : fixture.channels)
             {
@@ -732,10 +721,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                     AllKeyframe allStar = (AllKeyframe) this.keyframes.get(index);
 
                     allStar.keyframes.add(new KeyframeCell(kf, channel));
-                    allStar.setEasing(kf.easing);
-                    allStar.setInterpolation(kf.interp);
+                    allStar.easing = kf.easing;
+                    allStar.interp = kf.interp;
                 }
             }
+
+            this.init = false;
         }
 
         @Override
