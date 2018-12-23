@@ -16,10 +16,14 @@ aperture.error:
         empty_filename: "{f}这个相机配置文件没有名字！要解决此问题，请指定参数 {7}[filename]{f} 。"
         cant_save: "{f}无法以文件名 %s{f} 保存摄像机配置。"
         cant_load: "{f}无法以文件名 %s{f} 加载摄像机配置。"
+        cant_move: "{f}无法将关键点从 %s{f} 移动到 %s{f}，因为其中之一的指数超出了范围！"
         
         not_path: "{f}在索引号 %s{f} 的关键点不是路径关键点！"
         not_exists: "{f}在目前的相机配置文件里没有相机关键点在 %s{f} 索引号里！"
         no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 里没有路径定点！"
         move_no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 或 %s{f} 里没有定点！"
-
+        
+        client_cant_save: "{f}无法以文件名 %s{f} 保存客户端相机配置。"
+        client_cant_load: "{f}无法以文件名 %s{f} 加载客户端相机配置。"
+        
         wrong_filename: "{f}相机配置不能保存，因为文件名 \"{7}%s{f}\" 包含非法字符。只能使用字母，数字，下划线，破折号和空格！"
