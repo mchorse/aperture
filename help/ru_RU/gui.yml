@@ -9,7 +9,7 @@ aperture.gui:
     reset: Сбросить
     add: Добавить
     edit: Редактировать
-    remove: Убрать
+    remove: Удалить
     detach: Отделить
     record: Записать
     pick: Выбрать морф...
@@ -23,11 +23,11 @@ aperture.gui:
     config:
         title: Опции камеры
 
-        outside: Внешний режим (O)
+        outside: Внешний режим(O)
         minema: Минема
         spectator: Наблюдатель
         show_path: Показать траекторию
-        sync: Синхронизация (S)
+        sync: Синхронизация(S)
         flight: Режим полёта(F)
         display_info: Отобразить позицию
         minecrafttp_teleport: Используйте /minecraft:tp
@@ -52,10 +52,10 @@ aperture.gui:
         goto: Перейти к конкретному кадру
         add: Добавить клип
         dupe: Дублировать клип
-        remove: Убрать выбранный клип
+        remove: Удалить выбранный клип
 
     editor:
-        f1: Нажмите F1 что бы открыть интерфейс...
+        f1: Нажмите F1 чтобы открыть интерфейс...
         speed: Скорость
 
     fixtures:
@@ -64,6 +64,7 @@ aperture.gui:
         look: Следить
         follow: Следовать
         circular: Круг
+        keyframe: Ключ
 
     modifiers:
         title: Модификаторы
@@ -90,12 +91,17 @@ aperture.gui:
             factor: Фактор
 
     profiles:
-        loaded: Загружено
-        load: Загрузить
-        new: Новая
-        tooltip: Имя новой камеры
-        rename_profile: Переименовать профиль
+        title: Профили
         rename: Переименовать
+
+        add_modal: Впишите имя для нового профиля камеры.
+        rename_modal: Впишите новое имя для текущего профиля камерыe.
+        remove_modal: Вы уверенны, что хотите удалить этот профиль камеры (вернуть его будет уже невозможно)?
+        
+        add_tooltip: Добавить профиль
+        convert_tooltip: Конверитровать профиль
+        rename_tooltip: переименовать профиль
+        remove_tooltip: Удалить профиль
 
     panels:
         name: Имя
@@ -120,8 +126,13 @@ aperture.gui:
         circle: Круг
         selector: Селектор
         per_point: Поточечная длительность
+        to_keyframe: Сгенерировать ключ
+
+        all: Всё
+        tick: Тик
+        value: Значение
 
         interps:
             linear: Линейная
-            cubic: Куюическая
+            cubic: Кубическая
             hermite: Сплайновая
