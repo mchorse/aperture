@@ -31,7 +31,7 @@ This playlist contains a list of videos about Aperture's updates and tutorials.
 
 ## Install
 
-Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available minecraft version. Put it in minecraft's `mods` folder, and launch the game.
+Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available minecraft version. Also install following mods: [McLib](https://minecraft.curseforge.com/projects/mchorses-mclib). Put it in minecraft's `mods` folder, and launch the game.
 
 After that, Aperture mod should be installed and will appear in Minecraft's mods menu. If Aperture didn't appear in the mods menu, then something went wrong. 
 
