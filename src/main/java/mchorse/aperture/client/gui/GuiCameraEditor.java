@@ -429,11 +429,16 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void selectProfile(CameraProfile profile)
     {
+        boolean same = profile == this.profile;
         ClientProxy.control.currentProfile = profile;
 
         this.setProfile(profile);
         this.cameraProfileWasChanged(profile);
-        this.pickCameraFixture(null, 0);
+
+        if (!same)
+        {
+            this.pickCameraFixture(null, 0);
+        }
     }
 
     public void cameraProfileWasChanged(CameraProfile profile)

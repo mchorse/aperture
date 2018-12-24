@@ -89,7 +89,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             fixture.roll.get(index).interp = angle;
             fixture.fov.get(index).interp = angle;
 
-            x += this.fixture.perPointDuration ? point.getDuration() : duration / this.fixture.getCount();
+            x += this.fixture.perPointDuration ? point.getDuration() : duration / (this.fixture.getCount() - 1);
         }
 
         this.editor.createFixture(fixture);

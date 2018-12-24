@@ -213,7 +213,7 @@ public class CameraProfile
     {
         if (index + 1 < this.fixtures.size())
         {
-            this.fixtures.add(index, fixture);
+            this.fixtures.add(index + 1, fixture);
         }
         else
         {

@@ -6,6 +6,7 @@ import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
+import mchorse.aperture.client.gui.GuiProfilesManager.CameraProfileEntry;
 import mchorse.aperture.network.common.PacketCameraProfileList;
 import mchorse.mclib.network.ClientMessageHandler;
 import net.minecraft.client.Minecraft;
@@ -35,7 +36,10 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
             {
                 if (manager.profiles.getList().isEmpty())
                 {
-                    ClientProxy.control.addProfile(new CameraProfile(AbstractDestination.create("default")));
+                    CameraProfile profile = new CameraProfile(AbstractDestination.create("default"));
+
+                    ClientProxy.control.addProfile(profile);
+                    manager.profiles.add(new CameraProfileEntry(profile.getDestination(), profile));
                 }
 
                 ClientProxy.control.logged = true;
