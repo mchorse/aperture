@@ -34,7 +34,8 @@ minecraft
     clientJvmArgs = ["-Xmx1G"]
     serverJvmArgs = ["-Xmx1G"]
     
-    replace "@VERSION@", project.version
+    replace "%VERSION%", project.version
+    replace "%MCLIB%", project.mclib
 }
 
 dependencies 
