@@ -64,6 +64,11 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
     private void toKeyframe()
     {
+        if (this.fixture.getCount() <= 1)
+        {
+            return;
+        }
+
         long duration = this.fixture.getDuration();
         KeyframeFixture fixture = new KeyframeFixture(duration);
         Interpolation pos = this.fixture.interpolationPos == InterpolationType.LINEAR ? Interpolation.LINEAR : Interpolation.BEZIER;
