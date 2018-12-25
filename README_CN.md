@@ -50,6 +50,10 @@
 
 [![YouTube](http://i.imgur.com/yA4qam9.png)](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w) [![Discord](http://i.imgur.com/gI6JEpJ.png)](https://discord.gg/qfxrqUF) [![Twitter](http://i.imgur.com/6b8vHcX.png)](https://twitter.com/McHorsy) [![GitHub](http://i.imgur.com/DmTn1f1.png)](https://github.com/mchorse)  
 
+另外，如果你在 Patreon 上支持我的话，我会很感激的！
+
+[![成为赞助者](https://i.imgur.com/4pQZ2xW.png)](https://www.patreon.com/McHorse)
+
 ## Bug 反馈
 
 当你发现了一个 Bug，或者 mod 导致游戏崩溃，我希望你可以在 [issue tracker](https://github.com/mchorse/aperture/issues/) 报告 bug 或崩溃, 或私信在 [Twitter](https://twitter.com/McHorsy)。但请确保你给了我一份日志文件（请用 [Pastebin](https://pastebin.com) 或者  [Ubuntu Paste](https://paste.ubuntu.com)）然后描述一下如何重现 Bug 或崩溃。谢谢！
