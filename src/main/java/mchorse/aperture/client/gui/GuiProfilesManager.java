@@ -63,9 +63,9 @@ public class GuiProfilesManager extends GuiElement
 
         this.profiles.resizer().parent(this.area).set(5, 25, 0, 0).w(1, -10).h(1, -35);
         this.remove.resizer().parent(this.area).set(0, 2, 16, 16).x(1, -18);
-        this.rename.resizer().relative(this.remove.resizer()).set(-20, 0, 16, 16);
+        this.add.resizer().relative(this.remove.resizer()).set(-20, 0, 16, 16);
+        this.rename.resizer().relative(this.add.resizer()).set(-20, 0, 16, 16);
         this.convert.resizer().relative(this.rename.resizer()).set(-20, 0, 16, 16);
-        this.add.resizer().relative(this.convert.resizer()).set(-20, 0, 16, 16);
         this.modal.resizer().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         this.convert.setEnabled(false);
