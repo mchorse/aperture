@@ -131,6 +131,15 @@ aperture.gui:
         value: Value
 
         interps:
+            const: Constant
             linear: Linear
+            quad: Quadratic
             cubic: Cubic
             hermite: Hermite
+            exp: Exponential
+            bezier: Bezier
+
+        easing:
+            in: Ease in
+            out: Ease out
+            inout: Ease in/out

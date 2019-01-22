@@ -106,16 +106,17 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.add"), (b) -> this.addKeyframe());
         this.remove = GuiButtonElement.button(mc, I18n.format("aperture.gui.remove"), (b) -> this.removeKeyframe());
         this.interp = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeInterpolation());
-        this.interp.button.addLabel("Constant");
-        this.interp.button.addLabel("Linear");
-        this.interp.button.addLabel("Quadratic");
-        this.interp.button.addLabel("Cubic");
-        this.interp.button.addLabel("Exponential");
-        this.interp.button.addLabel("Bezier");
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.const"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.linear"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.quad"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.cubic"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.hermite"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.exp"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.bezier"));
         this.easing = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeEasing());
-        this.easing.button.addLabel("Ease in");
-        this.easing.button.addLabel("Ease out");
-        this.easing.button.addLabel("Ease in/out");
+        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.in"));
+        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.out"));
+        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.inout"));
 
         this.buttons.add(this.all);
         this.buttons.add(this.x);
