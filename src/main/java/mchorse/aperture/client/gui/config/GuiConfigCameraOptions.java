@@ -26,6 +26,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiButtonElement<GuiCheckBox> displayPosition;
     public GuiButtonElement<GuiCheckBox> minecrafttpTeleport;
     public GuiButtonElement<GuiCheckBox> tpTeleport;
+    public GuiButtonElement<GuiCheckBox> ruleOfThirds;
 
     public int max;
 
@@ -108,13 +109,18 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.saveConfig();
         });
 
+        this.ruleOfThirds = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.rule_of_thirds"), Aperture.proxy.config.tp_teleport, (b) ->
+        {
+            this.editor.ruleOfThirds = b.button.isChecked();
+        });
+
         /* Don't show that if Minema mod isn't present */
         if (Loader.isModLoaded("minema"))
         {
             this.children.add(this.minema);
         }
 
-        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition);
+        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds);
 
         /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())
@@ -156,6 +162,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.displayPosition.button.setIsChecked(this.editor.displayPosition);
         this.minecrafttpTeleport.button.setIsChecked(Aperture.proxy.config.minecrafttp_teleport);
         this.tpTeleport.button.setIsChecked(Aperture.proxy.config.tp_teleport);
+        this.ruleOfThirds.button.setIsChecked(this.editor.ruleOfThirds);
     }
 
     @Override

@@ -100,11 +100,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public boolean syncing;
 
     /**
-     * Whether camera editor should display camera information 
-     */
-    public boolean displayPosition;
-
-    /**
      * Maximum scrub duration
      */
     public int maxScrub = 0;
@@ -123,6 +118,18 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      * Map of created fixture panels
      */
     public Map<Class<? extends AbstractFixture>, GuiAbstractFixturePanel<? extends AbstractFixture>> panels = new HashMap<>();
+
+    /* Display options */
+
+    /**
+     * Whether camera editor should display camera information 
+     */
+    public boolean displayPosition;
+
+    /**
+     * Render rule of thirds 
+     */
+    public boolean ruleOfThirds;
 
     /* GUI fields */
 
@@ -838,6 +845,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
 
             return;
+        }
+
+        if (this.ruleOfThirds && this.elements.isVisible() && this.profile != null)
+        {
+            int color = 0xcccc0000;
+
+            Gui.drawRect(this.width / 3, 0, this.width / 3 + 1, this.height, color);
+            Gui.drawRect(this.width - this.width / 3, 0, this.width - this.width / 3 + 1, this.height, color);
+
+            Gui.drawRect(0, this.height / 3, this.width, this.height / 3 + 1, color);
+            Gui.drawRect(0, this.height - this.height / 3, this.width, this.height - this.height / 3 + 1, color);
         }
 
         this.drawGradientRect(0, 0, width, 20, 0x66000000, 0);
