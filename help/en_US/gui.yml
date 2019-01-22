@@ -33,7 +33,7 @@ aperture.gui:
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
         rule_of_thirds: Rule of thirds
-        blackbars: Black bars
+        blackbars: Letter box
 
     tooltips:
         jump_next_fixture: Jump to next fixture (Shift + Right)

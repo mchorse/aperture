@@ -33,6 +33,8 @@ public class GuiPlaybackScrub extends GuiElement
     public GuiCameraEditor editor;
     public CameraProfile profile;
 
+    private int lastX;
+    private boolean dragging;
     private boolean resize;
     private AbstractFixture start;
     private AbstractFixture end;
@@ -146,18 +148,18 @@ public class GuiPlaybackScrub extends GuiElement
 
                         if (left && index > 0)
                         {
-                            this.resize = true;
+                            this.dragging = true;
+                            this.lastX = mouseX;
                             this.start = this.profile.get(index - 1);
                             this.end = fixture;
                         }
                         else if (right)
                         {
-                            this.resize = true;
+                            this.dragging = true;
+                            this.lastX = mouseX;
                             this.start = fixture;
                             this.end = this.profile.has(index + 1) ? this.profile.get(index + 1) : null;
                         }
-
-                        return true;
                     }
                 }
 
@@ -188,6 +190,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         this.scrubbing = false;
         this.resize = false;
+        this.dragging = false;
     }
 
     /**
@@ -205,6 +208,11 @@ public class GuiPlaybackScrub extends GuiElement
         }
 
         /* Visual duration resize */
+        if (this.dragging && Math.abs(mouseX - this.lastX) > 6 && !this.resize)
+        {
+            this.resize = true;
+        }
+
         if (this.resize && this.profile != null)
         {
             long start = this.profile.calculateOffset(this.start);
