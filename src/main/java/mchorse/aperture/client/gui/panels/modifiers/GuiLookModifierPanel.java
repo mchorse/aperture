@@ -60,6 +60,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
         this.atBlock = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.at_block"), false, (b) ->
         {
             this.modifier.atBlock = b.button.isChecked();
+            this.updateVisibility();
             this.modifiers.editor.updateProfile();
         });
 
@@ -84,6 +85,18 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
         this.z.setValue(this.modifier.block.z);
         this.relative.button.setIsChecked(this.modifier.relative);
         this.atBlock.button.setIsChecked(this.modifier.atBlock);
+
+        this.updateVisibility();
+    }
+
+    private void updateVisibility()
+    {
+        boolean atBlock = this.modifier.atBlock;
+
+        this.selector.setVisible(!atBlock);
+        this.x.setVisible(atBlock);
+        this.y.setVisible(atBlock);
+        this.z.setVisible(atBlock);
     }
 
     @Override

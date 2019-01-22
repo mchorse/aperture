@@ -100,11 +100,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public boolean syncing;
 
     /**
-     * Whether camera editor should display camera information 
-     */
-    public boolean displayPosition;
-
-    /**
      * Maximum scrub duration
      */
     public int maxScrub = 0;
@@ -123,6 +118,28 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      * Map of created fixture panels
      */
     public Map<Class<? extends AbstractFixture>, GuiAbstractFixturePanel<? extends AbstractFixture>> panels = new HashMap<>();
+
+    /* Display options */
+
+    /**
+     * Whether camera editor should display camera information 
+     */
+    public boolean displayPosition;
+
+    /**
+     * Render rule of thirds 
+     */
+    public boolean ruleOfThirds;
+
+    /**
+     * Render black bars 
+     */
+    public boolean blackBars;
+
+    /**
+     * Aspect ratio for black bars 
+     */
+    public float aspectRatio = 16F / 9F;
 
     /* GUI fields */
 
@@ -652,7 +669,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         AbstractFixture fixture = this.profile.get(this.scrub.index);
         long offset = this.profile.calculateOffset(fixture);
 
-        if (this.scrub.value > offset)
+        if (this.scrub.value > offset && fixture != null)
         {
             fixture.setDuration(this.scrub.value - offset);
             this.updateProfile();
@@ -838,6 +855,43 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
 
             return;
+        }
+
+        if (this.elements.isVisible() && this.profile != null)
+        {
+            if (this.blackBars && this.aspectRatio > 0)
+            {
+                int width = (int) (this.aspectRatio * this.height);
+
+                if (width != this.width)
+                {
+                    if (width < this.width)
+                    {
+                        int w = (this.width - width) / 2;
+
+                        Gui.drawRect(0, 0, w, this.height, 0xff000000);
+                        Gui.drawRect(this.width - w, 0, this.width, this.height, 0xff000000);
+                    }
+                    else
+                    {
+                        int h = (int) (this.height - (1F / this.aspectRatio * this.width)) / 2;
+
+                        Gui.drawRect(0, 0, this.width, h, 0xff000000);
+                        Gui.drawRect(0, this.height - h, this.width, this.height, 0xff000000);
+                    }
+                }
+            }
+
+            if (this.ruleOfThirds)
+            {
+                int color = 0xcccc0000;
+
+                Gui.drawRect(this.width / 3, 0, this.width / 3 + 1, this.height, color);
+                Gui.drawRect(this.width - this.width / 3, 0, this.width - this.width / 3 + 1, this.height, color);
+
+                Gui.drawRect(0, this.height / 3, this.width, this.height / 3 + 1, color);
+                Gui.drawRect(0, this.height - this.height / 3, this.width, this.height - this.height / 3 + 1, color);
+            }
         }
 
         this.drawGradientRect(0, 0, width, 20, 0x66000000, 0);

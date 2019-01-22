@@ -182,14 +182,17 @@ public class CameraRunner
     {
         if (this.isRunning)
         {
-            if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
+            if (this.mc.player != null)
             {
-                this.mc.player.sendChatMessage("/gamemode " + this.gameMode.getID());
-            }
+                if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
+                {
+                    this.mc.player.sendChatMessage("/gamemode " + this.gameMode.getID());
+                }
 
-            if (Aperture.proxy.config.camera_minema)
-            {
-                ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema disable");
+                if (Aperture.proxy.config.camera_minema)
+                {
+                    ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema disable");
+                }
             }
 
             this.mc.gameSettings.fovSetting = this.fov;

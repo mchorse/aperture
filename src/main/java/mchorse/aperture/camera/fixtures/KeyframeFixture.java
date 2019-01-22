@@ -182,7 +182,10 @@ public class KeyframeFixture extends AbstractFixture
 
         public void remove(int index)
         {
-            this.keyframes.remove(index);
+            Keyframe frame = this.keyframes.remove(index);
+
+            frame.prev.next = frame.next;
+            frame.next.prev = frame.prev;
         }
 
         /**
@@ -258,7 +261,14 @@ public class KeyframeFixture extends AbstractFixture
                 prev = frame;
             }
 
-            this.keyframes.add(index, this.create(tick, value));
+            Keyframe frame = this.create(tick, value);
+            this.keyframes.add(index, frame);
+
+            if (this.keyframes.size() > 1)
+            {
+                frame.prev = this.keyframes.get(Math.max(index - 1, 0));
+                frame.next = this.keyframes.get(Math.min(index + 1, this.keyframes.size() - 1));
+            }
 
             return index;
         }
@@ -279,6 +289,21 @@ public class KeyframeFixture extends AbstractFixture
                     return (int) (a.tick - b.tick);
                 }
             });
+
+            if (!this.keyframes.isEmpty())
+            {
+                Keyframe prev = this.keyframes.get(0);
+
+                for (Keyframe frame : this.keyframes)
+                {
+                    frame.prev = prev;
+                    prev.next = frame;
+
+                    prev = frame;
+                }
+
+                prev.next = prev;
+            }
         }
 
         public void copy(KeyframeChannel channel)
@@ -289,6 +314,8 @@ public class KeyframeFixture extends AbstractFixture
             {
                 this.keyframes.add(frame.clone());
             }
+
+            this.sort();
         }
 
         public void fromByteBuf(ByteBuf buffer)
@@ -302,6 +329,8 @@ public class KeyframeFixture extends AbstractFixture
                 frame.fromByteBuf(buffer);
                 this.keyframes.add(frame);
             }
+
+            this.sort();
         }
 
         public void toByteBuf(ByteBuf buffer)
@@ -323,6 +352,9 @@ public class KeyframeFixture extends AbstractFixture
      */
     public static class Keyframe
     {
+        public Keyframe prev;
+        public Keyframe next;
+
         @Expose
         public long tick;
 
@@ -351,6 +383,9 @@ public class KeyframeFixture extends AbstractFixture
         {
             this.tick = tick;
             this.value = value;
+
+            this.prev = this;
+            this.next = this;
         }
 
         public void setTick(long tick)
@@ -466,6 +501,14 @@ public class KeyframeFixture extends AbstractFixture
                 x -= 2;
 
                 return a.value + (b.value - a.value) / 2 * (x * x * x + 2);
+            }
+        },
+        HERMITE
+        {
+            @Override
+            public float interpolate(Keyframe a, Keyframe b, float x)
+            {
+                return (float) Interpolations.cubicHermite(a.prev.value, a.value, b.value, b.next.value, x);
             }
         },
         EXP
