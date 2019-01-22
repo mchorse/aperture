@@ -95,6 +95,19 @@ public class GuiCameraConfig extends GuiElement
     }
 
     @Override
+    public void keyTyped(char typedChar, int keyCode)
+    {
+        super.keyTyped(typedChar, keyCode);
+        this.options.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    public boolean hasActiveTextfields()
+    {
+        return super.hasActiveTextfields() || this.options.hasActiveTextfields();
+    }
+
+    @Override
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
         this.scroll.drag(mouseX, mouseX);
