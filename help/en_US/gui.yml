@@ -61,8 +61,6 @@ aperture.gui:
     fixtures:
         idle: Idle
         path: Path
-        look: Look
-        follow: Follow
         circular: Circular
         keyframe: Keyframe
 
