@@ -652,7 +652,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         AbstractFixture fixture = this.profile.get(this.scrub.index);
         long offset = this.profile.calculateOffset(fixture);
 
-        if (this.scrub.value > offset)
+        if (this.scrub.value > offset && fixture != null)
         {
             fixture.setDuration(this.scrub.value - offset);
             this.updateProfile();
