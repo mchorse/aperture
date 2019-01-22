@@ -5,10 +5,8 @@ import java.io.File;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
-import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AngleModifier;
 import mchorse.aperture.camera.modifiers.DragModifier;
@@ -70,8 +68,6 @@ public class CommonProxy
         /* Register camera fixtures and modifiers */
         FixtureRegistry.register("idle", IdleFixture.class);
         FixtureRegistry.register("path", PathFixture.class);
-        FixtureRegistry.register("look", LookFixture.class);
-        FixtureRegistry.register("follow", FollowFixture.class);
         FixtureRegistry.register("circular", CircularFixture.class);
         FixtureRegistry.register("keyframe", KeyframeFixture.class);
 

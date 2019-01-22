@@ -18,18 +18,20 @@
     * Look fixture – locks the camera at given position, and looks at given entity (using entity selector)
     * Follow fixture – locks the camera relatively to the given entity (kind of like GoPro but fixed)
     * Circular fixture – circulate around the center point and facing at it
+    * Keyframe fixture – allows you create a camera path based on keyframes
 * **More camera flexibility with camera modifiers**. Camera modifiers are modular blocks which post-process camera fixture's output. With these modifiers, you can add camera shake, apply math equation, make a GoPro-like behavior, look at some entity while traveling a path, and much more combined. See [wiki](https://github.com/mchorse/aperture/wiki) for more information.
 * **Provides a smooth camera** as a Minema-friendly alternative of vanilla cinematic camera.
+* **Compatible with [Minema](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2790594-minema-unofficial-the-smooth-movie-recorder)**, if want to record smooth videos on your Potato PC, install [Minema](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2790594-minema-unofficial-the-smooth-movie-recorder) mod and record smooth videos!
 
 ## Videos
 
 This playlist contains a list of videos about Aperture's updates and tutorials.
 
-<a href="https://youtu.be/dKmurdnlj1A?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/dKmurdnlj1A/0.jpg"></a> 
+<a href="https://youtu.be/fT7QeCqKMyU?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/fT7QeCqKMyU/0.jpg"></a> 
 
 ## Install
 
-Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available minecraft version. Put it in minecraft's `mods` folder, and launch the game.
+Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available minecraft version. Also install following mods: [McLib](https://minecraft.curseforge.com/projects/mchorses-mclib). Put it in minecraft's `mods` folder, and launch the game.
 
 After that, Aperture mod should be installed and will appear in Minecraft's mods menu. If Aperture didn't appear in the mods menu, then something went wrong. 
 
@@ -46,7 +48,11 @@ When reposting my mod on your own website or reviewing it, please consider follo
 
 If you're interested in this project, you might as well follow me on any of social media accounts listed below:
 
-[![YouTube](http://i.imgur.com/yA4qam9.png)](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w) [![Discord](http://i.imgur.com/gI6JEpJ.png)](https://discord.gg/qfxrqUF) [![Twitter](http://i.imgur.com/6b8vHcX.png)](https://twitter.com/McHorsy) [![GitHub](http://i.imgur.com/DmTn1f1.png)](https://github.com/mchorse)  
+[![YouTube](http://i.imgur.com/yA4qam9.png)](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w) [![Discord](http://i.imgur.com/gI6JEpJ.png)](https://discord.gg/qfxrqUF) [![Twitter](http://i.imgur.com/6b8vHcX.png)](https://twitter.com/McHorsy) [![GitHub](http://i.imgur.com/DmTn1f1.png)](https://github.com/mchorse) 
+
+Also, I would really appreciate if you will support me on Patreon!
+
+[![Become my Patron](https://i.imgur.com/4pQZ2xW.png)](https://www.patreon.com/McHorse) 
 
 ## Bug reports
 

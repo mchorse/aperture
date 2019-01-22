@@ -2,6 +2,22 @@
 
 Aperture's change log.
 
+## Aperture 1.2
+
+This is a major update which features a new camera fixture called **keyframe fixture** and complete rewrite of GUI code (which allows Blockbuster to more control over integration).
+
+<a href="https://youtu.be/fT7QeCqKMyU"><img src="https://img.youtube.com/vi/fT7QeCqKMyU/0.jpg"></a> 
+
+* Added `mclib` library mod as a dependency
+* Added keyframe camera fixture
+* Added an ability to remove camera profiles
+* Added **Generate keyframe** button in path fixture panel (suggested by GroupM)
+* Added offset tick marker to playback scrub in camera editor (suggested by GroupM)
+* Added a mechanic to resize durations between two fixtures without indvidually resizing them (suggested by GroupM)
+* Changed where added fixture will be placed – if no fixture selected, a new fixture will be placed at the end of camera profile, otherwise, after currently selected fixture
+* Full rewrite of camera editor GUI to support McLib GUI framework
+* Full rewrite of Aperture's events
+
 ## Aperture 1.1.1
 
 This is a minor update which fixes some stuff and adds some random stuff regarding the camera. The highlight of this update is the outside mode, which can be used to playback camera while also body acting (detaching yourself from the camera). In some situations it might be glitchy, causing a chunk freeze, but this can be easily fixed by changing render distance.

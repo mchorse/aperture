@@ -12,10 +12,8 @@ import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.ModifierRegistry.ModifierInfo;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
-import mchorse.aperture.camera.fixtures.FollowFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
-import mchorse.aperture.camera.fixtures.LookFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.modifiers.AngleModifier;
@@ -32,10 +30,8 @@ import mchorse.aperture.client.RenderingHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
-import mchorse.aperture.client.gui.panels.GuiFollowFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
-import mchorse.aperture.client.gui.panels.GuiLookFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAngleModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiDragModifierPanel;
@@ -89,7 +85,7 @@ public class ClientProxy extends CommonProxy
     /**
      * An instance of camera editor 
      */
-    private static GuiCameraEditor cameraEditor;
+    public static GuiCameraEditor cameraEditor;
 
     /**
      * Get camera editor
@@ -165,15 +161,11 @@ public class ClientProxy extends CommonProxy
         /* Register camera fixtures */
         GuiCameraEditor.PANELS.put(IdleFixture.class, GuiIdleFixturePanel.class);
         GuiCameraEditor.PANELS.put(PathFixture.class, GuiPathFixturePanel.class);
-        GuiCameraEditor.PANELS.put(LookFixture.class, GuiLookFixturePanel.class);
-        GuiCameraEditor.PANELS.put(FollowFixture.class, GuiFollowFixturePanel.class);
         GuiCameraEditor.PANELS.put(CircularFixture.class, GuiCircularFixturePanel.class);
         GuiCameraEditor.PANELS.put(KeyframeFixture.class, GuiKeyframeFixturePanel.class);
 
         FixtureRegistry.registerClient(IdleFixture.class, "aperture.gui.fixtures.idle", new Color(0.085F, 0.62F, 0.395F));
         FixtureRegistry.registerClient(PathFixture.class, "aperture.gui.fixtures.path", new Color(0.408F, 0.128F, 0.681F));
-        FixtureRegistry.registerClient(LookFixture.class, "aperture.gui.fixtures.look", new Color(0.298F, 0.690F, 0.972F));
-        FixtureRegistry.registerClient(FollowFixture.class, "aperture.gui.fixtures.follow", new Color(0.85F, 0.137F, 0.329F));
         FixtureRegistry.registerClient(CircularFixture.class, "aperture.gui.fixtures.circular", new Color(0.298F, 0.631F, 0.247F));
         FixtureRegistry.registerClient(KeyframeFixture.class, "aperture.gui.fixtures.keyframe", new Color(0.874F, 0.184F, 0.625F));
 

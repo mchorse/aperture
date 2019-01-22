@@ -32,6 +32,8 @@ aperture.gui:
         display_info: Display position
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
+        rule_of_thirds: Rule of thirds
+        blackbars: Letter box
 
     tooltips:
         jump_next_fixture: Jump to next fixture (Shift + Right)
@@ -61,8 +63,6 @@ aperture.gui:
     fixtures:
         idle: Idle
         path: Path
-        look: Look
-        follow: Follow
         circular: Circular
         keyframe: Keyframe
 
@@ -133,6 +133,15 @@ aperture.gui:
         value: Value
 
         interps:
+            const: Constant
             linear: Linear
+            quad: Quadratic
             cubic: Cubic
             hermite: Hermite
+            exp: Exponential
+            bezier: Bezier
+
+        easing:
+            in: Ease in
+            out: Ease out
+            inout: Ease in/out

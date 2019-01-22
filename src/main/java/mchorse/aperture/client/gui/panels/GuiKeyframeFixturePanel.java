@@ -14,6 +14,7 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Area;
@@ -22,6 +23,7 @@ import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -40,7 +42,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public Area frames = new Area();
 
     public GuiElements<GuiButtonElement> buttons;
-    public GuiElements<GuiButtonElement> frameButtons;
+    public GuiElements<GuiElement> frameButtons;
 
     public GuiButtonElement<GuiButton> all;
     public GuiButtonElement<GuiButton> x;
@@ -106,16 +108,17 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.add"), (b) -> this.addKeyframe());
         this.remove = GuiButtonElement.button(mc, I18n.format("aperture.gui.remove"), (b) -> this.removeKeyframe());
         this.interp = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeInterpolation());
-        this.interp.button.addLabel("Constant");
-        this.interp.button.addLabel("Linear");
-        this.interp.button.addLabel("Quadratic");
-        this.interp.button.addLabel("Cubic");
-        this.interp.button.addLabel("Exponential");
-        this.interp.button.addLabel("Bezier");
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.const"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.linear"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.quad"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.cubic"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.hermite"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.exp"));
+        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.bezier"));
         this.easing = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeEasing());
-        this.easing.button.addLabel("Ease in");
-        this.easing.button.addLabel("Ease out");
-        this.easing.button.addLabel("Ease in/out");
+        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.in"));
+        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.out"));
+        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.inout"));
 
         this.buttons.add(this.all);
         this.buttons.add(this.x);
@@ -129,8 +132,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.buttons.add(this.add);
         this.buttons.add(this.remove);
 
-        this.frameButtons.add(this.interp);
-        this.frameButtons.add(this.easing);
+        this.frameButtons.add(this.interp, this.easing, this.tick, this.value);
+        this.frameButtons.setVisible(false);
 
         for (int i = 0; i < this.titles.length; i++)
         {
@@ -158,7 +161,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.interp.resizer().relative(this.tick.resizer()).set(-90, 0, 80, 20);
         this.easing.resizer().relative(this.value.resizer()).set(-90, 0, 80, 20);
 
-        this.children.add(this.buttons, this.frameButtons, this.tick, this.value);
+        this.children.add(this.buttons, this.frameButtons);
     }
 
     @Override
@@ -198,6 +201,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
 
         this.selected = this.active.insert(tick, value);
+        this.frameButtons.setVisible(this.selected >= 0);
 
         if (this.active == this.allChannel)
         {
@@ -246,6 +250,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.active.remove(this.selected);
         this.selected -= 1;
         this.editor.updateProfile();
+        this.frameButtons.setVisible(this.selected >= 0);
 
         if (this.selected != -1)
         {
@@ -304,6 +309,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
                 i++;
             }
+
+            this.frameButtons.setVisible(this.selected >= 0);
         }
 
         if (this.selected != -1)
@@ -345,6 +352,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             this.shiftY = (int) channel.get(0).value;
         }
+
+        this.frameButtons.setVisible(this.selected >= 0);
     }
 
     @Override
@@ -396,6 +405,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                         this.lastX = mouseX;
                         this.lastY = mouseY;
                         this.dragging = true;
+
+                        this.frameButtons.setVisible(this.selected >= 0);
 
                         break;
                     }
@@ -462,6 +473,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 this.active.sort();
                 this.sliding = false;
                 this.selected = this.active.getKeyframes().indexOf(frame);
+                this.frameButtons.setVisible(this.selected >= 0);
             }
 
             if (this.moving)
@@ -520,8 +532,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         else if (this.moving)
         {
             Keyframe frame = this.active.get(this.selected);
-            long x = this.fromGraphX(mouseX);
-            float y = this.fromGraphY(mouseY);
+            long x = this.fromGraphX(!GuiScreen.isShiftKeyDown() ? mouseX : this.lastX);
+            float y = this.fromGraphY(!GuiScreen.isCtrlKeyDown() ? mouseY : this.lastY);
 
             if (this.which == 0)
             {

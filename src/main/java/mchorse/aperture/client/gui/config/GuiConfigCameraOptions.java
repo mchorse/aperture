@@ -5,6 +5,8 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -26,6 +28,9 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiButtonElement<GuiCheckBox> displayPosition;
     public GuiButtonElement<GuiCheckBox> minecrafttpTeleport;
     public GuiButtonElement<GuiCheckBox> tpTeleport;
+    public GuiButtonElement<GuiCheckBox> ruleOfThirds;
+    public GuiButtonElement<GuiCheckBox> blackBars;
+    public GuiTextElement aspectRatio;
 
     public int max;
 
@@ -108,13 +113,50 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.saveConfig();
         });
 
+        this.ruleOfThirds = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.rule_of_thirds"), Aperture.proxy.config.tp_teleport, (b) ->
+        {
+            this.editor.ruleOfThirds = b.button.isChecked();
+        });
+
+        this.blackBars = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.blackbars"), Aperture.proxy.config.tp_teleport, (b) ->
+        {
+            this.editor.blackBars = b.button.isChecked();
+        });
+
+        this.aspectRatio = new GuiTextElement(mc, (v) ->
+        {
+            float aspect = this.editor.aspectRatio;
+
+            try
+            {
+                aspect = Float.parseFloat(v);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    String[] strips = v.split(":");
+
+                    if (strips.length >= 2)
+                    {
+                        aspect = Float.parseFloat(strips[0]) / Float.parseFloat(strips[1]);
+                    }
+                }
+                catch (Exception ee)
+                {}
+            }
+
+            this.editor.aspectRatio = aspect;
+        });
+        this.aspectRatio.setText("16:9");
+
         /* Don't show that if Minema mod isn't present */
         if (Loader.isModLoaded("minema"))
         {
             this.children.add(this.minema);
         }
 
-        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition);
+        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.blackBars, this.aspectRatio);
 
         /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())
@@ -132,9 +174,13 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 
                 button.resizer().parent(this.area).set(4, 4 + i * 20 + 20, button.button.width, button.button.height);
                 this.max = Math.max(this.max, button.button.width);
-
-                i++;
             }
+            else if (element instanceof GuiElement)
+            {
+                ((GuiElement) element).resizer().parent(this.area).set(4, 4 + i * 20 + 20, 0, 18).w(1, -8);
+            }
+
+            i++;
         }
     }
 
@@ -156,6 +202,8 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.displayPosition.button.setIsChecked(this.editor.displayPosition);
         this.minecrafttpTeleport.button.setIsChecked(Aperture.proxy.config.minecrafttp_teleport);
         this.tpTeleport.button.setIsChecked(Aperture.proxy.config.tp_teleport);
+        this.ruleOfThirds.button.setIsChecked(this.editor.ruleOfThirds);
+        this.blackBars.button.setIsChecked(this.editor.blackBars);
     }
 
     @Override
@@ -167,7 +215,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     @Override
     public int getHeight()
     {
-        return this.children.elements.size() * 20 + 20;
+        return this.children.elements.size() * 20 + 26;
     }
 
     @Override
