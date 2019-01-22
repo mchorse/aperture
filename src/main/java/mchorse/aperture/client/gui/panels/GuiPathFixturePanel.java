@@ -71,8 +71,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         long duration = this.fixture.getDuration();
         KeyframeFixture fixture = new KeyframeFixture(duration);
-        Interpolation pos = this.fixture.interpolationPos == InterpolationType.LINEAR ? Interpolation.LINEAR : Interpolation.BEZIER;
-        Interpolation angle = this.fixture.interpolationAngle == InterpolationType.LINEAR ? Interpolation.LINEAR : Interpolation.BEZIER;
+        Interpolation pos = this.fixture.interpolationPos == InterpolationType.LINEAR ? Interpolation.LINEAR : (this.fixture.interpolationPos == InterpolationType.HERMITE ? Interpolation.HERMITE : Interpolation.BEZIER);
+        Interpolation angle = this.fixture.interpolationAngle == InterpolationType.LINEAR ? Interpolation.LINEAR : (this.fixture.interpolationAngle == InterpolationType.HERMITE ? Interpolation.HERMITE : Interpolation.BEZIER);
 
         long x = 0;
 
