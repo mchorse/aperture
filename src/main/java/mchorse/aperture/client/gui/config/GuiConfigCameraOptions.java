@@ -29,7 +29,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiButtonElement<GuiCheckBox> minecrafttpTeleport;
     public GuiButtonElement<GuiCheckBox> tpTeleport;
     public GuiButtonElement<GuiCheckBox> ruleOfThirds;
-    public GuiButtonElement<GuiCheckBox> blackBars;
+    public GuiButtonElement<GuiCheckBox> letterBox;
     public GuiTextElement aspectRatio;
 
     public int max;
@@ -118,9 +118,9 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.editor.ruleOfThirds = b.button.isChecked();
         });
 
-        this.blackBars = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.blackbars"), Aperture.proxy.config.tp_teleport, (b) ->
+        this.letterBox = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.letter_box"), Aperture.proxy.config.tp_teleport, (b) ->
         {
-            this.editor.blackBars = b.button.isChecked();
+            this.editor.letterBox = b.button.isChecked();
         });
 
         this.aspectRatio = new GuiTextElement(mc, (v) ->
@@ -156,7 +156,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.children.add(this.minema);
         }
 
-        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.blackBars, this.aspectRatio);
+        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio);
 
         /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())
@@ -203,7 +203,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.minecrafttpTeleport.button.setIsChecked(Aperture.proxy.config.minecrafttp_teleport);
         this.tpTeleport.button.setIsChecked(Aperture.proxy.config.tp_teleport);
         this.ruleOfThirds.button.setIsChecked(this.editor.ruleOfThirds);
-        this.blackBars.button.setIsChecked(this.editor.blackBars);
+        this.letterBox.button.setIsChecked(this.editor.letterBox);
     }
 
     @Override

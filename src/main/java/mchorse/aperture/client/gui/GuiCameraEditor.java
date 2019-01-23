@@ -134,7 +134,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     /**
      * Render black bars 
      */
-    public boolean blackBars;
+    public boolean letterBox;
 
     /**
      * Aspect ratio for black bars 
@@ -859,7 +859,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.elements.isVisible() && this.profile != null)
         {
-            if (this.blackBars && this.aspectRatio > 0)
+            /* Readjustable values for rule of thirds in case of letter 
+             * box enabled */
+            int rx = 0;
+            int ry = 0;
+            int rw = this.width;
+            int rh = this.height;
+
+            if (this.letterBox && this.aspectRatio > 0)
             {
                 int width = (int) (this.aspectRatio * this.height);
 
@@ -867,17 +874,25 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 {
                     if (width < this.width)
                     {
+                        /* Horizontal bars */
                         int w = (this.width - width) / 2;
 
                         Gui.drawRect(0, 0, w, this.height, 0xff000000);
                         Gui.drawRect(this.width - w, 0, this.width, this.height, 0xff000000);
+
+                        rx = w;
+                        rw -= w * 2;
                     }
                     else
                     {
+                        /* Vertical bars */
                         int h = (int) (this.height - (1F / this.aspectRatio * this.width)) / 2;
 
                         Gui.drawRect(0, 0, this.width, h, 0xff000000);
                         Gui.drawRect(0, this.height - h, this.width, this.height, 0xff000000);
+
+                        ry = h;
+                        rh -= h * 2;
                     }
                 }
             }
@@ -886,11 +901,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             {
                 int color = 0xcccc0000;
 
-                Gui.drawRect(this.width / 3, 0, this.width / 3 + 1, this.height, color);
-                Gui.drawRect(this.width - this.width / 3, 0, this.width - this.width / 3 + 1, this.height, color);
+                Gui.drawRect(rx + rw / 3 - 1, ry, rx + rw / 3, ry + rh, color);
+                Gui.drawRect(rx + rw - rw / 3, ry, rx + rw - rw / 3 + 1, ry + rh, color);
 
-                Gui.drawRect(0, this.height / 3, this.width, this.height / 3 + 1, color);
-                Gui.drawRect(0, this.height - this.height / 3, this.width, this.height - this.height / 3 + 1, color);
+                Gui.drawRect(rx, ry + rh / 3 - 1, rx + rw, ry + rh / 3, color);
+                Gui.drawRect(rx, ry + rh - rh / 3, rx + rw, ry + rh - rh / 3 + 1, color);
             }
         }
 
