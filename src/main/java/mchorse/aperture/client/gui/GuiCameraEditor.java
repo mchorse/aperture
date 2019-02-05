@@ -834,7 +834,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.lastGameMode != GameType.NOT_SET)
         {
-            this.mc.thePlayer.sendChatMessage("/gamemode " + this.lastGameMode.getID());
+            this.mc.player.sendChatMessage("/gamemode " + this.lastGameMode.getID());
         }
 
         super.closeScreen();
