@@ -39,9 +39,10 @@ public class GuiProfilesManager extends GuiElement
     public GuiCameraEditor editor;
 
     public GuiCameraProfilesList profiles;
-    public GuiButtonElement<GuiTextureButton> add;
     public GuiButtonElement<GuiTextureButton> rename;
     public GuiButtonElement<GuiTextureButton> convert;
+    public GuiButtonElement<GuiTextureButton> add;
+    public GuiButtonElement<GuiTextureButton> dupe;
     public GuiButtonElement<GuiTextureButton> remove;
     public GuiDelegateElement<IGuiElement> modal;
 
@@ -55,21 +56,23 @@ public class GuiProfilesManager extends GuiElement
         this.createChildren();
 
         this.profiles = new GuiCameraProfilesList(mc, (entry) -> this.pickEntry(entry));
-        this.add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) -> this.add()).tooltip(I18n.format("aperture.gui.profiles.add_tooltip"), TooltipDirection.BOTTOM);
         this.rename = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 160, 32, 160, 48, (b) -> this.rename()).tooltip(I18n.format("aperture.gui.profiles.rename_tooltip"), TooltipDirection.BOTTOM);
         this.convert = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 0, 32, 0, 48, (b) -> this.convert()).tooltip(I18n.format("aperture.gui.profiles.convert_tooltip"), TooltipDirection.BOTTOM);
+        this.add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) -> this.add()).tooltip(I18n.format("aperture.gui.profiles.add_tooltip"), TooltipDirection.BOTTOM);
+        this.dupe = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 176, 32, 176, 48, (b) -> this.dupe()).tooltip(I18n.format("aperture.gui.profiles.dupe_tooltip"), TooltipDirection.BOTTOM);
         this.remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 240, 0, 240, 16, (b) -> this.remove()).tooltip(I18n.format("aperture.gui.profiles.remove_tooltip"), TooltipDirection.BOTTOM);
         this.modal = new GuiDelegateElement<IGuiElement>(mc, null);
 
         this.profiles.resizer().parent(this.area).set(5, 25, 0, 0).w(1, -10).h(1, -35);
         this.remove.resizer().parent(this.area).set(0, 2, 16, 16).x(1, -18);
-        this.add.resizer().relative(this.remove.resizer()).set(-20, 0, 16, 16);
+        this.dupe.resizer().relative(this.remove.resizer()).set(-20, 0, 16, 16);
+        this.add.resizer().relative(this.dupe.resizer()).set(-20, 0, 16, 16);
         this.rename.resizer().relative(this.add.resizer()).set(-20, 0, 16, 16);
         this.convert.resizer().relative(this.rename.resizer()).set(-20, 0, 16, 16);
         this.modal.resizer().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         this.convert.setEnabled(false);
-        this.children.add(this.profiles, this.add, this.rename, this.convert, this.remove, this.modal);
+        this.children.add(this.profiles, this.rename, this.convert, this.add, this.dupe, this.remove, this.modal);
     }
 
     private void add()
@@ -93,10 +96,52 @@ public class GuiProfilesManager extends GuiElement
         this.profiles.setCurrent(entry);
     }
 
+    private void dupe()
+    {
+        CameraProfileEntry entry = this.profiles.getCurrent();
+
+        if (entry == null)
+        {
+            return;
+        }
+
+        GuiPromptModal modal = new GuiPromptModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.dupe_modal"), (name) -> this.dupe(name));
+        modal.setValue(entry.destination.getFilename());
+
+        this.modal.setDelegate(modal);
+    }
+
+    private void dupe(String name)
+    {
+        CameraProfileEntry entry = this.profiles.getCurrent();
+
+        if (entry != null)
+        {
+            CameraProfile profile = entry.profile.clone();
+            CameraProfileEntry newEntry = new CameraProfileEntry(profile.getDestination(), profile);
+
+            profile.getDestination().setFilename(name);
+            profile.dirty();
+
+            ClientProxy.control.addProfile(profile);
+
+            this.editor.selectProfile(profile);
+            this.profiles.add(newEntry);
+            this.profiles.setCurrent(newEntry);
+        }
+    }
+
     private void rename()
     {
+        CameraProfileEntry entry = this.profiles.getCurrent();
+
+        if (entry == null)
+        {
+            return;
+        }
+
         GuiPromptModal modal = new GuiPromptModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.rename_modal"), (name) -> this.rename(name));
-        modal.setValue(this.profiles.getCurrent().destination.getFilename());
+        modal.setValue(entry.destination.getFilename());
 
         this.modal.setDelegate(modal);
     }

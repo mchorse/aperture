@@ -863,6 +863,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.flight.animate(this.position);
             this.position.apply(this.getCamera());
+            ClientProxy.control.roll = this.position.angle.roll;
+            this.mc.gameSettings.fovSetting = this.position.angle.fov;
 
             if (this.syncing && this.haveScrubbed && this.panel.delegate != null)
             {
