@@ -87,6 +87,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             this.active.get(this.selected).setTick(value.longValue());
             this.sliding = true;
         });
+        this.tick.trackpad.integer = true;
 
         this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) ->
         {

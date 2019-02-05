@@ -28,12 +28,14 @@ import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameType;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -87,6 +89,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      * FOV which was user had before entering the GUI 
      */
     private float lastFov = 70.0F;
+    private float lastRoll = 0;
+    private GameType lastGameMode = GameType.NOT_SET;
 
     /**
      * This property saves state for the sync option, to allow more friendly
@@ -521,6 +525,20 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.haveScrubbed = false;
         this.flight.enabled = false;
         this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
+        this.lastRoll = ClientProxy.control.roll;
+        this.lastGameMode = ClientProxy.runner.getGameMode(player);
+
+        if (Aperture.proxy.config.camera_spectator)
+        {
+            if (this.lastGameMode != GameType.SPECTATOR)
+            {
+                ((EntityPlayerSP) player).sendChatMessage("/gamemode 3");
+            }
+        }
+        else
+        {
+            this.lastGameMode = GameType.NOT_SET;
+        }
 
         this.runner.attachOutside();
     }
@@ -804,12 +822,18 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         Minecraft.getMinecraft().gameSettings.hideGUI = false;
         Minecraft.getMinecraft().gameSettings.fovSetting = this.lastFov;
+        ClientProxy.control.roll = this.lastRoll;
         GuiIngameForge.renderHotbar = true;
         GuiIngameForge.renderCrosshairs = true;
 
         if (!this.runner.isRunning())
         {
             this.runner.detachOutside();
+        }
+
+        if (this.lastGameMode != GameType.NOT_SET)
+        {
+            this.mc.thePlayer.sendChatMessage("/gamemode " + this.lastGameMode.getID());
         }
 
         super.closeScreen();
@@ -839,6 +863,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.flight.animate(this.position);
             this.position.apply(this.getCamera());
+            ClientProxy.control.roll = this.position.angle.roll;
+            this.mc.gameSettings.fovSetting = this.position.angle.fov;
 
             if (this.syncing && this.haveScrubbed && this.panel.delegate != null)
             {

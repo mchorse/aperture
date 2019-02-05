@@ -34,7 +34,12 @@ public class CameraRunner
     /**
      * FOV used before camera playback
      */
-    private float fov = 70.0F;
+    private float lastFov = 70.0F;
+
+    /**
+     * Roll used before camera playback
+     */
+    private float lastRoll = 0;
 
     /**
      * Game mode player was in before playback
@@ -150,7 +155,8 @@ public class CameraRunner
 
         if (!this.isRunning)
         {
-            this.fov = this.mc.gameSettings.fovSetting;
+            this.lastFov = this.mc.gameSettings.fovSetting;
+            this.lastRoll = ClientProxy.control.roll;
             this.gameMode = this.getGameMode(this.mc.player);
             this.position.set(this.mc.player);
 
@@ -195,7 +201,8 @@ public class CameraRunner
                 }
             }
 
-            this.mc.gameSettings.fovSetting = this.fov;
+            this.mc.gameSettings.fovSetting = this.lastFov;
+            ClientProxy.control.roll = this.lastRoll;
             this.gameMode = null;
 
             MinecraftForge.EVENT_BUS.unregister(this);
