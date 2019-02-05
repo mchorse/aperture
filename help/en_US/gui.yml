@@ -94,14 +94,16 @@ aperture.gui:
         title: Profiles
         rename: Rename
         
-        add_modal: Type in a name for a new camera profile.
         rename_modal: Type in a new name to rename current camera profile.
+        add_modal: Type in a name for a new camera profile.
+        dupe_modal: Type in a name for a duplicate of a camera profile.
         remove_modal: Are you sure you want to remove this camera profile (it won't possible to restore it)?
         
+        convert_tooltip: Convert the profile
+        rename_tooltip: Rename the profile
         add_tooltip: Add a profile
-        convert_tooltip: Convert profile
-        rename_tooltip: Rename profile
-        remove_tooltip: Remove profile
+        dupe_tooltip: Duplicate the profile
+        remove_tooltip: Remove the profile
 
     panels:
         name: Name

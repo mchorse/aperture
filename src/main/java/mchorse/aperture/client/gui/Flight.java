@@ -28,6 +28,8 @@ public class Flight
 
         float yaw = position.angle.yaw;
         float pitch = position.angle.pitch;
+        float roll = position.angle.roll;
+        float fov = position.angle.fov;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_DOWN))
         {
@@ -37,6 +39,16 @@ public class Flight
         if (Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
         {
             yaw += (Keyboard.isKeyDown(Keyboard.KEY_LEFT) ? -angleFactor : angleFactor);
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET) || Keyboard.isKeyDown(Keyboard.KEY_RBRACKET))
+        {
+            roll += (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET) ? -angleFactor : angleFactor);
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE) || Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH))
+        {
+            fov += (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE) ? -angleFactor : angleFactor);
         }
 
         float x = position.point.x;
@@ -62,7 +74,7 @@ public class Flight
             zz = (Keyboard.isKeyDown(Keyboard.KEY_W) ? factor : -factor);
         }
 
-        if (xx != 0 || yy != 0 || zz != 0 || yaw != position.angle.yaw || pitch != position.angle.pitch)
+        if (xx != 0 || yy != 0 || zz != 0 || yaw != position.angle.yaw || pitch != position.angle.pitch || roll != position.angle.roll || fov != position.angle.fov)
         {
             Vec3d vec = new Vec3d(xx, yy, zz);
 
@@ -73,7 +85,7 @@ public class Flight
             z += vec.z;
 
             position.point.set(x, y, z);
-            position.angle.set(yaw, pitch);
+            position.angle.set(yaw, pitch, roll, fov);
         }
     }
 }
