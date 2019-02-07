@@ -13,6 +13,7 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.smooth.Interpolations;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Keyframe fixture
@@ -536,13 +537,51 @@ public class KeyframeFixture extends AbstractFixture
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
             {
-                float y1 = Interpolations.lerp(a.value, a.value + a.ry, x);
-                float y2 = Interpolations.lerp(a.value + a.ry, b.value + b.ly, x);
-                float y3 = Interpolations.lerp(b.value + b.ly, b.value, x);
-                float y4 = Interpolations.lerp(y1, y2, x);
-                float y5 = Interpolations.lerp(y2, y3, x);
+                if (x <= 0) return a.value;
+                if (x >= 1) return b.value;
 
-                return Interpolations.lerp(y4, y5, x);
+                /* Transform input to 0..1 */
+                float w = b.tick - a.tick;
+                float h = b.value - a.value;
+
+                float x1 = a.rx / w;
+                float y1 = a.ry / h;
+                float x2 = (w - b.lx) / w;
+                float y2 = (h + b.ly) / h;
+
+                x1 = MathHelper.clamp_float(x1, 0, 1);
+                x2 = MathHelper.clamp_float(x2, 0, 1);
+
+                /* Find X for T */
+                float xx = x;
+                float init = this.bezier(0, x1, x2, 1, x);
+                float factor = Math.copySign(0.1F, x - init);
+
+                while (Math.abs(x - init) > 0.0005F)
+                {
+                    float oldFactor = factor;
+
+                    xx += factor;
+                    init = this.bezier(0, x1, x2, 1, xx);
+
+                    if (Math.copySign(factor, x - init) != oldFactor)
+                    {
+                        factor *= -0.25F;
+                    }
+                }
+
+                return this.bezier(0, y1, y2, 1, xx) * h + a.value;
+            }
+
+            private float bezier(float x1, float x2, float x3, float x4, float x)
+            {
+                float t1 = Interpolations.lerp(x1, x2, x);
+                float t2 = Interpolations.lerp(x2, x3, x);
+                float t3 = Interpolations.lerp(x3, x4, x);
+                float t4 = Interpolations.lerp(t1, t2, x);
+                float t5 = Interpolations.lerp(t2, t3, x);
+
+                return Interpolations.lerp(t4, t5, x);
             }
         };
 
