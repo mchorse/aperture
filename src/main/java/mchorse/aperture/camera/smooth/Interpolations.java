@@ -123,6 +123,56 @@ public class Interpolations
     }
 
     /**
+     * Calculate X value for given T using some brute force algorithm... 
+     * This method should be precise enough
+     * 
+     * @param x1 - control point of initial value
+     * @param x2 - control point of final value
+     * @param t - time (should be 0..1)
+     */
+    public static float bezierX(float x1, float x2, float t)
+    {
+        float x = t;
+        float init = bezier(0, x1, x2, 1, t);
+        float factor = Math.copySign(0.1F, t - init);
+
+        while (Math.abs(t - init) > 0.0005F)
+        {
+            float oldFactor = factor;
+
+            x += factor;
+            init = bezier(0, x1, x2, 1, x);
+
+            if (Math.copySign(factor, t - init) != oldFactor)
+            {
+                factor *= -0.25F;
+            }
+        }
+
+        return x;
+    }
+
+    /**
+     * Calculate cubic bezier from given variables
+     * 
+     * @param x1 - initial value
+     * @param x2 - control point of initial value
+     * @param x3 - control point of final value
+     * @param x4 - final value
+     * @param t - time (should be 0..1)
+     */
+    public static float bezier(float x1, float x2, float x3, float x4, float t)
+    {
+        float t1 = lerp(x1, x2, t);
+        float t2 = lerp(x2, x3, t);
+        float t3 = lerp(x3, x4, t);
+        float t4 = lerp(t1, t2, t);
+        float t5 = lerp(t2, t3, t);
+
+        return lerp(t4, t5, t);
+    }
+
+    /**
      * Normalize yaw rotation (argument {@code b}) based on the previous
      * yaw rotation.
      */

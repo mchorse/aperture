@@ -552,36 +552,7 @@ public class KeyframeFixture extends AbstractFixture
                 x1 = MathHelper.clamp_float(x1, 0, 1);
                 x2 = MathHelper.clamp_float(x2, 0, 1);
 
-                /* Find X for T */
-                float xx = x;
-                float init = this.bezier(0, x1, x2, 1, x);
-                float factor = Math.copySign(0.1F, x - init);
-
-                while (Math.abs(x - init) > 0.0005F)
-                {
-                    float oldFactor = factor;
-
-                    xx += factor;
-                    init = this.bezier(0, x1, x2, 1, xx);
-
-                    if (Math.copySign(factor, x - init) != oldFactor)
-                    {
-                        factor *= -0.25F;
-                    }
-                }
-
-                return this.bezier(0, y1, y2, 1, xx) * h + a.value;
-            }
-
-            private float bezier(float x1, float x2, float x3, float x4, float x)
-            {
-                float t1 = Interpolations.lerp(x1, x2, x);
-                float t2 = Interpolations.lerp(x2, x3, x);
-                float t3 = Interpolations.lerp(x3, x4, x);
-                float t4 = Interpolations.lerp(t1, t2, x);
-                float t5 = Interpolations.lerp(t2, t3, x);
-
-                return Interpolations.lerp(t4, t5, x);
+                return Interpolations.bezier(0, y1, y2, 1, Interpolations.bezierX(x1, x2, x)) * h + a.value;
             }
         };
 
