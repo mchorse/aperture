@@ -10,7 +10,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.camera.smooth.Interpolations;
+import mchorse.mclib.utils.Interpolations;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;

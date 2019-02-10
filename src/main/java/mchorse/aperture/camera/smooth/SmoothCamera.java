@@ -1,6 +1,7 @@
 package mchorse.aperture.camera.smooth;
 
 import mchorse.aperture.Aperture;
+import mchorse.mclib.utils.Interpolations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;

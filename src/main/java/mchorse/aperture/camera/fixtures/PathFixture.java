@@ -11,7 +11,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.camera.smooth.Interpolations;
+import mchorse.mclib.utils.Interpolations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
