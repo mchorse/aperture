@@ -549,8 +549,8 @@ public class KeyframeFixture extends AbstractFixture
                 float x2 = (w - b.lx) / w;
                 float y2 = (h + b.ly) / h;
 
-                x1 = MathHelper.clamp_float(x1, 0, 1);
-                x2 = MathHelper.clamp_float(x2, 0, 1);
+                x1 = MathHelper.clamp(x1, 0, 1);
+                x2 = MathHelper.clamp(x2, 0, 1);
 
                 return Interpolations.bezier(0, y1, y2, 1, Interpolations.bezierX(x1, x2, x)) * h + a.value;
             }
