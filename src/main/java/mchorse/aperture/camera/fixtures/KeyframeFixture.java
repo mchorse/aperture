@@ -10,9 +10,10 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.camera.smooth.Interpolations;
+import mchorse.mclib.utils.Interpolations;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Keyframe fixture
@@ -536,13 +537,22 @@ public class KeyframeFixture extends AbstractFixture
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
             {
-                float y1 = Interpolations.lerp(a.value, a.value + a.ry, x);
-                float y2 = Interpolations.lerp(a.value + a.ry, b.value + b.ly, x);
-                float y3 = Interpolations.lerp(b.value + b.ly, b.value, x);
-                float y4 = Interpolations.lerp(y1, y2, x);
-                float y5 = Interpolations.lerp(y2, y3, x);
+                if (x <= 0) return a.value;
+                if (x >= 1) return b.value;
 
-                return Interpolations.lerp(y4, y5, x);
+                /* Transform input to 0..1 */
+                float w = b.tick - a.tick;
+                float h = b.value - a.value;
+
+                float x1 = a.rx / w;
+                float y1 = a.ry / h;
+                float x2 = (w - b.lx) / w;
+                float y2 = (h + b.ly) / h;
+
+                x1 = MathHelper.clamp(x1, 0, 1);
+                x2 = MathHelper.clamp(x2, 0, 1);
+
+                return Interpolations.bezier(0, y1, y2, 1, Interpolations.bezierX(x1, x2, x)) * h + a.value;
             }
         };
 

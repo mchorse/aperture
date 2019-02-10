@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.smooth.Interpolations;
+import mchorse.mclib.utils.Interpolations;
 
 /**
  * Drag modifier
