@@ -1,5 +1,7 @@
 package mchorse.aperture.camera.smooth;
 
+import mchorse.mclib.utils.Interpolations;
+
 /**
  * Acceleration based linear filter
  * 

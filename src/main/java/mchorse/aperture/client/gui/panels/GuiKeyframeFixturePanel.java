@@ -545,11 +545,23 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             {
                 frame.lx = -(x - frame.tick);
                 frame.ly = y - frame.value;
+
+                if (!GuiScreen.isAltKeyDown())
+                {
+                    frame.rx = frame.lx;
+                    frame.ry = -frame.ly;
+                }
             }
             else if (this.which == 2)
             {
                 frame.rx = x - frame.tick;
                 frame.ry = y - frame.value;
+
+                if (!GuiScreen.isAltKeyDown())
+                {
+                    frame.lx = frame.rx;
+                    frame.ly = -frame.ry;
+                }
             }
 
             this.fillData(frame);
