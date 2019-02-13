@@ -65,6 +65,7 @@ aperture.gui:
         path: Path
         circular: Circular
         keyframe: Keyframe
+        null: "Null"
 
     modifiers:
         title: Modifiers
@@ -133,6 +134,8 @@ aperture.gui:
         all: All
         tick: Tick
         value: Value
+        
+        previous: Previous
 
         interps:
             const: Constant

@@ -3,6 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.JsonObject;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.mclib.math.IValue;
@@ -99,7 +100,7 @@ public class MathModifier extends ComponentModifier
     }
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
     {
         if (this.expression != null)
         {

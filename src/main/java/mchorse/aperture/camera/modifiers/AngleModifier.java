@@ -3,6 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -19,7 +20,7 @@ public class AngleModifier extends AbstractModifier
     public Angle angle = new Angle(0, 0, 0, 0);
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
     {
         pos.angle.yaw += angle.yaw;
         pos.angle.pitch += angle.pitch;

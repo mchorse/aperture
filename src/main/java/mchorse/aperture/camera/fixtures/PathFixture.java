@@ -8,6 +8,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
@@ -223,7 +224,7 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTicks, Position pos)
+    public void applyFixture(long ticks, float partialTicks, CameraProfile profile, Position pos)
     {
         long duration = this.getDuration();
 

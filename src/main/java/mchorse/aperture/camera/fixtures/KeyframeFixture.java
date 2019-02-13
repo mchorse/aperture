@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.command.CommandException;
@@ -74,7 +75,7 @@ public class KeyframeFixture extends AbstractFixture
     {}
 
     @Override
-    public void applyFixture(long ticks, float partialTick, Position pos)
+    public void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos)
     {
         float t = ticks + partialTick;
 

@@ -3,6 +3,7 @@ package mchorse.aperture.camera.fixtures;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import net.minecraft.command.CommandBase;
@@ -95,7 +96,7 @@ public class CircularFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTicks, Position pos)
+    public void applyFixture(long ticks, float partialTicks, CameraProfile profile, Position pos)
     {
         float progress = (ticks / (float) this.duration) + (1.0F / this.duration * partialTicks);
         float angle = (float) (Math.toRadians(this.offset) + progress * Math.toRadians(this.circles));

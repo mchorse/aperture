@@ -3,6 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 
@@ -30,7 +31,7 @@ public class ShakeModifier extends ComponentModifier
     }
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
     {
         float x = (ticks + partialTick) / (this.shake == 0 ? 1 : this.shake);
 

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.data.Position;
@@ -221,16 +222,16 @@ public abstract class AbstractFixture
     /**
      * Apply this fixture onto position
      */
-    public abstract void applyFixture(long ticks, float partialTick, Position pos);
+    public abstract void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos);
 
     /**
      * Apply this fixture onto position using a double between 0 and 1
      */
-    public void applyFixture(double range, float partialTick, Position pos)
+    public void applyFixture(double range, float partialTick, CameraProfile profile, Position pos)
     {
         long ticks = (long) (range * this.getDuration());
 
-        this.applyFixture(ticks, partialTick, pos);
+        this.applyFixture(ticks, partialTick, profile, pos);
     }
 
     /**
@@ -242,13 +243,13 @@ public abstract class AbstractFixture
     /**
      * Apply camera modifiers
      */
-    public void applyModifiers(long ticks, long offset, float partialTick, Position pos)
+    public void applyModifiers(long ticks, long offset, float partialTick, CameraProfile profile, Position pos)
     {
         for (AbstractModifier modifier : this.modifiers)
         {
             if (modifier.enabled)
             {
-                modifier.modify(ticks, offset, this, partialTick, pos);
+                modifier.modify(ticks, offset, this, partialTick, profile, pos);
             }
         }
     }
@@ -264,5 +265,6 @@ public abstract class AbstractFixture
     /**
      * Clone this fixture
      */
+    @Override
     public abstract AbstractFixture clone();
 }
