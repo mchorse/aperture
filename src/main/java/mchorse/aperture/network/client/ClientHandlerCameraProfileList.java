@@ -34,7 +34,7 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
 
             if (!ClientProxy.control.logged)
             {
-                if (manager.profiles.getList().isEmpty())
+                if (manager.profiles.elements.isEmpty())
                 {
                     CameraProfile profile = new CameraProfile(AbstractDestination.create("default"));
 
@@ -45,7 +45,7 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
                 ClientProxy.control.logged = true;
             }
 
-            manager.profiles.sort();
+            manager.profiles.filter("", true);
             manager.selectProfile(ClientProxy.control.currentProfile);
         }
     }
