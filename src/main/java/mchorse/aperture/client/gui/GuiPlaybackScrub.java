@@ -272,6 +272,20 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.scrubbing)
         {
             this.setValueFromScrub(this.calcValueFromMouse(mouseX));
+
+            if (this.max * this.scale - this.area.w + 4 > 0)
+            {
+                int delta = mouseX - this.area.getX(0.5F);
+                int edge = (int) Math.copySign(this.area.w / 2 - 50, -delta) + delta;
+
+                if (Math.copySign(1, edge) == Math.copySign(1, delta))
+                {
+                    float factor = edge / 50F;
+
+                    this.scroll += factor * 5 * this.scale;
+                    this.clampScroll();
+                }
+            }
         }
 
         if (this.scrolling)
@@ -433,6 +447,9 @@ public class GuiPlaybackScrub extends GuiElement
             pos += fixture.getDuration();
             i++;
         }
+
+        if (this.scroll > 0) GuiUtils.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
+        if (this.scroll < this.max * this.scale - this.area.w + 4) GuiUtils.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
 
         /* Draw the marker */
         Gui.drawRect(tx, y + 1, tx + 2, y + h - 1, 0xff57f52a);
