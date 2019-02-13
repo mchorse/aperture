@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 
@@ -29,8 +30,9 @@ public abstract class AbstractModifier
      * @param offset - Amount of ticks from current camera fixture
      * @param fixture - Currently running camera fixture
      */
-    public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos);
+    public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos);
 
+    @Override
     public abstract AbstractModifier clone();
 
     public void toJSON(JsonObject object)

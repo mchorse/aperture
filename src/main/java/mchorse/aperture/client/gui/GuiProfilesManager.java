@@ -20,6 +20,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
+import mchorse.mclib.client.gui.framework.elements.list.GuiSearchListElement;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiConfirmModal;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiPromptModal;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
@@ -38,7 +39,7 @@ public class GuiProfilesManager extends GuiElement
 {
     public GuiCameraEditor editor;
 
-    public GuiCameraProfilesList profiles;
+    public GuiCameraProfilesSearchList profiles;
     public GuiButtonElement<GuiTextureButton> rename;
     public GuiButtonElement<GuiTextureButton> convert;
     public GuiButtonElement<GuiTextureButton> add;
@@ -55,7 +56,8 @@ public class GuiProfilesManager extends GuiElement
         this.editor = editor;
         this.createChildren();
 
-        this.profiles = new GuiCameraProfilesList(mc, (entry) -> this.pickEntry(entry));
+        this.profiles = new GuiCameraProfilesSearchList(mc, (entry) -> this.pickEntry(entry));
+        this.profiles.label = I18n.format("aperture.gui.search");
         this.rename = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 160, 32, 160, 48, (b) -> this.rename()).tooltip(I18n.format("aperture.gui.profiles.rename_tooltip"), TooltipDirection.BOTTOM);
         this.convert = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 0, 32, 0, 48, (b) -> this.convert()).tooltip(I18n.format("aperture.gui.profiles.convert_tooltip"), TooltipDirection.BOTTOM);
         this.add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) -> this.add()).tooltip(I18n.format("aperture.gui.profiles.add_tooltip"), TooltipDirection.BOTTOM);
@@ -93,12 +95,13 @@ public class GuiProfilesManager extends GuiElement
 
         this.editor.selectProfile(profile);
         this.profiles.add(entry);
-        this.profiles.setCurrent(entry);
+        this.profiles.filter("", true);
+        this.profiles.list.setCurrent(entry);
     }
 
     private void dupe()
     {
-        CameraProfileEntry entry = this.profiles.getCurrent();
+        CameraProfileEntry entry = this.profiles.list.getCurrent();
 
         if (entry == null)
         {
@@ -113,7 +116,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void dupe(String name)
     {
-        CameraProfileEntry entry = this.profiles.getCurrent();
+        CameraProfileEntry entry = this.profiles.list.getCurrent();
 
         if (entry != null)
         {
@@ -126,14 +129,15 @@ public class GuiProfilesManager extends GuiElement
             ClientProxy.control.addProfile(profile);
 
             this.editor.selectProfile(profile);
-            this.profiles.add(newEntry);
-            this.profiles.setCurrent(newEntry);
+            this.profiles.add(entry);
+            this.profiles.filter("", true);
+            this.profiles.list.setCurrent(newEntry);
         }
     }
 
     private void rename()
     {
-        CameraProfileEntry entry = this.profiles.getCurrent();
+        CameraProfileEntry entry = this.profiles.list.getCurrent();
 
         if (entry == null)
         {
@@ -148,7 +152,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void rename(String name)
     {
-        CameraProfileEntry entry = this.profiles.getCurrent();
+        CameraProfileEntry entry = this.profiles.list.getCurrent();
         AbstractDestination dest = entry.profile.getDestination();
 
         dest.rename(name);
@@ -156,12 +160,12 @@ public class GuiProfilesManager extends GuiElement
 
     private void convert()
     {
-        if (this.profiles.current == -1)
+        if (this.profiles.list.current == -1)
         {
             return;
         }
 
-        CameraProfileEntry entry = this.profiles.getCurrent();
+        CameraProfileEntry entry = this.profiles.list.getCurrent();
 
         AbstractDestination dest = entry.profile.getDestination();
         String filename = dest.getFilename();
@@ -183,7 +187,7 @@ public class GuiProfilesManager extends GuiElement
     {
         if (confirmed)
         {
-            CameraProfileEntry entry = this.profiles.getCurrent();
+            CameraProfileEntry entry = this.profiles.list.getCurrent();
             ClientProxy.control.profiles.remove(entry.profile);
 
             /* Reset current camera profile only removed one is was current profile */
@@ -193,15 +197,16 @@ public class GuiProfilesManager extends GuiElement
                 this.editor.selectProfile(null);
             }
 
-            this.profiles.remove(entry);
+            this.profiles.elements.remove(entry);
+            this.profiles.filter("", true);
             entry.profile.getDestination().remove();
         }
     }
 
     public void selectProfile(CameraProfile profile)
     {
-        this.profiles.setCurrent(profile);
-        this.convert.setEnabled(this.profiles.current != -1);
+        ((GuiCameraProfilesList) this.profiles.list).setCurrent(profile);
+        this.convert.setEnabled(this.profiles.list.current != -1);
     }
 
     /**
@@ -244,7 +249,7 @@ public class GuiProfilesManager extends GuiElement
 
     public void init()
     {
-        this.profiles.clear();
+        this.profiles.elements.clear();
 
         for (CameraProfile profile : ClientProxy.control.profiles)
         {
@@ -258,7 +263,7 @@ public class GuiProfilesManager extends GuiElement
 
         Dispatcher.sendToServer(new PacketRequestCameraProfiles());
 
-        this.profiles.sort();
+        this.profiles.filter("", true);
         this.selectProfile(ClientProxy.control.currentProfile);
     }
 
@@ -297,6 +302,12 @@ public class GuiProfilesManager extends GuiElement
         }
 
         @Override
+        public String toString()
+        {
+            return this.destination.getFilename();
+        }
+
+        @Override
         public boolean equals(Object obj)
         {
             if (obj instanceof CameraProfileEntry)
@@ -307,6 +318,37 @@ public class GuiProfilesManager extends GuiElement
             }
 
             return super.equals(obj);
+        }
+    }
+
+    /**
+     * Search list of camera profiles 
+     */
+    public static class GuiCameraProfilesSearchList extends GuiSearchListElement<CameraProfileEntry>
+    {
+        public GuiCameraProfilesSearchList(Minecraft mc, Consumer<CameraProfileEntry> callback)
+        {
+            super(mc, callback);
+        }
+
+        @Override
+        protected GuiListElement<CameraProfileEntry> createList(Minecraft mc, Consumer<CameraProfileEntry> callback)
+        {
+            return new GuiCameraProfilesList(mc, callback);
+        }
+
+        public void add(CameraProfileEntry element)
+        {
+            if (element != null && !this.elements.contains(element))
+            {
+                if (element.profile != null)
+                {
+                    element.destination = element.profile.getDestination();
+                }
+
+                this.elements.add(element);
+                this.list.update();
+            }
         }
     }
 
@@ -331,20 +373,6 @@ public class GuiProfilesManager extends GuiElement
                     return o1.destination.getFilename().compareToIgnoreCase(o2.destination.getFilename());
                 }
             });
-        }
-
-        @Override
-        public void add(CameraProfileEntry element)
-        {
-            if (element != null && !this.list.contains(element))
-            {
-                if (element.profile != null)
-                {
-                    element.destination = element.profile.getDestination();
-                }
-
-                super.add(element);
-            }
         }
 
         public boolean setCurrent(CameraProfile profile)

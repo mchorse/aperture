@@ -3,6 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import net.minecraft.entity.EntityLivingBase;
@@ -44,7 +45,7 @@ public class OrbitModifier extends EntityModifier
     public boolean copy;
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
     {
         if (this.entity == null || this.entity.isDead)
         {
@@ -56,7 +57,7 @@ public class OrbitModifier extends EntityModifier
             return;
         }
 
-        fixture.applyFixture(0, 0, this.position);
+        fixture.applyFixture(0, 0, profile, this.position);
 
         float yaw = 0;
         float pitch = 0;
@@ -106,7 +107,7 @@ public class OrbitModifier extends EntityModifier
         float f1 = MathHelper.sin(-yaw * degToPi - (float) Math.PI);
         float f2 = -MathHelper.cos(-pitch * degToPi);
         float f3 = MathHelper.sin(-pitch * degToPi);
-        Vec3d look = new Vec3d((double) (f1 * f2), (double) f3, (double) (f * f2));
+        Vec3d look = new Vec3d(f1 * f2, f3, f * f2);
 
         pos.point.set(x, y, z);
 

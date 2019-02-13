@@ -272,6 +272,11 @@ public class GuiModifiersManager extends GuiElement
 
         this.modified = false;
 
+        if (this.visible && this.area.isInside(mouseX, mouseY))
+        {
+            return true;
+        }
+
         return false;
     }
 

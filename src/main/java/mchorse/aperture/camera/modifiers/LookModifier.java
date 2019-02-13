@@ -2,6 +2,7 @@ package mchorse.aperture.camera.modifiers;
 
 import com.google.gson.annotations.Expose;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -25,7 +26,7 @@ public class LookModifier extends EntityModifier
     public Point block = new Point(0, 0, 0);
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
     {
         if (this.entity == null || this.entity.isDead)
         {
@@ -37,7 +38,7 @@ public class LookModifier extends EntityModifier
             return;
         }
 
-        fixture.applyFixture(0, 0, this.position);
+        fixture.applyFixture(0, 0, profile, this.position);
 
         double x = 0;
         double y = 0;

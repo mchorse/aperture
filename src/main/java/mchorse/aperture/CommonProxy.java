@@ -7,6 +7,7 @@ import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.NullFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AngleModifier;
 import mchorse.aperture.camera.modifiers.DragModifier;
@@ -67,9 +68,10 @@ public class CommonProxy
 
         /* Register camera fixtures and modifiers */
         FixtureRegistry.register("idle", IdleFixture.class);
-        FixtureRegistry.register("path", PathFixture.class);
         FixtureRegistry.register("circular", CircularFixture.class);
         FixtureRegistry.register("keyframe", KeyframeFixture.class);
+        FixtureRegistry.register("null", NullFixture.class);
+        FixtureRegistry.register("path", PathFixture.class);
 
         ModifierRegistry.register("shake", ShakeModifier.class);
         ModifierRegistry.register("math", MathModifier.class);
@@ -82,8 +84,8 @@ public class CommonProxy
     }
 
     /**
-     * This method is responsible for registering Mocap's event handler which
-     * is responsible for capturing <s>pokemons</s> player actions.
+     * This method is responsible for registering Mocap's event handler 
+     * which is responsible for capturing <s>pokemons</s> player actions.
      */
     public void load(FMLInitializationEvent event)
     {

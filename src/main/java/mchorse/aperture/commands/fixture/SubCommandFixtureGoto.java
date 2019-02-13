@@ -59,7 +59,7 @@ public class SubCommandFixtureGoto extends CommandBase
 
         AbstractFixture fixture = profile.get(index);
 
-        fixture.applyFixture((long) (progress * fixture.getDuration()), 0, pos);
+        fixture.applyFixture((long) (progress * fixture.getDuration()), 0, profile, pos);
         pos.apply(player);
         ClientProxy.control.setRollAndFOV(pos.angle.roll, pos.angle.fov);
     }

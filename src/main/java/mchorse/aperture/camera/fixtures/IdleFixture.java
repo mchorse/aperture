@@ -3,6 +3,7 @@ package mchorse.aperture.camera.fixtures;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +37,7 @@ public class IdleFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTicks, Position pos)
+    public void applyFixture(long ticks, float partialTicks, CameraProfile profile, Position pos)
     {
         pos.copy(this.position);
     }
