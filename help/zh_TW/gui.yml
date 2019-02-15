@@ -32,6 +32,8 @@ aperture.gui:
         display_info: 顯示位置
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
+        rule_of_thirds: 三分法治
+        letter_box: 畫面黑框
 
     tooltips:
         jump_next_fixture: 跳到下壹個關鍵點（Shift + 右）
@@ -61,10 +63,9 @@ aperture.gui:
     fixtures:
         idle: 靜止
         path: 路徑
-        look: 跟著看
-        follow: 跟著走
         circular: 環形
         keyframe: 關鍵幀
+        null: "空"
 
     modifiers:
         title: 調整器
@@ -94,16 +95,19 @@ aperture.gui:
         title: 配置
         rename: 重命名
 
-        add_modal: 爲新的相機配置鍵入一個名字。
         rename_modal: 爲當前的相機配置鍵入一個新的名字。
+        add_modal: 爲新的相機配置鍵入一個名字。
+        dupe_modal: 為新拷貝的相機配置鍵入一個名字。
         remove_modal: 你確定要移除這個相機配置文件嗎（將不可恢復）？
 
-        add_tooltip: 添加一個配置
         convert_tooltip: 轉換配置
         rename_tooltip: 重命名配置
+        add_tooltip: 添加一個配置
+        dupe_tooltip: 拷貝配置
         remove_tooltip: 移除配置
 
     panels:
+        name: 名字
         duration: 持續長度
 
         x: X
@@ -131,7 +135,18 @@ aperture.gui:
         tick: Tick
         value: 值
 
+        previous: 上一個
+
         interps:
+            const: 連續的
             linear: 線性
+            quad: 二次方
             cubic: 三次曲線
             hermite: 艾米插值
+            exp: 指數
+            bezier: 貝茲曲線
+            
+        easing:
+            in: 緩入
+            out: 緩出
+            inout: 緩入/緩出
