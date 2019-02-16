@@ -7,8 +7,6 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class NullFixture extends AbstractFixture
 {
@@ -19,10 +17,6 @@ public class NullFixture extends AbstractFixture
     {
         super(duration);
     }
-
-    @Override
-    public void edit(String[] args, EntityPlayer player) throws CommandException
-    {}
 
     @Override
     public void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos)
