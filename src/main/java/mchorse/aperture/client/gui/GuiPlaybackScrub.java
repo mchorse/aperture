@@ -360,6 +360,8 @@ public class GuiPlaybackScrub extends GuiElement
         int pos = 0;
         int i = 0;
         boolean drawnMarker = false;
+        int leftMarginMarker = 0;
+        int rightMarginMarker = 0;
 
         GuiUtils.scissor(x + 2, y - 16, w - 4, h + 16, this.editor.width, this.editor.height);
 
@@ -416,19 +418,15 @@ public class GuiPlaybackScrub extends GuiElement
                 }
             }
 
-            /* Draw resizing markers */
             if (this.area.isInside(mouseX, mouseY) && !this.resize && !drawnMarker)
             {
                 boolean left = Math.abs(leftMargin - mouseX) < 5;
                 boolean right = Math.abs(rightMargin - mouseX) < 5;
 
-                if ((left || right) && !this.resize)
+                if (left || right)
                 {
-                    int markerOffset = (left ? leftMargin : rightMargin);
-
-                    Gui.drawRect(markerOffset - 4, this.area.y - 1, markerOffset + 5, this.area.y, 0xaaffffff);
-                    Gui.drawRect(markerOffset - 5, this.area.y - 1 - 2, markerOffset - 4, this.area.y + 2, 0xaaffffff);
-                    Gui.drawRect(markerOffset + 5, this.area.y - 1 - 2, markerOffset + 6, this.area.y + 2, 0xaaffffff);
+                    leftMarginMarker = leftMargin;
+                    rightMarginMarker = rightMargin;
                     drawnMarker = true;
                 }
             }
@@ -476,6 +474,16 @@ public class GuiPlaybackScrub extends GuiElement
         this.font.drawStringWithShadow(label, tx + 4, y + h - this.font.FONT_HEIGHT - 1, 0xffffff);
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+        /* Draw resizing markers */
+        if (drawnMarker)
+        {
+            int markerOffset = (Math.abs(leftMarginMarker - mouseX) < 5 ? leftMarginMarker : rightMarginMarker);
+
+            Gui.drawRect(markerOffset - 4, this.area.y - 1, markerOffset + 5, this.area.y, 0xaaffffff);
+            Gui.drawRect(markerOffset - 5, this.area.y - 1 - 2, markerOffset - 4, this.area.y + 2, 0xaaffffff);
+            Gui.drawRect(markerOffset + 5, this.area.y - 1 - 2, markerOffset + 6, this.area.y + 2, 0xaaffffff);
+        }
 
         /* Draw background */
         Gui.drawRect(x + 1, y + h / 2, x + 2, y + h, 0xaaffffff);
