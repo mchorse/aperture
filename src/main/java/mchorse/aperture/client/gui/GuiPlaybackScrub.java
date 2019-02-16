@@ -213,6 +213,11 @@ public class GuiPlaybackScrub extends GuiElement
     @Override
     public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
+        if (!Minecraft.IS_RUNNING_ON_MAC)
+        {
+            scroll = -scroll;
+        }
+
         if (this.area.isInside(mouseX, mouseY) && !this.scrolling)
         {
             float scale = this.scale;
