@@ -31,31 +31,6 @@ aperture.commands:
                 {l}{6}/{r}camera {8}stop{r}
         
                 {r}Stops currently running camera profile
-        new: 
-            |
-                {l}{6}/{r}camera {8}new{r} {7}<client|server> <filename>{r}
-                
-                {r}Creates a new camera profile in current session with given {7}<filename>{r} with destination either on the {7}client{r} or the {7}server{r}.
-        load: 
-            |
-                {l}{6}/{r}camera {8}load{r} {7}<client|server> <filename>{r}
-                
-                {r}Load a camera profile from the {7}client{r} or the {7}server{r} with named {7}<filename>{r}.
-        save: 
-            |
-                {l}{6}/{r}camera {8}save{r} {7}[filename]{r}
-                
-                {r}Save camera profile to a file. If the {7}[filename]{r} isn't specified, then this camera profile will be saved to the file that previously was saved or loaded.
-        clear: 
-            |
-                {l}{6}/{r}camera {8}clear{r}
-                
-                {r}Clears the camera profile (removes all fixtures)
-        goto: 
-            |
-                {l}{6}/{r}camera {8}goto{r} {7}<index> [progress]{r}
-                
-                {r}Teleports you to the camera fixture at {7}<index>{r} index. Optionally you might specify {7}[progress]{r} (from {7}0.0{r} to {7}1.0{r}) argument which will allow you to teleport in the middle of the path or circular fixture.
 
         default:
             |
@@ -84,65 +59,3 @@ aperture.commands:
                 {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
                 
                 {r}Set camera's position based on absolute or relative values. You can set absolute position of the camera by specifying plain floating point numbers {6}/camera {8}step {7}0 4 0{r}. Or you can provide a relative value by using {7}~+{r} or {7}~-{r} signs {6}/camera {8}step {7}~0 ~0.1 ~0{r}. It works similar to {6}/tp{r} command.
-
-        fixture:
-            add: 
-                |
-                    {l}{6}/{r}camera {8}add{r} {7}<idle|path|follow|look|circular> <duration>{r}
-                    
-                    {r}Creates a new camera fixture at the end of the current camera profile with given type and {7}<duration>{r}.
-            edit: 
-                |
-                    {l}{6}/{r}camera {8}edit{r} {7}<index> <values...>{r}
-                    
-                    {r}Edit fixture's values at {7}<index>{r} in currently selected camera profile
-            remove: 
-                |
-                    {l}{6}/{r}camera {8}remove{r} {7}<index>{r}
-                    
-                    {r}Remove camera fixture from currently used camera profile at {7}<index>{r}
-                
-            duration: 
-                |
-                    {l}{6}/{r}camera {8}duration{r} {7}[index] [duration]{r}
-                    
-                    {r}Can be used to set, or to get duration of whole camera profile or one camera fixture. If all arguments are present, the command sets the {7}[duration]{r} in ticks to given fixture at given {7}[index]{r}. Relative values can be used for {7}[duration]{r} argument.
-            
-            move: 
-                |
-                    {l}{6}/{r}camera {8}move{r} {7}<from> <to>{r}
-                    
-                    {r}Move camera fixture at {7}<from>{r} index to {7}<to>{r} index in the camera profile
-        
-        path: 
-            help: "{r}{o}Camera path sub-command{r}. Provides sub-commands for managing path fixture and its points."
-            
-            add:
-                |
-                    {l}{6}/{r}camera path {8}add{r} {7}<index> [before_point]{r}
-                    
-                    {r}Adds a point in the path fixture at {7}<index>{r} in the end, or before {7}[before_point]{r} point, if specified.
-            
-            edit:
-                |
-                    {l}{6}/{r}camera path {8}edit{r} {7}<index> <point_index>{r}
-                    
-                    {r}Edit position of a point at index {7}<point_index>{r} in the path fixture at {7}<index>{r}.
-            
-            goto:
-                |
-                    {l}{6}/{r}camera path {8}goto{r} {7}<index> <point_index>{r}
-                    
-                    {r}Go to position of a point at index {7}<point_index>{r} in the path fixture at {7}<index>{r}.
-            
-            move:
-                |
-                    {l}{6}/{r}camera path {8}move{r} {7}<index> <from> <to>{r}
-                    
-                    {r}Move a point at index {7}<from>{r} to {7}<to>{r} in the path fixture at {7}<index>{r}.
-            
-            remove:
-                |
-                    {l}{6}/{r}camera path {8}remove{r} {7}<index> <point_index>{r}
-                    
-                    {r}Remove a point at index {7}<point_index>{r} from the path fixture at {7}<index>{r}.
