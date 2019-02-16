@@ -6,8 +6,6 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
@@ -62,37 +60,6 @@ public class CircularFixture extends AbstractFixture
     {
         this.start.set(player);
         this.pitch = player.rotationPitch;
-    }
-
-    @Override
-    public void edit(String[] args, EntityPlayer player) throws CommandException
-    {
-        if (args.length > 0)
-        {
-            this.distance = (float) CommandBase.parseDouble(args[0]);
-        }
-
-        if (args.length > 1)
-        {
-            this.circles = (float) CommandBase.parseDouble(args[1]);
-        }
-
-        if (args.length > 2)
-        {
-            this.pitch = (float) CommandBase.parseDouble(args[2]);
-        }
-
-        this.offset = player.rotationYaw < 0 ? 360 + player.rotationYaw : player.rotationYaw;
-        this.offset = (this.offset + 90) % 360;
-
-        this.pitch = player.rotationPitch;
-
-        float cos = (float) Math.cos(Math.toRadians(this.offset));
-        float sin = (float) Math.sin(Math.toRadians(this.offset));
-
-        this.start.x = (float) player.posX + cos * this.distance;
-        this.start.y = (float) player.posY;
-        this.start.z = (float) player.posZ + sin * this.distance;
     }
 
     @Override
