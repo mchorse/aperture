@@ -13,8 +13,6 @@ import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.utils.Interpolations;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
@@ -184,43 +182,6 @@ public class PathFixture extends AbstractFixture
     public void fromPlayer(EntityPlayer player)
     {
         this.addPoint(new DurablePosition(player));
-    }
-
-    @Override
-    public void edit(String[] args, EntityPlayer player) throws CommandException
-    {
-        if (args.length == 0)
-        {
-            this.addPoint(new DurablePosition(player));
-        }
-        else if (args.length == 1)
-        {
-            if (args[0].equals("linear") || args[0].equals("cubic") || args[0].equals("hermite"))
-            {
-                InterpolationType type = interpFromString(args[0]);
-
-                this.interpolationPos = type;
-                this.interpolationAngle = type;
-            }
-            else
-            {
-                int max = this.points.size() - 1;
-
-                this.points.get(CommandBase.parseInt(args[0], 0, max)).set(player);
-            }
-        }
-        else if (args.length == 2)
-        {
-            if (args[0].equals("linear") || args[0].equals("cubic") || args[0].equals("hermite"))
-            {
-                this.interpolationPos = interpFromString(args[0]);
-            }
-
-            if (args[1].equals("linear") || args[1].equals("cubic") || args[1].equals("hermite"))
-            {
-                this.interpolationAngle = interpFromString(args[1]);
-            }
-        }
     }
 
     @Override

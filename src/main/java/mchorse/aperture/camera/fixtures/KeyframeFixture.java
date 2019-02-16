@@ -12,7 +12,6 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.utils.Interpolations;
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
@@ -69,10 +68,6 @@ public class KeyframeFixture extends AbstractFixture
         this.roll.insert(0, pos.angle.roll);
         this.fov.insert(0, pos.angle.fov);
     }
-
-    @Override
-    public void edit(String[] args, EntityPlayer player) throws CommandException
-    {}
 
     @Override
     public void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos)

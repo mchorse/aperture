@@ -13,9 +13,6 @@ import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.aperture.commands.SubCommandBase;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -47,40 +44,6 @@ public abstract class AbstractFixture
      */
     @Expose
     protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
-
-    /**
-     * This is another abstract's fixture factory method.
-     *
-     * It's responsible for creating a fixture from command line arguments and
-     * player's space attributes (i.e. position and rotation).
-     *
-     * Commands can also be updated using {@link #edit(String[], EntityPlayer)}
-     * method.
-     */
-    public static AbstractFixture fromCommand(String[] args, EntityPlayer player) throws CommandException
-    {
-        if (args.length < 2 || player == null)
-        {
-            throw new CommandException("fixture.few_args");
-        }
-
-        String type = args[0];
-        long duration = CommandBase.parseLong(args[1], 1, Long.MAX_VALUE);
-        AbstractFixture fixture;
-
-        try
-        {
-            fixture = FixtureRegistry.fromType(FixtureRegistry.NAME_TO_ID.get(type), duration);
-        }
-        catch (Exception e)
-        {
-            throw new CommandException("fixture.wrong_type", type);
-        }
-
-        fixture.edit(SubCommandBase.dropFirstArguments(args, 2), player);
-
-        return fixture;
-    }
 
     /**
      * Copy given fixture's modifiers to another fixture 
@@ -212,12 +175,6 @@ public abstract class AbstractFixture
     }
 
     /* Abstract methods */
-
-    /**
-     * Edit this fixture with given CLI arguments and given player. For every
-     * fixture the editing process may vary.
-     */
-    public abstract void edit(String args[], EntityPlayer player) throws CommandException;
 
     /**
      * Apply this fixture onto position

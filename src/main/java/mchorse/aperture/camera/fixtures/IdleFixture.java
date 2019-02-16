@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -22,12 +21,6 @@ public class IdleFixture extends AbstractFixture
     public IdleFixture(long duration)
     {
         super(duration);
-    }
-
-    @Override
-    public void edit(String[] args, EntityPlayer player) throws CommandException
-    {
-        this.position.set(player);
     }
 
     @Override
