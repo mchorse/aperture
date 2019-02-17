@@ -350,139 +350,142 @@ public class GuiPlaybackScrub extends GuiElement
         int w = this.area.w;
         int h = this.area.h;
 
-        /* Calculate tick marker position and tick label width */
-        String label = String.valueOf(this.value + "/" + this.max);
-        float f = (float) (this.value - this.min) / (float) (this.max - this.min);
-        int tx = x + 2 + (int) (this.max * f * this.scale) - this.scroll;
-        int width = this.font.getStringWidth(label) + 4;
-
-        /* Draw fixtures */
-        int pos = 0;
-        int i = 0;
-        boolean drawnMarker = false;
-        int leftMarginMarker = 0;
-        int rightMarginMarker = 0;
-
-        GuiUtils.scissor(x + 2, y - 16, w - 4, h + 16, this.editor.width, this.editor.height);
-
-        for (AbstractFixture fixture : this.profile.getAll())
+        if (this.profile != null)
         {
-            int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getHex();
+            /* Calculate tick marker position and tick label width */
+            String label = String.valueOf(this.value + "/" + this.max);
+            float f = (float) (this.value - this.min) / (float) (this.max - this.min);
+            int tx = x + 2 + (int) (this.max * f * this.scale) - this.scroll;
+            int width = this.font.getStringWidth(label) + 4;
 
-            boolean selected = i == this.index;
-            float leftFactor = (float) (pos - this.min) / (float) (this.max - this.min);
-            float rightFactor = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
-            int leftMargin = x + 1 + (int) (this.max * leftFactor * this.scale) - this.scroll;
-            int rightMargin = x + 1 + (int) (this.max * rightFactor * this.scale) - this.scroll;
+            /* Draw fixtures */
+            int pos = 0;
+            int i = 0;
+            boolean drawnMarker = false;
+            int leftMarginMarker = 0;
+            int rightMarginMarker = 0;
 
-            /* Draw fixture's background and the hinge */
-            Gui.drawRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
-            Gui.drawRect(rightMargin, y + 1, rightMargin + 1, y + h - 1, 0xff000000 + color);
+            GuiUtils.scissor(x + 2, y - 16, w - 4, h + 16, this.editor.width, this.editor.height);
 
-            String name = fixture.getName();
-
-            /* Draw path's fixture separators */
-            if (fixture instanceof PathFixture)
+            for (AbstractFixture fixture : this.profile.getAll())
             {
-                PathFixture path = (PathFixture) fixture;
-                int c = path.getCount() - 1;
+                int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getHex();
 
-                if (c > 1)
+                boolean selected = i == this.index;
+                float leftFactor = (float) (pos - this.min) / (float) (this.max - this.min);
+                float rightFactor = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
+                int leftMargin = x + 1 + (int) (this.max * leftFactor * this.scale) - this.scroll;
+                int rightMargin = x + 1 + (int) (this.max * rightFactor * this.scale) - this.scroll;
+
+                /* Draw fixture's background and the hinge */
+                Gui.drawRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
+                Gui.drawRect(rightMargin, y + 1, rightMargin + 1, y + h - 1, 0xff000000 + color);
+
+                String name = fixture.getName();
+
+                /* Draw path's fixture separators */
+                if (fixture instanceof PathFixture)
                 {
-                    if (path.perPointDuration)
+                    PathFixture path = (PathFixture) fixture;
+                    int c = path.getCount() - 1;
+
+                    if (c > 1)
                     {
-                        long duration = path.getDuration();
-                        long frame = path.getPoint(0).getDuration();
-
-                        for (int j = 1; j < c; j++)
+                        if (path.perPointDuration)
                         {
-                            int fract = (int) ((rightMargin - leftMargin) * ((float) frame / duration));
-                            int px = leftMargin + fract;
+                            long duration = path.getDuration();
+                            long frame = path.getPoint(0).getDuration();
 
-                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
+                            for (int j = 1; j < c; j++)
+                            {
+                                int fract = (int) ((rightMargin - leftMargin) * ((float) frame / duration));
+                                int px = leftMargin + fract;
 
-                            frame += path.getPoint(j).getDuration();
+                                Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
+
+                                frame += path.getPoint(j).getDuration();
+                            }
                         }
+                        else
+                        {
+                            int fract = (rightMargin - leftMargin) / c;
+
+                            for (int j = 1; j < c; j++)
+                            {
+                                int px = leftMargin + fract * j;
+
+                                Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
+                            }
+                        }
+                    }
+                }
+
+                if (this.area.isInside(mouseX, mouseY) && !this.resize && !drawnMarker)
+                {
+                    boolean left = Math.abs(leftMargin - mouseX) < 5;
+                    boolean right = Math.abs(rightMargin - mouseX) < 5;
+
+                    if (left || right)
+                    {
+                        leftMarginMarker = leftMargin;
+                        rightMarginMarker = rightMargin;
+                        drawnMarker = true;
+                    }
+                }
+
+                /* Draw fixture's title */
+                if (!name.isEmpty())
+                {
+                    int lw = this.font.getStringWidth(name);
+                    int textColor = selected ? 16777120 : 0xffffff;
+
+                    if (lw + 4 < rightMargin - leftMargin)
+                    {
+                        this.font.drawStringWithShadow(name, leftMargin + 4, y + 6, textColor);
                     }
                     else
                     {
-                        int fract = (rightMargin - leftMargin) / c;
-
-                        for (int j = 1; j < c; j++)
-                        {
-                            int px = leftMargin + fract * j;
-
-                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
-                        }
+                        this.font.drawStringWithShadow("...", leftMargin + 4, y + 6, textColor);
                     }
                 }
+
+                pos += fixture.getDuration();
+                i++;
             }
 
-            if (this.area.isInside(mouseX, mouseY) && !this.resize && !drawnMarker)
+            if (this.scroll > 0) GuiUtils.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
+            if (this.scroll < this.max * this.scale - this.area.w + 4) GuiUtils.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
+
+            /* Draw the marker */
+            Gui.drawRect(tx, y + 1, tx + 2, y + h - 1, 0xff57f52a);
+
+            /* Draw the "how far into fixture" tick */
+            String offsetLabel = String.valueOf(this.value - this.profile.calculateOffset(this.value, false));
+            int ow = this.font.getStringWidth(offsetLabel);
+
+            this.font.drawStringWithShadow(offsetLabel, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
+
+            /* Move the tick line left, so it won't overflow the scrub */
+            if (tx + 3 - x + width > w)
             {
-                boolean left = Math.abs(leftMargin - mouseX) < 5;
-                boolean right = Math.abs(rightMargin - mouseX) < 5;
-
-                if (left || right)
-                {
-                    leftMarginMarker = leftMargin;
-                    rightMarginMarker = rightMargin;
-                    drawnMarker = true;
-                }
+                tx -= width + 2;
             }
 
-            /* Draw fixture's title */
-            if (!name.isEmpty())
+            /* Draw the tick label */
+            Gui.drawRect(tx + 2, y + h - 3 - this.font.FONT_HEIGHT, tx + 2 + width, y + h - 1, 0xff57f52a);
+            this.font.drawStringWithShadow(label, tx + 4, y + h - this.font.FONT_HEIGHT - 1, 0xffffff);
+
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+            /* Draw resizing markers */
+            if (drawnMarker)
             {
-                int lw = this.font.getStringWidth(name);
-                int textColor = selected ? 16777120 : 0xffffff;
+                int markerOffset = (Math.abs(leftMarginMarker - mouseX) < 5 ? leftMarginMarker : rightMarginMarker);
 
-                if (lw + 4 < rightMargin - leftMargin)
-                {
-                    this.font.drawStringWithShadow(name, leftMargin + 4, y + 6, textColor);
-                }
-                else
-                {
-                    this.font.drawStringWithShadow("...", leftMargin + 4, y + 6, textColor);
-                }
+                Gui.drawRect(markerOffset - 4, this.area.y - 1, markerOffset + 5, this.area.y, 0xaaffffff);
+                Gui.drawRect(markerOffset - 5, this.area.y - 1 - 2, markerOffset - 4, this.area.y + 2, 0xaaffffff);
+                Gui.drawRect(markerOffset + 5, this.area.y - 1 - 2, markerOffset + 6, this.area.y + 2, 0xaaffffff);
             }
-
-            pos += fixture.getDuration();
-            i++;
-        }
-
-        if (this.scroll > 0) GuiUtils.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
-        if (this.scroll < this.max * this.scale - this.area.w + 4) GuiUtils.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
-
-        /* Draw the marker */
-        Gui.drawRect(tx, y + 1, tx + 2, y + h - 1, 0xff57f52a);
-
-        /* Draw the "how far into fixture" tick */
-        String offsetLabel = String.valueOf(this.value - this.profile.calculateOffset(this.value, false));
-        int ow = this.font.getStringWidth(offsetLabel);
-
-        this.font.drawStringWithShadow(offsetLabel, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
-
-        /* Move the tick line left, so it won't overflow the scrub */
-        if (tx + 3 - x + width > w)
-        {
-            tx -= width + 2;
-        }
-
-        /* Draw the tick label */
-        Gui.drawRect(tx + 2, y + h - 3 - this.font.FONT_HEIGHT, tx + 2 + width, y + h - 1, 0xff57f52a);
-        this.font.drawStringWithShadow(label, tx + 4, y + h - this.font.FONT_HEIGHT - 1, 0xffffff);
-
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-
-        /* Draw resizing markers */
-        if (drawnMarker)
-        {
-            int markerOffset = (Math.abs(leftMarginMarker - mouseX) < 5 ? leftMarginMarker : rightMarginMarker);
-
-            Gui.drawRect(markerOffset - 4, this.area.y - 1, markerOffset + 5, this.area.y, 0xaaffffff);
-            Gui.drawRect(markerOffset - 5, this.area.y - 1 - 2, markerOffset - 4, this.area.y + 2, 0xaaffffff);
-            Gui.drawRect(markerOffset + 5, this.area.y - 1 - 2, markerOffset + 6, this.area.y + 2, 0xaaffffff);
         }
 
         /* Draw background */
