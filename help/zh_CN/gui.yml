@@ -32,6 +32,8 @@ aperture.gui:
         display_info: 显示位置
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
+        rule_of_thirds: 三分法治
+        letter_box: 画面黑边
 
     tooltips:
         jump_next_fixture: 跳到下一个关键点（Shift + 右）
@@ -61,10 +63,9 @@ aperture.gui:
     fixtures:
         idle: 静止
         path: 路径
-        look: 跟着看
-        follow: 跟着走
         circular: 环形
         keyframe: 关键帧
+        null: "空"
 
     modifiers:
         title: 调整器
@@ -94,16 +95,19 @@ aperture.gui:
         title: 配置
         rename: 重命名
 
-        add_modal: 为新的相机配置输入一个名字。
         rename_modal: 为当前的相机配置输入一个新的名字。
+        add_modal: 为新的相机配置输入一个名字。
+        dupe_modal: 为新拷贝的相机配置输入一个名字。
         remove_modal: 你确定要移除这个相机配置吗（将不能恢复）？
 
-        add_tooltip: 添加一个配置
         convert_tooltip: 转换配置
         rename_tooltip: 重命名配置
+        add_tooltip: 添加一个配置
+        dupe_tooltip: 拷贝配置
         remove_tooltip: 移除配置
 
     panels:
+        name: 名字
         duration: 持续长度
 
         x: X
@@ -131,7 +135,18 @@ aperture.gui:
         tick: Tick
         value: 值
 
+        previous: 上一个
+        
         interps:
+            const: 连续的
             linear: 线性
+            quad: 二次方
             cubic: 三次曲线
             hermite: 艾米插值
+            exp: 指数
+            bezier: 贝塞尔曲线
+            
+        easing:
+            in: 缓入
+            out: 缓出
+            inout: 缓入/缓出
