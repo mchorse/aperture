@@ -541,7 +541,7 @@ public class KeyframeFixture extends AbstractFixture
                 float h = b.value - a.value;
 
                 /* In case if there is no slope whatsoever */
-                if (h == 0) h = 1;
+                if (h == 0) h = 0.00001F;
 
                 float x1 = a.rx / w;
                 float y1 = a.ry / h;
