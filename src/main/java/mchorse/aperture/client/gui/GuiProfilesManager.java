@@ -79,6 +79,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void add()
     {
+        this.children.unfocus();
         this.modal.setDelegate(new GuiPromptModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.add_modal"), (name) -> this.add(name)));
     }
 
@@ -111,6 +112,7 @@ public class GuiProfilesManager extends GuiElement
         GuiPromptModal modal = new GuiPromptModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.dupe_modal"), (name) -> this.dupe(name));
         modal.setValue(entry.destination.getFilename());
 
+        this.children.unfocus();
         this.modal.setDelegate(modal);
     }
 
@@ -147,6 +149,7 @@ public class GuiProfilesManager extends GuiElement
         GuiPromptModal modal = new GuiPromptModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.rename_modal"), (name) -> this.rename(name));
         modal.setValue(entry.destination.getFilename());
 
+        this.children.unfocus();
         this.modal.setDelegate(modal);
     }
 
@@ -180,6 +183,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void remove()
     {
+        this.children.unfocus();
         this.modal.setDelegate(new GuiConfirmModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.remove_modal"), (confirmed) -> this.remove(confirmed)));
     }
 

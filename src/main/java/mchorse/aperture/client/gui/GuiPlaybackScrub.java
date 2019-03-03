@@ -155,8 +155,6 @@ public class GuiPlaybackScrub extends GuiElement
             {
                 this.scrubbing = true;
                 this.setValueFromScrub(this.calcValueFromMouse(mouseX));
-
-                return true;
             }
             else if (mouseButton == 1 && this.profile != null)
             {
@@ -195,15 +193,11 @@ public class GuiPlaybackScrub extends GuiElement
 
                 this.editor.pickCameraFixture(fixture, tick - offset);
                 this.index = index;
-
-                return true;
             }
             else if (mouseButton == 2)
             {
                 this.scrolling = true;
                 this.lastX = mouseX;
-
-                return true;
             }
         }
 
@@ -221,10 +215,14 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.area.isInside(mouseX, mouseY) && !this.scrolling)
         {
             float scale = this.scale;
+            float factor = 0.1F;
             int value = (int) (this.calcValueFromMouse(mouseX) * scale);
 
-            this.scale += Math.copySign(0.1F, scroll);
-            this.scale = MathHelper.clamp(this.scale, 0.1F, 10F);
+            if (this.scale < 0.1F) factor = 0.005F;
+            else if (this.scale < 1) factor = 0.05F;
+
+            this.scale += Math.copySign(factor, scroll);
+            this.scale = MathHelper.clamp(this.scale, 0.01F, 10F);
 
             /* Correct the left pivoted scroll */
             if (this.scale != scale)
@@ -286,8 +284,9 @@ public class GuiPlaybackScrub extends GuiElement
                 if (Math.copySign(1, edge) == Math.copySign(1, delta))
                 {
                     float factor = edge / 50F;
+                    float scaleFactor = this.scale <= 1 ? 1F / this.scale : this.scale;
 
-                    this.scroll += factor * 5 * this.scale;
+                    this.scroll += factor * scaleFactor;
                     this.clampScroll();
                 }
             }
@@ -295,7 +294,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (this.scrolling)
         {
-            this.scroll -= (mouseX - this.lastX) * this.scale;
+            this.scroll -= (mouseX - this.lastX);
             this.lastX = mouseX;
 
             this.clampScroll();

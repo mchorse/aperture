@@ -246,6 +246,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.frame.trackpad.title = "Frame";
         this.frame.trackpad.amplitude = 1.0F;
+        this.frame.trackpad.integer = true;
 
         /* Button placement */
         this.toNextFixture.resizer().parent(this.area).set(0, 2, 16, 16).x(0.5F, 32);
@@ -499,6 +500,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (!isOldSame)
         {
             this.panel.setDelegate(null);
+        }
+        else if (this.panel.delegate != null)
+        {
+            this.scrub.index = profile.getAll().indexOf(this.panel.delegate.fixture);
         }
 
         if (this.profile == null)
