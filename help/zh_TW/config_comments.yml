@@ -1,29 +1,29 @@
 # Config strings
 aperture.config.comments:
     camera:
-        camera_duration_step: 當使用快捷鍵改變關鍵點時長時，壹次會增加/減少多少？（tick）
-        camera_duration: 相機關鍵點的默認時長有多久？（tick）
+        camera_duration_step: 當使用快捷鍵改變關鍵點時長時，一次會增加/減少多少？（tick）
+        camera_duration: 相機關鍵點的預設時長有多久？（tick）
         camera_interpolate_target: 插入目標為基礎（follow 和 look）的相機關鍵點的結果
         camera_interpolate_target_value: 插入目標為基礎相機關鍵點的值
         camera_spectator: 當開始播放相機回放時切換到旁觀模式？
         camera_step_factor: 為路徑幀提供的相機路徑參數
-        camera_rotate_factor: 按鍵相機壹次傾斜的大小
+        camera_rotate_factor: 按鍵相機一次傾斜的大小
         camera_minema: 為傾斜幀提供的相機傾斜參數
-        camera_path_default_interp: 插入路徑時，路徑的默認類型
-        camera_command_name: 允許妳重新綁定相機命令的名字（需要重啟遊戲來生效）
+        camera_path_default_interp: 插入路徑時，路徑的預設類型
+        camera_command_name: 允許你重新綁定相機命令的名字（需要重啟遊戲來生效）
         camera_simulate_velocity: 在回放時模擬玩家走動搖擺（從腿的角度）
-        camera_debug_ticks: 將目前播放的 tick 時間寫入日誌文件
+        camera_debug_ticks: 將目前播放的 tick 時間寫入日誌檔案
         camera_first_tick_zero: 當相機播放時將當前幀歸零
         camera_profile_render: 在世界中渲染出相機配置？
-        gui_render_mouse: 在打開 GUI 的時候渲染出鼠標的材質
+        gui_render_mouse: 在開啟 GUI 的時候渲染出游標的材質
         minecrafttp_teleport: 當在多人遊戲時開始相機回放，使用 /minecraft:tp 來瞬移（針對於安裝了 Essentials 插件的伺服器）
         tp_teleport: 當在多人遊戲時開始相機回放，使用 /tp 來瞬移（針對於原版和 Forge 等伺服器）
 
-        camera_outside: 攝像機是否應該與玩家分離開來播放（允許玩家作為壹個真實演員）？
-        camera_outside_hide_player: 在開啟分離攝像機模式時，播放器是否應該在播放的時候隱藏？
-        camera_outside_sky: 如果打開，會修復天空，但會關閉區塊選區（因為有壹個 bug）
-        camera_outside_hide_guis: 防止在分離攝像機模式中渲染 GUI
-        camera_outside_hide_overlays: 防止在分離攝像機模式中渲染屏幕附加層（比如南瓜燈的光，正在燃燒的火，水等等）
+        camera_outside: 攝影機是否應該與玩家分離開來播放（允許玩家作為一個真實演員）？
+        camera_outside_hide_player: 在開啟分離攝影機模式時，播放器是否應該在播放的時候隱藏？
+        camera_outside_sky: 如果開啟，會修復天空，但會關閉區塊選區（因為有一個 bug）
+        camera_outside_hide_guis: 防止在分離攝影機模式中渲染 GUI
+        camera_outside_hide_overlays: 防止在分離攝影機模式中渲染屏幕附加層（比如南瓜燈的光，正在燃燒的火，水等等）
 
     smooth:
         camera_smooth_clamp: 在 －90 和 90 度之間，修剪平滑相機的俯仰程度？嗡!嗡!嗡!
@@ -35,5 +35,5 @@ aperture.config.comments:
         fov_friction: FOV 加速摩擦力（慢下來有多快）
 
         smooth_enabled: 開啟平滑相機。嗡!嗡!嗡!
-        mouse_x_friction: 鼠標平滑 X 軸摩擦力
-        mouse_y_friction: 鼠標平滑 Y 軸摩擦力
+        mouse_x_friction: 滑鼠平滑 X 軸摩擦力
+        mouse_y_friction: 滑鼠平滑 Y 軸摩擦力
