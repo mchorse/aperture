@@ -77,10 +77,15 @@ public class KeyframeFixture extends AbstractFixture
         if (!this.x.isEmpty()) pos.point.x = this.x.interpolate(t);
         if (!this.y.isEmpty()) pos.point.y = this.y.interpolate(t);
         if (!this.z.isEmpty()) pos.point.z = this.z.interpolate(t);
-        if (!this.yaw.isEmpty()) pos.angle.yaw = this.yaw.interpolate(t);
         if (!this.pitch.isEmpty()) pos.angle.pitch = this.pitch.interpolate(t);
         if (!this.roll.isEmpty()) pos.angle.roll = this.roll.interpolate(t);
         if (!this.fov.isEmpty()) pos.angle.fov = this.fov.interpolate(t);
+
+        /* Specific case for yaw, fuck you Minecraft */
+        if (!this.yaw.isEmpty())
+        {
+            pos.angle.yaw = this.yaw.interpolate(t) % 360;
+        }
     }
 
     @Override
