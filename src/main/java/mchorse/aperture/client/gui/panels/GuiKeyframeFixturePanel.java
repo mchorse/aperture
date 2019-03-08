@@ -1,7 +1,10 @@
 package mchorse.aperture.client.gui.panels;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.lwjgl.opengl.GL11;
 
@@ -17,6 +20,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
@@ -55,7 +59,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     public GuiButtonElement<GuiButton> add;
     public GuiButtonElement<GuiButton> remove;
-    public GuiButtonElement<GuiCirculate> interp;
+    public GuiButtonElement<GuiButton> interp;
+    public GuiListElement<Interpolation> interpolations;
     public GuiButtonElement<GuiCirculate> easing;
 
     private boolean sliding = false;
@@ -108,14 +113,23 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.add"), (b) -> this.addKeyframe());
         this.remove = GuiButtonElement.button(mc, I18n.format("aperture.gui.remove"), (b) -> this.removeKeyframe());
-        this.interp = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeInterpolation());
-        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.const"));
-        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.linear"));
-        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.quad"));
-        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.cubic"));
-        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.hermite"));
-        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.exp"));
-        this.interp.button.addLabel(I18n.format("aperture.gui.panels.interps.bezier"));
+        this.interp = GuiButtonElement.button(mc, "", (b) -> this.interpolations.toggleVisible());
+        this.interpolations = new GuiInterpolationsList(mc, (interp) ->
+        {
+            if (this.selected != -1)
+            {
+                this.active.get(this.selected).setInterpolation(interp);
+                this.interp.button.displayString = I18n.format("aperture.gui.panels.interps." + interp.key);
+                this.editor.updateProfile();
+                this.interpolations.setVisible(false);
+            }
+        });
+
+        for (Interpolation interp : Interpolation.values())
+        {
+            this.interpolations.add(interp);
+        }
+
         this.easing = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeEasing());
         this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.in"));
         this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.out"));
@@ -133,7 +147,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.buttons.add(this.add);
         this.buttons.add(this.remove);
 
-        this.frameButtons.add(this.interp, this.easing, this.tick, this.value);
+        this.frameButtons.add(this.interp, this.easing, this.tick, this.value, this.interpolations);
         this.frameButtons.setVisible(false);
 
         for (int i = 0; i < this.titles.length; i++)
@@ -161,6 +175,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.remove.resizer().parent(this.area).set(0, 0, 50, 20).y(1, -20).x(1, -50);
         this.interp.resizer().relative(this.tick.resizer()).set(-90, 0, 80, 20);
         this.easing.resizer().relative(this.value.resizer()).set(-90, 0, 80, 20);
+        this.interpolations.resizer().relative(this.interp.resizer()).set(0, 20, 80, 16 * 5);
 
         this.children.add(this.buttons, this.frameButtons);
     }
@@ -259,15 +274,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
     }
 
-    private void changeInterpolation()
-    {
-        if (this.selected != -1)
-        {
-            this.active.get(this.selected).setInterpolation(Interpolation.values()[this.interp.button.getValue()]);
-            this.editor.updateProfile();
-        }
-    }
-
     private void changeEasing()
     {
         if (this.selected != -1)
@@ -285,6 +291,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         super.select(fixture, duration);
 
         this.allChannel.setFixture(fixture);
+        this.interpolations.setVisible(false);
 
         if (!same)
         {
@@ -324,7 +331,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         this.tick.setValue(frame.tick);
         this.value.setValue(frame.value);
-        this.interp.button.setValue(frame.interp.ordinal());
+        this.interp.button.displayString = I18n.format("aperture.gui.panels.interps." + frame.interp.key);
+        this.interpolations.setCurrent(frame.interp);
         this.easing.button.setValue(frame.easing.ordinal());
     }
 
@@ -711,6 +719,52 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     private float fromGraphY(int mouseY)
     {
         return -(mouseY - (this.frames.y + this.frames.h / 2)) / this.zoomY + this.shiftY;
+    }
+
+    public static class GuiInterpolationsList extends GuiListElement<Interpolation>
+    {
+        public GuiInterpolationsList(Minecraft mc, Consumer<Interpolation> callback)
+        {
+            super(mc, callback);
+
+            this.scroll.scrollItemSize = 16;
+        }
+
+        @Override
+        public void sort()
+        {
+            Collections.sort(this.list, new Comparator<Interpolation>()
+            {
+                @Override
+                public int compare(Interpolation o1, Interpolation o2)
+                {
+                    return o1.key.compareTo(o2.key);
+                }
+            });
+
+            this.update();
+        }
+
+        @Override
+        public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+        {
+            this.scroll.draw(0x88000000);
+
+            super.draw(tooltip, mouseX, mouseY, partialTicks);
+        }
+
+        @Override
+        public void drawElement(Interpolation element, int i, int x, int y, boolean hover)
+        {
+            if (this.current == i)
+            {
+                Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.scrollItemSize, 0x880088ff);
+            }
+
+            String label = I18n.format("aperture.gui.panels.interps." + element.key);
+
+            this.font.drawStringWithShadow(label, x + 4, y + 4, hover ? 16777120 : 0xffffff);
+        }
     }
 
     /* All channel abstraction classes
