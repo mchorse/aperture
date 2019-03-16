@@ -79,7 +79,7 @@ public class CircularFixture extends AbstractFixture
         float yaw = (float) (MathHelper.atan2(sin, cos) * (180D / Math.PI)) - 90.0F;
 
         pos.point.set(x - 0.5F, y, z - 0.5F);
-        pos.angle.set(MathHelper.wrapDegrees(yaw - 180.0F), this.pitch);
+        pos.angle.set(MathHelper.wrapDegrees(yaw - 180.0F), this.pitch, 0, 70);
     }
 
     @Override
