@@ -272,7 +272,14 @@ public class GuiModifiersManager extends GuiElement
 
         this.modified = false;
 
-        if (this.visible && this.area.isInside(mouseX, mouseY))
+        int h = MathHelper.clamp(this.scroll.scrollSize, 20, this.scroll.h);
+
+        if (this.fixture == null)
+        {
+            h = 45;
+        }
+
+        if (this.visible && this.area.isInside(mouseX, mouseY) && mouseY - this.area.y <= h)
         {
             return true;
         }
@@ -283,7 +290,14 @@ public class GuiModifiersManager extends GuiElement
     @Override
     public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
-        return super.mouseScrolled(mouseX, mouseY, scroll) || this.panels.mouseScrolled(mouseX, mouseY + this.scroll.scroll, scroll) || this.scroll.mouseScroll(mouseX, mouseY, scroll);
+        int h = MathHelper.clamp(this.scroll.scrollSize, 20, this.scroll.h);
+
+        if (this.fixture == null)
+        {
+            h = 45;
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scroll) || this.panels.mouseScrolled(mouseX, mouseY + this.scroll.scroll, scroll) || (this.scroll.mouseScroll(mouseX, mouseY, scroll) && mouseY - this.area.y <= h);
     }
 
     @Override
