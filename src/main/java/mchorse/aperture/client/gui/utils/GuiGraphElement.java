@@ -45,7 +45,10 @@ public class GuiGraphElement extends GuiElement
 
     private int shiftX = 0;
     private int shiftY = 0;
+    private float zoomX = 1;
     private float zoomY = 1;
+    private int multX = 1;
+    private int multY = 1;
 
     public GuiGraphElement(Minecraft mc, Consumer<Keyframe> callback)
     {
@@ -63,37 +66,103 @@ public class GuiGraphElement extends GuiElement
 
     public int toGraphX(float tick)
     {
-        return (int) tick * 2 - this.shiftX;
+        return (int) (tick * this.zoomX - this.shiftX) + this.area.x;
     }
 
     public int toGraphY(float value)
     {
-        return (int) (-(value - this.shiftY) * this.zoomY) + (this.area.y + this.area.h / 2);
+        return (int) (-value * this.zoomY + this.shiftY) + this.area.y;
     }
 
-    public long fromGraphX(int mouseX)
+    public float fromGraphX(int mouseX)
     {
-        return (long) (mouseX + this.shiftX) / 2;
+        return (mouseX - this.area.x + this.shiftX) / this.zoomX;
     }
 
     public float fromGraphY(int mouseY)
     {
-        return -(mouseY - (this.area.y + this.area.h / 2)) / this.zoomY + this.shiftY;
+        return -(mouseY - this.area.y - this.shiftY) / this.zoomY;
     }
 
+    /**
+     * Resets the view  
+     */
     public void resetView()
     {
         this.shiftX = 0;
         this.shiftY = 0;
-        this.zoomY = 1;
+        this.zoomX = 2;
+        this.zoomY = 2;
 
-        if (!this.channel.isEmpty())
+        int c = this.channel.getKeyframes().size();
+
+        if (c > 1)
         {
-            this.shiftY = (int) this.channel.get(0).value;
+            Keyframe first = this.channel.get(0);
+            Keyframe last = this.channel.get(c - 1);
+
+            float minX = first.tick - 5;
+            float minY = Math.min(first.value, last.value);
+            float maxX = last.tick + 5;
+            float maxY = Math.max(first.value, last.value);
+
+            if (Math.abs(maxY - minY) < 0.01F)
+            {
+                /* Centerize */
+                this.shiftY = (int) ((minY - this.area.h / 2 / this.zoomY) * this.zoomY);
+            }
+            else
+            {
+                /* Spread apart vertically */
+                this.zoomY = 1 / ((maxY - minY) / this.area.h);
+                this.shiftY = (int) (minY * this.zoomY);
+            }
+
+            /* Spread apart horizontally */
+            this.zoomX = 1 / ((maxX - minX) / this.area.w);
+            this.shiftX = (int) (minX * this.zoomX);
         }
+        else if (c > 0)
+        {
+            this.shiftY = (int) ((this.channel.get(0).value - this.area.h / 2 / this.zoomY) * this.zoomY);
+        }
+
+        this.recalcMultipliers();
     }
 
-    public void selectByDuration(long duration2)
+    /**
+     * Recalculate grid's multipliers 
+     */
+    private void recalcMultipliers()
+    {
+        this.multX = this.recalcMultiplier(this.zoomX);
+        this.multY = this.recalcMultiplier(this.zoomY);
+    }
+
+    private int recalcMultiplier(float zoom)
+    {
+        int factor = (int) (60F / zoom);
+
+        /* Hardcoded caps */
+        if (factor > 10000) factor = 10000;
+        else if (factor > 5000) factor = 5000;
+        else if (factor > 2500) factor = 2500;
+        else if (factor > 1000) factor = 1000;
+        else if (factor > 500) factor = 500;
+        else if (factor > 250) factor = 250;
+        else if (factor > 100) factor = 100;
+        else if (factor > 50) factor = 50;
+        else if (factor > 25) factor = 25;
+        else if (factor > 10) factor = 10;
+        else if (factor > 5) factor = 5;
+
+        return factor <= 0 ? 1 : factor;
+    }
+
+    /**
+     * Make current keyframe by given duration 
+     */
+    public void selectByDuration(long duration)
     {
         int i = 0;
         this.selected = -1;
@@ -196,13 +265,64 @@ public class GuiGraphElement extends GuiElement
 
         if (this.area.isInside(mouseX, mouseY))
         {
-            this.zoomY += Math.copySign(0.2F, scroll);
-            this.zoomY = MathHelper.clamp_float(this.zoomY, 0.1F, 100);
+            if (!Minecraft.IS_RUNNING_ON_MAC)
+            {
+                scroll = -scroll;
+            }
+
+            boolean x = GuiScreen.isShiftKeyDown();
+            boolean y = GuiScreen.isCtrlKeyDown();
+            boolean none = !x && !y;
+
+            /* Scaling X */
+            float scaleX = this.zoomX;
+            int valueX = (int) (this.fromGraphX(mouseX) * scaleX);
+
+            if (x && !y || none)
+            {
+                this.zoomX += Math.copySign(this.getZoomFactor(scaleX), scroll);
+                this.zoomX = MathHelper.clamp_float(this.zoomX, 0.01F, 10F);
+            }
+
+            if (this.zoomX != scaleX)
+            {
+                this.shiftX = (int) ((valueX - (valueX - this.shiftX) * (scaleX / this.zoomX)) * (this.zoomX / scaleX));
+            }
+
+            /* Scaling Y */
+            float scaleY = this.zoomY;
+            int valueY = (int) (this.fromGraphY(mouseY) * scaleY);
+
+            if (y && !x || none)
+            {
+                this.zoomY += Math.copySign(this.getZoomFactor(scaleY), scroll);
+                this.zoomY = MathHelper.clamp_float(this.zoomY, 0.01F, 10F);
+            }
+
+            if (this.zoomY != scaleY)
+            {
+                this.shiftY = (int) ((valueY - (valueY - this.shiftY) * (scaleY / this.zoomY)) * (this.zoomY / scaleY));
+            }
+
+            this.recalcMultipliers();
 
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Get zoom factor based by current zoom value 
+     */
+    private float getZoomFactor(float zoom)
+    {
+        float factor = 0.1F;
+
+        if (zoom < 0.1F) factor = 0.005F;
+        else if (zoom < 1) factor = 0.05F;
+
+        return factor;
     }
 
     @Override
@@ -272,13 +392,13 @@ public class GuiGraphElement extends GuiElement
         if (this.scrolling)
         {
             this.shiftX = this.lastSX - (mouseX - this.lastH);
-            this.shiftY = this.lastSY + (int) ((mouseY - this.lastV) / this.zoomY);
+            this.shiftY = this.lastSY + (mouseY - this.lastV);
         }
         /* Move the current keyframe */
         else if (this.moving)
         {
             Keyframe frame = this.channel.get(this.selected);
-            long x = this.fromGraphX(!GuiScreen.isShiftKeyDown() ? mouseX : this.lastX);
+            long x = (long) this.fromGraphX(!GuiScreen.isShiftKeyDown() ? mouseX : this.lastX);
             float y = this.fromGraphY(!GuiScreen.isCtrlKeyDown() ? mouseY : this.lastY);
 
             if (this.which == 0)
@@ -318,6 +438,35 @@ public class GuiGraphElement extends GuiElement
         if (leftBorder > 0) Gui.drawRect(0, this.area.y, leftBorder, this.area.y + this.area.h, 0x88000000);
         if (rightBorder < w) Gui.drawRect(rightBorder, this.area.y, w, this.area.y + this.area.h, 0x88000000);
 
+        /* Draw scaling grid */
+        int hx = this.duration / this.multX;
+
+        for (int j = 0; j <= hx; j++)
+        {
+            int x = this.toGraphX(j * this.multX);
+
+            Gui.drawRect(this.area.x + x, this.area.y, this.area.x + x + 1, this.area.getY(1), 0x44ffffff);
+            this.font.drawString(String.valueOf(j * this.multX), this.area.x + x + 4, this.area.y + 4, 0xffffff);
+        }
+
+        int ty = (int) this.fromGraphY(this.area.getY(1));
+        int by = (int) this.fromGraphY(this.area.y);
+
+        int min = Math.min(ty, by) - 1;
+        int max = Math.max(ty, by) + 1;
+        int mult = this.multY;
+
+        min -= min % mult + mult;
+        max -= max % mult - mult;
+
+        for (int j = 0, c = (max - min) / mult; j < c; j++)
+        {
+            int y = this.toGraphY(min + j * mult);
+
+            Gui.drawRect(this.area.x, y, this.area.getX(1), y + 1, 0x44ffffff);
+            this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
+        }
+
         /* Draw graph of the keyframe channel */
         GL11.glLineWidth(2);
         GL11.glPointSize(8);
@@ -332,7 +481,7 @@ public class GuiGraphElement extends GuiElement
         float g = (this.color >> 8 & 255) / 255.0F;
         float b = (this.color & 255) / 255.0F;
 
-        GlStateManager.color(r, g, b, 1);
+        GlStateManager.color(r, g, b, 0.75F);
 
         /* Draw lines */
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);

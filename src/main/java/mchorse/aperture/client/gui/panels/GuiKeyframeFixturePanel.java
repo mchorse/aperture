@@ -208,7 +208,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
 
         this.fillData(frame);
-        this.graph.resetView();
     }
 
     private void removeKeyframe()
@@ -441,6 +440,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
     }
 
+    /**
+     * All channel keyframe
+     * 
+     * This keyframe is responsible for delegating methods to actual 
+     * keyframe
+     */
     public static class AllKeyframe extends Keyframe
     {
         public List<KeyframeCell> keyframes = new ArrayList<KeyframeCell>();
@@ -489,6 +494,11 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
     }
 
+    /**
+     * Keyframe cell
+     * 
+     * Links a keyframe back to its parent channel
+     */
     public static class KeyframeCell
     {
         public Keyframe keyframe;
