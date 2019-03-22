@@ -95,6 +95,14 @@ public class CommonProxy
     /**
      * Triggered when config is changed
      */
-    public void onConfigChange(Configuration config)
+    public void onConfigChange(ApertureConfig config)
     {}
+
+    /**
+     * Get language string
+     */
+    public String getLanguageString(String key, String defaultComment)
+    {
+        return defaultComment;
+    }
 }
