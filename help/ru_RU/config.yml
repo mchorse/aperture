@@ -18,12 +18,6 @@ aperture.config:
         camera_first_tick_zero: Нулевой кадр
         camera_debug_ticks: Тики отладки
         camera_profile_render: Отображать профиль камеры
-        
-        camera_outside: Внешний режим
-        camera_outside_hide_player: Спрятать игрока
-        camera_outside_sky: Исправить небо
-        camera_outside_hide_guis: Спрятать интерфейс
-        camera_outside_hide_overlays: Спрятать оверлей
 
         gui_render_mouse: Отображать курсор мыши в интерфейсе
 
@@ -33,6 +27,12 @@ aperture.config:
     outside: 
         title: Внешний режим
         tooltip: Настройки связанные с внешним режимом
+
+        camera_outside: Внешний режим
+        camera_outside_hide_player: Спрятать игрока
+        camera_outside_sky: Исправить небо
+        camera_outside_hide_guis: Спрятать интерфейс
+        camera_outside_hide_overlays: Спрятать оверлей
 
     smooth:
         title: Гладкое движение камеры

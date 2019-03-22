@@ -231,7 +231,7 @@ public class KeyboardHandler
 
             enabled.set(!enabled.getBoolean());
 
-            Aperture.proxy.onConfigChange(Aperture.proxy.forge);
+            Aperture.proxy.onConfigChange(Aperture.proxy.config);
             Aperture.proxy.forge.save();
 
             if (camera.enabled)
