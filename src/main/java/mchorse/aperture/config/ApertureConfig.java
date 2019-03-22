@@ -147,27 +147,27 @@ public class ApertureConfig
         String prefix = "aperture.config.camera.";
 
         /* Camera */
-        this.camera_duration_step = this.config.getInt("camera_duration_step", camera, 10, 1, 100, "What is default step to use when adding or reducing duration of the camera fixture (in ticks)", prefix + "camera_duration_step");
-        this.camera_duration = this.config.getInt("camera_duration", camera, 30, 1, 1000, "What is default duration of the camera fixture (in ticks)", prefix + "camera_duration");
-        this.camera_interpolate_target = this.config.getBoolean("camera_interpolate_target", camera, false, "Interpolate target based camera fixtures (follow and look) outcome", prefix + "camera_interpolate_target");
-        this.camera_interpolate_target_value = this.config.getFloat("camera_interpolate_target_value", camera, 0.5F, 0.0F, 1.0F, "Interpolation value for target based camera fixture interpolation", prefix + "camera_interpolate_target_value");
-        this.camera_spectator = this.config.getBoolean("camera_spectator", camera, true, "Switch to spectator mode when starting camera playback", prefix + "camera_spectator");
-        this.camera_step_factor = this.config.getFloat("camera_step_factor", camera, 0.01F, 0, 10, "Camera step factor for step keys", prefix + "camera_step_factor");
-        this.camera_rotate_factor = this.config.getFloat("camera_rotate_factor", camera, 0.1F, 0, 10, "Camera rotate factor for rotate keys", prefix + "camera_rotate_factor");
-        this.camera_minema = this.config.getBoolean("camera_minema", camera, false, "Activate Minema recording on camera start and deactivate on camera stop", prefix + "camera_minema");
-        this.camera_path_default_interp = this.config.getString("camera_path_default_interp", camera, "linear", "Default interpolation method for path fixture", prefix + "camera_path_default_interp");
-        this.camera_command_name = this.config.getString("camera_command_name", camera, "camera", "Allows you to rebind camera command's name (requires game reload to take effect)", prefix + "camera_command_name");
-        this.camera_simulate_velocity = this.config.getBoolean("camera_simulate_velocity", camera, false, "Simulate player's velocity during camera playback (see legs in perspective)", prefix + "camera_simulate_velocity");
-        this.camera_debug_ticks = this.config.getBoolean("camera_debug_ticks", camera, false, "Write ticks to the log during camera playback", prefix + "camera_debug_ticks");
-        this.camera_first_tick_zero = this.config.getBoolean("camera_first_tick_zero", camera, false, "When camera runner starts, start the actual playback when partial tick is exactly zero", prefix + "camera_first_tick_zero");
-        this.camera_profile_render = this.config.getBoolean("camera_profile_render", camera, true, "Render camera profile in the world?", prefix + "camera_profile_render");
-        this.minecrafttp_teleport = this.config.getBoolean("minecrafttp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)", prefix + "minecrafttp_teleport");
-        this.tp_teleport = this.config.getBoolean("tp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /tp command (For Vanilla or Forge)", prefix + "tp_teleport");
+        this.camera_duration_step = this.getInt("camera_duration_step", camera, 10, 1, 100, "What is default step to use when adding or reducing duration of the camera fixture (in ticks)");
+        this.camera_duration = this.getInt("camera_duration", camera, 30, 1, 1000, "What is default duration of the camera fixture (in ticks)");
+        this.camera_interpolate_target = this.getBoolean("camera_interpolate_target", camera, false, "Interpolate target based camera fixtures (follow and look) outcome");
+        this.camera_interpolate_target_value = this.getFloat("camera_interpolate_target_value", camera, 0.5F, 0.0F, 1.0F, "Interpolation value for target based camera fixture interpolation");
+        this.camera_spectator = this.getBoolean("camera_spectator", camera, true, "Switch to spectator mode when starting camera playback");
+        this.camera_step_factor = this.getFloat("camera_step_factor", camera, 0.01F, 0, 10, "Camera step factor for step keys");
+        this.camera_rotate_factor = this.getFloat("camera_rotate_factor", camera, 0.1F, 0, 10, "Camera rotate factor for rotate keys");
+        this.camera_minema = this.getBoolean("camera_minema", camera, false, "Activate Minema recording on camera start and deactivate on camera stop");
+        this.camera_path_default_interp = this.getString("camera_path_default_interp", camera, "linear", "Default interpolation method for path fixture");
+        this.camera_command_name = this.getString("camera_command_name", camera, "camera", "Allows you to rebind camera command's name (requires game reload to take effect)");
+        this.camera_simulate_velocity = this.getBoolean("camera_simulate_velocity", camera, false, "Simulate player's velocity during camera playback (see legs in perspective)");
+        this.camera_debug_ticks = this.getBoolean("camera_debug_ticks", camera, false, "Write ticks to the log during camera playback");
+        this.camera_first_tick_zero = this.getBoolean("camera_first_tick_zero", camera, false, "When camera runner starts, start the actual playback when partial tick is exactly zero");
+        this.camera_profile_render = this.getBoolean("camera_profile_render", camera, true, "Render camera profile in the world?");
+        this.minecrafttp_teleport = this.getBoolean("minecrafttp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)");
+        this.tp_teleport = this.getBoolean("tp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /tp command (For Vanilla or Forge)");
 
         /* Camera outside mode */
-        this.camera_outside = this.config.getBoolean("camera_outside", outside, false, "Whether camera should be played back from outside (allowing the player to act as a body actor)", prefix + "camera_outside");
-        this.camera_outside_hide_player = this.config.getBoolean("camera_outside_hide_player", outside, false, "Whether player should be hidden during playback of the camera if outside mode is enabled", prefix + "camera_outside_hide_player");
-        this.camera_outside_sky = this.config.getBoolean("camera_outside_sky", outside, true, "If enabled, it fixes the sky rendering, but hides the block highlight", prefix + "camera_outside_sky");
+        this.camera_outside = this.getBoolean("camera_outside", outside, false, "Whether camera should be played back from outside (allowing the player to act as a body actor)");
+        this.camera_outside_hide_player = this.getBoolean("camera_outside_hide_player", outside, false, "Whether player should be hidden during playback of the camera if outside mode is enabled");
+        this.camera_outside_sky = this.getBoolean("camera_outside_sky", outside, true, "If enabled, it fixes the sky rendering, but hides the block highlight");
 
         /* Processing camera command name */
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");
@@ -183,12 +183,44 @@ public class ApertureConfig
         /* Smooth camera */
         this.camera_smooth_clamp = this.config.getBoolean("camera_smooth_clamp", "smooth", true, "Clip smooth camera's pitch between -90 and 90 degrees range?", "aperture.config.smooth.camera_smooth_clamp");
 
-        Aperture.proxy.onConfigChange(this.config);
+        Aperture.proxy.onConfigChange(this);
 
         if (this.config.hasChanged())
         {
             this.config.save();
         }
+    }
+
+    public boolean getBoolean(String name, String category, boolean defaultValue, String comment)
+    {
+        String langKey = "aperture.config." + category + "." + name;
+        String commentKey = "aperture.config.comments." + category + "." + name;
+
+        return this.config.getBoolean(name, category, defaultValue, Aperture.proxy.getLanguageString(commentKey, comment), langKey);
+    }
+
+    public int getInt(String name, String category, int defaultValue, int minValue, int maxValue, String comment)
+    {
+        String langKey = "aperture.config." + category + "." + name;
+        String commentKey = "aperture.config.comments." + category + "." + name;
+
+        return this.config.getInt(name, category, defaultValue, minValue, maxValue, Aperture.proxy.getLanguageString(commentKey, comment), langKey);
+    }
+
+    public float getFloat(String name, String category, float defaultValue, float minValue, float maxValue, String comment)
+    {
+        String langKey = "aperture.config." + category + "." + name;
+        String commentKey = "aperture.config.comments." + category + "." + name;
+
+        return this.config.getFloat(name, category, defaultValue, minValue, maxValue, Aperture.proxy.getLanguageString(commentKey, comment), langKey);
+    }
+
+    public String getString(String name, String category, String defaultValue, String comment)
+    {
+        String langKey = "aperture.config." + category + "." + name;
+        String commentKey = "aperture.config.comments." + category + "." + name;
+
+        return this.config.getString(name, category, defaultValue, Aperture.proxy.getLanguageString(commentKey, comment), langKey);
     }
 
     @SubscribeEvent

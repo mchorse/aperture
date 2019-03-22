@@ -18,12 +18,6 @@ aperture.config:
         camera_first_tick_zero: First tick zero
         camera_debug_ticks: Debug ticks
         camera_profile_render: Render camera profile
-        
-        camera_outside: Outside mode
-        camera_outside_hide_player: Hide player
-        camera_outside_sky: Fix sky
-        camera_outside_hide_guis: Hide GUIs
-        camera_outside_hide_overlays: Hide overlays
 
         gui_render_mouse: Render mouse cursor in GUIs
 
@@ -33,6 +27,12 @@ aperture.config:
     outside: 
         title: Outside mode
         tooltip: Config options related to outside mode
+        
+        camera_outside: Outside mode
+        camera_outside_hide_player: Hide player
+        camera_outside_sky: Fix sky
+        camera_outside_hide_guis: Hide GUIs
+        camera_outside_hide_overlays: Hide overlays
 
     smooth:
         title: Smooth camera
@@ -47,5 +47,5 @@ aperture.config:
         fov_friction: FOV friction
 
         smooth_enabled: Smooth camera enabled
-        mouse_x_friction: Mouse Y friction
+        mouse_x_friction: Mouse X friction
         mouse_y_friction: Mouse Y friction
