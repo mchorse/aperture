@@ -37,7 +37,7 @@ public class NullFixture extends AbstractFixture
             long offset = profile.calculateOffset(fixture);
 
             fixture.applyFixture(target, 0, profile, pos);
-            fixture.applyModifiers(target, offset, 0, profile, pos);
+            fixture.applyModifiers(offset, target, 0, profile, pos);
         }
     }
 
