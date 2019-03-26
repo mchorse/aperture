@@ -42,6 +42,8 @@ public class GuiGraphElement extends GuiElement
     private int lastV;
     private int lastSX;
     private int lastSY;
+    private long lastT;
+    private float lastVa;
 
     private int shiftX = 0;
     private int shiftY = 0;
@@ -101,30 +103,37 @@ public class GuiGraphElement extends GuiElement
             Keyframe first = this.channel.get(0);
             Keyframe last = this.channel.get(c - 1);
 
-            float minX = first.tick - 5;
+            float minX = first.tick;
+            float maxX = last.tick;
             float minY = Math.min(first.value, last.value);
-            float maxX = last.tick + 5;
             float maxY = Math.max(first.value, last.value);
 
             if (Math.abs(maxY - minY) < 0.01F)
             {
                 /* Centerize */
-                this.shiftY = (int) ((minY - this.area.h / 2 / this.zoomY) * this.zoomY);
+                this.shiftY = (int) ((minY + this.area.h / 2 / this.zoomY) * this.zoomY);
             }
             else
             {
                 /* Spread apart vertically */
                 this.zoomY = 1 / ((maxY - minY) / this.area.h);
-                this.shiftY = (int) (minY * this.zoomY);
+                minY -= 20 * (1 / this.zoomY);
+                maxY += 20 * (1 / this.zoomY);
+                this.zoomY = 1 / ((maxY - minY) / this.area.h);
+                this.shiftY = (int) (maxY * this.zoomY);
             }
 
             /* Spread apart horizontally */
             this.zoomX = 1 / ((maxX - minX) / this.area.w);
+            minX -= 20 * (1 / this.zoomX);
+            maxX += 20 * (1 / this.zoomX);
+            this.zoomX = 1 / ((maxX - minX) / this.area.w);
+
             this.shiftX = (int) (minX * this.zoomX);
         }
         else if (c > 0)
         {
-            this.shiftY = (int) ((this.channel.get(0).value - this.area.h / 2 / this.zoomY) * this.zoomY);
+            this.shiftY = (int) ((this.channel.get(0).value + this.area.h / 2 / this.zoomY) * this.zoomY);
         }
 
         this.recalcMultipliers();
@@ -220,6 +229,9 @@ public class GuiGraphElement extends GuiElement
                         this.selected = index;
                         this.setKeyframe(frame);
 
+                        this.lastT = left ? (long) (frame.tick - frame.lx) : (right ? (long) (frame.tick + frame.rx) : frame.tick);
+                        this.lastVa = left ? frame.value + frame.ly : (right ? frame.value + frame.ry : frame.value);
+
                         this.lastX = mouseX;
                         this.lastY = mouseY;
                         this.dragging = true;
@@ -263,7 +275,7 @@ public class GuiGraphElement extends GuiElement
             return true;
         }
 
-        if (this.area.isInside(mouseX, mouseY))
+        if (this.area.isInside(mouseX, mouseY) && !this.scrolling)
         {
             if (!Minecraft.IS_RUNNING_ON_MAC)
             {
@@ -281,7 +293,7 @@ public class GuiGraphElement extends GuiElement
             if (x && !y || none)
             {
                 this.zoomX += Math.copySign(this.getZoomFactor(scaleX), scroll);
-                this.zoomX = MathHelper.clamp_float(this.zoomX, 0.01F, 10F);
+                this.zoomX = MathHelper.clamp_float(this.zoomX, 0.01F, 50F);
             }
 
             if (this.zoomX != scaleX)
@@ -296,7 +308,7 @@ public class GuiGraphElement extends GuiElement
             if (y && !x || none)
             {
                 this.zoomY += Math.copySign(this.getZoomFactor(scaleY), scroll);
-                this.zoomY = MathHelper.clamp_float(this.zoomY, 0.01F, 10F);
+                this.zoomY = MathHelper.clamp_float(this.zoomY, 0.01F, 50F);
             }
 
             if (this.zoomY != scaleY)
@@ -319,8 +331,8 @@ public class GuiGraphElement extends GuiElement
     {
         float factor = 0.1F;
 
-        if (zoom < 0.1F) factor = 0.005F;
-        else if (zoom < 1) factor = 0.05F;
+        if (zoom < 0.1F) factor = 0.0075F;
+        else if (zoom < 1) factor = 0.075F;
 
         return factor;
     }
@@ -398,8 +410,11 @@ public class GuiGraphElement extends GuiElement
         else if (this.moving)
         {
             Keyframe frame = this.channel.get(this.selected);
-            long x = (long) this.fromGraphX(!GuiScreen.isShiftKeyDown() ? mouseX : this.lastX);
-            float y = this.fromGraphY(!GuiScreen.isCtrlKeyDown() ? mouseY : this.lastY);
+            long x = (long) this.fromGraphX(mouseX);
+            float y = this.fromGraphY(mouseY);
+
+            if (GuiScreen.isShiftKeyDown()) x = this.lastT;
+            if (GuiScreen.isCtrlKeyDown()) y = this.lastVa;
 
             if (this.which == 0)
             {
