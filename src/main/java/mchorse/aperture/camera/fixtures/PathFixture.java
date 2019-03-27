@@ -278,8 +278,6 @@ public class PathFixture extends AbstractFixture
             x = x - index;
         }
 
-        this.applyAngle(pos.angle, index, x);
-
         /* If use speed is enabled */
         if (this.useSpeed)
         {
@@ -289,7 +287,7 @@ public class PathFixture extends AbstractFixture
             if (tick != this.lastTick)
             {
                 this.applyPoint(this.lastPoint, 0, 0);
-                this.recalculate(tick);
+                this.recalculate(tick, pos.angle);
                 pos.point.set(this.lastPoint.x, this.lastPoint.y, this.lastPoint.z);
             }
             else
@@ -301,6 +299,7 @@ public class PathFixture extends AbstractFixture
         }
         else
         {
+            this.applyAngle(pos.angle, index, x);
             this.applyPoint(pos.point, index, x);
         }
     }
@@ -308,7 +307,7 @@ public class PathFixture extends AbstractFixture
     /**
      * Recalculate speed based thing
      */
-    private void recalculate(float tick)
+    private void recalculate(float tick, Angle angle)
     {
         /* Calculate the distance which must be reached */
         float target = 0F;
@@ -385,6 +384,8 @@ public class PathFixture extends AbstractFixture
 
             diff = Math.abs(target - distance);
         }
+
+        this.applyAngle(angle, index, progress);
     }
 
     /**
