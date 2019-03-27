@@ -26,32 +26,53 @@ public class KeyframeFixture extends AbstractFixture
     /* Different animatable channels */
 
     @Expose
-    public final KeyframeChannel x = new KeyframeChannel();
+    public final KeyframeChannel x;
 
     @Expose
-    public final KeyframeChannel y = new KeyframeChannel();
+    public final KeyframeChannel y;
 
     @Expose
-    public final KeyframeChannel z = new KeyframeChannel();
+    public final KeyframeChannel z;
 
     @Expose
-    public final KeyframeChannel yaw = new KeyframeChannel();
+    public final KeyframeChannel yaw;
 
     @Expose
-    public final KeyframeChannel pitch = new KeyframeChannel();
+    public final KeyframeChannel pitch;
 
     @Expose
-    public final KeyframeChannel roll = new KeyframeChannel();
+    public final KeyframeChannel roll;
 
     @Expose
-    public final KeyframeChannel fov = new KeyframeChannel();
+    public final KeyframeChannel fov;
 
     public KeyframeChannel[] channels;
+
+    public KeyframeFixture()
+    {
+        super(0);
+
+        this.x = new KeyframeChannel();
+        this.y = new KeyframeChannel();
+        this.z = new KeyframeChannel();
+        this.yaw = new KeyframeChannel();
+        this.pitch = new KeyframeChannel();
+        this.roll = new KeyframeChannel();
+        this.fov = new KeyframeChannel();
+        this.channels = new KeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
+    }
 
     public KeyframeFixture(long duration)
     {
         super(duration);
 
+        this.x = new KeyframeChannel();
+        this.y = new KeyframeChannel();
+        this.z = new KeyframeChannel();
+        this.yaw = new KeyframeChannel();
+        this.pitch = new KeyframeChannel();
+        this.roll = new KeyframeChannel();
+        this.fov = new KeyframeChannel();
         this.channels = new KeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
     }
 
