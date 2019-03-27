@@ -486,6 +486,37 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
+     * Set aspect ratio for letter box feature. This method parses the 
+     * aspect ratio either for float or "float:float" format and sets it 
+     * as aspect ratio. 
+     */
+    public void setAspectRatio(String aspectRatio)
+    {
+        float aspect = this.aspectRatio;
+
+        try
+        {
+            aspect = Float.parseFloat(aspectRatio);
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                String[] strips = aspectRatio.split(":");
+
+                if (strips.length >= 2)
+                {
+                    aspect = Float.parseFloat(strips[0]) / Float.parseFloat(strips[1]);
+                }
+            }
+            catch (Exception ee)
+            {}
+        }
+
+        this.aspectRatio = aspect;
+    }
+
+    /**
      * Set camera profile
      */
     public void setProfile(CameraProfile profile)
@@ -532,6 +563,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
         this.lastRoll = ClientProxy.control.roll;
         this.lastGameMode = ClientProxy.runner.getGameMode(player);
+        this.setAspectRatio(Aperture.proxy.config.aspect_ratio);
 
         if (Aperture.proxy.config.camera_spectator)
         {
@@ -878,18 +910,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
         }
 
-        if (!this.elements.isVisible() || (isRunning && Aperture.proxy.config.camera_minema))
-        {
-            /* Little tip for the users who don't know what they did */
-            if (!isRunning)
-            {
-                this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
-            }
-
-            return;
-        }
-
-        if (this.elements.isVisible() && this.profile != null)
+        if (this.profile != null)
         {
             /* Readjustable values for rule of thirds in case of letter 
              * box enabled */
@@ -929,7 +950,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 }
             }
 
-            if (this.ruleOfThirds)
+            if (this.ruleOfThirds && this.elements.isVisible())
             {
                 int color = 0xcccc0000;
 
@@ -939,6 +960,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 Gui.drawRect(rx, ry + rh / 3 - 1, rx + rw, ry + rh / 3, color);
                 Gui.drawRect(rx, ry + rh - rh / 3, rx + rw, ry + rh - rh / 3 + 1, color);
             }
+        }
+
+        if (!this.elements.isVisible() || (isRunning && Aperture.proxy.config.camera_minema))
+        {
+            /* Little tip for the users who don't know what they did */
+            if (!isRunning)
+            {
+                this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+            }
+
+            return;
         }
 
         this.drawGradientRect(0, 0, width, 20, 0x66000000, 0);
