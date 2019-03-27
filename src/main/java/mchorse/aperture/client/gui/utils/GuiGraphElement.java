@@ -38,10 +38,7 @@ public class GuiGraphElement extends GuiElement
     private int which = 0;
     private int lastX;
     private int lastY;
-    private int lastH;
-    private int lastV;
-    private int lastSX;
-    private int lastSY;
+
     private long lastT;
     private float lastVa;
 
@@ -86,6 +83,16 @@ public class GuiGraphElement extends GuiElement
         return -(mouseY - this.area.y - this.shiftY) / this.zoomY;
     }
 
+    public int getOffset()
+    {
+        if (this.parent == null)
+        {
+            return 0;
+        }
+
+        return (int) (this.parent.editor.scrub.value - this.parent.editor.getProfile().calculateOffset(this.parent.fixture));
+    }
+
     /**
      * Resets the view  
      */
@@ -100,13 +107,18 @@ public class GuiGraphElement extends GuiElement
 
         if (c > 1)
         {
-            Keyframe first = this.channel.get(0);
-            Keyframe last = this.channel.get(c - 1);
+            float minX = Float.POSITIVE_INFINITY;
+            float maxX = Float.NEGATIVE_INFINITY;
+            float minY = Float.POSITIVE_INFINITY;
+            float maxY = Float.NEGATIVE_INFINITY;
 
-            float minX = first.tick;
-            float maxX = last.tick;
-            float minY = Math.min(first.value, last.value);
-            float maxY = Math.max(first.value, last.value);
+            for (Keyframe frame : this.channel.getKeyframes())
+            {
+                minX = Math.min(minX, frame.tick);
+                minY = Math.min(minY, frame.value);
+                maxX = Math.max(maxX, frame.tick);
+                maxY = Math.max(maxY, frame.value);
+            }
 
             if (Math.abs(maxY - minY) < 0.01F)
             {
@@ -246,10 +258,8 @@ public class GuiGraphElement extends GuiElement
             else if (mouseButton == 2)
             {
                 this.scrolling = true;
-                this.lastH = mouseX;
-                this.lastV = mouseY;
-                this.lastSX = this.shiftX;
-                this.lastSY = this.shiftY;
+                this.lastX = mouseX;
+                this.lastY = mouseY;
             }
 
             return true;
@@ -329,10 +339,12 @@ public class GuiGraphElement extends GuiElement
      */
     private float getZoomFactor(float zoom)
     {
+        zoom = Math.max(this.zoomX, this.zoomY);
+
         float factor = 0.1F;
 
-        if (zoom < 0.1F) factor = 0.0075F;
-        else if (zoom < 1) factor = 0.075F;
+        if (zoom < 0.1F) factor = 0.025F;
+        else if (zoom < 1) factor = 0.25F;
 
         return factor;
     }
@@ -396,15 +408,18 @@ public class GuiGraphElement extends GuiElement
      */
     private void drawGraph(int mouseX, int mouseY, int w, int h)
     {
-        if (this.channel.isEmpty())
+        if (this.channel == null || this.channel.isEmpty())
         {
             return;
         }
 
         if (this.scrolling)
         {
-            this.shiftX = this.lastSX - (mouseX - this.lastH);
-            this.shiftY = this.lastSY + (mouseY - this.lastV);
+            this.shiftX -= mouseX - this.lastX;
+            this.shiftY += mouseY - this.lastY;
+
+            this.lastX = mouseX;
+            this.lastY = mouseY;
         }
         /* Move the current keyframe */
         else if (this.moving)
@@ -588,7 +603,7 @@ public class GuiGraphElement extends GuiElement
         /* Draw current point at the scrub */
         if (this.parent != null)
         {
-            int cx = (int) (this.parent.editor.scrub.value - this.parent.currentOffset());
+            int cx = (this.getOffset());
             int cy = this.toGraphY(this.channel.interpolate(cx));
 
             cx = this.toGraphX(cx);
