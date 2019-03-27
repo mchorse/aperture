@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.lwjgl.input.Keyboard;
+
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
@@ -24,6 +26,7 @@ import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -55,6 +58,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     private String[] titles = new String[8];
     private String title = "";
     private int[] colors = new int[] {0xff1392, 0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
+    private int lastX;
+    private int lastY;
 
     public GuiKeyframeFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
@@ -322,8 +327,29 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
+    public void keyTyped(char typedChar, int keyCode)
+    {
+        super.keyTyped(typedChar, keyCode);
+
+        if (this.graph.area.isInside(this.lastX, this.lastY) && !this.hasActiveTextfields())
+        {
+            if (keyCode == Keyboard.KEY_EQUALS && GuiScreen.isShiftKeyDown())
+            {
+                this.addKeyframe();
+            }
+            else if (keyCode == Keyboard.KEY_MINUS)
+            {
+                this.removeKeyframe();
+            }
+        }
+    }
+
+    @Override
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
+        this.lastX = mouseX;
+        this.lastY = mouseY;
+
         /* Draw title of the channel */
         this.editor.drawCenteredString(this.font, this.title, this.area.getX(0.5F), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
 
