@@ -11,6 +11,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
+import mchorse.aperture.client.gui.utils.GuiFixtureGraphEditor;
 import mchorse.aperture.client.gui.utils.GuiGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
@@ -61,7 +62,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.editor.updateProfile();
         });
         this.toKeyframe = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
-        this.speed = new GuiGraphEditor(mc);
+        this.speed = new GuiFixtureGraphEditor<GuiPathFixturePanel>(mc, this);
         this.speed.graph.parent = this;
         this.speed.graph.color = 0x0088ff;
 

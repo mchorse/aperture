@@ -15,6 +15,7 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.utils.GuiFixtureGraphEditor;
 import mchorse.aperture.client.gui.utils.GuiGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
@@ -42,7 +43,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
     public GuiGraphEditor graph;
 
-    private AllKeyframeChannel allChannel = new AllKeyframeChannel();
+    public AllKeyframeChannel allChannel = new AllKeyframeChannel();
     private String[] titles = new String[8];
     private String title = "";
     private int[] colors = new int[] {0xff1392, 0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
@@ -245,33 +246,13 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     /**
-     * Special subclass of graph editor for keyframe fixture editor 
-     * panel.
+     * Graph editor GUI designed specifically for keyframe fixture panel
      */
-    public static class GuiFixtureGraphEditor extends GuiGraphEditor
+    public static class GuiKeyframeFixtureGraphEditor extends GuiFixtureGraphEditor<GuiKeyframeFixturePanel>
     {
-        private GuiKeyframeFixturePanel parent;
-
-        public GuiFixtureGraphEditor(Minecraft mc, GuiKeyframeFixturePanel parent)
+        public GuiKeyframeFixtureGraphEditor(Minecraft mc, GuiKeyframeFixturePanel parent)
         {
-            super(mc);
-
-            this.parent = parent;
-            this.graph.parent = parent;
-        }
-
-        @Override
-        public void changeEasing()
-        {
-            super.changeEasing();
-            this.parent.editor.updateProfile();
-        }
-
-        @Override
-        public void pickInterpolation(Interpolation interp)
-        {
-            super.pickInterpolation(interp);
-            this.parent.editor.updateProfile();
+            super(mc, parent);
         }
 
         @Override
@@ -300,8 +281,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                     allStar.keyframes.add(new KeyframeCell(channel.getKeyframes().get(index), channel));
                 }
             }
-
-            this.parent.editor.updateProfile();
         }
 
         @Override
@@ -319,13 +298,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             if (this.graph.channel == this.parent.fixture.fov) value = pos.angle.fov;
 
             return value;
-        }
-
-        @Override
-        public void removeKeyframe()
-        {
-            super.removeKeyframe();
-            this.parent.editor.updateProfile();
         }
     }
 

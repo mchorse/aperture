@@ -38,9 +38,8 @@ public class GuiGraphElement extends GuiElement
     private int which = 0;
     private int lastX;
     private int lastY;
-
-    private long lastT;
-    private float lastVa;
+    private float lastT;
+    private float lastV;
 
     private int shiftX = 0;
     private int shiftY = 0;
@@ -241,8 +240,8 @@ public class GuiGraphElement extends GuiElement
                         this.selected = index;
                         this.setKeyframe(frame);
 
-                        this.lastT = left ? (long) (frame.tick - frame.lx) : (right ? (long) (frame.tick + frame.rx) : frame.tick);
-                        this.lastVa = left ? frame.value + frame.ly : (right ? frame.value + frame.ry : frame.value);
+                        this.lastT = left ? frame.tick - frame.lx : (right ? frame.tick + frame.rx : frame.tick);
+                        this.lastV = left ? frame.value + frame.ly : (right ? frame.value + frame.ry : frame.value);
 
                         this.lastX = mouseX;
                         this.lastY = mouseY;
@@ -425,15 +424,15 @@ public class GuiGraphElement extends GuiElement
         else if (this.moving)
         {
             Keyframe frame = this.channel.get(this.selected);
-            long x = (long) this.fromGraphX(mouseX);
+            float x = this.fromGraphX(mouseX);
             float y = this.fromGraphY(mouseY);
 
             if (GuiScreen.isShiftKeyDown()) x = this.lastT;
-            if (GuiScreen.isCtrlKeyDown()) y = this.lastVa;
+            if (GuiScreen.isCtrlKeyDown()) y = this.lastV;
 
             if (this.which == 0)
             {
-                frame.setTick(x);
+                frame.setTick((long) x);
                 frame.setValue(y);
             }
             else if (this.which == 1)

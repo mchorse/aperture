@@ -36,16 +36,9 @@ public class GuiGraphEditor extends GuiElement
         this.createChildren();
 
         this.frameButtons = new GuiElements<GuiElement>();
-        this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) ->
-        {
-            this.graph.getCurrent().setTick(value.longValue());
-            this.graph.sliding = true;
-        });
+        this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) -> this.setTick(value.longValue()));
         this.tick.setLimit(0, Integer.MAX_VALUE, true);
-        this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) ->
-        {
-            this.graph.getCurrent().setValue(value);
-        });
+        this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) -> this.setValue(value));
 
         this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.add"), (b) -> this.addKeyframe());
         this.remove = GuiButtonElement.button(mc, I18n.format("aperture.gui.remove"), (b) -> this.removeKeyframe());
@@ -130,6 +123,17 @@ public class GuiGraphEditor extends GuiElement
         this.graph.channel.remove(this.graph.selected);
         this.graph.selected -= 1;
         this.fillData(this.graph.getCurrent());
+    }
+
+    public void setTick(long value)
+    {
+        this.graph.getCurrent().setTick(value);
+        this.graph.sliding = true;
+    }
+
+    public void setValue(float value)
+    {
+        this.graph.getCurrent().setValue(value);
     }
 
     public void pickInterpolation(Interpolation interp)
