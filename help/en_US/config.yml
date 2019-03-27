@@ -23,6 +23,7 @@ aperture.config:
 
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
+        aspect_ratio: Aspect ratio
 
     outside: 
         title: Outside mode

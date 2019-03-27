@@ -18,6 +18,7 @@ aperture.config.comments:
         gui_render_mouse: Render on the screen a texture of a mouse pointer during GUI
         minecrafttp_teleport: When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)
         tp_teleport: When start the camera playback in multiplayer, teleport you with /tp command (For Vanilla or Forge)
+        aspect_ratio: Aspect ratio for camera editor's letterbox feature
         
     outside:
         camera_outside: Whether camera should be played back from outside (allowing the player to act as a body actor)

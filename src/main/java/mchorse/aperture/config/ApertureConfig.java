@@ -92,6 +92,11 @@ public class ApertureConfig
     public boolean camera_profile_render;
 
     /**
+     * Aspect ratio for letter box within camera editor
+     */
+    public String aspect_ratio = "16:9";
+
+    /**
      * Render a custom mouse pointer in GUIs
      */
     public boolean gui_render_mouse;
@@ -163,6 +168,7 @@ public class ApertureConfig
         this.camera_profile_render = this.getBoolean("camera_profile_render", camera, true, "Render camera profile in the world?");
         this.minecrafttp_teleport = this.getBoolean("minecrafttp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)");
         this.tp_teleport = this.getBoolean("tp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /tp command (For Vanilla or Forge)");
+        this.aspect_ratio = this.getString("aspect_ratio", camera, "16:9", "Aspect ratio for camera editor's letter box");
 
         /* Camera outside mode */
         this.camera_outside = this.getBoolean("camera_outside", outside, false, "Whether camera should be played back from outside (allowing the player to act as a body actor)");
