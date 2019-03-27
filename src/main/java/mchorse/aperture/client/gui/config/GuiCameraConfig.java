@@ -77,18 +77,33 @@ public class GuiCameraConfig extends GuiElement
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        if (!this.area.isInside(mouseX, mouseY))
+        {
+            return false;
+        }
+
         return super.mouseClicked(mouseX, mouseY, mouseButton) || this.options.mouseClicked(mouseX, mouseY + this.scroll.scroll, mouseButton) || this.scroll.mouseClicked(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
+        if (!this.area.isInside(mouseX, mouseY))
+        {
+            return false;
+        }
+
         return super.mouseScrolled(mouseX, mouseY, scroll) || this.options.mouseScrolled(mouseX, mouseY + this.scroll.scroll, scroll) || this.scroll.mouseScroll(mouseX, mouseY, scroll);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
+        if (!this.area.isInside(mouseX, mouseY))
+        {
+            return;
+        }
+
         super.mouseReleased(mouseX, mouseY, state);
         this.options.mouseReleased(mouseX, mouseY + this.scroll.scroll, state);
         this.scroll.mouseReleased(mouseX, mouseY);
