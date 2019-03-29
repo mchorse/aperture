@@ -44,6 +44,8 @@ public class GuiPointsModule extends GuiAbstractModule
 
         GuiButtonElement<GuiTextureButton> back = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 160, 0, 160, 16, (b) ->
         {
+            if (this.index == 0) return;
+
             this.path.movePoint(this.index, this.index - 1);
             this.index--;
             this.editor.updateProfile();
@@ -99,6 +101,8 @@ public class GuiPointsModule extends GuiAbstractModule
 
         GuiButtonElement<GuiTextureButton> forward = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 144, 0, 144, 16, (b) ->
         {
+            if (this.index >= this.path.getCount() - 1) return;
+
             this.path.movePoint(this.index, this.index + 1);
             this.index++;
             this.editor.updateProfile();
