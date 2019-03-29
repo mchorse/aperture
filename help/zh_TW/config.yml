@@ -18,12 +18,6 @@ aperture.config:
         camera_first_tick_zero: 第一幀為 0
         camera_debug_ticks: Debug ticks
         camera_profile_render: 渲染相機配置
-        
-        camera_outside: 分離攝影機模式
-        camera_outside_hide_player: 隱藏玩家
-        camera_outside_sky: 修復天空
-        camera_outside_hide_guis: 隱藏 GUI
-        camera_outside_hide_overlays: 隱藏附加層
 
         gui_render_mouse: 在 GUI 中渲染出滑鼠指針
 
@@ -31,8 +25,14 @@ aperture.config:
         tp_teleport: 使用 /tp
 
     outside: 
-        title: 分離攝影機模式
-        tooltip: 屬於分離攝影機的設置項
+        title: 分離攝像機模式
+        tooltip: 屬於分離攝像機的設置項
+
+        camera_outside: 分離攝像機模式
+        camera_outside_hide_player: 隱藏玩家
+        camera_outside_sky: 修復天空
+        camera_outside_hide_guis: 隱藏 GUI
+        camera_outside_hide_overlays: 隱藏附加層
         
     smooth:
         title: 平滑相機

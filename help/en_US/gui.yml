@@ -130,6 +130,7 @@ aperture.gui:
         selector: Selector
         per_point: Per point duration
         to_keyframe: Generate keyframe
+        use_speed: Velocity control
 
         all: All
         tick: Tick

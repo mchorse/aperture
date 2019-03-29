@@ -22,10 +22,10 @@ public class AngleModifier extends AbstractModifier
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
     {
-        pos.angle.yaw += angle.yaw;
-        pos.angle.pitch += angle.pitch;
-        pos.angle.roll += angle.roll;
-        pos.angle.fov += angle.fov;
+        pos.angle.yaw += this.angle.yaw;
+        pos.angle.pitch += this.angle.pitch;
+        pos.angle.roll += this.angle.roll;
+        pos.angle.fov += this.angle.fov;
     }
 
     @Override

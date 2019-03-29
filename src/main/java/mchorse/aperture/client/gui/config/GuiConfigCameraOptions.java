@@ -125,30 +125,13 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 
         this.aspectRatio = new GuiTextElement(mc, (v) ->
         {
-            float aspect = this.editor.aspectRatio;
+            Property prop = Aperture.proxy.forge.getCategory("camera").get("aspect_ratio");
 
-            try
-            {
-                aspect = Float.parseFloat(v);
-            }
-            catch (Exception e)
-            {
-                try
-                {
-                    String[] strips = v.split(":");
-
-                    if (strips.length >= 2)
-                    {
-                        aspect = Float.parseFloat(strips[0]) / Float.parseFloat(strips[1]);
-                    }
-                }
-                catch (Exception ee)
-                {}
-            }
-
-            this.editor.aspectRatio = aspect;
+            prop.set(v);
+            this.editor.setAspectRatio(v);
+            this.saveConfig();
         });
-        this.aspectRatio.setText("16:9");
+        this.aspectRatio.setText(Aperture.proxy.config.aspect_ratio);
 
         /* Don't show that if Minema mod isn't present */
         if (Loader.isModLoaded("minema"))
@@ -204,6 +187,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.tpTeleport.button.setIsChecked(Aperture.proxy.config.tp_teleport);
         this.ruleOfThirds.button.setIsChecked(this.editor.ruleOfThirds);
         this.letterBox.button.setIsChecked(this.editor.letterBox);
+        this.aspectRatio.setText(Aperture.proxy.config.aspect_ratio);
     }
 
     @Override

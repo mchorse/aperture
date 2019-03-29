@@ -85,9 +85,7 @@ public class OrbitModifier extends EntityModifier
 
         if (this.copy)
         {
-            double factor = Math.abs((Math.abs(oldYaw - yaw) % 360) / 360 - 0.5) * 4 - 1;
-
-            pitch *= factor;
+            pitch *= Math.abs((Math.abs(oldYaw - yaw) % 360) / 360 - 0.5) * 4 - 1;
         }
 
         pitch += this.pitch;

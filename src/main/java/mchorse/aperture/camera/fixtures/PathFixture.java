@@ -12,6 +12,7 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -23,14 +24,44 @@ import net.minecraft.util.math.MathHelper;
  */
 public class PathFixture extends AbstractFixture
 {
+    /**
+     * Whether per point duration is active 
+     */
     @Expose
     public boolean perPointDuration;
 
+    /**
+     * List of points in this fixture 
+     */
     @Expose
     protected List<DurablePosition> points = new ArrayList<DurablePosition>();
 
+    /**
+     * Whether keyframe-able speed should be used for this
+     */
+    @Expose
+    public boolean useSpeed;
+
+    /**
+     * Keyframe-able speed
+     */
+    @Expose
+    public KeyframeChannel speed;
+
     public InterpolationType interpolationPos;
     public InterpolationType interpolationAngle;
+
+    /* Speed related cache data */
+    private float lastTick;
+    private Point lastPoint = new Point(0, 0, 0);
+    private Point tmpPoint = new Point(0, 0, 0);
+
+    public PathFixture()
+    {
+        super(0);
+
+        this.speed = new KeyframeChannel();
+    }
 
     public PathFixture(long duration)
     {
@@ -40,6 +71,8 @@ public class PathFixture extends AbstractFixture
 
         this.interpolationPos = type;
         this.interpolationAngle = type;
+        this.speed = new KeyframeChannel();
+        this.speed.insert(0, 1);
     }
 
     public DurablePosition getPoint(int index)
@@ -245,18 +278,156 @@ public class PathFixture extends AbstractFixture
             x = x - index;
         }
 
-        this.apply(pos, index, x);
+        /* If use speed is enabled */
+        if (this.useSpeed)
+        {
+            float tick = ticks + partialTicks;
+
+            /* Just calculate enough for the speed for the difference */
+            if (tick != this.lastTick)
+            {
+                this.applyPoint(this.lastPoint, 0, 0);
+                this.recalculate(tick, pos.angle);
+                pos.point.set(this.lastPoint.x, this.lastPoint.y, this.lastPoint.z);
+            }
+            else
+            {
+                pos.point.set(this.lastPoint.x, this.lastPoint.y, this.lastPoint.z);
+            }
+
+            this.lastTick = tick;
+        }
+        else
+        {
+            this.applyAngle(pos.angle, index, x);
+            this.applyPoint(pos.point, index, x);
+        }
     }
 
     /**
-     * Apply interpolation and stuff
-     *
-     * Basic if-else, because I'm really lazy to write clever implementation,
-     * lol.
+     * Recalculate speed based thing
      */
-    private void apply(Position pos, int index, float progress)
+    private void recalculate(float tick, Angle angle)
+    {
+        /* Calculate the distance which must be reached */
+        float target = 0F;
+
+        for (int i = 0, c = (int) tick; i < c; i++)
+        {
+            target += this.speed.interpolate(i);
+        }
+
+        target += this.speed.interpolate(tick) * (tick % 1);
+        target /= 20F;
+
+        /* Try to calculate the actual distance traveled */
+        int index = 0;
+        float progress = 0;
+        float distance = 0;
+        float factor = 0.1F;
+        float diff = Math.abs(target - distance);
+
+        while (diff > 0.0005F)
+        {
+            progress += factor;
+
+            if (factor == 0 || Math.abs(factor) < 0.0000001F)
+            {
+                return;
+            }
+
+            if (progress > 1)
+            {
+                if (index >= this.points.size() - 1)
+                {
+                    this.applyPoint(this.lastPoint, index, 1);
+
+                    break;
+                }
+                else
+                {
+                    progress = progress % 1;
+                    index++;
+                }
+            }
+            else if (progress < 0)
+            {
+                if (index <= 0)
+                {
+                    progress = 0;
+                    factor *= -0.5F;
+
+                    if (factor == 0 || factor == -0)
+                    {
+                        factor = 0.05F;
+                    }
+                }
+                else
+                {
+                    progress = 1 + progress % 1;
+                    index--;
+                }
+            }
+
+            this.applyPoint(this.tmpPoint, index, progress);
+            float dx = this.tmpPoint.x - this.lastPoint.x;
+            float dy = this.tmpPoint.y - this.lastPoint.y;
+            float dz = this.tmpPoint.z - this.lastPoint.z;
+            this.lastPoint.set(this.tmpPoint.x, this.tmpPoint.y, this.tmpPoint.z);
+
+            distance += Math.sqrt(dx * dx + dy * dy + dz * dz) * (factor > 0 ? 1 : -1);
+
+            if (diff < Math.abs(target - distance))
+            {
+                factor *= -0.5F;
+            }
+
+            diff = Math.abs(target - distance);
+        }
+
+        this.applyAngle(angle, index, progress);
+    }
+
+    /**
+     * Apply point 
+     */
+    private void applyPoint(Point point, int index, float progress)
     {
         float x, y, z;
+
+        Position p0 = this.getPoint(index - 1);
+        Position p1 = this.getPoint(index);
+        Position p2 = this.getPoint(index + 1);
+        Position p3 = this.getPoint(index + 2);
+
+        /* Interpolating the position */
+        if (this.interpolationPos.equals(InterpolationType.CUBIC))
+        {
+            x = Interpolations.cubic(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
+            y = Interpolations.cubic(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
+            z = Interpolations.cubic(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
+        }
+        else if (this.interpolationPos.equals(InterpolationType.HERMITE))
+        {
+            x = (float) Interpolations.cubicHermite(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
+            y = (float) Interpolations.cubicHermite(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
+            z = (float) Interpolations.cubicHermite(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
+        }
+        else
+        {
+            x = Interpolations.lerp(p1.point.x, p2.point.x, progress);
+            y = Interpolations.lerp(p1.point.y, p2.point.y, progress);
+            z = Interpolations.lerp(p1.point.z, p2.point.z, progress);
+        }
+
+        point.set(x, y, z);
+    }
+
+    /**
+     * Apply angle  
+     */
+    private void applyAngle(Angle angle, int index, float progress)
+    {
         float yaw, pitch, roll, fov;
 
         if (this.interpolationPos == null)
@@ -297,28 +468,7 @@ public class PathFixture extends AbstractFixture
             fov = Interpolations.lerp(p1.angle.fov, p2.angle.fov, progress);
         }
 
-        /* Interpolating the position */
-        if (this.interpolationPos.equals(InterpolationType.CUBIC))
-        {
-            x = Interpolations.cubic(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
-            y = Interpolations.cubic(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
-            z = Interpolations.cubic(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
-        }
-        else if (this.interpolationPos.equals(InterpolationType.HERMITE))
-        {
-            x = (float) Interpolations.cubicHermite(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
-            y = (float) Interpolations.cubicHermite(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
-            z = (float) Interpolations.cubicHermite(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
-        }
-        else
-        {
-            x = Interpolations.lerp(p1.point.x, p2.point.x, progress);
-            y = Interpolations.lerp(p1.point.y, p2.point.y, progress);
-            z = Interpolations.lerp(p1.point.z, p2.point.z, progress);
-        }
-
-        pos.point.set(x, y, z);
-        pos.angle.set(yaw, pitch, roll, fov);
+        angle.set(yaw, pitch, roll, fov);
     }
 
     /* Save/load methods */
@@ -357,6 +507,9 @@ public class PathFixture extends AbstractFixture
         {
             this.addPoint(DurablePosition.fromByteBuf(buffer));
         }
+
+        this.useSpeed = buffer.readBoolean();
+        this.speed.fromByteBuf(buffer);
     }
 
     @Override
@@ -374,6 +527,9 @@ public class PathFixture extends AbstractFixture
         {
             pos.toByteBuf(buffer);
         }
+
+        buffer.writeBoolean(this.useSpeed);
+        this.speed.toByteBuf(buffer);
     }
 
     @Override
@@ -391,6 +547,9 @@ public class PathFixture extends AbstractFixture
         fixture.perPointDuration = this.perPointDuration;
         fixture.interpolationPos = this.interpolationPos;
         fixture.interpolationAngle = this.interpolationAngle;
+
+        fixture.useSpeed = this.useSpeed;
+        fixture.speed.copy(this.speed);
 
         return fixture;
     }

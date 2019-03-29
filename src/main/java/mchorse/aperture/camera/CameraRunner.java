@@ -391,8 +391,8 @@ public class CameraRunner
     {
         EntityLivingBase camera = this.outside.active ? this.outside.camera : player;
 
-        camera.setLocationAndAngles(x, y, z, angle.yaw, angle.pitch);
-        camera.setPositionAndRotation(x, y, z, angle.yaw, angle.pitch);
+        camera.setLocationAndAngles(x, y, z, angle.yaw % 360, angle.pitch);
+        camera.setPositionAndRotation(x, y, z, angle.yaw % 360, angle.pitch);
         camera.rotationYawHead = camera.prevRotationYawHead = angle.yaw;
     }
 

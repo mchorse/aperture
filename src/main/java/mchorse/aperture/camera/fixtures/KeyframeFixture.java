@@ -26,32 +26,53 @@ public class KeyframeFixture extends AbstractFixture
     /* Different animatable channels */
 
     @Expose
-    public final KeyframeChannel x = new KeyframeChannel();
+    public final KeyframeChannel x;
 
     @Expose
-    public final KeyframeChannel y = new KeyframeChannel();
+    public final KeyframeChannel y;
 
     @Expose
-    public final KeyframeChannel z = new KeyframeChannel();
+    public final KeyframeChannel z;
 
     @Expose
-    public final KeyframeChannel yaw = new KeyframeChannel();
+    public final KeyframeChannel yaw;
 
     @Expose
-    public final KeyframeChannel pitch = new KeyframeChannel();
+    public final KeyframeChannel pitch;
 
     @Expose
-    public final KeyframeChannel roll = new KeyframeChannel();
+    public final KeyframeChannel roll;
 
     @Expose
-    public final KeyframeChannel fov = new KeyframeChannel();
+    public final KeyframeChannel fov;
 
     public KeyframeChannel[] channels;
+
+    public KeyframeFixture()
+    {
+        super(0);
+
+        this.x = new KeyframeChannel();
+        this.y = new KeyframeChannel();
+        this.z = new KeyframeChannel();
+        this.yaw = new KeyframeChannel();
+        this.pitch = new KeyframeChannel();
+        this.roll = new KeyframeChannel();
+        this.fov = new KeyframeChannel();
+        this.channels = new KeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
+    }
 
     public KeyframeFixture(long duration)
     {
         super(duration);
 
+        this.x = new KeyframeChannel();
+        this.y = new KeyframeChannel();
+        this.z = new KeyframeChannel();
+        this.yaw = new KeyframeChannel();
+        this.pitch = new KeyframeChannel();
+        this.roll = new KeyframeChannel();
+        this.fov = new KeyframeChannel();
         this.channels = new KeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
     }
 
@@ -446,7 +467,7 @@ public class KeyframeFixture extends AbstractFixture
 
     public static enum Interpolation
     {
-        CONST
+        CONST("const")
         {
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
@@ -454,7 +475,7 @@ public class KeyframeFixture extends AbstractFixture
                 return a.value;
             }
         },
-        LINEAR
+        LINEAR("linear")
         {
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
@@ -462,7 +483,7 @@ public class KeyframeFixture extends AbstractFixture
                 return Interpolations.lerp(a.value, b.value, x);
             }
         },
-        QUAD
+        QUAD("quad")
         {
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
@@ -479,7 +500,7 @@ public class KeyframeFixture extends AbstractFixture
                 return a.value - (b.value - a.value) / 2 * (x * (x - 2) - 1);
             }
         },
-        CUBIC
+        CUBIC("cubic")
         {
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
@@ -500,7 +521,7 @@ public class KeyframeFixture extends AbstractFixture
                 return a.value + (b.value - a.value) / 2 * (x * x * x + 2);
             }
         },
-        HERMITE
+        HERMITE("hermite")
         {
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
@@ -508,7 +529,7 @@ public class KeyframeFixture extends AbstractFixture
                 return (float) Interpolations.cubicHermite(a.prev.value, a.value, b.value, b.next.value, x);
             }
         },
-        EXP
+        EXP("exp")
         {
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
@@ -528,7 +549,7 @@ public class KeyframeFixture extends AbstractFixture
                 return a.value + (b.value - a.value) / 2 * (float) (-Math.pow(2, -10 * x) + 2);
             }
         },
-        BEZIER
+        BEZIER("bezier")
         {
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
@@ -554,6 +575,13 @@ public class KeyframeFixture extends AbstractFixture
                 return Interpolations.bezier(0, y1, y2, 1, Interpolations.bezierX(x1, x2, x)) * h + a.value;
             }
         };
+
+        public final String key;
+
+        private Interpolation(String key)
+        {
+            this.key = key;
+        }
 
         public abstract float interpolate(Keyframe a, Keyframe b, float x);
     }
