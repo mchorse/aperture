@@ -3,15 +3,15 @@ aperture.info:
     camera:
         duration:
             fixture: "{f}在索引 %s{f} 的相機關鍵點持續時長為 %s{f} ticks。"
-            profile: "{f}攝像機配置時長為 %s{f} ticks，並且有 %s{f} 個關鍵點。"
+            profile: "{f}攝影機配置時長為 %s{f} ticks，並且有 %s{f} 個關鍵點。"
 
         # Camera roll and fov
-        fov: "{f}妳的 FOV 為 %s{f} 度。"
-        roll: "{f}妳的傾斜度為 %s{f} 度。"
+        fov: "{f}你的 FOV 為 %s{f} 度。"
+        roll: "{f}你的傾斜度為 %s{f} 度。"
 
     # General command infos
     commands:
-        load_chunks: "{f}已加載在渲染範圍裏的已創建區塊。"
+        load_chunks: "{f}已載入在渲染範圍裡的已創建區塊。"
 
         replace_texture: "{f}材質 %s{f} 已被材質 %s{f} 替換。"
         restore_texture: "{f}材質 %s{f} 已經還原為初始狀態。"
@@ -19,7 +19,7 @@ aperture.info:
 
     # Camera profile
     profile:
-        new: "{f}已創建壹個新的相機配置文件，命名為 %s{f}。"
-        loaded: "{f}名稱為 %s{f} 的相機配置文件已被加載！"
-        start: "{f}目前的相機配置已經在運行。"
-        stop: "{f}目前運行的相機配置已停止。"
+        new: "{f}已創建一個新的相機配置檔案，命名為 %s{f}。"
+        loaded: "{f}名稱為 %s{f} 的相機配置檔案已被載入！"
+        start: "{f}目前的相機配置已經在執行。"
+        stop: "{f}目前執行的相機配置已停止。"
