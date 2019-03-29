@@ -130,6 +130,7 @@ aperture.gui:
         selector: 選取器
         per_point: 持續長度/節點
         to_keyframe: 生成關鍵幀
+        use_speed: 速率控制
 
         all: 全部
         tick: Tick

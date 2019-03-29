@@ -18,12 +18,14 @@ aperture.config.comments:
         gui_render_mouse: 在開啟 GUI 的時候渲染出游標的材質
         minecrafttp_teleport: 當在多人遊戲時開始相機回放，使用 /minecraft:tp 來瞬移（針對於安裝了 Essentials 插件的伺服器）
         tp_teleport: 當在多人遊戲時開始相機回放，使用 /tp 來瞬移（針對於原版和 Forge 等伺服器）
+        aspect_ratio: 用來設置畫面黑框的縱橫比例
 
-        camera_outside: 攝影機是否應該與玩家分離開來播放（允許玩家作為一個真實演員）？
-        camera_outside_hide_player: 在開啟分離攝影機模式時，播放器是否應該在播放的時候隱藏？
-        camera_outside_sky: 如果開啟，會修復天空，但會關閉區塊選區（因為有一個 bug）
-        camera_outside_hide_guis: 防止在分離攝影機模式中渲染 GUI
-        camera_outside_hide_overlays: 防止在分離攝影機模式中渲染屏幕附加層（比如南瓜燈的光，正在燃燒的火，水等等）
+        outside:
+            camera_outside: 攝影機是否應該與玩家分離開來播放（允許玩家作為一個真實演員）？
+            camera_outside_hide_player: 在開啟分離攝影機模式時，播放器是否應該在播放的時候隱藏？
+            camera_outside_sky: 如果開啟，會修復天空，但會關閉區塊選區（因為有一個 bug）
+            camera_outside_hide_guis: 防止在分離攝影機模式中渲染 GUI
+            camera_outside_hide_overlays: 防止在分離攝影機模式中渲染屏幕附加層（比如南瓜燈的光，正在燃燒的火，水等等）
 
     smooth:
         camera_smooth_clamp: 在 －90 和 90 度之間，修剪平滑相機的俯仰程度？嗡!嗡!嗡!

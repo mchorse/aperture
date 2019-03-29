@@ -23,6 +23,7 @@ aperture.config:
 
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
+        aspect_ratio: 縱橫比例  
 
     outside: 
         title: 分離攝像機模式
