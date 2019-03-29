@@ -211,6 +211,11 @@ public class KeyframeFixture extends AbstractFixture
          */
         public float interpolate(float ticks)
         {
+            if (this.keyframes.isEmpty())
+            {
+                return 0;
+            }
+
             Keyframe prev = this.keyframes.get(0);
 
             if (ticks < prev.tick)

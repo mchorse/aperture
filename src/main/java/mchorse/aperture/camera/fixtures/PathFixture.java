@@ -327,12 +327,15 @@ public class PathFixture extends AbstractFixture
         float factor = 0.1F;
         float diff = Math.abs(target - distance);
 
-        while (diff > 0.0005F)
+        while (diff > 0.00005F)
         {
             progress += factor;
 
             if (factor == 0 || Math.abs(factor) < 0.0000001F)
             {
+                this.applyPoint(this.lastPoint, index, progress);
+                this.applyAngle(angle, index, progress);
+
                 return;
             }
 
@@ -341,6 +344,7 @@ public class PathFixture extends AbstractFixture
                 if (index >= this.points.size() - 1)
                 {
                     this.applyPoint(this.lastPoint, index, 1);
+                    this.applyAngle(angle, index, progress);
 
                     break;
                 }
