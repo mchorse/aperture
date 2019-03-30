@@ -75,7 +75,7 @@ aperture.gui:
         math: 数学
         look: 看
         follow: 跟踪
-        translate: 翻译
+        translate: 平移
         angle: 角度
         orbit: 轨道
         drag: 拖拽
