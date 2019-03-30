@@ -75,7 +75,7 @@ aperture.gui:
         math: 数学
         look: 看
         follow: 跟踪
-        translate: 翻译
+        translate: 平移
         angle: 角度
         orbit: 轨道
         drag: 拖拽
@@ -130,6 +130,7 @@ aperture.gui:
         selector: 选择器
         per_point: 持续长度/节点
         to_keyframe: 生成关键帧
+        use_speed: 速率控制
 
         all: 全部
         tick: Tick

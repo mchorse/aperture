@@ -4,7 +4,7 @@ aperture.config:
         title: 相機
         tooltip: 通用相機配置
 
-        camera_duration: 默認關鍵點時長
+        camera_duration: 預設關鍵點時長
         camera_duration_step: 時長步驟
         camera_interpolate_target: 插入以目標為基礎的幀
         camera_interpolate_target_value: 插入以目標為基礎的值
@@ -12,17 +12,18 @@ aperture.config:
         camera_step_factor: 相機路徑參數
         camera_rotate_factor: 相機傾斜參數
         camera_minema: Minema
-        camera_path_default_interp: 默認插入路徑類型
+        camera_path_default_interp: 預設插入路徑類型
         camera_command_name: 相機命令名稱
         camera_simulate_velocity: 模擬速率
-        camera_first_tick_zero: 第壹幀為 0
+        camera_first_tick_zero: 第一幀為 0
         camera_debug_ticks: Debug ticks
         camera_profile_render: 渲染相機配置
 
-        gui_render_mouse: 在 GUI 中渲染出鼠標指針
+        gui_render_mouse: 在 GUI 中渲染出滑鼠指針
 
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
+        aspect_ratio: 縱橫比例  
 
     outside: 
         title: 分離攝像機模式
@@ -47,5 +48,5 @@ aperture.config:
         fov_friction: FOV 摩擦力
 
         smooth_enabled: 開啟平滑相機
-        mouse_x_friction: 鼠標 X 軸摩擦力
-        mouse_y_friction: 鼠標 Y 軸摩擦力
+        mouse_x_friction: 滑鼠 X 軸摩擦力
+        mouse_y_friction: 滑鼠 Y 軸摩擦力
