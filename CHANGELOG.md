@@ -2,6 +2,40 @@
 
 Aperture's change log.
 
+## Aperture 1.3
+
+This is a massive update which adds a lot of advanced camera features which would make 
+
+* Added zooming and scrolling to time line bar
+* Added rule of thirds camera option (suggested by Sanchan, Agirres and 5DF)
+* Added letterbox camera option with configurable aspect ratio (suggested by SeanFilmProduction, Agirres, 5DF, Andruxioid and few others)
+* Added keybinds to vertically or horizontally move keyframes while holding Ctrl or Shift keys (suggested by GroupM and Agirres)
+* Added `hermite` interpolation to keyframe fixture
+* Added duplicate camera profile button in profile manager
+* Added `[`, `]` and `'`, `\` keybinds to control FOV and camera roll in flight mode (respectively)
+* Added search bar to profile manager (suggested by Agirres)
+* Added `null` fixture which acts like a placeholder for next/previous fixture (suggested by Agirres)
+* Added dropdown to pick interpolation in keyframe fixture editor (suggested by Agirres)
+* Added proper zooming and value marks into graph viewer in keyframe fixture editor
+* Added keybinds to add and remove keyframe in the keyframe fixture edutir (+ and -)
+* Added keyframe-able velocity control to path fixture (suggested by terbin)
+* Changed duration dragging to react not immediately, but rather after mouse move (reported by Andruxioid)
+* Changed buttons places in profile manager (suggested by Agirres)
+* Changed the player's game mode to spectator mode when spectator is enabling and entering the camera editor
+* Changed camera runner and camera editor to restore last roll
+* Changed tick field in keyframe fixture integer only
+* Fixed translation interpolation and easing localization keys
+* Fixed `bezier` interpolation to have proper mathematical implementation
+* Fixed crash related to dragging keyframe tick/value when no keyframe selected
+* Fixed crash related to shifting duration
+* Fixed crash in camera runner (reported by STH)
+* Fixed look modifier GUI elements (reported by Lycoon)
+* Fixed issue with incorrect fixture placement when adding new
+* Fixed `360˚`+ seizure-like yaw (reported by BenyangOVO, ycwei982, Lycoon and terbin)
+* Fixed circular fixture not setting FOV and roll (reported by Agirres)
+* Removed `look` and `follow` fixtures (use modifiers counterparts)
+* Removed lots of old camera editing sub-commands
+
 ## Aperture 1.2
 
 This is a major update which features a new camera fixture called **keyframe fixture** and complete rewrite of GUI code (which allows Blockbuster to more control over integration).
