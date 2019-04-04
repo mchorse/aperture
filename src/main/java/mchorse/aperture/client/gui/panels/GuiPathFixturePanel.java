@@ -69,9 +69,11 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.point.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -80);
         this.interp.resizer().parent(this.area).set(0, 60, 80, 45);
         this.points.resizer().parent(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
-        this.perPointDuration.resizer().parent(this.area).set(0, 110, this.perPointDuration.button.width, 11);
-        this.useSpeed.resizer().parent(this.area).set(0, 126, this.perPointDuration.button.width, 11);
-        this.toKeyframe.resizer().relative(this.useSpeed.resizer()).set(0, 16, 100, 20);
+        this.toKeyframe.resizer().relative(this.interp.resizer()).set(0, 50, 100, 20);
+
+        this.perPointDuration.resizer().relative(this.name.resizer()).set(0, -16, this.perPointDuration.button.width, 11);
+        this.useSpeed.resizer().relative(this.perPointDuration.resizer()).set(this.perPointDuration.button.width + 10, 0, this.useSpeed.button.width, 11);
+
         this.speed.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
 
         this.children.add(this.point, this.angle, this.interp, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points);
