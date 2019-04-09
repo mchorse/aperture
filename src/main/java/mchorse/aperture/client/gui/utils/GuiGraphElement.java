@@ -451,7 +451,9 @@ public class GuiGraphElement extends GuiElement
             }
             else if (this.which == -1 && this.parent != null)
             {
-                this.parent.editor.scrub.setValueFromScrub((int) x);
+                long offset = this.parent.editor.getProfile().calculateOffset(this.parent.fixture);
+
+                this.parent.editor.scrub.setValueFromScrub((int) (x + offset));
             }
 
             this.setKeyframe(this.getCurrent());
