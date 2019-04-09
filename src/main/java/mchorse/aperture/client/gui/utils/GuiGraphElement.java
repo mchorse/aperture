@@ -32,7 +32,7 @@ public class GuiGraphElement extends GuiElement
     public int selected = -1;
 
     public boolean sliding = false;
-    private boolean dragging = false;
+    public boolean dragging = false;
     private boolean moving = false;
     private boolean scrolling = false;
     private int which = 0;
@@ -41,8 +41,8 @@ public class GuiGraphElement extends GuiElement
     private float lastT;
     private float lastV;
 
-    private int shiftX = 0;
-    private int shiftY = 0;
+    private float shiftX = 0;
+    private float shiftY = 0;
     private float zoomX = 1;
     private float zoomY = 1;
     private int multX = 1;
@@ -64,22 +64,22 @@ public class GuiGraphElement extends GuiElement
 
     public int toGraphX(float tick)
     {
-        return (int) (tick * this.zoomX - this.shiftX) + this.area.x;
+        return (int) ((tick - this.shiftX) * this.zoomX) + this.area.getX(0.5F);
     }
 
     public int toGraphY(float value)
     {
-        return (int) (-value * this.zoomY + this.shiftY) + this.area.y;
+        return (int) ((-value + this.shiftY) * this.zoomY) + this.area.getY(0.5F);
     }
 
     public float fromGraphX(int mouseX)
     {
-        return (mouseX - this.area.x + this.shiftX) / this.zoomX;
+        return (mouseX - this.area.getX(0.5F)) / this.zoomX + this.shiftX;
     }
 
     public float fromGraphY(int mouseY)
     {
-        return -(mouseY - this.area.y - this.shiftY) / this.zoomY;
+        return -((mouseY - this.area.getY(0.5F)) / this.zoomY - this.shiftY);
     }
 
     public int getOffset()
@@ -122,7 +122,7 @@ public class GuiGraphElement extends GuiElement
             if (Math.abs(maxY - minY) < 0.01F)
             {
                 /* Centerize */
-                this.shiftY = (int) ((minY + this.area.h / 2 / this.zoomY) * this.zoomY);
+                this.shiftY = minY;
             }
             else
             {
@@ -131,7 +131,7 @@ public class GuiGraphElement extends GuiElement
                 minY -= 20 * (1 / this.zoomY);
                 maxY += 20 * (1 / this.zoomY);
                 this.zoomY = 1 / ((maxY - minY) / this.area.h);
-                this.shiftY = (int) (maxY * this.zoomY);
+                this.shiftY = (maxY + minY) / 2F;
             }
 
             /* Spread apart horizontally */
@@ -140,11 +140,11 @@ public class GuiGraphElement extends GuiElement
             maxX += 20 * (1 / this.zoomX);
             this.zoomX = 1 / ((maxX - minX) / this.area.w);
 
-            this.shiftX = (int) (minX * this.zoomX);
+            this.shiftX = (maxX + minX) / 2F;
         }
         else if (c > 0)
         {
-            this.shiftY = (int) ((this.channel.get(0).value + this.area.h / 2 / this.zoomY) * this.zoomY);
+            this.shiftY = this.channel.get(0).value;
         }
 
         this.recalcMultipliers();
@@ -247,11 +247,17 @@ public class GuiGraphElement extends GuiElement
                         this.lastY = mouseY;
                         this.dragging = true;
 
-                        break;
+                        return true;
                     }
 
                     prev = frame;
                     index++;
+                }
+
+                if (this.parent != null)
+                {
+                    this.dragging = true;
+                    this.which = -1;
                 }
             }
             else if (mouseButton == 2)
@@ -259,6 +265,8 @@ public class GuiGraphElement extends GuiElement
                 this.scrolling = true;
                 this.lastX = mouseX;
                 this.lastY = mouseY;
+                this.lastT = this.shiftX;
+                this.lastV = this.shiftY;
             }
 
             return true;
@@ -297,7 +305,6 @@ public class GuiGraphElement extends GuiElement
 
             /* Scaling X */
             float scaleX = this.zoomX;
-            int valueX = (int) (this.fromGraphX(mouseX) * scaleX);
 
             if (x && !y || none)
             {
@@ -305,24 +312,13 @@ public class GuiGraphElement extends GuiElement
                 this.zoomX = MathHelper.clamp_float(this.zoomX, 0.01F, 50F);
             }
 
-            if (this.zoomX != scaleX)
-            {
-                this.shiftX = (int) ((valueX - (valueX - this.shiftX) * (scaleX / this.zoomX)) * (this.zoomX / scaleX));
-            }
-
             /* Scaling Y */
             float scaleY = this.zoomY;
-            int valueY = (int) (this.fromGraphY(mouseY) * scaleY);
 
             if (y && !x || none)
             {
                 this.zoomY += Math.copySign(this.getZoomFactor(scaleY), scroll);
                 this.zoomY = MathHelper.clamp_float(this.zoomY, 0.01F, 50F);
-            }
-
-            if (this.zoomY != scaleY)
-            {
-                this.shiftY = (int) ((valueY - (valueY - this.shiftY) * (scaleY / this.zoomY)) * (this.zoomY / scaleY));
             }
 
             this.recalcMultipliers();
@@ -338,12 +334,13 @@ public class GuiGraphElement extends GuiElement
      */
     private float getZoomFactor(float zoom)
     {
-        zoom = Math.max(this.zoomX, this.zoomY);
+        float factor = 0;
 
-        float factor = 0.1F;
-
-        if (zoom < 0.1F) factor = 0.025F;
-        else if (zoom < 1) factor = 0.25F;
+        if (zoom < 0.2F) factor = 0.005F;
+        else if (zoom < 1.0F) factor = 0.025F;
+        else if (zoom < 2.0F) factor = 0.1F;
+        else if (zoom < 15.0F) factor = 0.5F;
+        else if (zoom <= 50.0F) factor = 1F;
 
         return factor;
     }
@@ -414,11 +411,8 @@ public class GuiGraphElement extends GuiElement
 
         if (this.scrolling)
         {
-            this.shiftX -= mouseX - this.lastX;
-            this.shiftY += mouseY - this.lastY;
-
-            this.lastX = mouseX;
-            this.lastY = mouseY;
+            this.shiftX = -(mouseX - this.lastX) / this.zoomX + this.lastT;
+            this.shiftY = (mouseY - this.lastY) / this.zoomY + this.lastV;
         }
         /* Move the current keyframe */
         else if (this.moving)
@@ -456,6 +450,10 @@ public class GuiGraphElement extends GuiElement
                     frame.lx = frame.rx;
                     frame.ly = -frame.ry;
                 }
+            }
+            else if (this.parent != null)
+            {
+                this.parent.editor.scrub.setValueFromScrub((int) x);
             }
 
             this.setKeyframe(this.getCurrent());

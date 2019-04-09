@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.lwjgl.input.Keyboard;
-
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
@@ -24,7 +22,6 @@ import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -170,18 +167,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public void keyTyped(char typedChar, int keyCode)
     {
         super.keyTyped(typedChar, keyCode);
-
-        if (this.graph.area.isInside(this.lastX, this.lastY) && !this.hasActiveTextfields())
-        {
-            if (keyCode == Keyboard.KEY_EQUALS && GuiScreen.isShiftKeyDown())
-            {
-                this.graph.addKeyframe();
-            }
-            else if (keyCode == Keyboard.KEY_MINUS)
-            {
-                this.graph.removeKeyframe();
-            }
-        }
+        /* TODO: remove method */
     }
 
     @Override
