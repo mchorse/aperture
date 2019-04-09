@@ -35,7 +35,7 @@ public class GuiGraphElement extends GuiElement
     public boolean dragging = false;
     private boolean moving = false;
     private boolean scrolling = false;
-    private int which = 0;
+    public int which = 0;
     private int lastX;
     private int lastY;
     private float lastT;
@@ -215,6 +215,8 @@ public class GuiGraphElement extends GuiElement
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        this.which = -1;
+
         if (super.mouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
@@ -247,7 +249,7 @@ public class GuiGraphElement extends GuiElement
                         this.lastY = mouseY;
                         this.dragging = true;
 
-                        return true;
+                        return false;
                     }
 
                     prev = frame;
@@ -257,7 +259,6 @@ public class GuiGraphElement extends GuiElement
                 if (this.parent != null)
                 {
                     this.dragging = true;
-                    this.which = -1;
                 }
             }
             else if (mouseButton == 2)
@@ -268,8 +269,6 @@ public class GuiGraphElement extends GuiElement
                 this.lastT = this.shiftX;
                 this.lastV = this.shiftY;
             }
-
-            return true;
         }
 
         return false;
@@ -366,11 +365,10 @@ public class GuiGraphElement extends GuiElement
             {
                 this.parent.editor.updateProfile();
             }
-
-            this.dragging = false;
-            this.moving = false;
         }
 
+        this.dragging = false;
+        this.moving = false;
         this.scrolling = false;
     }
 
@@ -451,7 +449,7 @@ public class GuiGraphElement extends GuiElement
                     frame.ly = -frame.ry;
                 }
             }
-            else if (this.parent != null)
+            else if (this.which == -1 && this.parent != null)
             {
                 this.parent.editor.scrub.setValueFromScrub((int) x);
             }

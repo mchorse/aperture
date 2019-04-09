@@ -52,7 +52,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         super(mc, editor);
 
         this.buttons = new GuiElements<>();
-        this.graph = new GuiFixtureGraphEditor(mc, this);
+        this.graph = new GuiKeyframeFixtureGraphEditor(mc, this);
 
         this.all = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
         this.x = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
@@ -242,18 +242,22 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
 
         @Override
-        public void addKeyframe()
+        public void addKeyframe(long tick, float value)
         {
-            super.addKeyframe();
+            super.addKeyframe(tick, value);
 
             if (this.graph.channel == this.parent.allChannel)
             {
                 Position pos = new Position(Minecraft.getMinecraft().thePlayer);
+                /* Hey now, you're an */
                 AllKeyframe allStar = (AllKeyframe) this.graph.getCurrent();
-                float value = 0;
+                /* Get your game on, go play */
+                value = 0;
 
+                /* Hey now, you're a rock star */
                 for (KeyframeChannel channel : this.parent.fixture.channels)
                 {
+                    /* Get the show on, get paid */
                     if (channel == this.parent.fixture.x) value = pos.point.x;
                     if (channel == this.parent.fixture.y) value = pos.point.y;
                     if (channel == this.parent.fixture.z) value = pos.point.z;
@@ -262,8 +266,10 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                     if (channel == this.parent.fixture.roll) value = pos.angle.roll;
                     if (channel == this.parent.fixture.fov) value = pos.angle.fov;
 
-                    int index = channel.insert(this.getTick(), value);
+                    /* And all that glitters is gold */
+                    int index = channel.insert(tick, value);
 
+                    /* Only shooting stars break the mold */
                     allStar.keyframes.add(new KeyframeCell(channel.getKeyframes().get(index), channel));
                 }
             }

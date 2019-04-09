@@ -200,6 +200,11 @@ public class KeyframeFixture extends AbstractFixture
 
         public void remove(int index)
         {
+            if (index < 0 || index > this.keyframes.size() - 1)
+            {
+                return;
+            }
+
             Keyframe frame = this.keyframes.remove(index);
 
             frame.prev.next = frame.next;
