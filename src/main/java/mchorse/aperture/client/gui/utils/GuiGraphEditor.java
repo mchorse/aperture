@@ -28,6 +28,9 @@ public class GuiGraphEditor extends GuiElement
     public GuiButtonElement<GuiButton> add;
     public GuiButtonElement<GuiButton> remove;
 
+    private int clicks;
+    private long clickTimer;
+
     public GuiGraphEditor(Minecraft mc)
     {
         super(mc);
@@ -74,12 +77,61 @@ public class GuiGraphEditor extends GuiElement
         this.frameButtons.add(this.interp, this.easing, this.tick, this.value, this.interpolations);
     }
 
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        if (super.mouseClicked(mouseX, mouseY, mouseButton))
+        {
+            return true;
+        }
+
+        if (this.graph.area.isInside(mouseX, mouseY))
+        {
+            /* On double click add or remove a keyframe */
+            if (mouseButton == 0)
+            {
+                long time = System.currentTimeMillis();
+
+                if (time - this.clickTimer < 175)
+                {
+                    this.clicks++;
+
+                    if (this.clicks >= 1)
+                    {
+                        this.clicks = 0;
+
+                        if (this.graph.which == -1)
+                        {
+                            this.addKeyframe((long) this.graph.fromGraphX(mouseX), this.graph.fromGraphY(mouseY));
+                        }
+                        else if (this.graph.which == 0)
+                        {
+                            this.removeKeyframe();
+                        }
+                    }
+                }
+                else
+                {
+                    this.clicks = 0;
+                }
+
+                this.clickTimer = time;
+            }
+        }
+
+        return false;
+    }
+
     public void addKeyframe()
+    {
+        this.addKeyframe(this.getTick(), this.getValue());
+    }
+
+    public void addKeyframe(long tick, float value)
     {
         Easing easing = Easing.IN;
         Interpolation interp = Interpolation.LINEAR;
         Keyframe frame = this.graph.getCurrent();
-        long tick = this.getTick();
         long oldTick = tick;
 
         if (frame != null)
@@ -89,7 +141,7 @@ public class GuiGraphEditor extends GuiElement
             oldTick = frame.tick;
         }
 
-        this.graph.selected = this.graph.channel.insert(tick, this.getValue());
+        this.graph.selected = this.graph.channel.insert(tick, value);
 
         if (oldTick != tick)
         {

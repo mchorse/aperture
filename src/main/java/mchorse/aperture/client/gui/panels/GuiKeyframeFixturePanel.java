@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.lwjgl.input.Keyboard;
-
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
@@ -24,7 +22,6 @@ import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -55,7 +52,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         super(mc, editor);
 
         this.buttons = new GuiElements<>();
-        this.graph = new GuiFixtureGraphEditor(mc, this);
+        this.graph = new GuiKeyframeFixtureGraphEditor(mc, this);
 
         this.all = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
         this.x = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
@@ -170,18 +167,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public void keyTyped(char typedChar, int keyCode)
     {
         super.keyTyped(typedChar, keyCode);
-
-        if (this.graph.area.isInside(this.lastX, this.lastY) && !this.hasActiveTextfields())
-        {
-            if (keyCode == Keyboard.KEY_EQUALS && GuiScreen.isShiftKeyDown())
-            {
-                this.graph.addKeyframe();
-            }
-            else if (keyCode == Keyboard.KEY_MINUS)
-            {
-                this.graph.removeKeyframe();
-            }
-        }
+        /* TODO: remove method */
     }
 
     @Override
@@ -256,18 +242,23 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
 
         @Override
-        public void addKeyframe()
+        public void addKeyframe(long tick, float value)
         {
-            super.addKeyframe();
+            super.addKeyframe(tick, value);
 
             if (this.graph.channel == this.parent.allChannel)
             {
                 Position pos = new Position(Minecraft.getMinecraft().player);
-                AllKeyframe allStar = (AllKeyframe) this.graph.getCurrent();
-                float value = 0;
 
+                /* Hey now, you're an */
+                AllKeyframe allStar = (AllKeyframe) this.graph.getCurrent();
+                /* Get your game on, go play */
+                value = 0;
+
+                /* Hey now, you're a rock star */
                 for (KeyframeChannel channel : this.parent.fixture.channels)
                 {
+                    /* Get the show on, get paid */
                     if (channel == this.parent.fixture.x) value = pos.point.x;
                     if (channel == this.parent.fixture.y) value = pos.point.y;
                     if (channel == this.parent.fixture.z) value = pos.point.z;
@@ -276,8 +267,10 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                     if (channel == this.parent.fixture.roll) value = pos.angle.roll;
                     if (channel == this.parent.fixture.fov) value = pos.angle.fov;
 
-                    int index = channel.insert(this.getTick(), value);
+                    /* And all that glitters is gold */
+                    int index = channel.insert(tick, value);
 
+                    /* Only shooting stars break the mold */
                     allStar.keyframes.add(new KeyframeCell(channel.getKeyframes().get(index), channel));
                 }
             }
