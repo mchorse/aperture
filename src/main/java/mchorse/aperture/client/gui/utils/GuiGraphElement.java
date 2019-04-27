@@ -29,6 +29,7 @@ public class GuiGraphElement extends GuiElement
     public KeyframeChannel channel;
     public int duration;
     public int color;
+    public boolean bezier = true;
     public int selected = -1;
 
     public boolean sliding = false;
@@ -235,6 +236,11 @@ public class GuiGraphElement extends GuiElement
                     boolean left = prev != null && prev.interp == Interpolation.BEZIER && this.isInside(frame.tick - frame.lx, frame.value + frame.ly, mouseX, mouseY);
                     boolean right = frame.interp == Interpolation.BEZIER && this.isInside(frame.tick + frame.rx, frame.value + frame.ry, mouseX, mouseY);
                     boolean point = this.isInside(frame.tick, frame.value, mouseX, mouseY);
+
+                    if (!this.bezier)
+                    {
+                        left = right = false;
+                    }
 
                     if (left || right || point)
                     {
@@ -494,24 +500,35 @@ public class GuiGraphElement extends GuiElement
             this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
         }
 
+        /* Draw current point at the scrub */
+        if (this.parent != null)
+        {
+            int cx = (this.getOffset());
+            int cy = this.toGraphY(this.channel.interpolate(cx));
+
+            cx = this.toGraphX(cx);
+
+            Gui.drawRect(cx - 1, cy, cx + 1, h, 0xff57f52a);
+        }
+
         /* Draw graph of the keyframe channel */
-        GL11.glLineWidth(2);
-        GL11.glPointSize(8);
+        GL11.glLineWidth(3);
         GlStateManager.disableTexture2D();
 
         BufferBuilder vb = Tessellator.getInstance().getBuffer();
 
         GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         /* Colorize the graph for given channel */
         float r = (this.color >> 16 & 255) / 255.0F;
         float g = (this.color >> 8 & 255) / 255.0F;
         float b = (this.color & 255) / 255.0F;
 
-        GlStateManager.color(r, g, b, 0.75F);
+        GlStateManager.color(1, 1, 1, 1);
 
         /* Draw lines */
-        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
         Keyframe prev = null;
 
@@ -524,69 +541,93 @@ public class GuiGraphElement extends GuiElement
 
                 if (prev.interp == Interpolation.LINEAR)
                 {
-                    vb.pos(px, this.toGraphY(prev.value), 0).endVertex();
-                    vb.pos(fx, this.toGraphY(frame.value), 0).endVertex();
+                    vb.pos(px, this.toGraphY(prev.value), 0).color(r, g, b, 1).endVertex();
+                    vb.pos(fx, this.toGraphY(frame.value), 0).color(r, g, b, 1).endVertex();
                 }
                 else
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        vb.pos(px + (fx - px) * (i / 10F), this.toGraphY(prev.interpolate(frame, i / 10F)), 0).endVertex();
-                        vb.pos(px + (fx - px) * ((i + 1) / 10F), this.toGraphY(prev.interpolate(frame, (i + 1) / 10F)), 0).endVertex();
+                        vb.pos(px + (fx - px) * (i / 10F), this.toGraphY(prev.interpolate(frame, i / 10F)), 0).color(r, g, b, 1).endVertex();
+                        vb.pos(px + (fx - px) * ((i + 1) / 10F), this.toGraphY(prev.interpolate(frame, (i + 1) / 10F)), 0).color(r, g, b, 1).endVertex();
                     }
                 }
 
-                if (prev.interp == Interpolation.BEZIER)
+                if (prev.interp == Interpolation.BEZIER && this.bezier)
                 {
-                    vb.pos(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly), 0).endVertex();
-                    vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
+                    vb.pos(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly), 0).color(r, g, b, 0.6F).endVertex();
+                    vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 0.6F).endVertex();
                 }
             }
 
             if (prev == null)
             {
-                vb.pos(0, this.toGraphY(frame.value), 0).endVertex();
-                vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
+                vb.pos(0, this.toGraphY(frame.value), 0).color(r, g, b, 1).endVertex();
+                vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 1).endVertex();
             }
 
-            if (frame.interp == Interpolation.BEZIER)
+            if (frame.interp == Interpolation.BEZIER && this.bezier)
             {
-                vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).endVertex();
-                vb.pos(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry), 0).endVertex();
+                vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 0.6F).endVertex();
+                vb.pos(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry), 0).color(r, g, b, 0.6F).endVertex();
             }
 
             prev = frame;
         }
 
-        vb.pos(this.toGraphX(prev.tick), this.toGraphY(prev.value), 0).endVertex();
-        vb.pos(w, this.toGraphY(prev.value), 0).endVertex();
+        vb.pos(this.toGraphX(prev.tick), this.toGraphY(prev.value), 0).color(r, g, b, 1).endVertex();
+        vb.pos(w, this.toGraphY(prev.value), 0).color(r, g, b, 1).endVertex();
 
         Tessellator.getInstance().draw();
 
         /* Draw points */
+        GL11.glPointSize(10);
+
         int i = 0;
         prev = null;
 
         for (Keyframe frame : this.channel.getKeyframes())
         {
             GL11.glBegin(GL11.GL_POINTS);
+
+            GL11.glColor4f(1, 1, 1, 1);
+            GL11.glVertex2f(this.toGraphX(frame.tick), this.toGraphY(frame.value));
+            GL11.glEnd();
+
+            prev = frame;
+            i++;
+        }
+
+        i = 0;
+        prev = null;
+        GL11.glPointSize(6);
+
+        for (Keyframe frame : this.channel.getKeyframes())
+        {
+            GL11.glBegin(GL11.GL_POINTS);
+
             if (this.selected == i)
             {
                 GL11.glColor3f(0, 0.5F, 1);
             }
             else
             {
-                GL11.glColor3f(1, 1, 1);
+                GL11.glColor3f(0, 0, 0);
             }
 
             GL11.glVertex2f(this.toGraphX(frame.tick), this.toGraphY(frame.value));
 
-            if (frame.interp == Interpolation.BEZIER)
+            if (this.selected != i)
+            {
+                GL11.glColor3f(1, 1, 1);
+            }
+
+            if (frame.interp == Interpolation.BEZIER && this.bezier)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry));
             }
 
-            if (prev != null && prev.interp == Interpolation.BEZIER)
+            if (prev != null && prev.interp == Interpolation.BEZIER && this.bezier)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly));
             }
@@ -595,17 +636,6 @@ public class GuiGraphElement extends GuiElement
 
             prev = frame;
             i++;
-        }
-
-        /* Draw current point at the scrub */
-        if (this.parent != null)
-        {
-            int cx = (this.getOffset());
-            int cy = this.toGraphY(this.channel.interpolate(cx));
-
-            cx = this.toGraphX(cx);
-
-            Gui.drawRect(cx - 1, cy - 1, cx + 1, h, 0xff57f52a);
         }
 
         GlStateManager.disableBlend();
