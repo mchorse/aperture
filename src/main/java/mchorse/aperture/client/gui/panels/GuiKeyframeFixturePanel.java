@@ -143,6 +143,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.graph.graph.channel = channel;
         this.graph.graph.resetView();
         this.graph.frameButtons.setVisible(false);
+        this.graph.graph.bezier = channel != this.allChannel;
     }
 
     @Override
