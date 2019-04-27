@@ -287,7 +287,7 @@ public class GuiPlaybackScrub extends GuiElement
                 int delta = mouseX - this.area.getX(0.5F);
                 int edge = (int) Math.copySign(this.area.w / 2 - 50, -delta) + delta;
 
-                if (Math.copySign(1, edge) == Math.copySign(1, delta))
+                if (Math.copySign(1, edge) == Math.copySign(1, delta) && delta != 0)
                 {
                     float factor = edge / 50F;
                     float scaleFactor = this.scale <= 1 ? 1F / this.scale : this.scale;
