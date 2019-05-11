@@ -32,6 +32,8 @@ aperture.gui:
         display_info: Отобразить позицию
         minecrafttp_teleport: Используйте /minecraft:tp
         tp_teleport: Используйте /tp
+        rule_of_thirds: Правило третей
+        letter_box: Каше
 
     tooltips:
         jump_next_fixture: Перейти к следующему клипу (Shift + Right)
@@ -61,10 +63,9 @@ aperture.gui:
     fixtures:
         idle: Вид
         path: Путь
-        look: Следить
-        follow: Следовать
         circular: Круг
         keyframe: Ключ
+        null: "Ноль"
 
     modifiers:
         title: Модификаторы
@@ -94,13 +95,15 @@ aperture.gui:
         title: Профили
         rename: Переименовать
 
+        rename_modal: Впишите новое имя для текущего профиля камеры.
         add_modal: Впишите имя для нового профиля камеры.
-        rename_modal: Впишите новое имя для текущего профиля камерыe.
+        dupe_modal: Type in a name for a duplicate of a camera profile.
         remove_modal: Вы уверенны, что хотите удалить этот профиль камеры (вернуть его будет уже невозможно)?
         
-        add_tooltip: Добавить профиль
         convert_tooltip: Конверитровать профиль
-        rename_tooltip: переименовать профиль
+        rename_tooltip: Переименовать профиль
+        add_tooltip: Добавить профиль
+        dupe_tooltip: Дублировать профиль
         remove_tooltip: Удалить профиль
 
     panels:
@@ -127,12 +130,24 @@ aperture.gui:
         selector: Селектор
         per_point: Поточечная длительность
         to_keyframe: Сгенерировать ключ
+        use_speed: Контроль скорости
 
         all: Всё
         tick: Тик
         value: Значение
 
+        previous: Предыдущий
+
         interps:
+            const: Постоянная
             linear: Линейная
             cubic: Кубическая
+            quad: Квадратическая
             hermite: Сплайновая
+            exp: Экспоненциальная
+            bezier: Безье
+
+        easing:
+            in: Ускорение
+            out: Замедление
+            inout: Торможение

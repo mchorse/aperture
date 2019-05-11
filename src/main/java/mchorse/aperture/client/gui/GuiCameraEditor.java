@@ -362,8 +362,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
             if (panel != null)
             {
-                panel.select(fixture, duration);
                 this.panel.setDelegate(panel);
+                panel.select(fixture, duration);
 
                 if (this.syncing)
                 {
