@@ -23,6 +23,7 @@ aperture.config:
 
         minecrafttp_teleport: Используйте /minecraft:tp
         tp_teleport: Используйте /tp
+        aspect_ratio: Пропорции
 
     outside: 
         title: Внешний режим
