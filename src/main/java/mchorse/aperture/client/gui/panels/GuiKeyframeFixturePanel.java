@@ -102,13 +102,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         super.select(fixture, duration);
 
-        this.allChannel.setFixture(fixture);
         this.graph.interpolations.setVisible(false);
         this.graph.graph.duration = (int) fixture.getDuration();
 
         if (!same)
         {
-            this.selectChannel(fixture.x);
+            this.selectChannel(this.allChannel);
         }
 
         if (duration != -1)

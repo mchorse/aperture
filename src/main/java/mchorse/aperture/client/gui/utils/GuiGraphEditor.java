@@ -40,7 +40,7 @@ public class GuiGraphEditor extends GuiElement
 
         this.frameButtons = new GuiElements<GuiElement>();
         this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) -> this.setTick(value.longValue()));
-        this.tick.setLimit(0, Integer.MAX_VALUE, true);
+        this.tick.setLimit(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) -> this.setValue(value));
 
         this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.add"), (b) -> this.addKeyframe());

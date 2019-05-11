@@ -105,13 +105,13 @@ public class GuiGraphElement extends GuiElement
 
         int c = this.channel.getKeyframes().size();
 
+        float minX = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
+
         if (c > 1)
         {
-            float minX = Float.POSITIVE_INFINITY;
-            float maxX = Float.NEGATIVE_INFINITY;
-            float minY = Float.POSITIVE_INFINITY;
-            float maxY = Float.NEGATIVE_INFINITY;
-
             for (Keyframe frame : this.channel.getKeyframes())
             {
                 minX = Math.min(minX, frame.tick);
@@ -119,34 +119,38 @@ public class GuiGraphElement extends GuiElement
                 maxX = Math.max(maxX, frame.tick);
                 maxY = Math.max(maxY, frame.value);
             }
-
-            if (Math.abs(maxY - minY) < 0.01F)
-            {
-                /* Centerize */
-                this.shiftY = minY;
-            }
-            else
-            {
-                /* Spread apart vertically */
-                this.zoomY = 1 / ((maxY - minY) / this.area.h);
-                minY -= 20 * (1 / this.zoomY);
-                maxY += 20 * (1 / this.zoomY);
-                this.zoomY = 1 / ((maxY - minY) / this.area.h);
-                this.shiftY = (maxY + minY) / 2F;
-            }
-
-            /* Spread apart horizontally */
-            this.zoomX = 1 / ((maxX - minX) / this.area.w);
-            minX -= 20 * (1 / this.zoomX);
-            maxX += 20 * (1 / this.zoomX);
-            this.zoomX = 1 / ((maxX - minX) / this.area.w);
-
-            this.shiftX = (maxX + minX) / 2F;
         }
-        else if (c > 0)
+        else
         {
-            this.shiftY = this.channel.get(0).value;
+            Keyframe first = this.channel.get(0);
+
+            minX = Math.min(first.tick, 0);
+            maxX = Math.max(first.tick, this.duration);
+            minY = maxY = first.value;
         }
+
+        if (Math.abs(maxY - minY) < 0.01F)
+        {
+            /* Centerize */
+            this.shiftY = minY;
+        }
+        else
+        {
+            /* Spread apart vertically */
+            this.zoomY = 1 / ((maxY - minY) / this.area.h);
+            minY -= 20 * (1 / this.zoomY);
+            maxY += 20 * (1 / this.zoomY);
+            this.zoomY = 1 / ((maxY - minY) / this.area.h);
+            this.shiftY = (maxY + minY) / 2F;
+        }
+
+        /* Spread apart horizontally */
+        this.zoomX = 1 / ((maxX - minX) / this.area.w);
+        minX -= 20 * (1 / this.zoomX);
+        maxX += 20 * (1 / this.zoomX);
+        this.zoomX = 1 / ((maxX - minX) / this.area.w);
+
+        this.shiftX = (maxX + minX) / 2F;
 
         this.recalcMultipliers();
     }
