@@ -158,6 +158,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     public void select(PathFixture fixture, long duration)
     {
+        boolean same = this.fixture == fixture;
+
         super.select(fixture, duration);
 
         int index = this.points.index;
@@ -179,12 +181,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.perPointDuration.button.setIsChecked(fixture.perPointDuration);
         this.useSpeed.button.setIsChecked(fixture.useSpeed);
 
-        this.speed.graph.channel = fixture.speed;
-        this.speed.interpolations.setVisible(false);
-        this.speed.graph.duration = (int) fixture.getDuration();
-        this.speed.graph.resetView();
-        this.speed.frameButtons.setVisible(false);
-        this.speed.setVisible(this.fixture.useSpeed);
+        if (!same)
+        {
+            this.speed.setChannel(fixture.speed);
+            this.speed.graph.duration = (int) fixture.getDuration();
+            this.speed.setVisible(this.fixture.useSpeed);
+        }
 
         if (fixture.perPointDuration && this.position != null)
         {

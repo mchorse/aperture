@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.utils;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel.GuiInterpolationsList;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -75,6 +76,14 @@ public class GuiGraphEditor extends GuiElement
         /* Add all elements */
         this.children.add(this.graph, this.add, this.remove, this.frameButtons);
         this.frameButtons.add(this.interp, this.easing, this.tick, this.value, this.interpolations);
+    }
+
+    public void setChannel(KeyframeChannel channel)
+    {
+        this.graph.channel = channel;
+        this.graph.resetView();
+        this.interpolations.setVisible(false);
+        this.frameButtons.setVisible(false);
     }
 
     @Override

@@ -44,8 +44,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     private String[] titles = new String[8];
     private String title = "";
     private int[] colors = new int[] {0xff1392, 0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
-    private int lastX;
-    private int lastY;
 
     public GuiKeyframeFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
@@ -139,9 +137,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.title = this.titles[id];
         this.graph.graph.color = this.colors[id];
-        this.graph.graph.channel = channel;
-        this.graph.graph.resetView();
-        this.graph.frameButtons.setVisible(false);
+        this.graph.setChannel(channel);
         this.graph.graph.bezier = channel != this.allChannel;
     }
 
@@ -164,18 +160,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {
-        super.keyTyped(typedChar, keyCode);
-        /* TODO: remove method */
-    }
-
-    @Override
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        this.lastX = mouseX;
-        this.lastY = mouseY;
-
         /* Draw title of the channel */
         this.editor.drawCenteredString(this.font, this.title, this.area.getX(0.5F), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
 
