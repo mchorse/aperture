@@ -4,7 +4,9 @@ Aperture's change log.
 
 ## Aperture 1.3
 
-This is a massive update which adds a lot of advanced camera features which would make 
+This is a massive update which adds a lot of advanced camera features which would make new camera moves possible. Beside that, many bugs were fixed, and several features of camera editor were greatly enhanced!
+
+<a href="https://youtu.be/_vfZYtiRfRs"><img src="https://img.youtube.com/vi/_vfZYtiRfRs/0.jpg"></a> 
 
 * Added zooming and scrolling to time line bar
 * Added rule of thirds camera option (suggested by Sanchan, Agirres and 5DF)
