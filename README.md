@@ -26,7 +26,7 @@
 
 This playlist contains a list of videos about Aperture's updates and tutorials.
 
-<a href="https://youtu.be/fT7QeCqKMyU?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/fT7QeCqKMyU/0.jpg"></a> 
+<a href="https://youtu.be/_vfZYtiRfRs?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/_vfZYtiRfRs/0.jpg"></a> 
 
 ## Install
 
