@@ -2,6 +2,14 @@
 
 Aperture's change log.
 
+## Aperture 1.3.1
+
+Unfortunately, before I released Aperture 1.3, I made a couple of bug fixes. I haven't test it properly and haven't let anyone test it either. However, Agirres spotted my stupidity, and aw shit, here we go again.
+
+* Fixed double clicking not working due to another bug fix
+* Fixed path fixture go void on first tick when velocity control is enabled
+* Fixed velocity control issue where it lags toward the end (reported by Agirres)
+
 ## Aperture 1.3
 
 This is a massive update which adds a lot of advanced camera features which would make new camera moves possible. Beside that, many bugs were fixed, and several features of camera editor were greatly enhanced!
