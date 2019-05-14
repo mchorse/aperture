@@ -94,7 +94,7 @@ public class GuiGraphEditor extends GuiElement
             return true;
         }
 
-        if (this.graph.area.isInside(mouseX, mouseY))
+        if (this.area.isInside(mouseX, mouseY))
         {
             /* On double click add or remove a keyframe */
             if (mouseButton == 0)
@@ -128,7 +128,13 @@ public class GuiGraphEditor extends GuiElement
             }
         }
 
-        return false;
+        return this.area.isInside(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
+    {
+        return super.mouseScrolled(mouseX, mouseY, scroll) || this.area.isInside(mouseX, mouseY);
     }
 
     public void addKeyframe()
