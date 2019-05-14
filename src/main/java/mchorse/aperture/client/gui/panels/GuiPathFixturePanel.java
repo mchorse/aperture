@@ -183,8 +183,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         if (!same)
         {
-            this.speed.setChannel(fixture.speed);
             this.speed.graph.duration = (int) fixture.getDuration();
+            this.speed.setChannel(fixture.speed);
             this.speed.setVisible(this.fixture.useSpeed);
         }
 
