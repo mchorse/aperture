@@ -284,7 +284,7 @@ public class PathFixture extends AbstractFixture
             float tick = ticks + partialTicks;
 
             /* Just calculate enough for the speed for the difference */
-            if (tick != this.lastTick)
+            if (tick != this.lastTick || tick == 0)
             {
                 this.applyPoint(this.lastPoint, 0, 0);
                 this.recalculate(tick, pos.angle);
@@ -305,11 +305,17 @@ public class PathFixture extends AbstractFixture
     }
 
     /**
-     * Recalculate speed based thing
+     * Recalculate the point and given angle based on the keyframe-able 
+     * constant speed feature.
+     * 
+     * This is a quite fascinating piece of code. Hopefully, the 
+     * comments below will help you  
      */
     private void recalculate(float tick, Angle angle)
     {
-        /* Calculate the distance which must be reached */
+        /* Calculate the distance which must be reached at given tick 
+         * (the target distance may exceed path's distance, see more 
+         * comments below) */
         float target = 0F;
 
         for (int i = 0, c = (int) tick; i < c; i++)
@@ -320,8 +326,14 @@ public class PathFixture extends AbstractFixture
         target += this.speed.interpolate(tick) * (tick % 1);
         target /= 20F;
 
-        /* Try to calculate the actual distance traveled */
+        /* Try to calculate the actual distance traveled.
+         * 
+         * The loop below doesn't yield *exact* position based on ticks  
+         * but rather an approximation. It starts from beginning, and 
+         * tries to calculate the point that is close enough to the 
+         * target */
         int index = 0;
+        int size = this.points.size() - 1;
         float progress = 0;
         float distance = 0;
         float factor = 0.1F;
@@ -331,6 +343,8 @@ public class PathFixture extends AbstractFixture
         {
             progress += factor;
 
+            /* To avoid infinite loop, we break things here. Factor with 
+             * every iteration is definitely getting smaller */
             if (factor == 0 || Math.abs(factor) < 0.0000001F)
             {
                 this.applyPoint(this.lastPoint, index, progress);
@@ -339,14 +353,13 @@ public class PathFixture extends AbstractFixture
                 return;
             }
 
+            /* Navigate progress into correct direction */
             if (progress > 1)
             {
-                if (index >= this.points.size() - 1)
+                if (index >= size)
                 {
-                    this.applyPoint(this.lastPoint, index, 1);
-                    this.applyAngle(angle, index, progress);
-
-                    break;
+                    progress = 1;
+                    factor *= -0.5F;
                 }
                 else
                 {
@@ -360,11 +373,6 @@ public class PathFixture extends AbstractFixture
                 {
                     progress = 0;
                     factor *= -0.5F;
-
-                    if (factor == 0 || factor == -0)
-                    {
-                        factor = 0.05F;
-                    }
                 }
                 else
                 {
@@ -373,6 +381,7 @@ public class PathFixture extends AbstractFixture
                 }
             }
 
+            /* Calculate distance and delta from previous iteration */
             this.applyPoint(this.tmpPoint, index, progress);
             float dx = this.tmpPoint.x - this.lastPoint.x;
             float dy = this.tmpPoint.y - this.lastPoint.y;
@@ -380,13 +389,25 @@ public class PathFixture extends AbstractFixture
             this.lastPoint.set(this.tmpPoint.x, this.tmpPoint.y, this.tmpPoint.z);
 
             distance += Math.sqrt(dx * dx + dy * dy + dz * dz) * (factor > 0 ? 1 : -1);
+            float delta = Math.abs(target - distance);
 
-            if (diff < Math.abs(target - distance))
+            /* This piece makes sure that if the path's distance is less 
+             * than targets, that means that we reached the end of the 
+             * path, so there is no point getting closet to the target */
+            if (progress == 1 && index >= size && distance < target)
+            {
+                break;
+            }
+
+            /* If last difference is less than new delta between target 
+             * distance and path distance, then we're going away from 
+             * target, align factor back into target's direction */
+            if (diff < delta)
             {
                 factor *= -0.5F;
             }
 
-            diff = Math.abs(target - distance);
+            diff = delta;
         }
 
         this.applyAngle(angle, index, progress);
