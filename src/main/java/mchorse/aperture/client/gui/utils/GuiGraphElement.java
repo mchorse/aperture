@@ -281,7 +281,7 @@ public class GuiGraphElement extends GuiElement
             }
         }
 
-        return this.area.isInside(mouseX, mouseY);
+        return false;
     }
 
     private boolean isInside(float tick, float value, int mouseX, int mouseY)
@@ -335,7 +335,7 @@ public class GuiGraphElement extends GuiElement
             return true;
         }
 
-        return this.area.isInside(mouseX, mouseY);
+        return false;
     }
 
     /**
