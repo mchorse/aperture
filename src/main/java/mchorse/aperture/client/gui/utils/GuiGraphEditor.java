@@ -62,7 +62,7 @@ public class GuiGraphEditor extends GuiElement
 
         this.graph = new GuiGraphElement(mc, (frame) -> this.fillData(frame));
 
-        /* Position the elmenents */
+        /* Position the elements */
         this.tick.resizer().parent(this.area).set(0, 10, 80, 20).x(1, -90);
         this.value.resizer().parent(this.area).set(0, 35, 80, 20).x(1, -90);
 
@@ -70,7 +70,7 @@ public class GuiGraphEditor extends GuiElement
         this.remove.resizer().parent(this.area).set(0, 0, 50, 20).y(1, -30).x(1, -60);
         this.interp.resizer().relative(this.tick.resizer()).set(-90, 0, 80, 20);
         this.easing.resizer().relative(this.value.resizer()).set(-90, 0, 80, 20);
-        this.interpolations.resizer().relative(this.interp.resizer()).set(0, 20, 80, 16 * 5);
+        this.interpolations.resizer().parent(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(20 * 7);
         this.graph.resizer().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         /* Add all elements */
