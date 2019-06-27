@@ -23,6 +23,9 @@ public class LookModifier extends EntityModifier
     public boolean atBlock;
 
     @Expose
+    public boolean forward;
+
+    @Expose
     public Point block = new Point(0, 0, 0);
 
     @Override
@@ -33,12 +36,19 @@ public class LookModifier extends EntityModifier
             this.tryFindingEntity();
         }
 
-        if (this.entity == null && !this.atBlock)
+        if (this.entity == null && !(this.atBlock || this.forward))
         {
             return;
         }
 
-        fixture.applyFixture(0, 0, profile, this.position);
+        if (this.forward)
+        {
+            fixture.applyFixture(offset - 1, partialTick, profile, this.position);
+        }
+        else
+        {
+            fixture.applyFixture(0, 0, profile, this.position);
+        }
 
         double x = 0;
         double y = 0;
@@ -50,7 +60,7 @@ public class LookModifier extends EntityModifier
             y = this.block.y;
             z = this.block.z;
         }
-        else
+        else if (!this.forward)
         {
             x = this.entity.lastTickPosX + (this.entity.posX - this.entity.lastTickPosX) * partialTick;
             y = this.entity.lastTickPosY + (this.entity.posY - this.entity.lastTickPosY) * partialTick;
@@ -60,12 +70,20 @@ public class LookModifier extends EntityModifier
         double dX = x - pos.point.x;
         double dY = y - pos.point.y;
         double dZ = z - pos.point.z;
+
+        if (this.forward)
+        {
+            dX = pos.point.x - this.position.point.x;
+            dY = pos.point.y - this.position.point.y;
+            dZ = pos.point.z - this.position.point.z;
+        }
+
         double horizontalDistance = MathHelper.sqrt_double(dX * dX + dZ * dZ);
 
         float yaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
         float pitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));
 
-        if (this.relative)
+        if (this.relative && !this.forward)
         {
             yaw += pos.angle.yaw - this.position.angle.yaw;
             pitch += pos.angle.pitch - this.position.angle.pitch;
@@ -83,6 +101,7 @@ public class LookModifier extends EntityModifier
         modifier.selector = this.selector;
         modifier.relative = this.relative;
         modifier.atBlock = this.atBlock;
+        modifier.forward = this.forward;
         modifier.block = this.block.clone();
 
         return modifier;

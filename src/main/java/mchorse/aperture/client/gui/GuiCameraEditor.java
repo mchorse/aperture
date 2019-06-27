@@ -1073,6 +1073,30 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+
+        /* Display camera attributes on top of everything else */
+        boolean running = this.runner.isRunning();
+
+        if ((this.syncing || running) && this.displayPosition)
+        {
+            Position pos = running ? this.runner.getPosition() : this.position;
+            Point point = pos.point;
+            Angle angle = pos.angle;
+
+            String[] labels = new String[] {this.stringX + ": " + point.x, this.stringY + ": " + point.y, this.stringZ + ": " + point.z, this.stringYaw + ": " + angle.yaw, this.stringPitch + ": " + angle.pitch, this.stringRoll + ": " + angle.roll, this.stringFov + ": " + angle.fov};
+            int i = 6;
+
+            for (String label : labels)
+            {
+                int width = this.fontRendererObj.getStringWidth(label);
+                int y = this.height - 30 - 12 * i;
+
+                Gui.drawRect(8, y - 2, 9 + width + 2, y + 9, 0x88000000);
+                this.fontRendererObj.drawStringWithShadow(label, 10, y, 0xffffff);
+
+                i--;
+            }
+        }
     }
 
     /**

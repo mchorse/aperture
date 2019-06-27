@@ -1,7 +1,5 @@
 package mchorse.aperture.camera;
 
-import java.util.List;
-
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.Aperture;
@@ -9,8 +7,8 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
+import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
@@ -252,7 +250,7 @@ public class CameraRenderer
      */
     private void drawFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
     {
-        if (fixture instanceof PathFixture)
+        if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture)
         {
             this.drawPathFixture(color, fixture, prev, next);
         }
@@ -268,25 +266,32 @@ public class CameraRenderer
     private void drawPathFixture(Color color, AbstractFixture fixture, Position prev, Position next)
     {
         CameraProfile profile = ClientProxy.control.currentProfile;
-        PathFixture path = (PathFixture) fixture;
-        List<DurablePosition> points = path.getPoints();
+
         long duration = fixture.getDuration();
+        int size = (int) (duration / 5);
+        PathFixture path = null;
+
+        if (fixture instanceof PathFixture)
+        {
+            path = (PathFixture) fixture;
+            size = path.getPoints().size();
+        }
 
         final int p = 15;
 
-        for (int i = 0, size = points.size() - 1; i < size; i++)
+        for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < p; j++)
             {
-                path.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
-                path.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
+                fixture.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
+                fixture.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
 
                 this.drawLine(color, this.playerX, this.playerY, this.playerZ, prev, next);
             }
 
-            if (i != 0)
+            if (i != 0 && fixture instanceof PathFixture)
             {
-                path.applyFixture(path.getTickForPoint(i), 0, profile, prev);
+                fixture.applyFixture(path.getTickForPoint(i), 0, profile, prev);
 
                 this.drawPathPoint(color, prev, i);
             }
