@@ -275,11 +275,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Setup areas of widgets */
         this.scrub.resizer().parent(this.area).set(10, 0, 0, 20).y(1, -20).w(1, -20);
 
-        this.popup.resizer().relative(this.add.resizer()).set(-44, 18, 62, 122);
-        this.config.resizer().parent(this.area).set(0, 20, 160, 0).x(1, -180).h(1, -80);
-        this.profiles.resizer().parent(this.area).set(0, 20, 160, 0).x(1, -160).h(1, -80);
-        this.modifiers.resizer().parent(this.area).set(0, 20, 220, 0).x(1, -260).h(1, -80);
         this.panel.resizer().parent(this.area).set(10, 40, 0, 0).w(1, -20).h(1, -70);
+        this.popup.resizer().relative(this.add.resizer()).set(-44, 18, 62, 122);
+        this.config.resizer().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
+        this.profiles.resizer().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);
+        this.modifiers.resizer().relative(this.panel.resizer()).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
 
         /* Adding everything */
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);

@@ -125,7 +125,7 @@ public class GuiCameraConfig extends GuiElement
     @Override
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        this.scroll.drag(mouseX, mouseX);
+        this.scroll.drag(mouseX, mouseY);
 
         Gui.drawRect(this.scroll.x, this.scroll.y, this.scroll.getX(1), this.scroll.getY(1), 0xaa000000);
 
