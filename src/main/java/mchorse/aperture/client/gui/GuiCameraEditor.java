@@ -339,6 +339,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     @SuppressWarnings("unchecked")
     public void pickCameraFixture(AbstractFixture fixture, long duration)
     {
+        this.disableFlight();
+
         if (fixture == null)
         {
             this.scrub.index = -1;
@@ -590,6 +592,12 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         return this.runner.outside.active ? this.runner.outside.camera : this.mc.thePlayer;
     }
 
+    public void disableFlight()
+    {
+        this.flight.enabled = false;
+        this.cameraOptions.update();
+    }
+
     /**
      * Update player to current value in the scrub
      */
@@ -779,6 +787,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             /* Toggle flight */
             this.cameraOptions.flight.mouseClicked(this.cameraOptions.flight.area.x + 1, this.cameraOptions.flight.area.y + 1, 0);
+            this.cameraOptions.update();
         }
 
         if (this.flight.enabled)
@@ -903,9 +912,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             ClientProxy.control.roll = this.position.angle.roll;
             this.mc.gameSettings.fovSetting = this.position.angle.fov;
 
-            if (this.syncing && this.haveScrubbed && this.panel.delegate != null)
+            if (this.syncing && this.haveScrubbed)
             {
-                this.panel.delegate.editFixture(this.getCamera());
+                this.editFixture();
             }
         }
 

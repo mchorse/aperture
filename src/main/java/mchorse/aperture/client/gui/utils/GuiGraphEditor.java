@@ -70,7 +70,7 @@ public class GuiGraphEditor extends GuiElement
         this.remove.resizer().parent(this.area).set(0, 0, 50, 20).y(1, -30).x(1, -60);
         this.interp.resizer().relative(this.tick.resizer()).set(-90, 0, 80, 20);
         this.easing.resizer().relative(this.value.resizer()).set(-90, 0, 80, 20);
-        this.interpolations.resizer().parent(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(20 * 7);
+        this.interpolations.resizer().parent(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(16 * 7);
         this.graph.resizer().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         /* Add all elements */
