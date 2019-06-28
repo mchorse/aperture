@@ -88,9 +88,9 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
         super.resize(width, height);
 
         this.selector.setText(this.modifier.selector);
-        this.x.setValue(this.modifier.block.x);
-        this.y.setValue(this.modifier.block.y);
-        this.z.setValue(this.modifier.block.z);
+        this.x.setValue((float) this.modifier.block.x);
+        this.y.setValue((float) this.modifier.block.y);
+        this.z.setValue((float) this.modifier.block.z);
         this.relative.button.setIsChecked(this.modifier.relative);
         this.atBlock.button.setIsChecked(this.modifier.atBlock);
         this.forward.button.setIsChecked(this.modifier.forward);

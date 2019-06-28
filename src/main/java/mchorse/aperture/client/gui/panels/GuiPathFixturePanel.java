@@ -95,9 +95,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         for (DurablePosition point : this.fixture.getPoints())
         {
-            int index = fixture.x.insert(x, point.point.x);
-            fixture.y.insert(x, point.point.y);
-            fixture.z.insert(x, point.point.z);
+            int index = fixture.x.insert(x, (float) point.point.x);
+            fixture.y.insert(x, (float) point.point.y);
+            fixture.z.insert(x, (float) point.point.z);
             fixture.yaw.insert(x, point.angle.yaw);
             fixture.pitch.insert(x, point.angle.pitch);
             fixture.roll.insert(x, point.angle.roll);

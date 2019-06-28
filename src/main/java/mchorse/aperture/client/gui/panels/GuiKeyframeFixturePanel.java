@@ -147,9 +147,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         Position pos = new Position(entity);
         long tick = this.editor.scrub.value - this.currentOffset();
 
-        this.fixture.x.insert(tick, pos.point.x);
-        this.fixture.y.insert(tick, pos.point.y);
-        this.fixture.z.insert(tick, pos.point.z);
+        this.fixture.x.insert(tick, (float) pos.point.x);
+        this.fixture.y.insert(tick, (float) pos.point.y);
+        this.fixture.z.insert(tick, (float) pos.point.z);
         this.fixture.yaw.insert(tick, pos.angle.yaw);
         this.fixture.pitch.insert(tick, pos.angle.pitch);
         this.fixture.roll.insert(tick, pos.angle.roll);
@@ -244,9 +244,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 for (KeyframeChannel channel : this.parent.fixture.channels)
                 {
                     /* Get the show on, get paid */
-                    if (channel == this.parent.fixture.x) value = pos.point.x;
-                    if (channel == this.parent.fixture.y) value = pos.point.y;
-                    if (channel == this.parent.fixture.z) value = pos.point.z;
+                    if (channel == this.parent.fixture.x) value = (float) pos.point.x;
+                    if (channel == this.parent.fixture.y) value = (float) pos.point.y;
+                    if (channel == this.parent.fixture.z) value = (float) pos.point.z;
                     if (channel == this.parent.fixture.yaw) value = pos.angle.yaw;
                     if (channel == this.parent.fixture.pitch) value = pos.angle.pitch;
                     if (channel == this.parent.fixture.roll) value = pos.angle.roll;
@@ -267,9 +267,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             Position pos = new Position(Minecraft.getMinecraft().thePlayer);
             float value = 0;
 
-            if (this.graph.channel == this.parent.fixture.x) value = pos.point.x;
-            if (this.graph.channel == this.parent.fixture.y) value = pos.point.y;
-            if (this.graph.channel == this.parent.fixture.z) value = pos.point.z;
+            if (this.graph.channel == this.parent.fixture.x) value = (float) pos.point.x;
+            if (this.graph.channel == this.parent.fixture.y) value = (float) pos.point.y;
+            if (this.graph.channel == this.parent.fixture.z) value = (float) pos.point.z;
             if (this.graph.channel == this.parent.fixture.yaw) value = pos.angle.yaw;
             if (this.graph.channel == this.parent.fixture.pitch) value = pos.angle.pitch;
             if (this.graph.channel == this.parent.fixture.roll) value = pos.angle.roll;

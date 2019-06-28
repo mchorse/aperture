@@ -15,13 +15,13 @@ import net.minecraft.entity.player.EntityPlayer;
 public class Point
 {
     @Expose
-    public float x;
+    public double x;
 
     @Expose
-    public float y;
+    public double y;
 
     @Expose
-    public float z;
+    public double z;
 
     /**
      * Read a {@link Point} instance from byte buffer 
@@ -31,7 +31,7 @@ public class Point
         return new Point(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
     }
 
-    public Point(float x, float y, float z)
+    public Point(double x, double y, double z)
     {
         this.set(x, y, z);
     }
@@ -41,7 +41,7 @@ public class Point
         this.set(player);
     }
 
-    public void set(float x, float y, float z)
+    public void set(double x, double y, double z)
     {
         this.x = x;
         this.y = y;
@@ -50,14 +50,14 @@ public class Point
 
     public void set(EntityPlayer player)
     {
-        this.set((float) player.posX, (float) player.posY, (float) player.posZ);
+        this.set(player.posX, player.posY, player.posZ);
     }
 
     public void toByteBuf(ByteBuf buffer)
     {
-        buffer.writeFloat(this.x);
-        buffer.writeFloat(this.y);
-        buffer.writeFloat(this.z);
+        buffer.writeDouble(this.x);
+        buffer.writeDouble(this.y);
+        buffer.writeDouble(this.z);
     }
 
     public Point clone()

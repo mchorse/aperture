@@ -383,9 +383,9 @@ public class PathFixture extends AbstractFixture
 
             /* Calculate distance and delta from previous iteration */
             this.applyPoint(this.tmpPoint, index, progress);
-            float dx = this.tmpPoint.x - this.lastPoint.x;
-            float dy = this.tmpPoint.y - this.lastPoint.y;
-            float dz = this.tmpPoint.z - this.lastPoint.z;
+            double dx = this.tmpPoint.x - this.lastPoint.x;
+            double dy = this.tmpPoint.y - this.lastPoint.y;
+            double dz = this.tmpPoint.z - this.lastPoint.z;
             this.lastPoint.set(this.tmpPoint.x, this.tmpPoint.y, this.tmpPoint.z);
 
             distance += Math.sqrt(dx * dx + dy * dy + dz * dz) * (factor > 0 ? 1 : -1);
@@ -418,7 +418,7 @@ public class PathFixture extends AbstractFixture
      */
     private void applyPoint(Point point, int index, float progress)
     {
-        float x, y, z;
+        double x, y, z;
 
         Position p0 = this.getPoint(index - 1);
         Position p1 = this.getPoint(index);
@@ -434,9 +434,9 @@ public class PathFixture extends AbstractFixture
         }
         else if (this.interpolationPos.equals(InterpolationType.HERMITE))
         {
-            x = (float) Interpolations.cubicHermite(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
-            y = (float) Interpolations.cubicHermite(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
-            z = (float) Interpolations.cubicHermite(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
+            x = Interpolations.cubicHermite(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
+            y = Interpolations.cubicHermite(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
+            z = Interpolations.cubicHermite(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
         }
         else
         {

@@ -228,9 +228,9 @@ public class CameraRenderer
 
             long duration = fixture.getDuration();
 
-            float distX = Math.abs(next.point.x - prev.point.x);
-            float distY = Math.abs(next.point.y - prev.point.y);
-            float distZ = Math.abs(next.point.z - prev.point.z);
+            double distX = Math.abs(next.point.x - prev.point.x);
+            double distY = Math.abs(next.point.y - prev.point.y);
+            double distZ = Math.abs(next.point.z - prev.point.z);
 
             Color color = FixtureRegistry.CLIENT.get(fixture.getClass()).color;
 
