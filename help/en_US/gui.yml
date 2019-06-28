@@ -34,6 +34,7 @@ aperture.gui:
         tp_teleport: Use /tp
         rule_of_thirds: Rule of thirds
         letter_box: Letter box
+        repeat: Repeat fixture (R)
         overlay: Enable overlay
         pick_overlay: Pick overlay
 

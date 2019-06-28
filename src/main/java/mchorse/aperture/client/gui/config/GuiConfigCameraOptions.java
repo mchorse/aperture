@@ -37,6 +37,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiButtonElement<GuiCheckBox> ruleOfThirds;
     public GuiButtonElement<GuiCheckBox> letterBox;
     public GuiTextElement aspectRatio;
+    public GuiButtonElement<GuiCheckBox> repeat;
     public GuiButtonElement<GuiCheckBox> overlay;
     public GuiButtonElement<GuiButton> pickOverlay;
     public GuiTexturePicker overlayPicker;
@@ -143,6 +144,11 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         });
         this.aspectRatio.setText(Aperture.proxy.config.aspect_ratio);
 
+        this.repeat = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.repeat"), this.editor.repeat, (b) ->
+        {
+            this.editor.repeat = b.button.isChecked();
+        });
+
         this.overlay = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.overlay"), Aperture.proxy.config.tp_teleport, (b) ->
         {
             Property prop = Aperture.proxy.forge.getCategory("overlay").get("camera_editor_overlay");
@@ -172,6 +178,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 
             prop.set(texture);
             this.saveConfig();
+            this.editor.updateOverlay();
         });
         this.overlayPicker.setVisible(false);
         this.overlayPicker.resizer().parent(this.editor.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
@@ -182,7 +189,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.children.add(this.minema);
         }
 
-        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio, this.overlay, this.pickOverlay);
+        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
 
         /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())

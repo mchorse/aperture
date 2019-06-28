@@ -113,6 +113,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public int maxScrub = 0;
 
     /**
+     * Whether current camera fixture should be played on repeat 
+     */
+    public boolean repeat;
+
+    /**
      * Flight mode 
      */
     public Flight flight = new Flight();
@@ -215,6 +220,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.nextFrame = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 32, 0, 32, 16, (b) -> this.jumpToNextFrame()).tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"), TooltipDirection.BOTTOM);
         this.plause = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) ->
         {
+            this.disableFlight();
             this.runner.toggle(this.profile, this.scrub.value);
             this.updatePlauseButton();
 
@@ -878,6 +884,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.modifiers.toggleVisible();
         }
+        else if (keyCode == Keyboard.KEY_R)
+        {
+            this.cameraOptions.repeat.mouseClicked(this.cameraOptions.repeat.area.x + 1, this.cameraOptions.repeat.area.y + 1, 0);
+        }
     }
 
     @Override
@@ -921,6 +931,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         boolean isRunning = this.runner.isRunning();
+
+        if (this.repeat && isRunning && this.panel.delegate != null)
+        {
+            AbstractFixture fixture = this.panel.delegate.fixture;
+            long target = this.profile.calculateOffset(fixture) + fixture.getDuration();
+
+            if (this.runner.ticks >= target - 1)
+            {
+                this.scrub.setValueFromScrub((int) (target - fixture.getDuration()));
+            }
+        }
 
         if (this.flight.enabled)
         {
