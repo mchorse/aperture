@@ -223,6 +223,11 @@ public class ClientProxy extends CommonProxy
         renderer.smooth.enabled = config.getBoolean("smooth_enabled", smooth, false, "Enable smooth camera");
         renderer.smooth.fricX = config.getFloat("mouse_x_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse X friction");
         renderer.smooth.fricY = config.getFloat("mouse_y_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse Y friction");
+
+        if (cameraEditor != null)
+        {
+            cameraEditor.updateOverlay();
+        }
     }
 
     /**

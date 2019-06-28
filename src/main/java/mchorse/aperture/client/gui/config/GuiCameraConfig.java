@@ -27,7 +27,7 @@ public class GuiCameraConfig extends GuiElement
 
         this.editor = editor;
         this.createChildren();
-        this.options.add(new GuiConfigCameraOptions(mc, editor));
+        this.options.add(editor.cameraOptions);
 
         CameraEditorEvent.Options event = new CameraEditorEvent.Options(editor);
         ClientProxy.EVENT_BUS.post(event);
@@ -54,6 +54,7 @@ public class GuiCameraConfig extends GuiElement
             }
 
             option.update();
+            option.resize(width, height);
             option.resizer().parent(this.area).set(0, y, 0, option.getHeight()).w(1, 0);
             max = Math.max(max, option.getWidth());
             y += option.getHeight();

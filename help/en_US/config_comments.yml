@@ -27,6 +27,10 @@ aperture.config.comments:
         camera_outside_hide_guis: Prevent GUI screens from rendering during outside mode
         camera_outside_hide_overlays: Prevent rendering screen overlays (such as pumpkin overlay, fire when burning, water and etc.) during outside mode
 
+    overlay:
+        camera_editor_overlay: Enables camera editor overlay
+        camera_editor_overlay_rl: Resource location path to the texture which will be used as overlay
+
     smooth:
         camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range? WUB WUB WUB
 

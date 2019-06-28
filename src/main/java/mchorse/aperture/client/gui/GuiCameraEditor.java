@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 
+import com.google.gson.JsonParser;
+
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
@@ -27,6 +29,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -91,6 +94,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     private float lastFov = 70.0F;
     private float lastRoll = 0;
     private GameType lastGameMode = GameType.NOT_SET;
+    public ResourceLocation overlayLocation;
 
     /**
      * This property saves state for the sync option, to allow more friendly
@@ -294,7 +298,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.hidePopups(this.profiles);
         this.frame.setVisible(false);
 
-        this.elements.add(this.hidden, this.openProfiles, this.profiles);
+        this.elements.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
 
         /* Let other classes have fun with camera editor's fields' 
          * position and such */
@@ -551,6 +555,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updateCameraEditor(EntityPlayer player)
     {
+        this.updateOverlay();
         this.position.set(player);
         this.selectProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
@@ -590,6 +595,18 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public EntityPlayer getCamera()
     {
         return this.runner.outside.active ? this.runner.outside.camera : this.mc.thePlayer;
+    }
+
+    public void updateOverlay()
+    {
+        try
+        {
+            this.overlayLocation = RLUtils.create(new JsonParser().parse(Aperture.proxy.config.camera_editor_overlay_rl));
+        }
+        catch (Exception e)
+        {
+            this.overlayLocation = null;
+        }
     }
 
     public void disableFlight()
@@ -920,6 +937,12 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.profile != null)
         {
+            if (Aperture.proxy.config.camera_editor_overlay && this.overlayLocation != null)
+            {
+                this.mc.renderEngine.bindTexture(this.overlayLocation);
+                Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
+            }
+
             /* Readjustable values for rule of thirds in case of letter 
              * box enabled */
             int rx = 0;
