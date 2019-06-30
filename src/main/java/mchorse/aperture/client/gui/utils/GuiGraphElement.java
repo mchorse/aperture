@@ -4,13 +4,12 @@ import java.util.function.Consumer;
 
 import org.lwjgl.opengl.GL11;
 
-import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
-import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.utils.Scale;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.utils.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -19,17 +18,14 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
 
-public class GuiGraphElement extends GuiElement
+public class GuiGraphElement extends GuiKeyframeEditor
 {
-    public GuiAbstractFixturePanel<? extends AbstractFixture> parent;
     public Consumer<Keyframe> callback;
 
     public KeyframeChannel channel;
     public int duration;
     public int color;
-    public boolean bezier = true;
     public int selected = -1;
 
     public boolean sliding = false;
@@ -42,12 +38,8 @@ public class GuiGraphElement extends GuiElement
     private float lastT;
     private float lastV;
 
-    private float shiftX = 0;
-    private float shiftY = 0;
-    private float zoomX = 1;
-    private float zoomY = 1;
-    private int multX = 1;
-    private int multY = 1;
+    private Scale scaleX = new Scale(false);
+    private Scale scaleY = new Scale(true);
 
     public GuiGraphElement(Minecraft mc, Consumer<Keyframe> callback)
     {
@@ -56,31 +48,110 @@ public class GuiGraphElement extends GuiElement
         this.callback = callback;
     }
 
+    /* Implementation of abstract methods */
+
     public Keyframe getCurrent()
     {
         return this.channel.get(this.selected);
+    }
+
+    @Override
+    public void setChannel(KeyframeChannel channel)
+    {
+        this.channel = channel;
+        this.resetView();
+    }
+
+    @Override
+    public void setColor(int color)
+    {
+        this.color = color;
+    }
+
+    @Override
+    public void setDuration(long duration)
+    {
+        this.duration = (int) duration;
+    }
+
+    @Override
+    public void setSliding()
+    {
+        this.sliding = true;
+    }
+
+    @Override
+    public void doubleClick(int mouseX, int mouseY)
+    {
+        if (this.which == -1)
+        {
+            this.addCurrent((long) this.fromGraphX(mouseX), this.fromGraphY(mouseY));
+        }
+        else if (this.which == 0)
+        {
+            this.removeCurrent();
+        }
+    }
+
+    @Override
+    public void addCurrent(long tick, float value)
+    {
+        Easing easing = Easing.IN;
+        Interpolation interp = Interpolation.LINEAR;
+        Keyframe frame = this.getCurrent();
+        long oldTick = tick;
+
+        if (frame != null)
+        {
+            easing = frame.easing;
+            interp = frame.interp;
+            oldTick = frame.tick;
+        }
+
+        this.selected = this.channel.insert(tick, value);
+
+        if (oldTick != tick)
+        {
+            frame = this.getCurrent();
+            frame.setEasing(easing);
+            frame.setInterpolation(interp);
+        }
+    }
+
+    @Override
+    public void removeCurrent()
+    {
+        Keyframe frame = this.getCurrent();
+
+        if (frame == null)
+        {
+            return;
+        }
+
+        this.channel.remove(this.selected);
+        this.selected -= 1;
     }
 
     /* Graphing code */
 
     public int toGraphX(float tick)
     {
-        return (int) ((tick - this.shiftX) * this.zoomX) + this.area.getX(0.5F);
+        return (int) (this.scaleX.to(tick)) + this.area.getX(0.5F);
     }
 
     public int toGraphY(float value)
     {
-        return (int) ((-value + this.shiftY) * this.zoomY) + this.area.getY(0.5F);
+        return (int) (this.scaleY.to(value)) + this.area.getY(0.5F);
     }
 
     public float fromGraphX(int mouseX)
     {
-        return (mouseX - this.area.getX(0.5F)) / this.zoomX + this.shiftX;
+        return this.scaleX.from(mouseX - this.area.getX(0.5F));
     }
 
     public float fromGraphY(int mouseY)
     {
-        return -((mouseY - this.area.getY(0.5F)) / this.zoomY - this.shiftY);
+        return this.scaleY.from(mouseY - this.area.getY(0.5F));
     }
 
     public int getOffset()
@@ -98,10 +169,8 @@ public class GuiGraphElement extends GuiElement
      */
     public void resetView()
     {
-        this.shiftX = 0;
-        this.shiftY = 0;
-        this.zoomX = 2;
-        this.zoomY = 2;
+        this.scaleX.set(0, 2);
+        this.scaleY.set(0, 2);
 
         int c = this.channel.getKeyframes().size();
 
@@ -132,26 +201,16 @@ public class GuiGraphElement extends GuiElement
         if (Math.abs(maxY - minY) < 0.01F)
         {
             /* Centerize */
-            this.shiftY = minY;
+            this.scaleY.shift = minY;
         }
         else
         {
             /* Spread apart vertically */
-            this.zoomY = 1 / ((maxY - minY) / this.area.h);
-            minY -= 20 * (1 / this.zoomY);
-            maxY += 20 * (1 / this.zoomY);
-            this.zoomY = 1 / ((maxY - minY) / this.area.h);
-            this.shiftY = (maxY + minY) / 2F;
+            this.scaleY.view(minY, maxY, this.area.h, 20);
         }
 
         /* Spread apart horizontally */
-        this.zoomX = 1 / ((maxX - minX) / this.area.w);
-        minX -= 20 * (1 / this.zoomX);
-        maxX += 20 * (1 / this.zoomX);
-        this.zoomX = 1 / ((maxX - minX) / this.area.w);
-
-        this.shiftX = (maxX + minX) / 2F;
-
+        this.scaleX.view(minX, maxX, this.area.w, 20);
         this.recalcMultipliers();
     }
 
@@ -160,8 +219,8 @@ public class GuiGraphElement extends GuiElement
      */
     private void recalcMultipliers()
     {
-        this.multX = this.recalcMultiplier(this.zoomX);
-        this.multY = this.recalcMultiplier(this.zoomY);
+        this.scaleX.mult = this.recalcMultiplier(this.scaleX.zoom);
+        this.scaleY.mult = this.recalcMultiplier(this.scaleY.zoom);
     }
 
     private int recalcMultiplier(float zoom)
@@ -241,11 +300,6 @@ public class GuiGraphElement extends GuiElement
                     boolean right = frame.interp == Interpolation.BEZIER && this.isInside(frame.tick + frame.rx, frame.value + frame.ry, mouseX, mouseY);
                     boolean point = this.isInside(frame.tick, frame.value, mouseX, mouseY);
 
-                    if (!this.bezier)
-                    {
-                        left = right = false;
-                    }
-
                     if (left || right || point)
                     {
                         this.which = left ? 1 : (right ? 2 : 0);
@@ -276,8 +330,8 @@ public class GuiGraphElement extends GuiElement
                 this.scrolling = true;
                 this.lastX = mouseX;
                 this.lastY = mouseY;
-                this.lastT = this.shiftX;
-                this.lastV = this.shiftY;
+                this.lastT = this.scaleX.shift;
+                this.lastV = this.scaleY.shift;
             }
         }
 
@@ -313,21 +367,15 @@ public class GuiGraphElement extends GuiElement
             boolean none = !x && !y;
 
             /* Scaling X */
-            float scaleX = this.zoomX;
-
             if (x && !y || none)
             {
-                this.zoomX += Math.copySign(this.getZoomFactor(scaleX), scroll);
-                this.zoomX = MathHelper.clamp_float(this.zoomX, 0.01F, 50F);
+                this.scaleX.zoom(Math.copySign(this.getZoomFactor(this.scaleX.zoom), scroll), 0.01F, 50F);
             }
 
             /* Scaling Y */
-            float scaleY = this.zoomY;
-
             if (y && !x || none)
             {
-                this.zoomY += Math.copySign(this.getZoomFactor(scaleY), scroll);
-                this.zoomY = MathHelper.clamp_float(this.zoomY, 0.01F, 50F);
+                this.scaleY.zoom(Math.copySign(this.getZoomFactor(this.scaleY.zoom), scroll), 0.01F, 50F);
             }
 
             this.recalcMultipliers();
@@ -419,8 +467,8 @@ public class GuiGraphElement extends GuiElement
 
         if (this.scrolling)
         {
-            this.shiftX = -(mouseX - this.lastX) / this.zoomX + this.lastT;
-            this.shiftY = (mouseY - this.lastY) / this.zoomY + this.lastV;
+            this.scaleX.shift = -(mouseX - this.lastX) / this.scaleX.zoom + this.lastT;
+            this.scaleY.shift = (mouseY - this.lastY) / this.scaleY.zoom + this.lastV;
         }
         /* Move the current keyframe */
         else if (this.moving)
@@ -476,14 +524,14 @@ public class GuiGraphElement extends GuiElement
         if (rightBorder < w) Gui.drawRect(rightBorder, this.area.y, w, this.area.y + this.area.h, 0x88000000);
 
         /* Draw scaling grid */
-        int hx = this.duration / this.multX;
+        int hx = this.duration / this.scaleX.mult;
 
         for (int j = 0; j <= hx; j++)
         {
-            int x = this.toGraphX(j * this.multX);
+            int x = this.toGraphX(j * this.scaleX.mult);
 
             Gui.drawRect(this.area.x + x, this.area.y, this.area.x + x + 1, this.area.getY(1), 0x44ffffff);
-            this.font.drawString(String.valueOf(j * this.multX), this.area.x + x + 4, this.area.y + 4, 0xffffff);
+            this.font.drawString(String.valueOf(j * this.scaleX.mult), this.area.x + x + 4, this.area.y + 4, 0xffffff);
         }
 
         int ty = (int) this.fromGraphY(this.area.getY(1));
@@ -491,7 +539,7 @@ public class GuiGraphElement extends GuiElement
 
         int min = Math.min(ty, by) - 1;
         int max = Math.max(ty, by) + 1;
-        int mult = this.multY;
+        int mult = this.scaleY.mult;
 
         min -= min % mult + mult;
         max -= max % mult - mult;
@@ -557,7 +605,7 @@ public class GuiGraphElement extends GuiElement
                     }
                 }
 
-                if (prev.interp == Interpolation.BEZIER && this.bezier)
+                if (prev.interp == Interpolation.BEZIER)
                 {
                     vb.pos(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly), 0).color(r, g, b, 0.6F).endVertex();
                     vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 0.6F).endVertex();
@@ -570,7 +618,7 @@ public class GuiGraphElement extends GuiElement
                 vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 1).endVertex();
             }
 
-            if (frame.interp == Interpolation.BEZIER && this.bezier)
+            if (frame.interp == Interpolation.BEZIER)
             {
                 vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 0.6F).endVertex();
                 vb.pos(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry), 0).color(r, g, b, 0.6F).endVertex();
@@ -626,12 +674,12 @@ public class GuiGraphElement extends GuiElement
                 GL11.glColor3f(1, 1, 1);
             }
 
-            if (frame.interp == Interpolation.BEZIER && this.bezier)
+            if (frame.interp == Interpolation.BEZIER)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry));
             }
 
-            if (prev != null && prev.interp == Interpolation.BEZIER && this.bezier)
+            if (prev != null && prev.interp == Interpolation.BEZIER)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly));
             }
