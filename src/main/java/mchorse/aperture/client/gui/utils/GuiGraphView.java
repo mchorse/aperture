@@ -19,10 +19,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
-public class GuiGraphElement extends GuiKeyframeEditor
+public class GuiGraphView extends GuiKeyframeElement
 {
-    public Consumer<Keyframe> callback;
-
     public KeyframeChannel channel;
     public int duration;
     public int color;
@@ -41,11 +39,9 @@ public class GuiGraphElement extends GuiKeyframeEditor
     private Scale scaleX = new Scale(false);
     private Scale scaleY = new Scale(true);
 
-    public GuiGraphElement(Minecraft mc, Consumer<Keyframe> callback)
+    public GuiGraphView(Minecraft mc, Consumer<Keyframe> callback)
     {
-        super(mc);
-
-        this.callback = callback;
+        super(mc, callback);
     }
 
     /* Implementation of abstract methods */
@@ -55,14 +51,12 @@ public class GuiGraphElement extends GuiKeyframeEditor
         return this.channel.get(this.selected);
     }
 
-    @Override
     public void setChannel(KeyframeChannel channel)
     {
         this.channel = channel;
         this.resetView();
     }
 
-    @Override
     public void setColor(int color)
     {
         this.color = color;
@@ -93,7 +87,6 @@ public class GuiGraphElement extends GuiKeyframeEditor
         }
     }
 
-    @Override
     public void addCurrent(long tick, float value)
     {
         Easing easing = Easing.IN;
@@ -118,7 +111,6 @@ public class GuiGraphElement extends GuiKeyframeEditor
         }
     }
 
-    @Override
     public void removeCurrent()
     {
         Keyframe frame = this.getCurrent();
@@ -152,16 +144,6 @@ public class GuiGraphElement extends GuiKeyframeEditor
     public float fromGraphY(int mouseY)
     {
         return this.scaleY.from(mouseY - this.area.getY(0.5F));
-    }
-
-    public int getOffset()
-    {
-        if (this.parent == null)
-        {
-            return 0;
-        }
-
-        return (int) (this.parent.editor.scrub.value - this.parent.editor.getProfile().calculateOffset(this.parent.fixture));
     }
 
     /**
@@ -223,31 +205,16 @@ public class GuiGraphElement extends GuiKeyframeEditor
         this.scaleY.mult = this.recalcMultiplier(this.scaleY.zoom);
     }
 
-    private int recalcMultiplier(float zoom)
-    {
-        int factor = (int) (60F / zoom);
-
-        /* Hardcoded caps */
-        if (factor > 10000) factor = 10000;
-        else if (factor > 5000) factor = 5000;
-        else if (factor > 2500) factor = 2500;
-        else if (factor > 1000) factor = 1000;
-        else if (factor > 500) factor = 500;
-        else if (factor > 250) factor = 250;
-        else if (factor > 100) factor = 100;
-        else if (factor > 50) factor = 50;
-        else if (factor > 25) factor = 25;
-        else if (factor > 10) factor = 10;
-        else if (factor > 5) factor = 5;
-
-        return factor <= 0 ? 1 : factor;
-    }
-
     /**
      * Make current keyframe by given duration 
      */
     public void selectByDuration(long duration)
     {
+        if (this.channel == null)
+        {
+            return;
+        }
+
         int i = 0;
         this.selected = -1;
 
@@ -266,20 +233,13 @@ public class GuiGraphElement extends GuiKeyframeEditor
         this.setKeyframe(this.getCurrent());
     }
 
-    private void setKeyframe(Keyframe current)
-    {
-        if (this.callback != null)
-        {
-            this.callback.accept(current);
-        }
-    }
-
     /* Input handling */
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         this.which = -1;
+        this.selected = -1;
 
         if (super.mouseClicked(mouseX, mouseY, mouseButton))
         {
@@ -386,22 +346,6 @@ public class GuiGraphElement extends GuiKeyframeEditor
         return false;
     }
 
-    /**
-     * Get zoom factor based by current zoom value 
-     */
-    private float getZoomFactor(float zoom)
-    {
-        float factor = 0;
-
-        if (zoom < 0.2F) factor = 0.005F;
-        else if (zoom < 1.0F) factor = 0.025F;
-        else if (zoom < 2.0F) factor = 0.1F;
-        else if (zoom < 15.0F) factor = 0.5F;
-        else if (zoom <= 50.0F) factor = 1F;
-
-        return factor;
-    }
-
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state)
     {
@@ -412,7 +356,7 @@ public class GuiGraphElement extends GuiKeyframeEditor
             if (this.sliding)
             {
                 /* Resort after dragging the tick thing */
-                Keyframe frame = this.channel.get(this.selected);
+                Keyframe frame = this.getCurrent();
 
                 this.channel.sort();
                 this.sliding = false;
@@ -445,7 +389,7 @@ public class GuiGraphElement extends GuiKeyframeEditor
             this.sliding = true;
         }
 
-        Gui.drawRect(this.area.x, this.area.y, this.area.getX(1), this.area.getY(1), 0x88000000);
+        this.area.draw(0x88000000);
         GuiUtils.scissor(this.area.x, this.area.y, this.area.w, this.area.h, w, h);
 
         this.drawGraph(mouseX, mouseY, w, h);
@@ -555,7 +499,7 @@ public class GuiGraphElement extends GuiKeyframeEditor
         /* Draw current point at the scrub */
         if (this.parent != null)
         {
-            int cx = (this.getOffset());
+            int cx = this.getOffset();
             int cy = this.toGraphY(this.channel.interpolate(cx));
 
             cx = this.toGraphX(cx);
@@ -635,22 +579,15 @@ public class GuiGraphElement extends GuiKeyframeEditor
         /* Draw points */
         GL11.glPointSize(10);
 
-        int i = 0;
-        prev = null;
-
         for (Keyframe frame : this.channel.getKeyframes())
         {
             GL11.glBegin(GL11.GL_POINTS);
-
             GL11.glColor4f(1, 1, 1, 1);
             GL11.glVertex2f(this.toGraphX(frame.tick), this.toGraphY(frame.value));
             GL11.glEnd();
-
-            prev = frame;
-            i++;
         }
 
-        i = 0;
+        int i = 0;
         prev = null;
         GL11.glPointSize(6);
 

@@ -9,11 +9,11 @@ import net.minecraft.client.Minecraft;
  * Special subclass of graph editor for fixture editor panels to allow 
  * dirtying the camera profile.
  */
-public abstract class GuiFixtureGraphEditor<E extends GuiKeyframeEditor, T extends GuiAbstractFixturePanel<? extends AbstractFixture>> extends GuiGraphEditor<E>
+public abstract class GuiFixtureKeyframesEditor<E extends GuiKeyframeElement, T extends GuiAbstractFixturePanel<? extends AbstractFixture>> extends GuiKeyframesEditor<E>
 {
     protected T parent;
 
-    public GuiFixtureGraphEditor(Minecraft mc, T parent)
+    public GuiFixtureKeyframesEditor(Minecraft mc, T parent)
     {
         super(mc);
 

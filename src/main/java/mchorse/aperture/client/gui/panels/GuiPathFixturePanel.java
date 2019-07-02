@@ -11,9 +11,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
-import mchorse.aperture.client.gui.utils.GuiFixtureGraphEditor;
-import mchorse.aperture.client.gui.utils.GuiGraphEditor;
-import mchorse.aperture.client.gui.utils.GuiGraphElement;
+import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import net.minecraft.client.Minecraft;
@@ -39,7 +37,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiButtonElement<GuiCheckBox> perPointDuration;
     public GuiButtonElement<GuiCheckBox> useSpeed;
     public GuiButtonElement<GuiButton> toKeyframe;
-    public GuiGraphEditor<GuiGraphElement> speed;
+    public GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel> speed;
 
     public DurablePosition position;
 
@@ -63,14 +61,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.editor.updateProfile();
         });
         this.toKeyframe = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
-        this.speed = new GuiFixtureGraphEditor<GuiGraphElement, GuiPathFixturePanel>(mc, this)
-        {
-            @Override
-            protected GuiGraphElement createElement(Minecraft mc)
-            {
-                return new GuiGraphElement(mc, (frame) -> this.fillData(frame));
-            }
-        };
+        this.speed = new GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel>(mc, this);
         this.speed.graph.setParent(this);
         this.speed.graph.setColor(0x0088ff);
 

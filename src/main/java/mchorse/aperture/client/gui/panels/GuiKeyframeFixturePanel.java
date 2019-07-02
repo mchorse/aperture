@@ -5,8 +5,8 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
-import mchorse.aperture.client.gui.panels.keyframe.GuiKeyframeFixtureGraphEditor;
-import mchorse.aperture.client.gui.utils.GuiGraphEditor;
+import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesDopeSheetEditor;
+import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
@@ -28,19 +28,22 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public GuiButtonElement<GuiButton> roll;
     public GuiButtonElement<GuiButton> fov;
 
-    public GuiGraphEditor graph;
+    public GuiFixtureKeyframesGraphEditor<GuiKeyframeFixturePanel> graph;
+    public GuiFixtureKeyframesDopeSheetEditor dope;
 
     public AllKeyframeChannel allChannel = new AllKeyframeChannel();
-    private String[] titles = new String[8];
+    public String[] titles = new String[8];
+    public int[] colors = new int[] {0xff1392, 0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
+
     private String title = "";
-    private int[] colors = new int[] {0xff1392, 0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
 
     public GuiKeyframeFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc, editor);
 
         this.buttons = new GuiElements<>();
-        this.graph = new GuiKeyframeFixtureGraphEditor(mc, this);
+        this.graph = new GuiFixtureKeyframesGraphEditor<GuiKeyframeFixturePanel>(mc, this);
+        this.dope = new GuiFixtureKeyframesDopeSheetEditor(mc, this);
 
         this.all = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
         this.x = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
@@ -79,8 +82,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         }
 
         this.graph.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
+        this.dope.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -40);
 
-        this.children.add(this.graph, this.buttons);
+        this.children.add(this.graph, this.dope, this.buttons);
     }
 
     @Override
@@ -92,15 +96,19 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         this.graph.interpolations.setVisible(false);
         this.graph.graph.setDuration(fixture.getDuration());
+        this.dope.graph.setDuration(fixture.getDuration());
+        this.allChannel.setFixture(fixture);
 
         if (!same)
         {
+            this.dope.setFixture(fixture);
             this.selectChannel(this.allChannel);
         }
 
         if (duration != -1)
         {
             this.graph.graph.selectByDuration(duration);
+            this.dope.graph.selectByDuration(duration);
         }
     }
 
@@ -109,6 +117,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         super.updateDuration(value);
         this.graph.graph.setDuration(value);
+        this.dope.graph.setDuration(value);
     }
 
     public void selectChannel(KeyframeChannel channel)
@@ -123,11 +132,19 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         else if (channel == this.fixture.roll) id = 6;
         else if (channel == this.fixture.fov) id = 7;
 
-        if (channel == this.allChannel) this.allChannel.setFixture(this.fixture);
-
         this.title = this.titles[id];
-        this.graph.graph.setColor(this.colors[id]);
-        this.graph.setChannel(channel);
+        this.dope.setVisible(id == 0);
+        this.graph.setVisible(id != 0);
+
+        if (channel != this.allChannel)
+        {
+            this.graph.graph.color = this.colors[id];
+            this.graph.setChannel(channel);
+        }
+        else
+        {
+            this.allChannel.setFixture(this.fixture);
+        }
     }
 
     @Override

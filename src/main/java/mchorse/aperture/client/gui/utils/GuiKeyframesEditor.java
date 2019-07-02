@@ -3,7 +3,6 @@ package mchorse.aperture.client.gui.utils;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
@@ -14,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
-public abstract class GuiGraphEditor<T extends GuiKeyframeEditor> extends GuiElement
+public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends GuiElement
 {
     public GuiElements<GuiElement> frameButtons;
     public GuiTrackpadElement tick;
@@ -28,7 +27,7 @@ public abstract class GuiGraphEditor<T extends GuiKeyframeEditor> extends GuiEle
     private int clicks;
     private long clickTimer;
 
-    public GuiGraphEditor(Minecraft mc)
+    public GuiKeyframesEditor(Minecraft mc)
     {
         super(mc);
 
@@ -70,13 +69,6 @@ public abstract class GuiGraphEditor<T extends GuiKeyframeEditor> extends GuiEle
     }
 
     protected abstract T createElement(Minecraft mc);
-
-    public void setChannel(KeyframeChannel channel)
-    {
-        this.graph.setChannel(channel);
-        this.interpolations.setVisible(false);
-        this.frameButtons.setVisible(false);
-    }
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)

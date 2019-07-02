@@ -28,7 +28,7 @@ public class Point
      */
     public static Point fromByteBuf(ByteBuf buffer)
     {
-        return new Point(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        return new Point(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
     public Point(double x, double y, double z)
