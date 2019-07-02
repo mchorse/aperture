@@ -17,9 +17,9 @@ import mchorse.mclib.utils.Interpolations;
  */
 public class DragModifier extends ComponentModifier
 {
-    private float x;
-    private float y;
-    private float z;
+    private double x;
+    private double y;
+    private double z;
     private float yaw;
     private float pitch;
     private float roll;

@@ -46,9 +46,9 @@ public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<Translat
     {
         super.resize(width, height);
 
-        this.x.setValue(this.modifier.translate.x);
-        this.y.setValue(this.modifier.translate.y);
-        this.z.setValue(this.modifier.translate.z);
+        this.x.setValue((float) this.modifier.translate.x);
+        this.y.setValue((float) this.modifier.translate.y);
+        this.z.setValue((float) this.modifier.translate.z);
     }
 
     @Override

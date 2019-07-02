@@ -55,8 +55,8 @@ public class GuiPointModule extends GuiAbstractModule
     {
         this.point = point;
 
-        this.x.setValue(point.x);
-        this.y.setValue(point.y);
-        this.z.setValue(point.z);
+        this.x.setValue((float) point.x);
+        this.y.setValue((float) point.y);
+        this.z.setValue((float) point.z);
     }
 }

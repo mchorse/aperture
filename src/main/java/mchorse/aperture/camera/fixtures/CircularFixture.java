@@ -68,13 +68,13 @@ public class CircularFixture extends AbstractFixture
         float progress = (ticks / (float) this.duration) + (1.0F / this.duration * partialTicks);
         float angle = (float) (Math.toRadians(this.offset) + progress * Math.toRadians(this.circles));
 
-        float cos = this.distance * (float) Math.cos(angle);
-        float sin = this.distance * (float) Math.sin(angle);
+        double cos = this.distance * Math.cos(angle);
+        double sin = this.distance * Math.sin(angle);
 
         /* +0.5, because player's position isn't in the entity's center */
-        float x = this.start.x + 0.5F + cos;
-        float y = this.start.y;
-        float z = this.start.z + 0.5F + sin;
+        double x = this.start.x + 0.5 + cos;
+        double y = this.start.y;
+        double z = this.start.z + 0.5 + sin;
 
         float yaw = (float) (MathHelper.atan2(sin, cos) * (180D / Math.PI)) - 90.0F;
 

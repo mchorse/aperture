@@ -1,5 +1,8 @@
 package mchorse.aperture.client.gui.config;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
@@ -7,9 +10,12 @@ import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.GuiTexturePicker;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
+import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
@@ -31,8 +37,13 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiButtonElement<GuiCheckBox> ruleOfThirds;
     public GuiButtonElement<GuiCheckBox> letterBox;
     public GuiTextElement aspectRatio;
+    public GuiButtonElement<GuiCheckBox> repeat;
+    public GuiButtonElement<GuiCheckBox> overlay;
+    public GuiButtonElement<GuiButton> pickOverlay;
+    public GuiTexturePicker overlayPicker;
 
-    public int max;
+    public int maxW;
+    public int maxH;
 
     @SuppressWarnings("unchecked")
     public GuiConfigCameraOptions(Minecraft mc, GuiCameraEditor editor)
@@ -133,13 +144,52 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         });
         this.aspectRatio.setText(Aperture.proxy.config.aspect_ratio);
 
+        this.repeat = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.repeat"), this.editor.repeat, (b) ->
+        {
+            this.editor.repeat = b.button.isChecked();
+        });
+
+        this.overlay = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.overlay"), Aperture.proxy.config.tp_teleport, (b) ->
+        {
+            Property prop = Aperture.proxy.forge.getCategory("overlay").get("camera_editor_overlay");
+
+            prop.set(b.button.isChecked());
+            this.saveConfig();
+        });
+
+        this.pickOverlay = GuiButtonElement.button(mc, I18n.format("aperture.gui.config.pick_overlay"), (b) ->
+        {
+            this.overlayPicker.refresh();
+            this.overlayPicker.fill(this.editor.overlayLocation);
+            this.overlayPicker.setVisible(true);
+        });
+        this.pickOverlay.button.width = this.font.getStringWidth(this.pickOverlay.button.displayString) + 10;
+
+        this.overlayPicker = new GuiTexturePicker(mc, (rl) ->
+        {
+            JsonElement tag = RLUtils.writeJson(rl);
+            Property prop = Aperture.proxy.forge.getCategory("overlay").get("camera_editor_overlay_rl");
+            String texture = "";
+
+            if (tag != JsonNull.INSTANCE)
+            {
+                texture = tag.toString();
+            }
+
+            prop.set(texture);
+            this.saveConfig();
+            this.editor.updateOverlay();
+        });
+        this.overlayPicker.setVisible(false);
+        this.overlayPicker.resizer().parent(this.editor.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
+
         /* Don't show that if Minema mod isn't present */
         if (Loader.isModLoaded("minema"))
         {
             this.children.add(this.minema);
         }
 
-        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio);
+        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
 
         /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())
@@ -147,23 +197,30 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.children.add(this.minecrafttpTeleport, this.tpTeleport);
         }
 
-        int i = 0;
+        this.maxH = 24;
 
         for (IGuiElement element : this.children.elements)
         {
             if (element instanceof GuiButtonElement)
             {
-                GuiButtonElement<GuiCheckBox> button = (GuiButtonElement<GuiCheckBox>) element;
+                GuiButtonElement button = (GuiButtonElement) element;
 
-                button.resizer().parent(this.area).set(4, 4 + i * 20 + 20, button.button.width, button.button.height);
-                this.max = Math.max(this.max, button.button.width);
+                button.resizer().parent(this.area).set(4, this.maxH, button.button.width, button.button.height);
+
+                if (!(button.button instanceof GuiCheckBox))
+                {
+                    button.resizer().w(1, -8);
+                }
+
+                this.maxW = Math.max(this.maxW, button.button.width);
+                this.maxH += button.button.height + 5;
             }
             else if (element instanceof GuiElement)
             {
-                ((GuiElement) element).resizer().parent(this.area).set(4, 4 + i * 20 + 20, 0, 18).w(1, -8);
-            }
+                ((GuiElement) element).resizer().parent(this.area).set(4, this.maxH, 0, 18).w(1, -8);
 
-            i++;
+                this.maxH += 23;
+            }
         }
     }
 
@@ -188,18 +245,19 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.ruleOfThirds.button.setIsChecked(this.editor.ruleOfThirds);
         this.letterBox.button.setIsChecked(this.editor.letterBox);
         this.aspectRatio.setText(Aperture.proxy.config.aspect_ratio);
+        this.overlay.button.setIsChecked(Aperture.proxy.config.camera_editor_overlay);
     }
 
     @Override
     public int getWidth()
     {
-        return Math.max(this.max + 8, this.font.getStringWidth(this.title) + 8);
+        return Math.max(this.maxW + 8, this.font.getStringWidth(this.title) + 8);
     }
 
     @Override
     public int getHeight()
     {
-        return this.children.elements.size() * 20 + 26;
+        return this.maxH;
     }
 
     @Override

@@ -123,15 +123,16 @@ public class GuiProfilesManager extends GuiElement
         if (entry != null)
         {
             CameraProfile profile = entry.profile.clone();
-            CameraProfileEntry newEntry = new CameraProfileEntry(profile.getDestination(), profile);
 
             profile.getDestination().setFilename(name);
             profile.dirty();
 
+            CameraProfileEntry newEntry = new CameraProfileEntry(profile.getDestination(), profile);
+
             ClientProxy.control.addProfile(profile);
 
             this.editor.selectProfile(profile);
-            this.profiles.add(entry);
+            this.profiles.add(newEntry);
             this.profiles.filter("", true);
             this.profiles.list.setCurrent(newEntry);
         }
