@@ -19,9 +19,9 @@ import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.utils.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class GuiDopeSheet extends GuiKeyframeElement
@@ -403,7 +403,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GL11.glLineWidth(2);
 
-            VertexBuffer vb = Tessellator.getInstance().getBuffer();
+            BufferBuilder vb = Tessellator.getInstance().getBuffer();
 
             vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
             vb.pos(this.area.x, y + h / 2, 0).color(r, g, b, 0.65F).endVertex();
