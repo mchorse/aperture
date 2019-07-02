@@ -35,6 +35,13 @@ aperture.config:
         camera_outside_hide_guis: Hide GUIs
         camera_outside_hide_overlays: Hide overlays
 
+    overlay:
+        title: Camera editor overlay
+        tooltip: Allows to setup an overlay image that would be used in the camera editor
+        
+        camera_editor_overlay: Enable overlay
+        camera_editor_overlay_rl: Resource path to overlay
+
     smooth:
         title: Smooth camera
         tooltip: Smooth camera options

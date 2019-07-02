@@ -11,8 +11,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
-import mchorse.aperture.client.gui.utils.GuiFixtureGraphEditor;
-import mchorse.aperture.client.gui.utils.GuiGraphEditor;
+import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import net.minecraft.client.Minecraft;
@@ -38,7 +37,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiButtonElement<GuiCheckBox> perPointDuration;
     public GuiButtonElement<GuiCheckBox> useSpeed;
     public GuiButtonElement<GuiButton> toKeyframe;
-    public GuiGraphEditor speed;
+    public GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel> speed;
 
     public DurablePosition position;
 
@@ -62,9 +61,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.editor.updateProfile();
         });
         this.toKeyframe = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
-        this.speed = new GuiFixtureGraphEditor<GuiPathFixturePanel>(mc, this);
-        this.speed.graph.parent = this;
-        this.speed.graph.color = 0x0088ff;
+        this.speed = new GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel>(mc, this);
+        this.speed.graph.setParent(this);
+        this.speed.graph.setColor(0x0088ff);
 
         this.point.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -80);
         this.interp.resizer().parent(this.area).set(0, 60, 80, 45);
@@ -95,9 +94,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         for (DurablePosition point : this.fixture.getPoints())
         {
-            int index = fixture.x.insert(x, point.point.x);
-            fixture.y.insert(x, point.point.y);
-            fixture.z.insert(x, point.point.z);
+            int index = fixture.x.insert(x, (float) point.point.x);
+            fixture.y.insert(x, (float) point.point.y);
+            fixture.z.insert(x, (float) point.point.z);
             fixture.yaw.insert(x, point.angle.yaw);
             fixture.pitch.insert(x, point.angle.pitch);
             fixture.roll.insert(x, point.angle.roll);
@@ -183,7 +182,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         if (!same)
         {
-            this.speed.graph.duration = (int) fixture.getDuration();
+            this.speed.graph.setDuration(fixture.getDuration());
             this.speed.setChannel(fixture.speed);
             this.speed.setVisible(this.fixture.useSpeed);
         }
@@ -232,7 +231,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.fixture.setDuration(value);
         }
 
-        this.speed.graph.duration = (int) value;
+        this.speed.graph.setDuration((int) value);
         this.editor.updateValues();
     }
 

@@ -129,6 +129,17 @@ public class ApertureConfig
      */
     public boolean camera_outside_sky;
 
+    /**
+     * Enables camera editor overlay
+     */
+    public boolean camera_editor_overlay;
+
+    /**
+     * Resource location path to the texture which will be used as 
+     * overlay 
+     */
+    public String camera_editor_overlay_rl = "";
+
     /* Non conifg option stuff */
 
     /**
@@ -149,6 +160,7 @@ public class ApertureConfig
     {
         String camera = "camera";
         String outside = "outside";
+        String overlay = "overlay";
         String prefix = "aperture.config.camera.";
 
         /* Camera */
@@ -174,6 +186,10 @@ public class ApertureConfig
         this.camera_outside = this.getBoolean("camera_outside", outside, false, "Whether camera should be played back from outside (allowing the player to act as a body actor)");
         this.camera_outside_hide_player = this.getBoolean("camera_outside_hide_player", outside, false, "Whether player should be hidden during playback of the camera if outside mode is enabled");
         this.camera_outside_sky = this.getBoolean("camera_outside_sky", outside, true, "If enabled, it fixes the sky rendering, but hides the block highlight");
+
+        /* Camera editor overlay */
+        this.camera_editor_overlay = this.getBoolean("camera_editor_overlay", overlay, false, "Enables camera editor overlay");
+        this.camera_editor_overlay_rl = this.getString("camera_editor_overlay_rl", overlay, "", "Resource location path to the texture which will be used as overlay");
 
         /* Processing camera command name */
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");

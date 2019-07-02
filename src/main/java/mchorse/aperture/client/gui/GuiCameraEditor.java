@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 
+import com.google.gson.JsonParser;
+
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
@@ -27,6 +29,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -91,6 +94,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     private float lastFov = 70.0F;
     private float lastRoll = 0;
     private GameType lastGameMode = GameType.NOT_SET;
+    public ResourceLocation overlayLocation;
 
     /**
      * This property saves state for the sync option, to allow more friendly
@@ -107,6 +111,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      * Maximum scrub duration
      */
     public int maxScrub = 0;
+
+    /**
+     * Whether current camera fixture should be played on repeat 
+     */
+    public boolean repeat;
 
     /**
      * Flight mode 
@@ -211,6 +220,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.nextFrame = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 32, 0, 32, 16, (b) -> this.jumpToNextFrame()).tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"), TooltipDirection.BOTTOM);
         this.plause = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) ->
         {
+            this.disableFlight();
             this.runner.toggle(this.profile, this.scrub.value);
             this.updatePlauseButton();
 
@@ -275,11 +285,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Setup areas of widgets */
         this.scrub.resizer().parent(this.area).set(10, 0, 0, 20).y(1, -20).w(1, -20);
 
-        this.popup.resizer().relative(this.add.resizer()).set(-44, 18, 62, 122);
-        this.config.resizer().parent(this.area).set(0, 20, 160, 0).x(1, -180).h(1, -80);
-        this.profiles.resizer().parent(this.area).set(0, 20, 160, 0).x(1, -160).h(1, -80);
-        this.modifiers.resizer().parent(this.area).set(0, 20, 220, 0).x(1, -260).h(1, -80);
         this.panel.resizer().parent(this.area).set(10, 40, 0, 0).w(1, -20).h(1, -70);
+        this.popup.resizer().relative(this.add.resizer()).set(-44, 18, 62, 122);
+        this.config.resizer().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
+        this.profiles.resizer().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);
+        this.modifiers.resizer().relative(this.panel.resizer()).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
 
         /* Adding everything */
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
@@ -294,7 +304,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.hidePopups(this.profiles);
         this.frame.setVisible(false);
 
-        this.elements.add(this.hidden, this.openProfiles, this.profiles);
+        this.elements.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
 
         /* Let other classes have fun with camera editor's fields' 
          * position and such */
@@ -339,6 +349,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     @SuppressWarnings("unchecked")
     public void pickCameraFixture(AbstractFixture fixture, long duration)
     {
+        this.disableFlight();
+
         if (fixture == null)
         {
             this.scrub.index = -1;
@@ -549,6 +561,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updateCameraEditor(EntityPlayer player)
     {
+        this.updateOverlay();
         this.position.set(player);
         this.selectProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
@@ -588,6 +601,24 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public EntityPlayer getCamera()
     {
         return this.runner.outside.active ? this.runner.outside.camera : this.mc.player;
+    }
+
+    public void updateOverlay()
+    {
+        try
+        {
+            this.overlayLocation = RLUtils.create(new JsonParser().parse(Aperture.proxy.config.camera_editor_overlay_rl));
+        }
+        catch (Exception e)
+        {
+            this.overlayLocation = null;
+        }
+    }
+
+    public void disableFlight()
+    {
+        this.flight.enabled = false;
+        this.cameraOptions.update();
     }
 
     /**
@@ -779,6 +810,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             /* Toggle flight */
             this.cameraOptions.flight.mouseClicked(this.cameraOptions.flight.area.x + 1, this.cameraOptions.flight.area.y + 1, 0);
+            this.cameraOptions.update();
         }
 
         if (this.flight.enabled)
@@ -853,6 +885,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.modifiers.toggleVisible();
         }
+        else if (keyCode == Keyboard.KEY_R)
+        {
+            this.cameraOptions.repeat.mouseClicked(this.cameraOptions.repeat.area.x + 1, this.cameraOptions.repeat.area.y + 1, 0);
+        }
     }
 
     @Override
@@ -897,6 +933,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         boolean isRunning = this.runner.isRunning();
 
+        if (this.repeat && isRunning && this.panel.delegate != null)
+        {
+            AbstractFixture fixture = this.panel.delegate.fixture;
+            long target = this.profile.calculateOffset(fixture) + fixture.getDuration();
+
+            if (this.runner.ticks >= target - 1)
+            {
+                this.scrub.setValueFromScrub((int) (target - fixture.getDuration()));
+            }
+        }
+
         if (this.flight.enabled)
         {
             this.flight.animate(this.position);
@@ -904,14 +951,20 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             ClientProxy.control.roll = this.position.angle.roll;
             this.mc.gameSettings.fovSetting = this.position.angle.fov;
 
-            if (this.syncing && this.haveScrubbed && this.panel.delegate != null)
+            if (this.syncing && this.haveScrubbed)
             {
-                this.panel.delegate.editFixture(this.getCamera());
+                this.editFixture();
             }
         }
 
         if (this.profile != null)
         {
+            if (Aperture.proxy.config.camera_editor_overlay && this.overlayLocation != null)
+            {
+                this.mc.renderEngine.bindTexture(this.overlayLocation);
+                Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
+            }
+
             /* Readjustable values for rule of thirds in case of letter 
              * box enabled */
             int rx = 0;
@@ -1065,6 +1118,30 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+
+        /* Display camera attributes on top of everything else */
+        boolean running = this.runner.isRunning();
+
+        if ((this.syncing || running) && this.displayPosition)
+        {
+            Position pos = running ? this.runner.getPosition() : this.position;
+            Point point = pos.point;
+            Angle angle = pos.angle;
+
+            String[] labels = new String[] {this.stringX + ": " + point.x, this.stringY + ": " + point.y, this.stringZ + ": " + point.z, this.stringYaw + ": " + angle.yaw, this.stringPitch + ": " + angle.pitch, this.stringRoll + ": " + angle.roll, this.stringFov + ": " + angle.fov};
+            int i = 6;
+
+            for (String label : labels)
+            {
+                int width = this.fontRendererObj.getStringWidth(label);
+                int y = this.height - 30 - 12 * i;
+
+                Gui.drawRect(8, y - 2, 9 + width + 2, y + 9, 0x88000000);
+                this.fontRendererObj.drawStringWithShadow(label, 10, y, 0xffffff);
+
+                i--;
+            }
+        }
     }
 
     /**

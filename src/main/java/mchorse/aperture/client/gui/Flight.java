@@ -51,9 +51,9 @@ public class Flight
             fov += (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE) ? -angleFactor : angleFactor);
         }
 
-        float x = position.point.x;
-        float y = position.point.y;
-        float z = position.point.z;
+        double x = position.point.x;
+        double y = position.point.y;
+        double z = position.point.z;
 
         double xx = 0;
         double yy = 0;

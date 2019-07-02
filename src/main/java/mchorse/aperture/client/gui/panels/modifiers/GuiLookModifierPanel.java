@@ -21,6 +21,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 
     public GuiButtonElement<GuiCheckBox> relative;
     public GuiButtonElement<GuiCheckBox> atBlock;
+    public GuiButtonElement<GuiCheckBox> forward;
 
     public GuiLookModifierPanel(Minecraft mc, LookModifier modifier, GuiModifiersManager modifiers)
     {
@@ -64,14 +65,21 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
             this.modifiers.editor.updateProfile();
         });
 
+        this.forward = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.forward"), false, (b) ->
+        {
+            this.modifier.forward = b.button.isChecked();
+            this.modifiers.editor.updateProfile();
+        });
+
         this.selector.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
         this.x.resizer().parent(this.area).set(5, 25, 0, 20).w(0.5F, -10);
         this.y.resizer().parent(this.area).set(5, 25, 0, 20).x(0.5F, 5).w(0.5F, -10);
         this.z.resizer().parent(this.area).set(5, 50, 0, 20).w(1, -10);
-        this.relative.resizer().parent(this.area).set(5, 80, this.relative.button.width, 11);
-        this.atBlock.resizer().parent(this.area).set(5, 80, this.atBlock.button.width, 11).x(0.5F, 5);
+        this.relative.resizer().parent(this.area).set(5, 75, this.relative.button.width, 11);
+        this.atBlock.resizer().parent(this.area).set(5, 75, this.atBlock.button.width, 11).x(0.5F, 5);
+        this.forward.resizer().parent(this.area).set(5, 91, this.forward.button.width, 11);
 
-        this.children.add(this.selector, this.x, this.y, this.z, this.relative, this.atBlock);
+        this.children.add(this.selector, this.x, this.y, this.z, this.relative, this.atBlock, this.forward);
     }
 
     @Override
@@ -80,11 +88,12 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
         super.resize(width, height);
 
         this.selector.setText(this.modifier.selector);
-        this.x.setValue(this.modifier.block.x);
-        this.y.setValue(this.modifier.block.y);
-        this.z.setValue(this.modifier.block.z);
+        this.x.setValue((float) this.modifier.block.x);
+        this.y.setValue((float) this.modifier.block.y);
+        this.z.setValue((float) this.modifier.block.z);
         this.relative.button.setIsChecked(this.modifier.relative);
         this.atBlock.button.setIsChecked(this.modifier.atBlock);
+        this.forward.button.setIsChecked(this.modifier.forward);
 
         this.updateVisibility();
     }
@@ -102,7 +111,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     @Override
     public int getHeight()
     {
-        return 100;
+        return 107;
     }
 
     @Override

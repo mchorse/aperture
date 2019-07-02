@@ -27,7 +27,7 @@ public class GuiCameraConfig extends GuiElement
 
         this.editor = editor;
         this.createChildren();
-        this.options.add(new GuiConfigCameraOptions(mc, editor));
+        this.options.add(editor.cameraOptions);
 
         CameraEditorEvent.Options event = new CameraEditorEvent.Options(editor);
         ClientProxy.EVENT_BUS.post(event);
@@ -54,6 +54,7 @@ public class GuiCameraConfig extends GuiElement
             }
 
             option.update();
+            option.resize(width, height);
             option.resizer().parent(this.area).set(0, y, 0, option.getHeight()).w(1, 0);
             max = Math.max(max, option.getWidth());
             y += option.getHeight();
@@ -125,7 +126,7 @@ public class GuiCameraConfig extends GuiElement
     @Override
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
-        this.scroll.drag(mouseX, mouseX);
+        this.scroll.drag(mouseX, mouseY);
 
         Gui.drawRect(this.scroll.x, this.scroll.y, this.scroll.getX(1), this.scroll.getY(1), 0xaa000000);
 

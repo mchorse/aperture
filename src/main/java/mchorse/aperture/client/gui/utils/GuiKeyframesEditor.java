@@ -3,8 +3,6 @@ package mchorse.aperture.client.gui.utils;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
-import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel.GuiInterpolationsList;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
@@ -15,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
-public class GuiGraphEditor extends GuiElement
+public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends GuiElement
 {
     public GuiElements<GuiElement> frameButtons;
     public GuiTrackpadElement tick;
@@ -24,15 +22,12 @@ public class GuiGraphEditor extends GuiElement
     public GuiListElement<Interpolation> interpolations;
     public GuiButtonElement<GuiCirculate> easing;
 
-    public GuiGraphElement graph;
-
-    public GuiButtonElement<GuiButton> add;
-    public GuiButtonElement<GuiButton> remove;
+    public T graph;
 
     private int clicks;
     private long clickTimer;
 
-    public GuiGraphEditor(Minecraft mc)
+    public GuiKeyframesEditor(Minecraft mc)
     {
         super(mc);
 
@@ -43,9 +38,6 @@ public class GuiGraphEditor extends GuiElement
         this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) -> this.setTick(value.longValue()));
         this.tick.setLimit(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) -> this.setValue(value));
-
-        this.add = GuiButtonElement.button(mc, I18n.format("aperture.gui.add"), (b) -> this.addKeyframe());
-        this.remove = GuiButtonElement.button(mc, I18n.format("aperture.gui.remove"), (b) -> this.removeKeyframe());
 
         this.interp = GuiButtonElement.button(mc, "", (b) -> this.interpolations.toggleVisible());
         this.interpolations = new GuiInterpolationsList(mc, (interp) -> this.pickInterpolation(interp));
@@ -60,31 +52,23 @@ public class GuiGraphEditor extends GuiElement
         this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.out"));
         this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.inout"));
 
-        this.graph = new GuiGraphElement(mc, (frame) -> this.fillData(frame));
+        this.graph = this.createElement(mc);
 
-        /* Position the elmenents */
+        /* Position the elements */
         this.tick.resizer().parent(this.area).set(0, 10, 80, 20).x(1, -90);
         this.value.resizer().parent(this.area).set(0, 35, 80, 20).x(1, -90);
 
-        this.add.resizer().parent(this.area).set(0, 0, 30, 20).y(1, -30).x(1, -95);
-        this.remove.resizer().parent(this.area).set(0, 0, 50, 20).y(1, -30).x(1, -60);
         this.interp.resizer().relative(this.tick.resizer()).set(-90, 0, 80, 20);
         this.easing.resizer().relative(this.value.resizer()).set(-90, 0, 80, 20);
-        this.interpolations.resizer().relative(this.interp.resizer()).set(0, 20, 80, 16 * 5);
+        this.interpolations.resizer().parent(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(16 * 7);
         this.graph.resizer().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         /* Add all elements */
-        this.children.add(this.graph, this.add, this.remove, this.frameButtons);
+        this.children.add(this.graph, this.frameButtons);
         this.frameButtons.add(this.interp, this.easing, this.tick, this.value, this.interpolations);
     }
 
-    public void setChannel(KeyframeChannel channel)
-    {
-        this.graph.channel = channel;
-        this.graph.resetView();
-        this.interpolations.setVisible(false);
-        this.frameButtons.setVisible(false);
-    }
+    protected abstract T createElement(Minecraft mc);
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -108,15 +92,7 @@ public class GuiGraphEditor extends GuiElement
                     if (this.clicks >= 1)
                     {
                         this.clicks = 0;
-
-                        if (this.graph.which == -1)
-                        {
-                            this.addKeyframe((long) this.graph.fromGraphX(mouseX), this.graph.fromGraphY(mouseY));
-                        }
-                        else if (this.graph.which == 0)
-                        {
-                            this.removeKeyframe();
-                        }
+                        this.doubleClick(mouseX, mouseY);
                     }
                 }
                 else
@@ -131,71 +107,22 @@ public class GuiGraphEditor extends GuiElement
         return this.area.isInside(mouseX, mouseY);
     }
 
+    protected void doubleClick(int mouseX, int mouseY)
+    {
+        this.graph.doubleClick(mouseX, mouseY);
+        this.fillData(this.graph.getCurrent());
+    }
+
     @Override
     public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
     {
         return super.mouseScrolled(mouseX, mouseY, scroll) || this.area.isInside(mouseX, mouseY);
     }
 
-    public void addKeyframe()
-    {
-        this.addKeyframe(this.getTick(), this.getValue());
-    }
-
-    public void addKeyframe(long tick, float value)
-    {
-        Easing easing = Easing.IN;
-        Interpolation interp = Interpolation.LINEAR;
-        Keyframe frame = this.graph.getCurrent();
-        long oldTick = tick;
-
-        if (frame != null)
-        {
-            easing = frame.easing;
-            interp = frame.interp;
-            oldTick = frame.tick;
-        }
-
-        this.graph.selected = this.graph.channel.insert(tick, value);
-
-        if (oldTick != tick)
-        {
-            frame = this.graph.getCurrent();
-            frame.setEasing(easing);
-            frame.setInterpolation(interp);
-        }
-
-        this.fillData(frame);
-    }
-
-    protected long getTick()
-    {
-        return this.graph.getOffset();
-    }
-
-    protected float getValue()
-    {
-        return 1;
-    }
-
-    public void removeKeyframe()
-    {
-        Keyframe frame = this.graph.getCurrent();
-
-        if (frame == null)
-        {
-            return;
-        }
-
-        this.graph.channel.remove(this.graph.selected);
-        this.graph.selected -= 1;
-        this.fillData(this.graph.getCurrent());
-    }
-
     public void setTick(long value)
     {
         this.graph.getCurrent().setTick(value);
-        this.graph.sliding = true;
+        this.graph.setSliding();
     }
 
     public void setValue(float value)

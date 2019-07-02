@@ -97,6 +97,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (this.value != old)
         {
+            this.editor.disableFlight();
             this.editor.scrubbed(this, this.value, fromScrub);
         }
     }

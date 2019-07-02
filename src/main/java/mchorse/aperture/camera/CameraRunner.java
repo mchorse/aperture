@@ -298,9 +298,9 @@ public class CameraRunner
                 Aperture.LOGGER.info("Camera render frame: " + event.renderTickTime + " " + this.ticks);
             }
 
-            float prevX = this.position.point.x;
-            float prevY = this.position.point.y;
-            float prevZ = this.position.point.z;
+            double prevX = this.position.point.x;
+            double prevY = this.position.point.y;
+            double prevZ = this.position.point.z;
 
             this.profile.applyProfile(progress, event.renderTickTime, this.position);
 
@@ -343,9 +343,9 @@ public class CameraRunner
 
             if (!this.mc.isSingleplayer() && !this.outside.active)
             {
-                float dx = point.x - prevX;
-                float dy = point.y - prevY;
-                float dz = point.z - prevZ;
+                double dx = point.x - prevX;
+                double dy = point.y - prevY;
+                double dz = point.z - prevZ;
 
                 if (dx * dx + dy * dy + dz * dz >= 10 * 10)
                 {

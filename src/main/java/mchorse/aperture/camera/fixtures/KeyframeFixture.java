@@ -81,9 +81,9 @@ public class KeyframeFixture extends AbstractFixture
     {
         Position pos = new Position(player);
 
-        this.x.insert(0, pos.point.x);
-        this.y.insert(0, pos.point.y);
-        this.z.insert(0, pos.point.z);
+        this.x.insert(0, (float) pos.point.x);
+        this.y.insert(0, (float) pos.point.y);
+        this.z.insert(0, (float) pos.point.z);
         this.yaw.insert(0, pos.angle.yaw);
         this.pitch.insert(0, pos.angle.pitch);
         this.roll.insert(0, pos.angle.roll);
