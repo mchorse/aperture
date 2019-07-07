@@ -23,17 +23,20 @@ aperture.gui:
     config:
         title: Опции камеры
 
-        outside: Внешний режим(O)
+        outside: Внешний режим (O)
         minema: Минема
         spectator: Наблюдатель
         show_path: Показать траекторию
-        sync: Синхронизация(S)
-        flight: Режим полёта(F)
+        sync: Синхронизация (S)
+        flight: Режим полёта (F)
         display_info: Отобразить позицию
         minecrafttp_teleport: Используйте /minecraft:tp
         tp_teleport: Используйте /tp
         rule_of_thirds: Правило третей
         letter_box: Каше
+        repeat: Повторить клип (R)
+        overlay: Добавить слой
+        pick_overlay: Убрать слой
 
     tooltips:
         jump_next_fixture: Перейти к следующему клипу (Shift + Right)
@@ -88,6 +91,7 @@ aperture.gui:
 
             relative: Относительно?
             at_block: Смотреть на блок?
+            forward: Смотреть вперёд?
 
             factor: Фактор
 
