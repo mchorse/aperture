@@ -35,8 +35,8 @@ aperture.gui:
         rule_of_thirds: Правило третей
         letter_box: Каше
         repeat: Повторить клип (R)
-        overlay: Добавить слой
-        pick_overlay: Убрать слой
+        overlay: Добавить оверлей
+        pick_overlay: Убрать оверлей
 
     tooltips:
         jump_next_fixture: Перейти к следующему клипу (Shift + Right)
