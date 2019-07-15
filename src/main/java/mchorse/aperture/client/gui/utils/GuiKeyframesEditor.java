@@ -35,6 +35,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         this.createChildren();
 
         this.frameButtons = new GuiElements<GuiElement>();
+        this.frameButtons.setVisible(false);
         this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) -> this.setTick(value.longValue()));
         this.tick.setLimit(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) -> this.setValue(value));
@@ -132,6 +133,11 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
     public void pickInterpolation(Interpolation interp)
     {
+        if (this.graph.getCurrent() == null)
+        {
+            return;
+        }
+
         this.graph.getCurrent().setInterpolation(interp);
         this.interp.button.displayString = I18n.format("aperture.gui.panels.interps." + interp.key);
         this.interpolations.setVisible(false);
@@ -139,6 +145,11 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
     public void changeEasing()
     {
+        if (this.graph.getCurrent() == null)
+        {
+            return;
+        }
+
         this.graph.getCurrent().setEasing(Easing.values()[this.easing.button.getValue()]);
     }
 
