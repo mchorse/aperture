@@ -22,7 +22,7 @@ aperture.config:
         gui_render_mouse: Отображать курсор мыши в интерфейсе
 
         minecrafttp_teleport: Используйте /minecraft:tp
-        tp_teleport: Используйте /tp
+        tp_teleport: Использовать /tp
         aspect_ratio: Пропорции
 
     outside: 
@@ -34,6 +34,13 @@ aperture.config:
         camera_outside_sky: Исправить небо
         camera_outside_hide_guis: Спрятать интерфейс
         camera_outside_hide_overlays: Спрятать оверлей
+
+    overlay:
+        title: Оверлей редактора камеры
+        tooltip: Позволяет установить изображение-оверлей для редактора камеры
+        
+        camera_editor_overlay: Включить оверлей
+        camera_editor_overlay_rl: Путь к оверлею
 
     smooth:
         title: Гладкое движение камеры
