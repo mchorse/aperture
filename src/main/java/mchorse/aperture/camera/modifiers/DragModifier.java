@@ -45,7 +45,7 @@ public class DragModifier extends ComponentModifier
         if (this.isActive(0)) pos.point.x = this.x = Interpolations.lerp(this.x, pos.point.x, this.factor);
         if (this.isActive(1)) pos.point.y = this.y = Interpolations.lerp(this.y, pos.point.y, this.factor);
         if (this.isActive(2)) pos.point.z = this.z = Interpolations.lerp(this.z, pos.point.z, this.factor);
-        if (this.isActive(3)) pos.angle.yaw = this.yaw = Interpolations.lerp(this.yaw, Interpolations.normalizeYaw(this.yaw, pos.angle.yaw), this.factor);
+        if (this.isActive(3)) pos.angle.yaw = this.yaw = Interpolations.lerpYaw(this.yaw, pos.angle.yaw, this.factor);
         if (this.isActive(4)) pos.angle.pitch = this.pitch = Interpolations.lerp(this.pitch, pos.angle.pitch, this.factor);
         if (this.isActive(5)) pos.angle.roll = this.roll = Interpolations.lerp(this.roll, pos.angle.roll, this.factor);
         if (this.isActive(6)) pos.angle.fov = this.fov = Interpolations.lerp(this.fov, pos.angle.fov, this.factor);
