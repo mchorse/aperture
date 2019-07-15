@@ -75,14 +75,14 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             if (i > 7) break;
 
-            button.resizer().parent(this.area).set(x, 0, this.font.getStringWidth(button.button.displayString) + 15, 20).y(1, -30);
+            button.resizer().parent(this.area).set(x, 0, this.font.getStringWidth(button.button.displayString) + 15, 20).y(0.5F, -25);
 
             x += button.resizer().getW() + 5;
             i++;
         }
 
         this.graph.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
-        this.dope.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -40);
+        this.dope.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
 
         this.children.add(this.graph, this.dope, this.buttons);
     }
@@ -169,7 +169,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
         /* Draw title of the channel */
-        this.editor.drawCenteredString(this.font, this.title, this.area.getX(0.5F), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
+        this.font.drawStringWithShadow(this.title, this.area.getX(1) - this.font.getStringWidth(this.title), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
 
         super.draw(tooltip, mouseX, mouseY, partialTicks);
     }
