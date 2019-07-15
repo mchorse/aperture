@@ -459,8 +459,19 @@ public class GuiPlaybackScrub extends GuiElement
                 i++;
             }
 
+            /* Draw shadows to indicate that there are still stuff to scroll */
             if (this.scroll > 0) GuiUtils.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
             if (this.scroll < this.max * this.scale - this.area.w + 4) GuiUtils.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
+
+            /* Draw end marker and also shadow of area where there is no  */
+            float stop = (float) (this.profile.getDuration() - this.min) / (float) (this.max - this.min);
+            int stopX = x + 2 + (int) (this.max * stop * this.scale) - this.scroll;
+
+            if (stopX < this.area.getX(1) - 2)
+            {
+                this.drawGradientRect(stopX + 1, y + h / 2, x + w - 1, y + h, 0x00, 0x88000000);
+                Gui.drawRect(stopX, y + h / 2, stopX + 1, y + h, 0xaaffffff);
+            }
 
             /* Draw the marker */
             Gui.drawRect(tx, y + 1, tx + 2, y + h - 1, 0xff57f52a);
