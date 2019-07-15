@@ -28,6 +28,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
+import mchorse.mclib.client.gui.utils.Resizer;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
 import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
@@ -1032,6 +1033,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             Gui.drawRect(width - 20, 0, width, 20, 0xaa000000);
         }
 
+        Resizer panel = this.panel.resizer();
+
         if (this.profile != null)
         {
             if (this.config.isVisible())
@@ -1079,40 +1082,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 this.updatePlayerCurrently(0.0F);
             }
 
-            /* Display flight speed */
-            if (this.flight.enabled)
-            {
-                String speed = String.format(this.stringSpeed + ": %.1f", this.flight.speed);
-                int width = this.fontRendererObj.getStringWidth(speed);
-                int x = this.width - 10 - width;
-                int y = this.height - 30;
-
-                Gui.drawRect(x - 2, y - 2, x + width + 2, y + 9, 0x88000000);
-                this.fontRendererObj.drawStringWithShadow(speed, x, y, 0xffffff);
-            }
-
-            /* Display camera attributes */
-            if ((this.syncing || running) && this.displayPosition)
-            {
-                Position pos = running ? this.runner.getPosition() : this.position;
-                Point point = pos.point;
-                Angle angle = pos.angle;
-
-                String[] labels = new String[] {this.stringX + ": " + point.x, this.stringY + ": " + point.y, this.stringZ + ": " + point.z, this.stringYaw + ": " + angle.yaw, this.stringPitch + ": " + angle.pitch, this.stringRoll + ": " + angle.roll, this.stringFov + ": " + angle.fov};
-                int i = 6;
-
-                for (String label : labels)
-                {
-                    int width = this.fontRendererObj.getStringWidth(label);
-                    int y = this.height - 30 - 12 * i;
-
-                    Gui.drawRect(8, y - 2, 9 + width + 2, y + 9, 0x88000000);
-                    this.fontRendererObj.drawStringWithShadow(label, 10, y, 0xffffff);
-
-                    i--;
-                }
-            }
-
             this.drawIcons();
         }
 
@@ -1121,6 +1090,19 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Display camera attributes on top of everything else */
         boolean running = this.runner.isRunning();
 
+        /* Display flight speed */
+        if (this.flight.enabled)
+        {
+            String speed = String.format(this.stringSpeed + ": %.1f", this.flight.speed);
+            int width = this.fontRendererObj.getStringWidth(speed);
+            int x = panel.getX() + panel.getW() - 10 - width;
+            int y = panel.getY() + panel.getH() - 5;
+
+            Gui.drawRect(x - 2, y - 3, x + width + 2, y + 10, 0xbb000000);
+            this.fontRendererObj.drawStringWithShadow(speed, x, y, 0xffffff);
+        }
+
+        /* Display position variables */
         if ((this.syncing || running) && this.displayPosition)
         {
             Position pos = running ? this.runner.getPosition() : this.position;
@@ -1133,10 +1115,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             for (String label : labels)
             {
                 int width = this.fontRendererObj.getStringWidth(label);
-                int y = this.height - 30 - 12 * i;
+                int y = panel.getY() + panel.getH() - 5 - 15 * i;
+                int x = panel.getX();
 
-                Gui.drawRect(8, y - 2, 9 + width + 2, y + 9, 0x88000000);
-                this.fontRendererObj.drawStringWithShadow(label, 10, y, 0xffffff);
+                Gui.drawRect(x, y - 3, x + width + 4, y + 10, 0xbb000000);
+                this.fontRendererObj.drawStringWithShadow(label, x + 2, y, 0xffffff);
 
                 i--;
             }
