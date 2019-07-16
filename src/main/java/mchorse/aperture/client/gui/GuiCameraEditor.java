@@ -207,6 +207,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.scrub = new GuiPlaybackScrub(mc, this, null);
         this.popup = new GuiFixturesPopup(mc, (fixture) ->
         {
+            fixture.fromPlayer(this.getCamera());
             this.createFixture(fixture);
             this.popup.toggleVisible();
         });

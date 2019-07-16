@@ -75,7 +75,6 @@ public class GuiFixturesPopup extends GuiElement
 
         if (fixture != null && this.callback != null)
         {
-            fixture.fromPlayer(this.mc.thePlayer);
             this.callback.accept(fixture);
         }
     }
