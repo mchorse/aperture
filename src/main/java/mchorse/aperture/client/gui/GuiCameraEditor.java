@@ -207,6 +207,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.scrub = new GuiPlaybackScrub(mc, this, null);
         this.popup = new GuiFixturesPopup(mc, (fixture) ->
         {
+            fixture.fromPlayer(this.getCamera());
             this.createFixture(fixture);
             this.popup.toggleVisible();
         });
@@ -687,6 +688,43 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
+     * Get player's current position 
+     */
+    public Position getPosition()
+    {
+        Position position = new Position(this.getCamera());
+
+        if (this.panel.delegate != null && !this.panel.delegate.fixture.getModifiers().isEmpty())
+        {
+            Position withModifiers = new Position();
+            this.profile.applyProfile(this.scrub.value, 0, withModifiers);
+
+            Position noModifiers = new Position();
+            this.profile.applyProfile(this.scrub.value, 0, noModifiers, false);
+
+            /* Get difference between modified and unmodified position */
+            withModifiers.point.x -= noModifiers.point.x;
+            withModifiers.point.y -= noModifiers.point.y;
+            withModifiers.point.z -= noModifiers.point.z;
+            withModifiers.angle.yaw -= noModifiers.angle.yaw;
+            withModifiers.angle.pitch -= noModifiers.angle.pitch;
+            withModifiers.angle.roll -= noModifiers.angle.roll;
+            withModifiers.angle.fov -= noModifiers.angle.fov;
+
+            /* Apply the difference */
+            position.point.x -= withModifiers.point.x;
+            position.point.y -= withModifiers.point.y;
+            position.point.z -= withModifiers.point.z;
+            position.angle.yaw -= withModifiers.angle.yaw;
+            position.angle.pitch -= withModifiers.angle.pitch;
+            position.angle.roll -= withModifiers.angle.roll;
+            position.angle.fov -= withModifiers.angle.fov;
+        }
+
+        return position;
+    }
+
+    /**
      * This GUI shouldn't pause the game, because camera runs on the world's
      * update loop.
      */
@@ -738,7 +776,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         if (this.panel.delegate != null)
         {
-            this.panel.delegate.editFixture(this.getCamera());
+            this.panel.delegate.editFixture(this.getPosition());
         }
     }
 
@@ -880,7 +918,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         else if (keyCode == Keyboard.KEY_B && this.panel.delegate != null)
         {
             /* Copy the position */
-            this.panel.delegate.editFixture(this.getCamera());
+            this.editFixture();
         }
         else if (keyCode == Keyboard.KEY_N)
         {

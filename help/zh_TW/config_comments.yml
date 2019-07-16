@@ -27,6 +27,10 @@ aperture.config.comments:
             camera_outside_hide_guis: 防止在分離攝影機模式中渲染 GUI
             camera_outside_hide_overlays: 防止在分離攝影機模式中渲染屏幕附加層（比如南瓜燈的光，正在燃燒的火，水等等）
 
+    overlay:
+        camera_editor_overlay: 啟用相機編輯器附加層
+        camera_editor_overlay_rl: 作為附加層圖像使用的材質資源路徑
+
     smooth:
         camera_smooth_clamp: 在 －90 和 90 度之間，修剪平滑相機的俯仰程度？嗡!嗡!嗡!
 

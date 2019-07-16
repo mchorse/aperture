@@ -45,6 +45,11 @@ public class Angle
         this.set(yaw, pitch);
     }
 
+    public void set(Angle angle)
+    {
+        this.set(angle.yaw, angle.pitch, angle.roll, angle.fov);
+    }
+
     public void set(float yaw, float pitch, float roll, float fov)
     {
         this.set(yaw, pitch);

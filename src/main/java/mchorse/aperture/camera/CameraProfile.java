@@ -258,10 +258,15 @@ public class CameraProfile
         this.dirty();
     }
 
+    public void applyProfile(long progress, float partialTick, Position position)
+    {
+        this.applyProfile(progress, partialTick, position, true);
+    }
+
     /**
      * Apply camera profile transformation at given time on passed position
      */
-    public void applyProfile(long progress, float partialTick, Position position)
+    public void applyProfile(long progress, float partialTick, Position position, boolean modifiers)
     {
         int index = 0;
         long originalProgress = progress;
@@ -289,7 +294,11 @@ public class CameraProfile
         }
 
         fixture.applyFixture(progress, partialTick, this, position);
-        fixture.applyModifiers(originalProgress, progress, partialTick, this, position);
+
+        if (modifiers)
+        {
+            fixture.applyModifiers(originalProgress, progress, partialTick, this, position);
+        }
     }
 
     /**

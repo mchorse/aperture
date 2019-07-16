@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.panels;
 
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.PathFixture;
@@ -17,7 +18,6 @@ import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 /**
@@ -209,13 +209,13 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
-    public void editFixture(EntityPlayer entity)
+    public void editFixture(Position position)
     {
         if (this.position != null)
         {
-            this.position.set(entity);
+            this.position.set(position);
 
-            super.editFixture(entity);
+            super.editFixture(position);
         }
     }
 

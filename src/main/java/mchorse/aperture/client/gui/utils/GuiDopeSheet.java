@@ -156,6 +156,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             {
                 AllKeyframeChannel all = (AllKeyframeChannel) this.current.channel;
                 AllKeyframe key = (AllKeyframe) frame;
+                /* TODO: make that work with outside mode */
                 Position pos = new Position(Minecraft.getMinecraft().player);
                 float value = 0;
 

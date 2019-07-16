@@ -48,6 +48,11 @@ public class Point
         this.z = z;
     }
 
+    public void set(Point point)
+    {
+        this.set(point.x, point.y, point.z);
+    }
+
     public void set(EntityPlayer player)
     {
         this.set(player.posX, player.posY, player.posZ);

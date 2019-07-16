@@ -55,11 +55,11 @@ public class GuiPointsModule extends GuiAbstractModule
         {
             if (this.index + 1 == this.path.getPoints().size())
             {
-                this.path.addPoint(new DurablePosition(Minecraft.getMinecraft().player));
+                this.path.addPoint(new DurablePosition(this.editor.getPosition()));
             }
             else
             {
-                this.path.addPoint(new DurablePosition(Minecraft.getMinecraft().player), this.index + 1);
+                this.path.addPoint(new DurablePosition(this.editor.getPosition()), this.index + 1);
             }
 
             this.index++;

@@ -1,10 +1,10 @@
 ![Aperture](https://i.imgur.com/Wras78u.png)
 
-[Planet Minecraft 页面](https://www.planetminecraft.com/mod/aperture-3978432/) – [Minecraft Forum 帖子](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2837982-aperture-an-advanced-camera-mod) – [CurseForge 页面](https://minecraft.curseforge.com/projects/aperture) – [源代码](https://github.com/mchorse/aperture) – [百科](https://github.com/mchorse/aperture/wiki) – [中文百科](https://github.com/ycwei982/aperture/wiki) – [中文用户QQ群](https://jq.qq.com/?_wv=1027&k=584nNVF)
+[Planet Minecraft 页面](https://www.planetminecraft.com/mod/aperture-3978432/) – [CurseForge 页面](https://minecraft.curseforge.com/projects/aperture) – [源代码](https://github.com/mchorse/aperture) – [百科](https://github.com/mchorse/aperture/wiki) – [中文百科](https://github.com/ycwei982/aperture/wiki) – [中文用户QQ群](https://jq.qq.com/?_wv=1027&k=584nNVF)
 
-**免责声明**: 这个 Mod 和 Portal 游戏里的光圈科技没有任何关系。
+**免责声明**: 这个 Mod 和 Portal 游戏里的光圈科技没有任何关系。请阅览这篇 [光圈](https://zh.wikipedia.org/wiki/%E5%85%89%E5%9C%88) 来了解什么是光圈。
 
-**Aperture** 是一个让你可以使用 GUI 来创作（适用于摄影场景或者短片的）高级相机动作的 Minecraft mod。这个 Mod 支持 Forge 版本的 Minecraft 1.10.2, 1.11.2 和 1.12。不支持网易我的世界中国版。
+**Aperture** 是一个让你可以使用 GUI 来创作（适用于摄影场景或者短片的）高级相机动作的 Minecraft mod。这个 Mod 支持 Forge 版本的 Minecraft 1.10.2, 1.11.2 和 1.12.2。不支持网易我的世界中国版。
 
 ## 特性
 
@@ -14,11 +14,10 @@
 * **时间长度是 Tick**。一个 Tick 基本是一次游戏数据的更新。Minecraft 的更新频率是每秒 20 ticks。为什么要用 Tick？因为他们相对每一帧而言是稳定的，并且可以简单地转换成秒（不依赖真实时间）。
 * **在一个相机配置里使用多个相机关键点的灵活配置**。别的相机 mod 通常情况下只能一次设置一个路径。Aperture 允许你在一个相机配置里设爆。在 Aperture 里有这几种相机关键点：
     * 静止关键点 – 什么都不做，就定在那里。
-    * 路径关键点 – 让相机用3种动作动起来：线性，三次曲线，艾米插值。
-    * 跟着看 – 锁定相机的位置，但随着设定的实体（使用实体选择器）视角跟着看。
-    * 跟着走 – 锁定相机的方位，跟着实体走（有点像 GoPro 但很稳）。
+    * 路径关键点 – 让相机用3种动作动起来：线性，三次曲线，艾米插值。也同时支持关键帧的速度控制。
     * 环形 – 确定一个圆心，相机绕着圆看着圆心。
-    * 关键帧 – 可以让你以关键帧的方式创建相机路径。
+    * 关键帧 – 可以让你以关键帧的方式创建相机路径（可以做出不同的插值和缓动）。
+    * 空 – 用来站位的关键点，保留着上一个或下一个关键点的相机所在位置。
 * **调整器让相机更加灵活**。相机调整器是用于处理相机关键点输出的模块。有了这些调整器，你可以添加相机的摇晃，应用数学函数，做一个 GoPro 样子的行为，在路径运动时跟踪一个实体，等等。要了解更多，查看[百科](https://github.com/mchorse/aperture/wiki)。
 * **提供平滑摄像机** 在 Minema 上用于替换原版平滑视角的东西。
 * **兼容 [Minema](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2790594-minema-unofficial-the-smooth-movie-recorder)**，如果你很想在自己的渣配电脑上，录制出如丝般流畅的视频，来安装 [Minema](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2790594-minema-unofficial-the-smooth-movie-recorder) mod 即可录制出流畅的视频！
@@ -27,7 +26,7 @@
 
 这是一个关于 Aperture 的播放列表，内含更新和教程。（由Noble团队制作的[中文教程](http://www.bilibili.com/video/av15303499/)不代表 McHorse 观点，内容可能过时）
 
-<a href="https://youtu.be/fT7QeCqKMyU?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/fT7QeCqKMyU/0.jpg"></a>
+<a href="https://youtu.be/_vfZYtiRfRs?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/_vfZYtiRfRs/0.jpg"></a> 
 
 ## 安装
 

@@ -29,6 +29,9 @@ public class Position
         return new Position(Point.fromByteBuf(buffer), Angle.fromByteBuf(buffer));
     }
 
+    public Position()
+    {}
+
     public Position(Point point, Angle angle)
     {
         this.point = point;
@@ -50,6 +53,12 @@ public class Position
     public Position(EntityPlayer player)
     {
         this.set(player);
+    }
+
+    public void set(Position position)
+    {
+        this.point.set(position.point);
+        this.angle.set(position.angle);
     }
 
     public void set(EntityPlayer player)
