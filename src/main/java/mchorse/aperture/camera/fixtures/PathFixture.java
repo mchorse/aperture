@@ -645,6 +645,11 @@ public class PathFixture extends AbstractFixture
             super(player);
         }
 
+        public DurablePosition(Position pos)
+        {
+            this(pos.point, pos.angle);
+        }
+
         public DurablePosition(Point point, Angle angle)
         {
             super(point, angle);
