@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.panels;
 
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiCircularModule;
@@ -7,7 +8,6 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Circular fixture panel
@@ -57,11 +57,11 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     }
 
     @Override
-    public void editFixture(EntityPlayer entity)
+    public void editFixture(Position position)
     {
-        this.fixture.start.set(entity);
+        this.fixture.start.set(position.point);
 
-        super.editFixture(entity);
+        super.editFixture(position);
     }
 
     @Override

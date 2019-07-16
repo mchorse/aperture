@@ -13,7 +13,6 @@ import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
 {
@@ -148,18 +147,17 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
-    public void editFixture(EntityPlayer entity)
+    public void editFixture(Position position)
     {
-        Position pos = new Position(entity);
         long tick = this.editor.scrub.value - this.currentOffset();
 
-        this.fixture.x.insert(tick, (float) pos.point.x);
-        this.fixture.y.insert(tick, (float) pos.point.y);
-        this.fixture.z.insert(tick, (float) pos.point.z);
-        this.fixture.yaw.insert(tick, pos.angle.yaw);
-        this.fixture.pitch.insert(tick, pos.angle.pitch);
-        this.fixture.roll.insert(tick, pos.angle.roll);
-        this.fixture.fov.insert(tick, pos.angle.fov);
+        this.fixture.x.insert(tick, (float) position.point.x);
+        this.fixture.y.insert(tick, (float) position.point.y);
+        this.fixture.z.insert(tick, (float) position.point.z);
+        this.fixture.yaw.insert(tick, position.angle.yaw);
+        this.fixture.pitch.insert(tick, position.angle.pitch);
+        this.fixture.roll.insert(tick, position.angle.roll);
+        this.fixture.fov.insert(tick, position.angle.fov);
         this.allChannel.setFixture(this.fixture);
 
         this.editor.updateProfile();

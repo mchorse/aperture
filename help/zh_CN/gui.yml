@@ -34,6 +34,9 @@ aperture.gui:
         tp_teleport: 使用 /tp
         rule_of_thirds: 三分法治
         letter_box: 画面黑边
+        repeat: 重复关键点（R）
+        overlay: 启用附加层
+        pick_overlay: 选择附加层
 
     tooltips:
         jump_next_fixture: 跳到下一个关键点（Shift + 右）
@@ -88,6 +91,7 @@ aperture.gui:
 
             relative: 是绝对的？
             at_block: 看着方块？
+            forward: 向前看？
 
             factor: 因素
 

@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.panels;
 
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiUtils;
@@ -9,7 +10,6 @@ import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Base class for abstract fixture panel
@@ -81,7 +81,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         return this.editor.getProfile().calculateOffset(this.fixture);
     }
 
-    public void editFixture(EntityPlayer entity)
+    public void editFixture(Position position)
     {
         this.select(this.fixture, -1);
         this.editor.updateProfile();
