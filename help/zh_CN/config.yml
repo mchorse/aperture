@@ -35,6 +35,13 @@ aperture.config:
         camera_outside_hide_guis: 隐藏 GUI
         camera_outside_hide_overlays: 隐藏附加层
         
+    overlay: 
+        title: 相机编辑器附加层
+        tooltip: 可以在相机编辑器放置一个图片作为附加层
+        
+        camera_editor_overlay: 启用附加层
+        camera_editor_overlay_rl: 附加层的资源路径
+        
     smooth:
         title: 平滑相机
         tooltip: 平滑相机配置
