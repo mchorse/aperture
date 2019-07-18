@@ -2,6 +2,28 @@
 
 Aperture's change log.
 
+## Aperture 1.3.2
+
+This small patch adds a couple of neat features and fixes few annoying bugs.
+
+<a href="https://youtu.be/pnXXgouveRk"><img src="https://img.youtube.com/vi/pnXXgouveRk/0.jpg"></a> 
+
+* Added `forward` option to `look` modifier which makes the camera face forward based on the direction of movement (suggested by terbin)
+* Added dope sheet GUI for the keyframe fixture (i.e. the All keyframe fixture channel)
+* Added an overlay camera option in camera editor (suggested by Lolik)
+* Added fixture preview loop (suggested by Agirres)
+* Added duration marker for playback scrub
+* Changed flight mode to disable when player starts scrubbing (or switching between stuff)
+* Changed camera options' height to be relative to the fixture editor area
+* Changed interpolation list vertically responsive (suggested by Agirres)
+* Changed internal representation of position from `float` to `double` (suggested by terbin for far away recording)
+* Changed `drag` modifier to handle normalization of yaw
+* Changed channel buttons (All, X, Y, Z, etc.) in the keyframe fixture editor
+* Fixed duplicate camera profile not showing duplicate profile in the list
+* Fixed overlays not rendering relative to playback scrub
+* Fixed outside mode copying actual player location (reported by Braigar)
+* Fixed edit position not working properly with modifiers
+
 ## Aperture 1.3.1
 
 Unfortunately, before I released Aperture 1.3, I made a couple of bug fixes. I haven't test it properly and haven't let anyone test it either. However, Agirres spotted my stupidity, and aw shit, here we go again.
