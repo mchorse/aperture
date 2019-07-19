@@ -6,6 +6,8 @@ Aperture's change log.
 
 This small patch adds a couple of neat features and fixes few annoying bugs.
 
+**Compatible** with McLib `1.0.3`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
+
 <a href="https://youtu.be/pnXXgouveRk"><img src="https://img.youtube.com/vi/pnXXgouveRk/0.jpg"></a> 
 
 * Added `forward` option to `look` modifier which makes the camera face forward based on the direction of movement (suggested by terbin)
