@@ -45,7 +45,6 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public int maxW;
     public int maxH;
 
-    @SuppressWarnings("unchecked")
     public GuiConfigCameraOptions(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc, editor);
@@ -99,8 +98,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 
         this.flight = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled, (b) ->
         {
-            this.editor.flight.enabled = b.button.isChecked();
-            this.editor.haveScrubbed = true;
+            this.editor.setFlight(b.button.isChecked());
         });
 
         this.displayPosition = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.display_info"), this.editor.displayPosition, (b) ->

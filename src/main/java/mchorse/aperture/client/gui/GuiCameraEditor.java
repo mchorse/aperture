@@ -222,7 +222,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.nextFrame = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 32, 0, 32, 16, (b) -> this.jumpToNextFrame()).tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"), TooltipDirection.BOTTOM);
         this.plause = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) ->
         {
-            this.disableFlight();
+            this.setFlight(false);
             this.runner.toggle(this.profile, this.scrub.value);
             this.updatePlauseButton();
 
@@ -351,7 +351,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     @SuppressWarnings("unchecked")
     public void pickCameraFixture(AbstractFixture fixture, long duration)
     {
-        this.disableFlight();
+        this.setFlight(false);
 
         if (fixture == null)
         {
@@ -500,6 +500,19 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
+     * Set flight mode
+     */
+    public void setFlight(boolean flight)
+    {
+        if (!this.runner.isRunning() || !flight)
+        {
+            this.flight.enabled = flight;
+        }
+
+        this.cameraOptions.update();
+    }
+
+    /**
      * Set aspect ratio for letter box feature. This method parses the 
      * aspect ratio either for float or "float:float" format and sets it 
      * as aspect ratio. 
@@ -615,12 +628,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.overlayLocation = null;
         }
-    }
-
-    public void disableFlight()
-    {
-        this.flight.enabled = false;
-        this.cameraOptions.update();
     }
 
     /**
