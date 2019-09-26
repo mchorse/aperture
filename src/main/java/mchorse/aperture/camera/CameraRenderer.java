@@ -303,11 +303,14 @@ public class CameraRenderer
         vb.setTranslation(0, 0, 0);
         GlStateManager.enableTexture2D();
 
-        for (int i = 1; i < path.getPoints().size() - 1; i++)
+        if (path != null)
         {
-            fixture.applyFixture(path.getTickForPoint(i), 0, profile, prev);
+            for (int i = 1; i < path.getPoints().size() - 1; i++)
+            {
+                fixture.applyFixture(path.getTickForPoint(i), 0, profile, prev);
 
-            this.drawPathPoint(color, prev, i);
+                this.drawPathPoint(color, prev, i);
+            }
         }
     }
 
