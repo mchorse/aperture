@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.PathFixture;
@@ -87,6 +88,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         long duration = this.fixture.getDuration();
         KeyframeFixture fixture = new KeyframeFixture(duration);
+        AbstractFixture.copyModifiers(this.fixture, fixture);
         Interpolation pos = this.fixture.interpolationPos == InterpolationType.LINEAR ? Interpolation.LINEAR : (this.fixture.interpolationPos == InterpolationType.HERMITE ? Interpolation.HERMITE : Interpolation.BEZIER);
         Interpolation angle = this.fixture.interpolationAngle == InterpolationType.LINEAR ? Interpolation.LINEAR : (this.fixture.interpolationAngle == InterpolationType.HERMITE ? Interpolation.HERMITE : Interpolation.BEZIER);
 
