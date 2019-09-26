@@ -2,6 +2,7 @@ package mchorse.aperture.camera.modifiers;
 
 import com.google.gson.annotations.Expose;
 
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
@@ -105,5 +106,27 @@ public class LookModifier extends EntityModifier
         modifier.block = this.block.clone();
 
         return modifier;
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        buffer.writeBoolean(this.relative);
+        buffer.writeBoolean(this.atBlock);
+        buffer.writeBoolean(this.forward);
+        this.block.toByteBuf(buffer);
+    }
+
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        this.relative = buffer.readBoolean();
+        this.atBlock = buffer.readBoolean();
+        this.forward = buffer.readBoolean();
+        this.block = Point.fromByteBuf(buffer);
     }
 }
