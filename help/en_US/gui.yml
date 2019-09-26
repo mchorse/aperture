@@ -55,6 +55,7 @@ aperture.gui:
         config: Show camera editor options
         modifiers: Show modifiers panel (N)
         goto: Go to specific frame
+        cut: Cut fixture in two at cursor
         add: Add fixture
         dupe: Duplicate fixture
         remove: Remove selected fixture

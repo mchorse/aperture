@@ -184,6 +184,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiButtonElement<GuiTextureButton> remove;
 
     public GuiButtonElement<GuiTextureButton> goTo;
+    public GuiButtonElement<GuiTextureButton> cut;
     public GuiTrackpadElement frame;
 
     /* Widgets */
@@ -248,6 +249,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.dupe = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 176, 32, 176, 48, (b) -> this.dupeFixture()).tooltip(I18n.format("aperture.gui.tooltips.dupe"), TooltipDirection.BOTTOM);
         this.remove = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 240, 0, 240, 16, (b) -> this.removeFixture()).tooltip(I18n.format("aperture.gui.tooltips.remove"), TooltipDirection.BOTTOM);
 
+        this.cut = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 32, 192, 48, (b) -> this.cutFixture()).tooltip(I18n.format("aperture.gui.tooltips.cut"), TooltipDirection.BOTTOM);
         this.goTo = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 32, 144, 48, (b) -> this.frame.toggleVisible()).tooltip(I18n.format("aperture.gui.tooltips.goto"), TooltipDirection.BOTTOM);
         this.moveForward = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 0, 144, 16, (b) -> this.moveTo(1)).tooltip(I18n.format("aperture.gui.tooltips.move_up"), TooltipDirection.BOTTOM);
         this.moveDuration = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 0, 192, 16, (b) -> this.shiftDurationToCursor()).tooltip(I18n.format("aperture.gui.tooltips.move_duration"), TooltipDirection.BOTTOM);
@@ -276,6 +278,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.dupe.resizer().relative(this.add.resizer()).set(20, 0, 16, 16);
         this.remove.resizer().relative(this.dupe.resizer()).set(20, 0, 16, 16);
 
+        this.cut.resizer().relative(this.goTo.resizer()).set(20, 0, 16, 16);
         this.goTo.resizer().parent(this.area).set(82, 2, 16, 16);
         this.moveForward.resizer().relative(this.goTo.resizer()).set(-20, 0, 16, 16);
         this.moveDuration.resizer().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
@@ -295,7 +298,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         /* Adding everything */
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
-        this.hidden.add(this.goTo, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
+        this.hidden.add(this.cut, this.goTo, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
         this.hidden.add(this.add, this.dupe, this.remove, this.save, this.openConfig, this.openModifiers);
         this.hidden.add(this.scrub, this.panel, this.frame, this.popup, this.config, this.modifiers);
 
@@ -457,6 +460,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
 
             this.updateValues();
+        }
+    }
+
+    /**
+     * Cut a fixture currently under playback's cursor in two pieces 
+     */
+    private void cutFixture()
+    {
+        if (this.profile != null)
+        {
+            this.profile.cut(this.scrub.value);
         }
     }
 
