@@ -53,6 +53,9 @@ public class CameraRenderer
     protected double playerY;
     protected double playerZ;
 
+    private Position prev = new Position(0, 0, 0, 0, 0);
+    private Position next = new Position(0, 0, 0, 0, 0);
+
     /**
      * Toggle path rendering
      */
@@ -205,9 +208,6 @@ public class CameraRenderer
         if (runner.isRunning()) return;
         if (badProfile) return;
 
-        Position prev = new Position(0, 0, 0, 0, 0);
-        Position next = new Position(0, 0, 0, 0, 0);
-
         EntityPlayer player = runner.outside.active ? runner.outside.camera : this.mc.thePlayer;
         float ticks = event.getPartialTicks();
 
@@ -218,26 +218,27 @@ public class CameraRenderer
         GlStateManager.pushAttrib();
         GlStateManager.enableTexture2D();
         GlStateManager.enableBlend();
+        GL11.glLineWidth(4);
 
         int i = 0;
 
         for (AbstractFixture fixture : profile.getAll())
         {
-            fixture.applyFixture(0, 0.0F, profile, prev);
-            fixture.applyFixture(fixture.getDuration(), 0.0F, profile, next);
+            fixture.applyFixture(0, 0.0F, profile, this.prev);
+            fixture.applyFixture(fixture.getDuration(), 0.0F, profile, this.next);
 
             long duration = fixture.getDuration();
 
-            double distX = Math.abs(next.point.x - prev.point.x);
-            double distY = Math.abs(next.point.y - prev.point.y);
-            double distZ = Math.abs(next.point.z - prev.point.z);
+            double distX = Math.abs(this.next.point.x - this.prev.point.x);
+            double distY = Math.abs(this.next.point.y - this.prev.point.y);
+            double distZ = Math.abs(this.next.point.z - this.prev.point.z);
 
             Color color = FixtureRegistry.CLIENT.get(fixture.getClass()).color;
 
-            if (distX + distY + distZ >= 0.5) this.drawCard(color, i, duration, next);
+            if (distX + distY + distZ >= 0.5) this.drawCard(color, i, duration, this.next);
 
-            this.drawCard(color, i++, duration, prev);
-            this.drawFixture(0.0F, color, fixture, prev, next);
+            this.drawCard(color, i++, duration, this.prev);
+            this.drawFixture(0.0F, color, fixture, this.prev, this.next);
         }
 
         GlStateManager.disableBlend();
@@ -279,6 +280,12 @@ public class CameraRenderer
 
         final int p = 15;
 
+        VertexBuffer vb = Tessellator.getInstance().getBuffer();
+
+        GlStateManager.disableTexture2D();
+        vb.setTranslation(-this.playerX, this.mc.thePlayer.eyeHeight - this.playerY, -this.playerZ);
+        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < p; j++)
@@ -286,15 +293,21 @@ public class CameraRenderer
                 fixture.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
                 fixture.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
 
-                this.drawLine(color, this.playerX, this.playerY, this.playerZ, prev, next);
+                vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
+                vb.pos(next.point.x, next.point.y, next.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
             }
 
-            if (i != 0 && fixture instanceof PathFixture)
-            {
-                fixture.applyFixture(path.getTickForPoint(i), 0, profile, prev);
+        }
 
-                this.drawPathPoint(color, prev, i);
-            }
+        Tessellator.getInstance().draw();
+        vb.setTranslation(0, 0, 0);
+        GlStateManager.enableTexture2D();
+
+        for (int i = 1; i < path.getPoints().size() - 1; i++)
+        {
+            fixture.applyFixture(path.getTickForPoint(i), 0, profile, prev);
+
+            this.drawPathPoint(color, prev, i);
         }
     }
 
@@ -309,7 +322,7 @@ public class CameraRenderer
         GlStateManager.pushMatrix();
         GlStateManager.pushAttrib();
         GlStateManager.enableBlend();
-        GlStateManager.color(color.red, color.green, color.blue, 1.0F);
+        GlStateManager.color(1, 1, 1);
 
         this.mc.renderEngine.bindTexture(TEXTURE);
 
@@ -384,6 +397,12 @@ public class CameraRenderer
         float circles = Math.min(((CircularFixture) fixture).circles, 360);
         long duration = fixture.getDuration();
 
+        VertexBuffer vb = Tessellator.getInstance().getBuffer();
+
+        GlStateManager.disableTexture2D();
+        vb.setTranslation(-this.playerX, this.mc.thePlayer.eyeHeight - this.playerY, -this.playerZ);
+        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+
         for (int i = 0; i < circles; i += 5)
         {
             float a = i / circles * duration;
@@ -392,8 +411,17 @@ public class CameraRenderer
             fixture.applyFixture((long) a, a - (int) a, profile, prev);
             fixture.applyFixture((long) b, b - (int) b, profile, next);
 
-            this.drawLine(color, this.playerX, this.playerY, this.playerZ, prev, next);
+            if (i == 0)
+            {
+                vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
+            }
+
+            vb.pos(next.point.x, next.point.y, next.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
         }
+
+        Tessellator.getInstance().draw();
+        vb.setTranslation(0, 0, 0);
+        GlStateManager.enableTexture2D();
     }
 
     /**
@@ -477,37 +505,5 @@ public class CameraRenderer
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
         GlStateManager.color(1, 1, 1, 1);
-    }
-
-    /**
-     * Draw a line between two positions
-     */
-    private void drawLine(Color color, double playerX, double playerY, double playerZ, Position prev, Position next)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
-
-        double x = prev.point.x - playerX;
-        double y = prev.point.y - playerY;
-        double z = prev.point.z - playerZ;
-
-        GL11.glLineWidth(4);
-        GlStateManager.disableTexture2D();
-        GlStateManager.color(color.red, color.green, color.blue, 0.5F);
-
-        VertexBuffer vb = Tessellator.getInstance().getBuffer();
-
-        vb.setTranslation(x, y + this.mc.thePlayer.eyeHeight, z);
-        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
-        vb.pos(next.point.x - prev.point.x, next.point.y - prev.point.y, next.point.z - prev.point.z).endVertex();
-        vb.pos(0, 0, 0).endVertex();
-
-        Tessellator.getInstance().draw();
-
-        vb.setTranslation(0, 0, 0);
-
-        GlStateManager.enableTexture2D();
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
     }
 }
