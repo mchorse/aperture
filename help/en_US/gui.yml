@@ -152,6 +152,16 @@ aperture.gui:
             exp: Exponential
             bezier: Bezier
 
+            quad_in: Quadratic In
+            quad_out: Quadratic Out
+            quad_inout: Quadratic In/out
+            cubic_in: Cubic In
+            cubic_out: Cubic Out
+            cubic_inout: Cubic In/out
+            exp_in: Exponential In
+            exp_out: Exponential Out
+            exp_inout: Exponential In/out
+
         easing:
             in: Ease in
             out: Ease out

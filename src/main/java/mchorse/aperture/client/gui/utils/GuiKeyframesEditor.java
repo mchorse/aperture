@@ -1,8 +1,8 @@
 package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
@@ -19,7 +19,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
     public GuiTrackpadElement tick;
     public GuiTrackpadElement value;
     public GuiButtonElement<GuiButton> interp;
-    public GuiListElement<Interpolation> interpolations;
+    public GuiListElement<KeyframeInterpolation> interpolations;
     public GuiButtonElement<GuiCirculate> easing;
 
     public T graph;
@@ -48,12 +48,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         };
 
         this.interp = GuiButtonElement.button(mc, "", (b) -> this.interpolations.toggleVisible());
-        this.interpolations = new GuiInterpolationsList(mc, (interp) -> this.pickInterpolation(interp));
-
-        for (Interpolation interp : Interpolation.values())
-        {
-            this.interpolations.add(interp);
-        }
+        this.interpolations = new GuiKeyframeInterpolationsList(mc, (interp) -> this.pickInterpolation(interp));
 
         this.easing = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeEasing());
         this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.in"));
@@ -138,7 +133,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         this.graph.getCurrent().setValue(value);
     }
 
-    public void pickInterpolation(Interpolation interp)
+    public void pickInterpolation(KeyframeInterpolation interp)
     {
         if (this.graph.getCurrent() == null)
         {

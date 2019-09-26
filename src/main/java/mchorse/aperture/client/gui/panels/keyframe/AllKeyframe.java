@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 
 /**
@@ -50,7 +50,7 @@ public class AllKeyframe extends Keyframe
     }
 
     @Override
-    public void setInterpolation(Interpolation interp)
+    public void setInterpolation(KeyframeInterpolation interp)
     {
         super.setInterpolation(interp);
 

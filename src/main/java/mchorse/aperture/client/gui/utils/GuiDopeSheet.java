@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframe;
@@ -131,7 +131,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             this.current = this.sheets.get(i);
 
             Easing easing = Easing.IN;
-            Interpolation interp = Interpolation.LINEAR;
+            KeyframeInterpolation interp = KeyframeInterpolation.LINEAR;
             Keyframe frame = this.getCurrent();
             long tick = (long) this.fromGraph(mouseX);
             long oldTick = tick;

@@ -390,7 +390,7 @@ public class KeyframeFixture extends AbstractFixture
         public float value;
 
         @Expose
-        public Interpolation interp = Interpolation.LINEAR;
+        public KeyframeInterpolation interp = KeyframeInterpolation.LINEAR;
 
         @Expose
         public Easing easing = Easing.IN;
@@ -426,9 +426,15 @@ public class KeyframeFixture extends AbstractFixture
             this.value = value;
         }
 
-        public void setInterpolation(Interpolation interp)
+        public void setInterpolation(KeyframeInterpolation interp)
         {
             this.interp = interp;
+        }
+
+        public void setInterpolation(KeyframeInterpolation interp, Easing easing)
+        {
+            this.interp = interp;
+            this.setEasing(easing);
         }
 
         public void setEasing(Easing easing)
@@ -454,7 +460,7 @@ public class KeyframeFixture extends AbstractFixture
 
         public void fromByteBuf(ByteBuf buffer)
         {
-            this.interp = Interpolation.values()[buffer.readInt()];
+            this.interp = KeyframeInterpolation.values()[buffer.readInt()];
             this.easing = Easing.values()[buffer.readInt()];
             this.rx = buffer.readFloat();
             this.ry = buffer.readFloat();
@@ -475,7 +481,7 @@ public class KeyframeFixture extends AbstractFixture
         }
     }
 
-    public static enum Interpolation
+    public static enum KeyframeInterpolation
     {
         CONST("const")
         {
@@ -590,7 +596,7 @@ public class KeyframeFixture extends AbstractFixture
 
         public final String key;
 
-        private Interpolation(String key)
+        private KeyframeInterpolation(String key)
         {
             this.key = key;
         }

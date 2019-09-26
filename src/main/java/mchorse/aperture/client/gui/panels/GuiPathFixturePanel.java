@@ -3,10 +3,10 @@ package mchorse.aperture.client.gui.panels;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
-import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
@@ -67,7 +67,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.speed.graph.setColor(0x0088ff);
 
         this.point.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -80);
-        this.interp.resizer().parent(this.area).set(0, 60, 80, 45);
+        this.interp.resizer().parent(this.area).set(0, 60, 100, 45);
         this.points.resizer().parent(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
         this.toKeyframe.resizer().relative(this.interp.resizer()).set(0, 50, 100, 20);
 
@@ -76,7 +76,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.speed.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
 
-        this.children.add(this.point, this.angle, this.interp, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points);
+        this.children.add(this.point, this.angle, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points, this.interp);
     }
 
     private void toKeyframe()
@@ -89,8 +89,10 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         long duration = this.fixture.getDuration();
         KeyframeFixture fixture = new KeyframeFixture(duration);
         AbstractFixture.copyModifiers(this.fixture, fixture);
-        Interpolation pos = this.fixture.interpolationPos == InterpolationType.LINEAR ? Interpolation.LINEAR : (this.fixture.interpolationPos == InterpolationType.HERMITE ? Interpolation.HERMITE : Interpolation.BEZIER);
-        Interpolation angle = this.fixture.interpolationAngle == InterpolationType.LINEAR ? Interpolation.LINEAR : (this.fixture.interpolationAngle == InterpolationType.HERMITE ? Interpolation.HERMITE : Interpolation.BEZIER);
+        KeyframeInterpolation pos = this.fixture.interpolationPos.interp;
+        KeyframeInterpolation angle = this.fixture.interpolationAngle.interp;
+        Easing posEasing = this.fixture.interpolationPos.easing;
+        Easing angleEasing = this.fixture.interpolationAngle.easing;
 
         long x = 0;
 
@@ -104,13 +106,13 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             fixture.roll.insert(x, point.angle.roll);
             fixture.fov.insert(x, point.angle.fov);
 
-            fixture.x.get(index).interp = pos;
-            fixture.y.get(index).interp = pos;
-            fixture.z.get(index).interp = pos;
-            fixture.yaw.get(index).interp = angle;
-            fixture.pitch.get(index).interp = angle;
-            fixture.roll.get(index).interp = angle;
-            fixture.fov.get(index).interp = angle;
+            fixture.x.get(index).setInterpolation(pos, posEasing);
+            fixture.y.get(index).setInterpolation(pos, posEasing);
+            fixture.z.get(index).setInterpolation(pos, posEasing);
+            fixture.yaw.get(index).setInterpolation(angle, angleEasing);
+            fixture.pitch.get(index).setInterpolation(angle, angleEasing);
+            fixture.roll.get(index).setInterpolation(angle, angleEasing);
+            fixture.fov.get(index).setInterpolation(angle, angleEasing);
 
             x += this.fixture.perPointDuration ? point.getDuration() : duration / (this.fixture.getCount() - 1);
         }
