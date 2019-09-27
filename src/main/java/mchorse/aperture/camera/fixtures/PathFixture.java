@@ -12,7 +12,10 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
+import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -418,7 +421,7 @@ public class PathFixture extends AbstractFixture
      */
     private void applyPoint(Point point, int index, float progress)
     {
-        double x, y, z;
+        double x = 0, y = 0, z = 0;
 
         Position p0 = this.getPoint(index - 1);
         Position p1 = this.getPoint(index);
@@ -426,23 +429,27 @@ public class PathFixture extends AbstractFixture
         Position p3 = this.getPoint(index + 2);
 
         /* Interpolating the position */
-        if (this.interpolationPos.equals(InterpolationType.CUBIC))
+        InterpolationType interp = this.interpolationPos;
+
+        if (interp == InterpolationType.CUBIC)
         {
             x = Interpolations.cubic(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
             y = Interpolations.cubic(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
             z = Interpolations.cubic(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
         }
-        else if (this.interpolationPos.equals(InterpolationType.HERMITE))
+        else if (interp == InterpolationType.HERMITE)
         {
             x = Interpolations.cubicHermite(p0.point.x, p1.point.x, p2.point.x, p3.point.x, progress);
             y = Interpolations.cubicHermite(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
             z = Interpolations.cubicHermite(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
         }
-        else
+        else if (interp.interp != null)
         {
-            x = Interpolations.lerp(p1.point.x, p2.point.x, progress);
-            y = Interpolations.lerp(p1.point.y, p2.point.y, progress);
-            z = Interpolations.lerp(p1.point.z, p2.point.z, progress);
+            Interpolation func = interp.function;
+
+            x = (double) func.interpolate((float) p1.point.x, (float) p2.point.x, progress);
+            y = (double) func.interpolate((float) p1.point.y, (float) p2.point.y, progress);
+            z = (double) func.interpolate((float) p1.point.z, (float) p2.point.z, progress);
         }
 
         point.set(x, y, z);
@@ -453,7 +460,7 @@ public class PathFixture extends AbstractFixture
      */
     private void applyAngle(Angle angle, int index, float progress)
     {
-        float yaw, pitch, roll, fov;
+        float yaw = 0, pitch = 0, roll = 0, fov = 0;
 
         if (this.interpolationPos == null)
         {
@@ -471,26 +478,30 @@ public class PathFixture extends AbstractFixture
         Position p3 = this.getPoint(index + 2);
 
         /* Interpolating the angle */
-        if (this.interpolationAngle.equals(InterpolationType.CUBIC))
+        InterpolationType interp = this.interpolationAngle;
+
+        if (interp == InterpolationType.CUBIC)
         {
             yaw = Interpolations.cubic(p0.angle.yaw, p1.angle.yaw, p2.angle.yaw, p3.angle.yaw, progress);
             pitch = Interpolations.cubic(p0.angle.pitch, p1.angle.pitch, p2.angle.pitch, p3.angle.pitch, progress);
             roll = Interpolations.cubic(p0.angle.roll, p1.angle.roll, p2.angle.roll, p3.angle.roll, progress);
             fov = Interpolations.cubic(p0.angle.fov, p1.angle.fov, p2.angle.fov, p3.angle.fov, progress);
         }
-        else if (this.interpolationAngle.equals(InterpolationType.HERMITE))
+        else if (interp == InterpolationType.HERMITE)
         {
             yaw = (float) Interpolations.cubicHermite(p0.angle.yaw, p1.angle.yaw, p2.angle.yaw, p3.angle.yaw, progress);
             pitch = (float) Interpolations.cubicHermite(p0.angle.pitch, p1.angle.pitch, p2.angle.pitch, p3.angle.pitch, progress);
             roll = (float) Interpolations.cubicHermite(p0.angle.roll, p1.angle.roll, p2.angle.roll, p3.angle.roll, progress);
             fov = (float) Interpolations.cubicHermite(p0.angle.fov, p1.angle.fov, p2.angle.fov, p3.angle.fov, progress);
         }
-        else
+        else if (interp.interp != null)
         {
-            yaw = Interpolations.lerp(p1.angle.yaw, p2.angle.yaw, progress);
-            pitch = Interpolations.lerp(p1.angle.pitch, p2.angle.pitch, progress);
-            roll = Interpolations.lerp(p1.angle.roll, p2.angle.roll, progress);
-            fov = Interpolations.lerp(p1.angle.fov, p2.angle.fov, progress);
+            Interpolation func = interp.function;
+
+            yaw = func.interpolate(p1.angle.yaw, p2.angle.yaw, progress);
+            pitch = func.interpolate(p1.angle.pitch, p2.angle.pitch, progress);
+            roll = func.interpolate(p1.angle.roll, p2.angle.roll, progress);
+            fov = func.interpolate(p1.angle.fov, p2.angle.fov, progress);
         }
 
         angle.set(yaw, pitch, roll, fov);
@@ -543,8 +554,8 @@ public class PathFixture extends AbstractFixture
         super.toByteBuf(buffer);
 
         buffer.writeBoolean(this.perPointDuration);
-        buffer.writeByte(this.interpolationPos.id);
-        buffer.writeByte(this.interpolationAngle.id);
+        buffer.writeByte(this.interpolationPos.ordinal());
+        buffer.writeByte(this.interpolationAngle.ordinal());
 
         buffer.writeInt(this.points.size());
 
@@ -583,29 +594,22 @@ public class PathFixture extends AbstractFixture
 
     public static InterpolationType interpFromInt(int number)
     {
-        if (number == 1)
+        if (number < 0 || number >= InterpolationType.values().length)
         {
-            return InterpolationType.CUBIC;
+            return InterpolationType.LINEAR;
         }
 
-        if (number == 2)
-        {
-            return InterpolationType.HERMITE;
-        }
-
-        return InterpolationType.LINEAR;
+        return InterpolationType.values()[number];
     }
 
     public static InterpolationType interpFromString(String string)
     {
-        if (string.equals("cubic"))
+        for (InterpolationType type : InterpolationType.values())
         {
-            return InterpolationType.CUBIC;
-        }
-
-        if (string.equals("hermite"))
-        {
-            return InterpolationType.HERMITE;
+            if (type.name.equals(string))
+            {
+                return type;
+            }
         }
 
         return InterpolationType.LINEAR;
@@ -613,15 +617,53 @@ public class PathFixture extends AbstractFixture
 
     public static enum InterpolationType
     {
-        LINEAR("linear", 0), CUBIC("cubic", 1), HERMITE("hermite", 2);
+        LINEAR(Interpolation.LINEAR, KeyframeInterpolation.LINEAR), CUBIC("cubic", KeyframeInterpolation.CUBIC), HERMITE("hermite", KeyframeInterpolation.HERMITE),
+        /* Quadratic interpolations */
+        QUAD_IN(Interpolation.QUAD_IN, KeyframeInterpolation.QUAD, Easing.IN), QUAD_OUT(Interpolation.QUAD_OUT, KeyframeInterpolation.QUAD, Easing.OUT), QUAD_INOUT(Interpolation.QUAD_INOUT, KeyframeInterpolation.QUAD, Easing.INOUT),
+        /* Cubic interpolations */
+        CUBIC_IN(Interpolation.CUBIC_IN, KeyframeInterpolation.CUBIC, Easing.IN), CUBIC_OUT(Interpolation.CUBIC_OUT, KeyframeInterpolation.CUBIC, Easing.OUT), CUBIC_INOUT(Interpolation.CUBIC_INOUT, KeyframeInterpolation.CUBIC, Easing.INOUT),
+        /* Exponential interpolations */
+        EXP_IN(Interpolation.EXP_IN, KeyframeInterpolation.EXP, Easing.IN), EXP_OUT(Interpolation.EXP_OUT, KeyframeInterpolation.EXP, Easing.OUT), EXP_INOUT(Interpolation.EXP_INOUT, KeyframeInterpolation.EXP, Easing.INOUT);
 
         public final String name;
-        public final int id;
+        public Interpolation function;
+        public KeyframeInterpolation interp;
+        public Easing easing = Easing.IN;
 
-        private InterpolationType(String name, int id)
+        private InterpolationType(String name)
         {
             this.name = name;
-            this.id = id;
+        }
+
+        private InterpolationType(String name, KeyframeInterpolation interp)
+        {
+            this(name, interp, Easing.IN);
+        }
+
+        private InterpolationType(String name, KeyframeInterpolation interp, Easing easing)
+        {
+            this.name = name;
+            this.interp = interp;
+            this.easing = easing;
+        }
+
+        private InterpolationType(Interpolation function)
+        {
+            this.name = function.key;
+            this.function = function;
+        }
+
+        private InterpolationType(Interpolation function, KeyframeInterpolation interp)
+        {
+            this(function, interp, Easing.IN);
+        }
+
+        private InterpolationType(Interpolation function, KeyframeInterpolation interp, Easing easing)
+        {
+            this.name = function.key;
+            this.function = function;
+            this.interp = interp;
+            this.easing = easing;
         }
     }
 

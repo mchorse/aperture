@@ -1,12 +1,12 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
-import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
 /**
@@ -17,83 +17,83 @@ import net.minecraft.client.resources.I18n;
  */
 public class GuiInterpModule extends GuiAbstractModule
 {
-    public GuiButtonElement<GuiCirculate> pos;
-    public GuiButtonElement<GuiCirculate> angle;
+    public GuiButtonElement<GuiButton> pos;
+    public GuiButtonElement<GuiButton> angle;
+    public GuiInterpolationTypeList interps;
 
     public PathFixture fixture;
+    public boolean pickPos = false;
 
     public GuiInterpModule(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc, editor);
 
-        this.pos = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 0, 0), (b) ->
+        this.pos = GuiButtonElement.button(mc, "", (b) ->
         {
-            this.fixture.interpolationPos = this.typeFromIndex(b.button.getValue());
-            this.editor.updateProfile();
+            if (this.interps.isVisible())
+            {
+                this.interps.setVisible(false);
+            }
+            else
+            {
+                this.pickPos = true;
+                this.interps.setCurrent(this.fixture.interpolationPos);
+                this.interps.setVisible(true);
+
+                this.interps.resizer().relative(this.pos.resizer());
+                this.interps.resize(0, 0);
+            }
         });
 
-        this.angle = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 0, 0), (b) ->
+        this.angle = GuiButtonElement.button(mc, "", (b) ->
         {
-            this.fixture.interpolationAngle = this.typeFromIndex(b.button.getValue());
-            this.editor.updateProfile();
+            if (this.interps.isVisible())
+            {
+                this.interps.setVisible(false);
+            }
+            else
+            {
+                this.pickPos = false;
+                this.interps.setCurrent(this.fixture.interpolationAngle);
+                this.interps.setVisible(true);
+
+                this.interps.resizer().relative(this.angle.resizer());
+                this.interps.resize(0, 0);
+            }
         });
 
-        this.pos.button.addLabel(I18n.format("aperture.gui.panels.interps.linear"));
-        this.pos.button.addLabel(I18n.format("aperture.gui.panels.interps.cubic"));
-        this.pos.button.addLabel(I18n.format("aperture.gui.panels.interps.hermite"));
+        this.interps = new GuiInterpolationTypeList(mc, (interp) ->
+        {
+            if (this.pickPos)
+            {
+                this.fixture.interpolationPos = interp;
+                this.pos.button.displayString = I18n.format("aperture.gui.panels.interps." + interp.name);
+            }
+            else
+            {
+                this.fixture.interpolationAngle = interp;
+                this.angle.button.displayString = I18n.format("aperture.gui.panels.interps." + interp.name);
+            }
 
-        this.angle.button.addLabel(I18n.format("aperture.gui.panels.interps.linear"));
-        this.angle.button.addLabel(I18n.format("aperture.gui.panels.interps.cubic"));
-        this.angle.button.addLabel(I18n.format("aperture.gui.panels.interps.hermite"));
+            this.interps.setVisible(false);
+        });
 
         this.pos.resizer().parent(this.area).set(0, 0, 0, 20).w(1, 0);
         this.angle.resizer().parent(this.area).set(0, 25, 0, 20).w(1, 0);
+        this.interps.resizer().y(20).w(1, 0).h(96);
 
-        this.children.add(this.pos, this.angle);
+        this.children.add(this.pos, this.angle, this.interps);
     }
 
     public void fill(PathFixture fixture)
     {
         this.fixture = fixture;
 
-        this.pos.button.setValue(this.indexFromInterpType(fixture.interpolationPos));
-        this.angle.button.setValue(this.indexFromInterpType(fixture.interpolationAngle));
-    }
-
-    /**
-     * Get the index of interpolation type
-     */
-    protected int indexFromInterpType(InterpolationType type)
-    {
-        if (type == InterpolationType.CUBIC)
-        {
-            return 1;
-        }
-
-        if (type == InterpolationType.HERMITE)
-        {
-            return 2;
-        }
-
-        return 0;
-    }
-
-    /**
-     * Get interpolation type from an index
-     */
-    public InterpolationType typeFromIndex(int index)
-    {
-        if (index == 1)
-        {
-            return InterpolationType.CUBIC;
-        }
-
-        if (index == 2)
-        {
-            return InterpolationType.HERMITE;
-        }
-
-        return InterpolationType.LINEAR;
+        this.interps.setVisible(false);
+        this.interps.setCurrent(fixture.interpolationPos);
+        this.pos.button.displayString = I18n.format("aperture.gui.panels.interps." + this.interps.getCurrent().name);
+        this.interps.setCurrent(fixture.interpolationAngle);
+        this.angle.button.displayString = I18n.format("aperture.gui.panels.interps." + this.interps.getCurrent().name);
     }
 
     @Override

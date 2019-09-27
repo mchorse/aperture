@@ -26,5 +26,6 @@ public class GuiFixtureKeyframesGraphEditor<T extends GuiAbstractFixturePanel<? 
         this.graph.setChannel(channel);
         this.interpolations.setVisible(false);
         this.frameButtons.setVisible(false);
+        this.graph.selected = -1;
     }
 }

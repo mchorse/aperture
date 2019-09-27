@@ -5,9 +5,9 @@ import java.util.function.Consumer;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.utils.Scale;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.utils.GuiUtils;
@@ -90,7 +90,7 @@ public class GuiGraphView extends GuiKeyframeElement
     public void addCurrent(long tick, float value)
     {
         Easing easing = Easing.IN;
-        Interpolation interp = Interpolation.LINEAR;
+        KeyframeInterpolation interp = KeyframeInterpolation.LINEAR;
         Keyframe frame = this.getCurrent();
         long oldTick = tick;
 
@@ -238,9 +238,6 @@ public class GuiGraphView extends GuiKeyframeElement
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        this.which = -1;
-        this.selected = -1;
-
         if (super.mouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
@@ -251,13 +248,16 @@ public class GuiGraphView extends GuiKeyframeElement
         {
             if (mouseButton == 0)
             {
+                this.which = -1;
+                this.selected = -1;
+
                 Keyframe prev = null;
                 int index = 0;
 
                 for (Keyframe frame : this.channel.getKeyframes())
                 {
-                    boolean left = prev != null && prev.interp == Interpolation.BEZIER && this.isInside(frame.tick - frame.lx, frame.value + frame.ly, mouseX, mouseY);
-                    boolean right = frame.interp == Interpolation.BEZIER && this.isInside(frame.tick + frame.rx, frame.value + frame.ry, mouseX, mouseY);
+                    boolean left = prev != null && prev.interp == KeyframeInterpolation.BEZIER && this.isInside(frame.tick - frame.lx, frame.value + frame.ly, mouseX, mouseY);
+                    boolean right = frame.interp == KeyframeInterpolation.BEZIER && this.isInside(frame.tick + frame.rx, frame.value + frame.ry, mouseX, mouseY);
                     boolean point = this.isInside(frame.tick, frame.value, mouseX, mouseY);
 
                     if (left || right || point)
@@ -535,7 +535,7 @@ public class GuiGraphView extends GuiKeyframeElement
                 int px = this.toGraphX(prev.tick);
                 int fx = this.toGraphX(frame.tick);
 
-                if (prev.interp == Interpolation.LINEAR)
+                if (prev.interp == KeyframeInterpolation.LINEAR)
                 {
                     vb.pos(px, this.toGraphY(prev.value), 0).color(r, g, b, 1).endVertex();
                     vb.pos(fx, this.toGraphY(frame.value), 0).color(r, g, b, 1).endVertex();
@@ -549,7 +549,7 @@ public class GuiGraphView extends GuiKeyframeElement
                     }
                 }
 
-                if (prev.interp == Interpolation.BEZIER)
+                if (prev.interp == KeyframeInterpolation.BEZIER)
                 {
                     vb.pos(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly), 0).color(r, g, b, 0.6F).endVertex();
                     vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 0.6F).endVertex();
@@ -562,7 +562,7 @@ public class GuiGraphView extends GuiKeyframeElement
                 vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 1).endVertex();
             }
 
-            if (frame.interp == Interpolation.BEZIER)
+            if (frame.interp == KeyframeInterpolation.BEZIER)
             {
                 vb.pos(this.toGraphX(frame.tick), this.toGraphY(frame.value), 0).color(r, g, b, 0.6F).endVertex();
                 vb.pos(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry), 0).color(r, g, b, 0.6F).endVertex();
@@ -611,12 +611,12 @@ public class GuiGraphView extends GuiKeyframeElement
                 GL11.glColor3f(1, 1, 1);
             }
 
-            if (frame.interp == Interpolation.BEZIER)
+            if (frame.interp == KeyframeInterpolation.BEZIER)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry));
             }
 
-            if (prev != null && prev.interp == Interpolation.BEZIER)
+            if (prev != null && prev.interp == KeyframeInterpolation.BEZIER)
             {
                 GL11.glVertex2f(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly));
             }

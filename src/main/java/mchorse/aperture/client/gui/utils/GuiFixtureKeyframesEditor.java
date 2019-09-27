@@ -1,7 +1,7 @@
 package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Interpolation;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import net.minecraft.client.Minecraft;
 
@@ -50,7 +50,7 @@ public abstract class GuiFixtureKeyframesEditor<E extends GuiKeyframeElement, T 
     }
 
     @Override
-    public void pickInterpolation(Interpolation interp)
+    public void pickInterpolation(KeyframeInterpolation interp)
     {
         super.pickInterpolation(interp);
         this.parent.editor.updateProfile();

@@ -165,7 +165,7 @@ public class KeyboardHandler
 
         /* Misc */
         this.cameraEditor = new KeyBinding("key.aperture.camera_editor", Keyboard.KEY_C, misc);
-        this.smoothCamera = new KeyBinding("key.aperture.smooth_camera", Keyboard.KEY_MINUS, misc);
+        this.smoothCamera = new KeyBinding("key.aperture.smooth_camera", Keyboard.KEY_NONE, misc);
 
         ClientRegistry.registerKeyBinding(this.cameraEditor);
         ClientRegistry.registerKeyBinding(this.smoothCamera);
