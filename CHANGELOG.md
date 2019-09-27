@@ -2,6 +2,21 @@
 
 Aperture's change log.
 
+## Aperture 1.3.3
+
+This small patch adds more path fixture intepolations, cut fixture feature and fixes few annoying bugs.
+
+**Compatible** with McLib `1.0.3`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
+
+* Added a feature to "cut" fixtures (split a fixture at cursor in two)
+* Added more interpolations to `path` fixture
+* Changed the default key bind to smooth camera to nothing, so people wouldn't freak out and end up deleting the mod, because it's "broken" 
+* Fixed modifiers not getting copied when "generate keyframe"
+* Fixed flight mode allowed to be enabled during playback
+* Fixed performance of Show Path feature (reported by Joziah2)
+* Fixed issue with clicking on text fields of value/tick it will make the buttons disappear
+* Fixed block position gets reset in look modifier (reported by Chunk7)
+
 ## Aperture 1.3.2
 
 This small patch adds a couple of neat features and fixes few annoying bugs.
