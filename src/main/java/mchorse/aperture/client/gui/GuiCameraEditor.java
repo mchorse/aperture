@@ -184,6 +184,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiButtonElement<GuiTextureButton> remove;
 
     public GuiButtonElement<GuiTextureButton> goTo;
+    public GuiButtonElement<GuiTextureButton> cut;
     public GuiTrackpadElement frame;
 
     /* Widgets */
@@ -222,7 +223,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.nextFrame = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 32, 0, 32, 16, (b) -> this.jumpToNextFrame()).tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"), TooltipDirection.BOTTOM);
         this.plause = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) ->
         {
-            this.disableFlight();
+            this.setFlight(false);
             this.runner.toggle(this.profile, this.scrub.value);
             this.updatePlauseButton();
 
@@ -248,6 +249,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.dupe = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 176, 32, 176, 48, (b) -> this.dupeFixture()).tooltip(I18n.format("aperture.gui.tooltips.dupe"), TooltipDirection.BOTTOM);
         this.remove = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 240, 0, 240, 16, (b) -> this.removeFixture()).tooltip(I18n.format("aperture.gui.tooltips.remove"), TooltipDirection.BOTTOM);
 
+        this.cut = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 32, 192, 48, (b) -> this.cutFixture()).tooltip(I18n.format("aperture.gui.tooltips.cut"), TooltipDirection.BOTTOM);
         this.goTo = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 32, 144, 48, (b) -> this.frame.toggleVisible()).tooltip(I18n.format("aperture.gui.tooltips.goto"), TooltipDirection.BOTTOM);
         this.moveForward = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 0, 144, 16, (b) -> this.moveTo(1)).tooltip(I18n.format("aperture.gui.tooltips.move_up"), TooltipDirection.BOTTOM);
         this.moveDuration = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 0, 192, 16, (b) -> this.shiftDurationToCursor()).tooltip(I18n.format("aperture.gui.tooltips.move_duration"), TooltipDirection.BOTTOM);
@@ -276,6 +278,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.dupe.resizer().relative(this.add.resizer()).set(20, 0, 16, 16);
         this.remove.resizer().relative(this.dupe.resizer()).set(20, 0, 16, 16);
 
+        this.cut.resizer().relative(this.goTo.resizer()).set(20, 0, 16, 16);
         this.goTo.resizer().parent(this.area).set(82, 2, 16, 16);
         this.moveForward.resizer().relative(this.goTo.resizer()).set(-20, 0, 16, 16);
         this.moveDuration.resizer().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
@@ -295,7 +298,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         /* Adding everything */
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
-        this.hidden.add(this.goTo, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
+        this.hidden.add(this.cut, this.goTo, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
         this.hidden.add(this.add, this.dupe, this.remove, this.save, this.openConfig, this.openModifiers);
         this.hidden.add(this.scrub, this.panel, this.frame, this.popup, this.config, this.modifiers);
 
@@ -351,7 +354,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     @SuppressWarnings("unchecked")
     public void pickCameraFixture(AbstractFixture fixture, long duration)
     {
-        this.disableFlight();
+        this.setFlight(false);
 
         if (fixture == null)
         {
@@ -461,6 +464,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
+     * Cut a fixture currently under playback's cursor in two pieces 
+     */
+    private void cutFixture()
+    {
+        if (this.profile != null)
+        {
+            this.profile.cut(this.scrub.value);
+        }
+    }
+
+    /**
      * Camera profile was selected from the profile manager 
      */
     public void selectProfile(CameraProfile profile)
@@ -497,6 +511,19 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         this.setProfile(null);
         this.scrub.value = 0;
+    }
+
+    /**
+     * Set flight mode
+     */
+    public void setFlight(boolean flight)
+    {
+        if (!this.runner.isRunning() || !flight)
+        {
+            this.flight.enabled = flight;
+        }
+
+        this.cameraOptions.update();
     }
 
     /**
@@ -615,12 +642,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.overlayLocation = null;
         }
-    }
-
-    public void disableFlight()
-    {
-        this.flight.enabled = false;
-        this.cameraOptions.update();
     }
 
     /**

@@ -374,4 +374,28 @@ public class CameraProfile
 
         return profile;
     }
+
+    public void cut(int where)
+    {
+        AbstractFixture fixture = this.atTick(where);
+
+        if (fixture != null)
+        {
+            long offset = this.calculateOffset(fixture);
+            long duration = fixture.getDuration();
+            long diff = where - offset;
+
+            if (diff <= 0 || diff >= duration)
+            {
+                return;
+            }
+
+            fixture.setDuration(diff);
+
+            AbstractFixture newFixture = fixture.clone();
+            newFixture.setDuration(duration - diff);
+
+            this.add(newFixture, this.fixtures.indexOf(fixture));
+        }
+    }
 }

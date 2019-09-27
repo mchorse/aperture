@@ -55,6 +55,7 @@ aperture.gui:
         config: Show camera editor options
         modifiers: Show modifiers panel (N)
         goto: Go to specific frame
+        cut: Cut fixture in two at cursor
         add: Add fixture
         dupe: Duplicate fixture
         remove: Remove selected fixture
@@ -150,6 +151,16 @@ aperture.gui:
             hermite: Hermite
             exp: Exponential
             bezier: Bezier
+
+            quad_in: Quadratic In
+            quad_out: Quadratic Out
+            quad_inout: Quadratic In/out
+            cubic_in: Cubic In
+            cubic_out: Cubic Out
+            cubic_inout: Cubic In/out
+            exp_in: Exponential In
+            exp_out: Exponential Out
+            exp_inout: Exponential In/out
 
         easing:
             in: Ease in

@@ -151,6 +151,16 @@ aperture.gui:
             exp: 指数
             bezier: 贝塞尔曲线
             
+            quad_in: 二次方缓入
+            quad_out: 二次方缓出
+            quad_inout: 二次方缓入/缓出
+            cubic_in: 三次曲线缓入
+            cubic_out: 三次曲线缓出
+            cubic_inout: 三次曲线缓入/缓出
+            exp_in: 指数缓入
+            exp_out: 指数缓出
+            exp_inout: 指数缓入/缓出
+            
         easing:
             in: 缓入
             out: 缓出
