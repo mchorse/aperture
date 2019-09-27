@@ -5,9 +5,9 @@ import java.util.function.Consumer;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.utils.Scale;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.utils.GuiUtils;
@@ -238,9 +238,6 @@ public class GuiGraphView extends GuiKeyframeElement
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        this.which = -1;
-        this.selected = -1;
-
         if (super.mouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
@@ -251,6 +248,9 @@ public class GuiGraphView extends GuiKeyframeElement
         {
             if (mouseButton == 0)
             {
+                this.which = -1;
+                this.selected = -1;
+
                 Keyframe prev = null;
                 int index = 0;
 

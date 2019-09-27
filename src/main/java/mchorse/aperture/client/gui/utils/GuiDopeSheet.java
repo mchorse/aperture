@@ -8,9 +8,9 @@ import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
+import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframe;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
 import mchorse.aperture.client.gui.panels.keyframe.KeyframeCell;
@@ -193,9 +193,6 @@ public class GuiDopeSheet extends GuiKeyframeElement
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        this.which = -1;
-        this.current = null;
-
         if (super.mouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
@@ -206,6 +203,9 @@ public class GuiDopeSheet extends GuiKeyframeElement
         {
             if (mouseButton == 0)
             {
+                this.which = -1;
+                this.current = null;
+
                 int count = this.sheets.size();
                 int h = (this.area.h - 15) / count;
                 int y = this.area.getY(1) - h * count;
@@ -412,18 +412,29 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
             Tessellator.getInstance().draw();
 
+            int i = 0;
             GL11.glPointSize(12);
             GL11.glBegin(GL11.GL_POINTS);
 
             for (Keyframe frame : sheet.channel.getKeyframes())
             {
-                GL11.glColor4f(1, 1, 1, 1);
+                if (this.current == sheet && i == sheet.selected)
+                {
+                    GL11.glColor4f(1, 1, 1, 1);
+                }
+                else
+                {
+                    GL11.glColor4f(r * 2, g * 2, b * 2, 1);
+                }
+
                 GL11.glVertex2f(this.toGraph(frame.tick), y + h / 2);
+
+                i++;
             }
 
             GL11.glEnd();
 
-            int i = 0;
+            i = 0;
             GL11.glPointSize(8);
             GL11.glBegin(GL11.GL_POINTS);
 
@@ -431,11 +442,11 @@ public class GuiDopeSheet extends GuiKeyframeElement
             {
                 if (this.current == sheet && i == sheet.selected)
                 {
-                    GL11.glColor4f(0, 0, 0, 1);
+                    GL11.glColor4f(0, 0.5F, 1, 1);
                 }
                 else
                 {
-                    GL11.glColor4f(r, g, b, 1);
+                    GL11.glColor4f(0, 0, 0, 1);
                 }
 
                 GL11.glVertex2f(this.toGraph(frame.tick), y + h / 2);
