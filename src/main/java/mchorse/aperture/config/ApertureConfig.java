@@ -140,6 +140,11 @@ public class ApertureConfig
      */
     public String camera_editor_overlay_rl = "";
 
+    /**
+     * Save all camera profiles upon exiting the world
+     */
+    public boolean camera_auto_save;
+
     /* Non conifg option stuff */
 
     /**
@@ -178,6 +183,7 @@ public class ApertureConfig
         this.camera_debug_ticks = this.getBoolean("camera_debug_ticks", camera, false, "Write ticks to the log during camera playback");
         this.camera_first_tick_zero = this.getBoolean("camera_first_tick_zero", camera, false, "When camera runner starts, start the actual playback when partial tick is exactly zero");
         this.camera_profile_render = this.getBoolean("camera_profile_render", camera, true, "Render camera profile in the world?");
+        this.camera_auto_save = this.getBoolean("camera_auto_save", camera, true, "Save all camera profiles upon exiting the world");
         this.minecrafttp_teleport = this.getBoolean("minecrafttp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)");
         this.tp_teleport = this.getBoolean("tp_teleport", camera, true, "When start the camera playback in multiplayer, teleport you with /tp command (For Vanilla or Forge)");
         this.aspect_ratio = this.getString("aspect_ratio", camera, "16:9", "Aspect ratio for camera editor's letter box");

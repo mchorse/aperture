@@ -18,6 +18,7 @@ aperture.config:
         camera_first_tick_zero: First tick zero
         camera_debug_ticks: Debug ticks
         camera_profile_render: Render camera profile
+        camera_auto_save: Auto save profiles
 
         gui_render_mouse: Render mouse cursor in GUIs
 
