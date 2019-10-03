@@ -873,6 +873,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.cameraOptions.update();
         }
 
+        if (keyCode == Keyboard.KEY_V)
+        {
+            this.flight.vertical = !this.flight.vertical;
+        }
+
         if (this.flight.enabled)
         {
             return;
