@@ -109,8 +109,15 @@ public class GuiProfilesManager extends GuiElement
             return;
         }
 
-        GuiPromptModal modal = new GuiPromptModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.dupe_modal"), (name) -> this.dupe(name));
-        modal.setValue(entry.destination.getFilename());
+        String filename = entry.destination.getFilename();
+        GuiPromptModal modal = new GuiPromptModal(this.mc, this.modal, I18n.format("aperture.gui.profiles.dupe_modal"), (name) ->
+        {
+            if (!name.equals(filename))
+            {
+                this.dupe(name);
+            }
+        });
+        modal.setValue(filename);
 
         this.children.unfocus();
         this.modal.setDelegate(modal);
