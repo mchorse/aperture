@@ -18,14 +18,15 @@ aperture.config:
         camera_first_tick_zero: 第一幀為 0
         camera_debug_ticks: Debug ticks
         camera_profile_render: 渲染相機配置
+        camera_auto_save: 自動存儲配置
 
         gui_render_mouse: 在 GUI 中渲染出滑鼠指針
 
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
-        aspect_ratio: 縱橫比例  
+        aspect_ratio: 縱橫比例
 
-    outside: 
+    outside:
         title: 分離攝像機模式
         tooltip: 屬於分離攝像機的設置項
 
@@ -34,14 +35,14 @@ aperture.config:
         camera_outside_sky: 修復天空
         camera_outside_hide_guis: 隱藏 GUI
         camera_outside_hide_overlays: 隱藏附加層
-        
-    overlay: 
+
+    overlay:
         title: 相機編輯器附加層
         tooltip: 可以在相機編輯器放置一個圖片作為附加層
-        
+
         camera_editor_overlay: 啟用附加層
         camera_editor_overlay_rl: 附加層的資源路徑
-        
+
     smooth:
         title: 平滑相機
         tooltip: 平滑相機配置

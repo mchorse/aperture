@@ -55,6 +55,7 @@ aperture.gui:
         config: 顯示相機編輯器選項
         modifiers: 開啟調整器面板 (N)
         goto: 前往指定的幀
+        cut: 切割關鍵點
         add: 加入關鍵點
         dupe: 拷貝關鍵點
         remove: 移除選取的關鍵點
@@ -150,7 +151,7 @@ aperture.gui:
             hermite: 艾米插值
             exp: 指數
             bezier: 貝茲曲線
-            
+
             quad_in: 二次方緩入
             quad_out: 二次方緩出
             quad_inout: 二次方緩入/緩出
@@ -160,7 +161,7 @@ aperture.gui:
             exp_in: 指數緩入
             exp_out: 指數緩出
             exp_inout: 指數緩入/緩出
-            
+
         easing:
             in: 緩入
             out: 緩出
