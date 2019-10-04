@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
@@ -48,11 +49,14 @@ public class CameraControl
     public void reset()
     {
         /* Saving dirty camera profiles */
-        for (CameraProfile profile : this.profiles)
+        if (Aperture.proxy.config.camera_auto_save)
         {
-            if (profile.dirty)
+            for (CameraProfile profile : this.profiles)
             {
-                profile.save();
+                if (profile.dirty)
+                {
+                    profile.save();
+                }
             }
         }
 

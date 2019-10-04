@@ -82,6 +82,7 @@ public class CameraRenderer
 
         float ticks = (float) event.getRenderPartialTicks();
         EntityPlayer player = this.mc.player;
+        float playerYaw = runner.outside.active ? runner.outside.camera.rotationYaw : player.rotationYaw;
 
         /**
          * Apply camera angles only in case if it's the player. The 
@@ -90,7 +91,7 @@ public class CameraRenderer
          * 
          * The 0.001 part is added due to float precision error.
          */
-        if (Math.abs((event.getYaw() - 180) - player.rotationYaw) > 0.001)
+        if (Math.abs((event.getYaw() - 180) - playerYaw) > 0.001)
         {
             return;
         }

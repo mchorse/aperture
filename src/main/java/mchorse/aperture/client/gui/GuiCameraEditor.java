@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui;
 import java.util.HashMap;
 import java.util.Map;
 
+import mchorse.aperture.camera.fixtures.PathFixture;
 import org.lwjgl.input.Keyboard;
 
 import com.google.gson.JsonParser;
@@ -557,6 +558,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.aspectRatio = aspect;
     }
 
+    public void addPathPoint()
+    {
+        if (this.panel.delegate != null && this.panel.delegate.fixture instanceof PathFixture)
+        {
+            ((PathFixture) this.panel.delegate.fixture).addPoint(new PathFixture.DurablePosition(Minecraft.getMinecraft().player));
+        }
+    }
+
     /**
      * Set camera profile
      */
@@ -873,6 +882,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.cameraOptions.update();
         }
 
+        if (keyCode == Keyboard.KEY_V)
+        {
+            this.flight.vertical = !this.flight.vertical;
+        }
+
         if (this.flight.enabled)
         {
             return;
@@ -979,8 +993,24 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.flight.enabled)
         {
-            this.flight.speed += Math.copySign(0.1F, scroll);
-            this.flight.speed = MathHelper.clamp(this.flight.speed, 0.1F, 50F);
+            float factor = 1000;
+            boolean zoomIn = scroll > 0;
+
+            if ((zoomIn && this.flight.speed <= 10) || (!zoomIn && this.flight.speed < 10))
+            {
+                factor = 1;
+            }
+            else if ((zoomIn && this.flight.speed <= 100) || (!zoomIn && this.flight.speed < 100))
+            {
+                factor = 10;
+            }
+            else if ((zoomIn && this.flight.speed <= 1000) || (!zoomIn && this.flight.speed < 1000))
+            {
+                factor = 100;
+            }
+
+            this.flight.speed -= Math.copySign(factor, scroll);
+            this.flight.speed = MathHelper.clamp(this.flight.speed, 1, 50000);
         }
     }
 
@@ -1152,7 +1182,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Display flight speed */
         if (this.flight.enabled)
         {
-            String speed = String.format(this.stringSpeed + ": %.1f", this.flight.speed);
+            float flightSpeed = this.flight.speed / 1000F;
+            String speedFormat = "%.0f";
+
+            if (flightSpeed < 0.01F) speedFormat = "%.3f";
+            else if (flightSpeed < 0.1F) speedFormat = "%.2f";
+            else if (flightSpeed < 1F) speedFormat = "%.1f";
+
+            String speed = String.format(this.stringSpeed + ": " + speedFormat, flightSpeed);
             int width = this.fontRendererObj.getStringWidth(speed);
             int x = panel.getX() + panel.getW() - 10 - width;
             int y = panel.getY() + panel.getH() - 5;
