@@ -18,6 +18,7 @@ aperture.config:
         camera_first_tick_zero: 第一帧为 0
         camera_debug_ticks: Debug ticks
         camera_profile_render: 渲染相机配置
+        camera_auto_save: 自动保存配置
 
         gui_render_mouse: 在 GUI 中渲染出鼠标指针
 
@@ -25,7 +26,7 @@ aperture.config:
         tp_teleport: 使用 /tp
         aspect_ratio: 纵横比
 
-    outside: 
+    outside:
         title: 分离摄像机模式
         tooltip: 属于分离摄像机的设置项
 
@@ -34,14 +35,14 @@ aperture.config:
         camera_outside_sky: 修复天空
         camera_outside_hide_guis: 隐藏 GUI
         camera_outside_hide_overlays: 隐藏附加层
-        
-    overlay: 
+
+    overlay:
         title: 相机编辑器附加层
         tooltip: 可以在相机编辑器放置一个图片作为附加层
-        
+
         camera_editor_overlay: 启用附加层
         camera_editor_overlay_rl: 附加层的资源路径
-        
+
     smooth:
         title: 平滑相机
         tooltip: 平滑相机配置
