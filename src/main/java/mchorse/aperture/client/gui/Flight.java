@@ -8,11 +8,12 @@ import net.minecraft.util.math.Vec3d;
 public class Flight
 {
     public boolean enabled = false;
-    public float speed = 1;
+    public boolean vertical = false;
+    public int speed = 1000;
 
     public void animate(Position position)
     {
-        float multiplier = this.speed;
+        float multiplier = this.speed / 1000F;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
         {
@@ -24,7 +25,7 @@ public class Flight
         }
 
         double factor = 0.1 * multiplier;
-        double angleFactor = 0.5 * multiplier;
+        double angleFactor = 0.35 * multiplier;
 
         float yaw = position.angle.yaw;
         float pitch = position.angle.pitch;
@@ -77,6 +78,11 @@ public class Flight
         if (xx != 0 || yy != 0 || zz != 0 || yaw != position.angle.yaw || pitch != position.angle.pitch || roll != position.angle.roll || fov != position.angle.fov)
         {
             Vec3d vec = new Vec3d(xx, yy, zz);
+
+            if (this.vertical)
+            {
+                vec = vec.rotatePitch(-pitch / 180 * (float) Math.PI);
+            }
 
             vec = vec.rotateYaw(-yaw / 180 * (float) Math.PI);
 

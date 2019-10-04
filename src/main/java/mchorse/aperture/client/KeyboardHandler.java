@@ -2,6 +2,7 @@ package mchorse.aperture.client;
 
 import java.lang.reflect.Field;
 
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
 import mchorse.aperture.Aperture;
@@ -46,9 +47,9 @@ public class KeyboardHandler
 
     /* Camera profile keys */
     private KeyBinding toggleRender;
-
     private KeyBinding startRunning;
     private KeyBinding stopRunning;
+    private KeyBinding addPoint;
 
     /* Roll and FOV */
     public KeyBinding addRoll;
@@ -112,14 +113,14 @@ public class KeyboardHandler
         String misc = "key.aperture.misc";
 
         this.toggleRender = new KeyBinding("key.aperture.profile.toggle", Keyboard.KEY_P, profile);
-
-        ClientRegistry.registerKeyBinding(this.toggleRender);
-
         this.startRunning = new KeyBinding("key.aperture.profile.start", Keyboard.KEY_Z, profile);
         this.stopRunning = new KeyBinding("key.aperture.profile.stop", Keyboard.KEY_X, profile);
+        this.addPoint = new KeyBinding("key.aperture.profile.point", Keyboard.KEY_NONE, profile);
 
+        ClientRegistry.registerKeyBinding(this.toggleRender);
         ClientRegistry.registerKeyBinding(this.startRunning);
         ClientRegistry.registerKeyBinding(this.stopRunning);
+        ClientRegistry.registerKeyBinding(this.addPoint);
 
         /* Roll and FOV */
         this.addRoll = new KeyBinding("key.aperture.roll.add", Keyboard.KEY_NONE, camera);
@@ -238,6 +239,11 @@ public class KeyboardHandler
             {
                 camera.set(player.rotationYaw, -player.rotationPitch);
             }
+        }
+
+        if (this.addPoint.isPressed())
+        {
+            ClientProxy.getCameraEditor().addPathPoint();
         }
     }
 
