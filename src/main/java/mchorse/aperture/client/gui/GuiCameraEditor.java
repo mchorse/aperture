@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui;
 import java.util.HashMap;
 import java.util.Map;
 
+import mchorse.aperture.camera.fixtures.PathFixture;
 import org.lwjgl.input.Keyboard;
 
 import com.google.gson.JsonParser;
@@ -555,6 +556,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         this.aspectRatio = aspect;
+    }
+
+    public void addPathPoint()
+    {
+        if (this.panel.delegate != null && this.panel.delegate.fixture instanceof PathFixture)
+        {
+            ((PathFixture) this.panel.delegate.fixture).addPoint(new PathFixture.DurablePosition(Minecraft.getMinecraft().thePlayer));
+        }
     }
 
     /**
