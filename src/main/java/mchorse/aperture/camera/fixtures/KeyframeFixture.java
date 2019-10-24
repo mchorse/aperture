@@ -452,10 +452,21 @@ public class KeyframeFixture extends AbstractFixture
         {
             Keyframe frame = new Keyframe(this.tick, this.value);
 
-            frame.interp = this.interp;
-            frame.easing = this.easing;
+            frame.copy(this);
 
             return frame;
+        }
+
+        public void copy(Keyframe keyframe)
+        {
+            this.tick = keyframe.tick;
+            this.value = keyframe.value;
+            this.interp = keyframe.interp;
+            this.easing = keyframe.easing;
+            this.lx = keyframe.lx;
+            this.ly = keyframe.ly;
+            this.rx = keyframe.rx;
+            this.ry = keyframe.ry;
         }
 
         public void fromByteBuf(ByteBuf buffer)

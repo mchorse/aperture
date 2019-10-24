@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import mchorse.aperture.client.gui.GuiCameraEditor;
+import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.data.Position;
@@ -156,9 +158,13 @@ public class GuiDopeSheet extends GuiKeyframeElement
             {
                 AllKeyframeChannel all = (AllKeyframeChannel) this.current.channel;
                 AllKeyframe key = (AllKeyframe) frame;
-                /* TODO: make that work with outside mode */
                 Position pos = new Position(Minecraft.getMinecraft().thePlayer);
                 float value = 0;
+
+                if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
+                {
+                    pos = new Position(((GuiCameraEditor) Minecraft.getMinecraft().currentScreen).getCamera());
+                }
 
                 for (KeyframeChannel channel : all.fixture.channels)
                 {
@@ -187,6 +193,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
             this.current.channel.remove(this.current.selected);
             this.current.selected -= 1;
+            this.which = -1;
         }
     }
 
@@ -203,6 +210,24 @@ public class GuiDopeSheet extends GuiKeyframeElement
         {
             if (mouseButton == 0)
             {
+                /* Duplicate the keyframe */
+                if (GuiScreen.isAltKeyDown() && this.current != null && this.which == 0)
+                {
+                    Keyframe frame = this.getCurrent();
+
+                    if (frame != null)
+                    {
+                        long offset = (long) this.fromGraph(mouseX);
+                        Keyframe created = this.current.channel.get(this.current.channel.insert(offset, frame.value));
+
+                        this.current.selected = this.current.channel.getKeyframes().indexOf(created);
+                        created.copy(frame);
+                        created.tick = offset;
+                    }
+
+                    return false;
+                }
+
                 this.which = -1;
                 this.current = null;
 
