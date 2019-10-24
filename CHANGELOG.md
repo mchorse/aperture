@@ -10,12 +10,22 @@ This small patch adds more path fixture intepolations, cut fixture feature and f
 
 * Added a feature to "cut" fixtures (split a fixture at cursor in two)
 * Added more interpolations to `path` fixture
-* Changed the default key bind to smooth camera to nothing, so people wouldn't freak out and end up deleting the mod, because it's "broken" 
+* Added an option to disable auto saving of camera profiles upon exiting (it's enabled by default)
+* Added a keybind to add a path point to currently selected path (suggested by Kanguste)
+* Added a key modifier or something to allow in flight mode to also move vertically where character is looking (suggested by Kanguste)
+* Added a feature to allow setup markers and then create multiple fixtures at once user finishes
+* Added a feature to change/replace selected fixture fixture
+* Added a key modifier (alt) to duplicate a keyframe in graph and dope sheet views
+* Changed the default key bind to smooth camera to nothing, so people wouldn't freak out and end up deleting the mod, because it's "broken"
+* Changed the flight speed to be even smaller value (suggested by Kanguste)
 * Fixed modifiers not getting copied when "generate keyframe"
 * Fixed flight mode allowed to be enabled during playback
 * Fixed performance of Show Path feature (reported by Joziah2)
 * Fixed issue with clicking on text fields of value/tick it will make the buttons disappear
 * Fixed block position gets reset in look modifier (reported by Chunk7)
+* Fixed ~~FOV~~ roll with outside and flight modes (reported by Kanguste)
+* Fixed and invert flight mode mouse wheel adjustment
+* Fixed duplicating dialog to not allow using the same name
 
 ## Aperture 1.3.2
 
