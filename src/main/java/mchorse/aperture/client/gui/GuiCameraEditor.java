@@ -595,6 +595,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         this.setProfile(null);
         this.scrub.value = 0;
+        this.flight.vertical = false;
         this.replacing = false;
         this.creating = false;
         this.markers.clear();
@@ -1351,6 +1352,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.mc.renderEngine.bindTexture(EDITOR_TEXTURE);
 
+        if (this.syncing || this.flight.enabled)
+        {
+            Gui.drawRect(this.width - (this.syncing ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
+        }
+
         GlStateManager.color(1, 1, 1, 1);
 
         if (this.syncing)
@@ -1361,7 +1367,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.flight.enabled)
         {
-            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, 48, 16, 16, 256, 256);
+            int v = this.flight.vertical ? 64 : 48;
+
+            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, v, 16, 16, 256, 256);
         }
     }
 }
