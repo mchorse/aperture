@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui;
 
+import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.CameraProfile;
@@ -213,6 +214,13 @@ public class GuiPlaybackScrub extends GuiElement
             }
             else if (mouseButton == 2)
             {
+                if (this.editor.creating && GuiScreen.isCtrlKeyDown())
+                {
+                    this.editor.addMarker(this.value);
+
+                    return false;
+                }
+
                 this.scrolling = true;
                 this.lastX = mouseX;
             }
