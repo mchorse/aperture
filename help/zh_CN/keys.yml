@@ -42,3 +42,4 @@ key.aperture:
 
         start: 开始相机配置
         stop: 停止相机配置
+        point: 添加路径点

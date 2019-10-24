@@ -42,3 +42,4 @@ key.aperture:
 
         start: 開始相機配置
         stop: 停止相機配置
+        point: 加入路徑點

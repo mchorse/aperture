@@ -16,6 +16,7 @@ aperture.config.comments:
         camera_first_tick_zero: 当相机播放时将当前帧归零
         camera_profile_render: 在世界中渲染出相机配置？
         gui_render_mouse: 在打开 GUI 的时候渲染出鼠标的材质
+        camera_auto_save: 在退出世界时保存所有相机配置
         minecrafttp_teleport: 当在多人游戏时开始相机回放，使用 /minecraft:tp 来瞬移（针对于安装了 Essentials 插件的服务器）
         tp_teleport: 当在多人游戏时开始相机回放，使用 /tp 来瞬移（针对于原版和 Forge 等服务器）
         aspect_ratio: 用于设置画面黑边的纵横比
