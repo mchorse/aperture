@@ -56,8 +56,10 @@ aperture.gui:
         modifiers: Show modifiers panel (N)
         goto: Go to specific frame
         cut: Cut fixture in two at cursor
+        creation: Interactive fixture creation
         add: Add fixture
         dupe: Duplicate fixture
+        replace: Replace selected fixture
         remove: Remove selected fixture
 
     editor:
