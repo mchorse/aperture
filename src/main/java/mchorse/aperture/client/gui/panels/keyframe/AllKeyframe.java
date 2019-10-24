@@ -59,4 +59,27 @@ public class AllKeyframe extends Keyframe
             cell.keyframe.setInterpolation(interp);
         }
     }
+
+    @Override
+    public void copy(Keyframe keyframe) {
+        long tick = this.tick;
+
+        super.copy(keyframe);
+
+        if (keyframe instanceof AllKeyframe)
+        {
+            AllKeyframe all = (AllKeyframe) keyframe;
+
+            this.keyframes.clear();
+
+            for (KeyframeCell cell : all.keyframes)
+            {
+                Keyframe frame = cell.channel.get(cell.channel.insert(tick, 0));
+                frame.copy(cell.keyframe);
+                frame.tick = tick;
+
+                this.keyframes.add(new KeyframeCell(frame, cell.channel));
+            }
+        }
+    }
 }

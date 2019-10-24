@@ -122,6 +122,7 @@ public class GuiGraphView extends GuiKeyframeElement
 
         this.channel.remove(this.selected);
         this.selected -= 1;
+        this.which = -1;
     }
 
     /* Graphing code */
@@ -248,6 +249,24 @@ public class GuiGraphView extends GuiKeyframeElement
         {
             if (mouseButton == 0)
             {
+                /* Duplicate the keyframe */
+                if (GuiScreen.isAltKeyDown() && this.which == 0)
+                {
+                    Keyframe frame = this.getCurrent();
+
+                    if (frame != null)
+                    {
+                        long offset = (long) this.fromGraphX(mouseX);
+                        Keyframe created = this.channel.get(this.channel.insert(offset, frame.value));
+
+                        this.selected = this.channel.getKeyframes().indexOf(created);
+                        created.copy(frame);
+                        created.tick = offset;
+                    }
+
+                    return false;
+                }
+
                 this.which = -1;
                 this.selected = -1;
 
