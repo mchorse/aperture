@@ -250,6 +250,17 @@ public class CameraProfile
     }
 
     /**
+     * Replace a fixture at given frame
+     */
+    public void replace(AbstractFixture fixture, int index)
+    {
+        if (this.has(index))
+        {
+            this.fixtures.set(index, fixture);
+        }
+    }
+
+    /**
      * Reset camera profile (remove all fixtures in profile)
      */
     public void reset()
