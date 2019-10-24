@@ -123,9 +123,10 @@ public class GuiPlaybackScrub extends GuiElement
      */
     public int calcValueFromMouse(int mouseX)
     {
-        float factor = (mouseX - 2 - this.area.x + this.scroll) / (this.max * this.scale);
+        int max = this.max == 0 ? 1 : this.max;
+        float factor = (mouseX - 2 - this.area.x + this.scroll) / (max * this.scale);
 
-        return (int) (factor * (this.max - this.min)) + this.min;
+        return (int) (factor * (max - this.min)) + this.min;
     }
 
     /**
@@ -133,9 +134,10 @@ public class GuiPlaybackScrub extends GuiElement
      */
     public int calcMouseFromValue(int value)
     {
-        float factor = (value - this.min) / (float) (this.max - this.min);
+        int max = this.max == 0 ? 1 : this.max;
+        float factor = (value - this.min) / (float) (max - this.min);
 
-        return (int) (factor * this.max * this.scale) + this.area.x + 2 - this.scroll;
+        return (int) (factor * max * this.scale) + this.area.x + 2 - this.scroll;
     }
 
     /**
@@ -166,6 +168,14 @@ public class GuiPlaybackScrub extends GuiElement
             else if (mouseButton == 1 && this.profile != null)
             {
                 int tick = this.calcValueFromMouse(mouseX);
+
+                if (this.editor.creating)
+                {
+                    this.editor.addMarker(tick);
+
+                    return false;
+                }
+
                 AbstractFixture fixture = this.profile.atTick(tick);
                 long offset = this.profile.calculateOffset(fixture);
 
@@ -360,8 +370,7 @@ public class GuiPlaybackScrub extends GuiElement
         {
             /* Calculate tick marker position and tick label width */
             String label = String.valueOf(this.value + "/" + this.max);
-            float f = (float) (this.value - this.min) / (float) (this.max - this.min);
-            int tx = x + 2 + (int) (this.max * f * this.scale) - this.scroll;
+            int tx = this.calcMouseFromValue(this.value);
             int width = this.font.getStringWidth(label) + 4;
 
             /* Draw fixtures */
@@ -378,10 +387,8 @@ public class GuiPlaybackScrub extends GuiElement
                 int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getHex();
 
                 boolean selected = i == this.index;
-                float leftFactor = (float) (pos - this.min) / (float) (this.max - this.min);
-                float rightFactor = (float) (pos + fixture.getDuration() - this.min) / (float) (this.max - this.min);
-                int leftMargin = x + 1 + (int) (this.max * leftFactor * this.scale) - this.scroll;
-                int rightMargin = x + 1 + (int) (this.max * rightFactor * this.scale) - this.scroll;
+                int leftMargin = this.calcMouseFromValue(pos) - 1;
+                int rightMargin = this.calcMouseFromValue(pos + (int) fixture.getDuration()) - 1;
 
                 /* Draw fixture's background and the hinge */
                 Gui.drawRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
@@ -459,13 +466,22 @@ public class GuiPlaybackScrub extends GuiElement
                 i++;
             }
 
+            if (this.editor.creating)
+            {
+                for (Integer marker : this.editor.markers)
+                {
+                    int mx = this.calcMouseFromValue(marker);
+
+                    Gui.drawRect(mx, y + 5, mx + 1, y + h - 1,0xaaff0000);
+                }
+            }
+
             /* Draw shadows to indicate that there are still stuff to scroll */
-            if (this.scroll > 0) GuiUtils.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
+            if (this.scroll > this.min * this.scale) GuiUtils.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
             if (this.scroll < this.max * this.scale - this.area.w + 4) GuiUtils.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
 
             /* Draw end marker and also shadow of area where there is no  */
-            float stop = (float) (this.profile.getDuration() - this.min) / (float) (this.max - this.min);
-            int stopX = x + 2 + (int) (this.max * stop * this.scale) - this.scroll;
+            int stopX = this.calcMouseFromValue((int) this.profile.getDuration());
 
             if (stopX < this.area.getX(1) - 2)
             {
