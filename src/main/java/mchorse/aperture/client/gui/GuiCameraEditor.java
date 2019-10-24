@@ -1064,6 +1064,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.cameraOptions.repeat.mouseClicked(this.cameraOptions.repeat.area.x + 1, this.cameraOptions.repeat.area.y + 1, 0);
         }
+        else if (keyCode == Keyboard.KEY_C)
+        {
+            this.cut.mouseClicked(this.cut.area.x + 1, this.cut.area.y + 1, 0);
+        }
+        else if (keyCode == Keyboard.KEY_I)
+        {
+            this.creation.mouseClicked(this.creation.area.x + 1, this.creation.area.y + 1, 0);
+        }
     }
 
     @Override
