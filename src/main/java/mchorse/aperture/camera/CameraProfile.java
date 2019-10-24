@@ -256,6 +256,10 @@ public class CameraProfile
     {
         if (this.has(index))
         {
+            AbstractFixture present = this.get(index);
+            AbstractFixture.copyModifiers(present, fixture);
+
+            fixture.setDuration(present.getDuration());
             this.fixtures.set(index, fixture);
         }
     }
