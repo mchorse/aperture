@@ -1,8 +1,14 @@
 package mchorse.aperture.client.gui;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import org.lwjgl.input.Keyboard;
 
@@ -94,6 +100,12 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      * Flag for replacing a fixture
      */
     private boolean replacing = false;
+
+    /**
+     * Whether creation mode is activated
+     */
+    public boolean creating = false;
+    public List<Integer> markers = new ArrayList<Integer>();
 
     /**
      * FOV which was user had before entering the GUI 
@@ -192,6 +204,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
     public GuiButtonElement<GuiTextureButton> goTo;
     public GuiButtonElement<GuiTextureButton> cut;
+    public GuiButtonElement<GuiTextureButton> creation;
     public GuiTrackpadElement frame;
 
     /* Widgets */
@@ -257,6 +270,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.replace = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 208, 32, 208, 48, (b) -> this.hideReplacingPopups(this.popup, true)).tooltip(I18n.format("aperture.gui.tooltips.replace"), TooltipDirection.BOTTOM);
         this.remove = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 240, 0, 240, 16, (b) -> this.removeFixture()).tooltip(I18n.format("aperture.gui.tooltips.remove"), TooltipDirection.BOTTOM);
 
+        this.creation = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 224, 32, 224, 48, (b) -> this.toggleCreation()).tooltip(I18n.format("aperture.gui.tooltips.creation"), TooltipDirection.BOTTOM);
         this.cut = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 32, 192, 48, (b) -> this.cutFixture()).tooltip(I18n.format("aperture.gui.tooltips.cut"), TooltipDirection.BOTTOM);
         this.goTo = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 32, 144, 48, (b) -> this.frame.toggleVisible()).tooltip(I18n.format("aperture.gui.tooltips.goto"), TooltipDirection.BOTTOM);
         this.moveForward = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 0, 144, 16, (b) -> this.moveTo(1)).tooltip(I18n.format("aperture.gui.tooltips.move_up"), TooltipDirection.BOTTOM);
@@ -287,6 +301,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.replace.resizer().relative(this.dupe.resizer()).set(20, 0, 16, 16);
         this.remove.resizer().relative(this.replace.resizer()).set(20, 0, 16, 16);
 
+        this.creation.resizer().relative(this.cut.resizer()).set(20, 0, 16, 16);
         this.cut.resizer().relative(this.goTo.resizer()).set(20, 0, 16, 16);
         this.goTo.resizer().parent(this.area).set(82, 2, 16, 16);
         this.moveForward.resizer().relative(this.goTo.resizer()).set(-20, 0, 16, 16);
@@ -307,7 +322,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         /* Adding everything */
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
-        this.hidden.add(this.cut, this.goTo, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
+        this.hidden.add(this.creation, this.cut, this.goTo, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
         this.hidden.add(this.add, this.dupe, this.replace, this.remove, this.save, this.openConfig, this.openModifiers);
         this.hidden.add(this.scrub, this.panel, this.frame, this.popup, this.config, this.modifiers);
 
@@ -486,6 +501,53 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
+     * Toggles creation mode which allows creating fixtures by placing markers
+     */
+    private void toggleCreation()
+    {
+        this.creating = !this.creating;
+
+        if (!this.creating)
+        {
+            Collections.sort(this.markers);
+
+            long duration = this.profile.getDuration();
+
+            for (Integer tick : this.markers)
+            {
+                long difference = tick - duration;
+
+                if (tick < duration || difference <= 0) continue;
+
+                IdleFixture fixture = new IdleFixture(difference);
+
+                fixture.fromPlayer(this.getCamera());
+                this.profile.add(fixture);
+
+                duration += difference;
+            }
+
+            this.updateValues();
+            this.markers.clear();
+        }
+    }
+
+    /**
+     * Add a creation marker
+     */
+    public void addMarker(int tick)
+    {
+        if (this.markers.contains(tick))
+        {
+            this.markers.remove((Integer) tick);
+        }
+        else
+        {
+            this.markers.add(tick);
+        }
+    }
+
+    /**
      * Cut a fixture currently under playback's cursor in two pieces 
      */
     private void cutFixture()
@@ -533,6 +595,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         this.setProfile(null);
         this.scrub.value = 0;
+        this.replacing = false;
+        this.creating = false;
+        this.markers.clear();
     }
 
     /**
@@ -1187,6 +1252,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             if (this.frame.isVisible())
             {
                 Gui.drawRect(this.goTo.area.x - 2, 0, this.goTo.area.x + 18, 20, 0xaa000000);
+            }
+
+            if (this.creating)
+            {
+                Gui.drawRect(this.creation.area.x - 2, 0, this.creation.area.x + 18, 20, 0xaa000000);
             }
 
             boolean running = this.runner.isRunning();
