@@ -167,6 +167,7 @@ public class GuiProfilesManager extends GuiElement
         AbstractDestination dest = entry.profile.getDestination();
 
         dest.rename(name);
+        this.rename(dest, name);
     }
 
     private void convert()
