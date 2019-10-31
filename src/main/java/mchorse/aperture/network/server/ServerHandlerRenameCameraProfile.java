@@ -19,8 +19,6 @@ public class ServerHandlerRenameCameraProfile extends ServerMessageHandler<Packe
 
             cap.setCurrentProfile(message.from);
             cap.setCurrentProfileTimestamp(System.currentTimeMillis());
-
-            Dispatcher.sendTo(message, player);
         }
     }
 }
