@@ -81,7 +81,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
     private void toKeyframe()
     {
-        if (this.fixture.getCount() <= 1)
+        int c = this.fixture.getCount();
+
+        if (c <= 1)
         {
             return;
         }
@@ -95,9 +97,15 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         Easing angleEasing = this.fixture.interpolationAngle.easing;
 
         long x = 0;
+        int i = 0;
 
         for (DurablePosition point : this.fixture.getPoints())
         {
+            if (!this.fixture.perPointDuration)
+            {
+                x = (int) (i / (c - 1F) * duration);
+            }
+
             int index = fixture.x.insert(x, (float) point.point.x);
             fixture.y.insert(x, (float) point.point.y);
             fixture.z.insert(x, (float) point.point.z);
@@ -114,7 +122,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             fixture.roll.get(index).setInterpolation(angle, angleEasing);
             fixture.fov.get(index).setInterpolation(angle, angleEasing);
 
-            x += this.fixture.perPointDuration ? point.getDuration() : duration / (this.fixture.getCount() - 1);
+            if (this.fixture.perPointDuration)
+            {
+                x += point.getDuration();
+            }
+
+            i ++;
         }
 
         this.editor.createFixture(fixture);

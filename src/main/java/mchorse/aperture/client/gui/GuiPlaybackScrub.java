@@ -214,13 +214,6 @@ public class GuiPlaybackScrub extends GuiElement
             }
             else if (mouseButton == 2)
             {
-                if (this.editor.creating && GuiScreen.isCtrlKeyDown())
-                {
-                    this.editor.addMarker(this.value);
-
-                    return false;
-                }
-
                 this.scrolling = true;
                 this.lastX = mouseX;
             }
@@ -429,11 +422,11 @@ public class GuiPlaybackScrub extends GuiElement
                         }
                         else
                         {
-                            int fract = (rightMargin - leftMargin) / c;
+                            float fract = (rightMargin - leftMargin) / (float) c;
 
                             for (int j = 1; j < c; j++)
                             {
-                                int px = leftMargin + fract * j;
+                                int px = leftMargin + (int) (fract * j);
 
                                 Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
                             }
