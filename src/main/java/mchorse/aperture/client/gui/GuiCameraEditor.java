@@ -10,6 +10,7 @@ import java.util.Map;
 
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import org.lwjgl.input.Keyboard;
 
 import com.google.gson.JsonParser;
@@ -214,7 +215,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiProfilesManager profiles;
     public GuiConfigCameraOptions cameraOptions;
     public GuiModifiersManager modifiers;
-    public GuiDelegateElement<GuiAbstractFixturePanel<AbstractFixture>> panel;
+    public GuiDelegateElement<GuiAbstractFixturePanel> panel;
     public GuiElements<IGuiElement> hidden = new GuiElements<IGuiElement>();
 
     /**
@@ -224,7 +225,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         this.runner = runner;
 
-        this.panel = new GuiDelegateElement<GuiAbstractFixturePanel<AbstractFixture>>(mc, null);
+        this.panel = new GuiDelegateElement<GuiAbstractFixturePanel>(mc, null);
         this.scrub = new GuiPlaybackScrub(mc, this, null);
         this.popup = new GuiFixturesPopup(mc, (fixture) ->
         {
@@ -649,7 +650,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         if (this.panel.delegate != null && this.panel.delegate.fixture instanceof PathFixture)
         {
-            ((PathFixture) this.panel.delegate.fixture).addPoint(new PathFixture.DurablePosition(Minecraft.getMinecraft().player));
+            ((GuiPathFixturePanel) this.panel.delegate).points.addPoint();
         }
     }
 

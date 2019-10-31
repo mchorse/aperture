@@ -51,53 +51,8 @@ public class GuiPointsModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        GuiButtonElement<GuiTextureButton> add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) ->
-        {
-            if (this.index + 1 == this.path.getPoints().size())
-            {
-                this.path.addPoint(new DurablePosition(this.editor.getPosition()));
-            }
-            else
-            {
-                this.path.addPoint(new DurablePosition(this.editor.getPosition()), this.index + 1);
-            }
-
-            this.index++;
-            this.scroll.setSize(this.path.getCount());
-            this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
-
-            if (this.picker != null)
-            {
-                this.picker.pickPoint(this, this.index);
-            }
-
-            this.editor.updateProfile();
-        });
-
-        GuiButtonElement<GuiTextureButton> remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 240, 0, 240, 16, (b) ->
-        {
-            if (this.path.getPoints().size() == 1)
-            {
-                return;
-            }
-
-            this.path.removePoint(this.index);
-
-            if (this.index > 0)
-            {
-                this.index--;
-            }
-
-            this.scroll.setSize(this.path.getCount());
-            this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
-
-            if (this.picker != null)
-            {
-                this.picker.pickPoint(this, this.index);
-            }
-
-            this.editor.updateProfile();
-        });
+        GuiButtonElement<GuiTextureButton> add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) -> this.addPoint());
+        GuiButtonElement<GuiTextureButton> remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 240, 0, 240, 16, (b) -> this.removePoint());
 
         GuiButtonElement<GuiTextureButton> forward = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 144, 0, 144, 16, (b) ->
         {
@@ -115,6 +70,54 @@ public class GuiPointsModule extends GuiAbstractModule
 
         this.children.add(back, add, remove, forward);
         this.scroll.direction = ScrollDirection.HORIZONTAL;
+    }
+
+    public void addPoint()
+    {
+        if (this.index + 1 == this.path.getPoints().size())
+        {
+            this.path.addPoint(new DurablePosition(this.editor.getPosition()));
+        }
+        else
+        {
+            this.path.addPoint(new DurablePosition(this.editor.getPosition()), this.index + 1);
+        }
+
+        this.index++;
+        this.scroll.setSize(this.path.getCount());
+        this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
+
+        if (this.picker != null)
+        {
+            this.picker.pickPoint(this, this.index);
+        }
+
+        this.editor.updateProfile();
+    }
+
+    public void removePoint()
+    {
+        if (this.path.getPoints().size() == 1)
+        {
+            return;
+        }
+
+        this.path.removePoint(this.index);
+
+        if (this.index > 0)
+        {
+            this.index--;
+        }
+
+        this.scroll.setSize(this.path.getCount());
+        this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
+
+        if (this.picker != null)
+        {
+            this.picker.pickPoint(this, this.index);
+        }
+
+        this.editor.updateProfile();
     }
 
     /**
