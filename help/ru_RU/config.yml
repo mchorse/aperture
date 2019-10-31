@@ -18,6 +18,7 @@ aperture.config:
         camera_first_tick_zero: Нулевой кадр
         camera_debug_ticks: Тики отладки
         camera_profile_render: Отображать профиль камеры
+        camera_auto_save: Авто сохранение профилей
 
         gui_render_mouse: Отображать курсор мыши в интерфейсе
 
