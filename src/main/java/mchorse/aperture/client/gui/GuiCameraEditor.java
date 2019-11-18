@@ -613,6 +613,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         this.cameraOptions.update();
+        this.haveScrubbed = true;
     }
 
     /**
@@ -911,6 +912,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.panel.delegate.editFixture(this.getPosition());
         }
+
+        this.haveScrubbed = true;
     }
 
     /**
