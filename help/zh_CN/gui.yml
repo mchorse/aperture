@@ -55,10 +55,12 @@ aperture.gui:
         config: 显示相机编辑器选项
         modifiers: 打开调整器面板 (N)
         goto: 前往指定的帧
-        cut: 切割关键点
+        cut: 切割关键点（C）
+        creation: 交互添加关键点（I）
         add: 添加关键点
         dupe: 拷贝关键点
-        remove: 移除选择的关键点
+        replace: 替换选中的关键点
+        remove: 移除选中的关键点
 
     editor:
         f1: 请按F1来再次展示界面…
