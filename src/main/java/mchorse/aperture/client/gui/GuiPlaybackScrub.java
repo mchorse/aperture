@@ -370,7 +370,7 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.profile != null)
         {
             /* Calculate tick marker position and tick label width */
-            String label = String.valueOf(this.value + "/" + this.max);
+            String label = this.value + "/" + this.max;
             int tx = this.calcMouseFromValue(this.value);
             int width = this.font.getStringWidth(label) + 4;
 
@@ -392,8 +392,14 @@ public class GuiPlaybackScrub extends GuiElement
                 int rightMargin = this.calcMouseFromValue(pos + (int) fixture.getDuration()) - 1;
 
                 /* Draw fixture's background and the hinge */
-                Gui.drawRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, (selected ? 0xff000000 : 0x66000000) + color);
+                Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
                 Gui.drawRect(rightMargin, y + 1, rightMargin + 1, y + h - 1, 0xff000000 + color);
+
+                if (selected)
+                {
+                    this.drawGradientRect(leftMargin + 1, y + 5, rightMargin, y + 12, 0x000088ff, 0x880088ff);
+                    this.drawGradientRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, 0x00000000, 0x44000000);
+                }
 
                 String name = fixture.getName();
 
@@ -506,7 +512,7 @@ public class GuiPlaybackScrub extends GuiElement
             }
 
             /* Draw the tick label */
-            Gui.drawRect(tx + 2, y + h - 3 - this.font.FONT_HEIGHT, tx + 2 + width, y + h - 1, 0xff57f52a);
+            Gui.drawRect(tx + 2, y + h - 3 - this.font.FONT_HEIGHT, tx + 2 + width, y + h - 1, 0xaa57f52a);
             this.font.drawStringWithShadow(label, tx + 4, y + h - this.font.FONT_HEIGHT - 1, 0xffffff);
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
