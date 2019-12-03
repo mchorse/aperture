@@ -43,7 +43,7 @@ public class MouseRenderer
 
         if (left || right || middle)
         {
-            FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
+            FontRenderer font = Minecraft.getMinecraft().fontRenderer;
             x += 16;
             y += 2;
 
