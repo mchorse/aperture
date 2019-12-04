@@ -54,17 +54,19 @@ public class MouseRenderer
             Gui.drawRect(x, y + 1, x + 12, y + 15, 0xffffffff);
             Gui.drawRect(x + 1, y, x + 11, y + 1, 0xffffffff);
             Gui.drawRect(x + 1, y + 15, x + 11, y + 16, 0xffffffff);
+            /* Over outline */
+            Gui.drawRect(x, y + 7, x + 12, y + 8, 0xffeeeeee);
 
             if (left)
             {
-                Gui.drawRect(x + 1, y, x + 6, y + 7, 0xffdddddd);
-                Gui.drawRect(x, y + 1, x + 1, y + 7, 0xffbbbbbb);
+                Gui.drawRect(x + 1, y, x + 6, y + 7, 0xffcccccc);
+                Gui.drawRect(x, y + 1, x + 1, y + 7, 0xffaaaaaa);
             }
 
             if (right)
             {
-                Gui.drawRect(x + 6, y, x + 11, y + 7, 0xffbbbbbb);
-                Gui.drawRect(x + 11, y + 1, x + 12, y + 7, 0xff999999);
+                Gui.drawRect(x + 6, y, x + 11, y + 7, 0xffaaaaaa);
+                Gui.drawRect(x + 11, y + 1, x + 12, y + 7, 0xff888888);
             }
 
             if (middle)
