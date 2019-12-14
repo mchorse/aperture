@@ -6,26 +6,32 @@ Aperture's change log.
 
 This small patch adds more path fixture intepolations, cut fixture feature and fixes few annoying bugs.
 
-**Compatible** with McLib `1.0.3`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
+**Compatible** with McLib `1.0.4`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
+
+<a href="https://youtu.be/5Tnp4z6GWME"><img src="https://img.youtube.com/vi/5Tnp4z6GWME/0.jpg"></a> 
 
 * Added a feature to "cut" fixtures (split a fixture at cursor in two)
 * Added more interpolations to `path` fixture
-* Added an option to disable auto saving of camera profiles upon exiting (it's enabled by default)
+* Added an option to disable auto saving of camera profiles upon exiting (auto save is enabled by default)
 * Added a keybind to add a path point to currently selected path (suggested by Kanguste)
 * Added a key modifier or something to allow in flight mode to also move vertically where character is looking (suggested by Kanguste)
-* Added a feature to allow setup markers and then create multiple fixtures at once user finishes
+* Added an interactive fixture creation mode to allow setup markers and then create multiple fixtures at once user finishes
 * Added a feature to change/replace selected fixture fixture
 * Added a key modifier (alt) to duplicate a keyframe in graph and dope sheet views
+* Added display of mouse buttons to GUI cursor rendering mod option
 * Changed the default key bind to smooth camera to nothing, so people wouldn't freak out and end up deleting the mod, because it's "broken"
-* Changed the flight speed to be even smaller value (suggested by Kanguste)
-* Fixed modifiers not getting copied when "generate keyframe"
-* Fixed flight mode allowed to be enabled during playback
+* Changed the mouse wheel flight speed adjustment to support even smaller values (suggested by Kanguste)
+* Changed the highlight to be more apparent (suggested by EthoArt)
+* Fixed modifiers not getting copied and wrong X values when using "generate keyframe" feature
+* Fixed flight mode by disallowing enabling it during playback
 * Fixed performance of Show Path feature (reported by Joziah2)
 * Fixed issue with clicking on text fields of value/tick it will make the buttons disappear
 * Fixed block position gets reset in look modifier (reported by Chunk7)
 * Fixed ~~FOV~~ roll with outside and flight modes (reported by Kanguste)
 * Fixed and invert flight mode mouse wheel adjustment
 * Fixed duplicating dialog to not allow using the same name
+* Fixed flight mode or other interactive measures not modifying current fixture before first scrubbing
+* Fixed duplicating a camera profile using the same name causing duplication issues
 
 ## Aperture 1.3.2
 
