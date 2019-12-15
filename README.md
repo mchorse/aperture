@@ -30,7 +30,7 @@ This playlist contains a list of videos about Aperture's updates and tutorials.
 
 ## Install
 
-Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available minecraft version. Also install following mods: [McLib](https://minecraft.curseforge.com/projects/mchorses-mclib). Put it in minecraft's `mods` folder, and launch the game.
+Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available Minecraft version. Also install following mods: [McLib](https://minecraft.curseforge.com/projects/mchorses-mclib). Put it in minecraft's `mods` folder, and launch the game.
 
 After that, Aperture mod should be installed and will appear in Minecraft's mods menu. If Aperture didn't appear in the mods menu, then something went wrong. 
 
@@ -42,12 +42,12 @@ When reposting my mod on your own website or reviewing it, please consider follo
 * Make sure that information and description of my mod is legit. Misleading information, like Minecraft version support or non-existent features, is your responsibility.
 * By uploading a custom build of this mod, the build becomes your responsibility.
 * Provide the source link, please. [CurseForge](https://minecraft.curseforge.com/projects/aperture) page is preferable.
-* Provide a link to my [YouTube channel](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w), please. This will be really appreciated! 
+* Provide a link to my [YouTube channel](https://www.youtube.com/channel/UCSLuDXxxql4EVK_Ktd6PNbw), please. This will be really appreciated! 
 * You can use Aperture [banner](https://i.imgur.com/Wras78u.png) or [cover](https://i.imgur.com/rckGnn4.png) for your repost page. Don't apply the watermark, though, that's just rude.
 
 If you're interested in this project, you might as well follow me on any of social media accounts listed below:
 
-[![YouTube](http://i.imgur.com/yA4qam9.png)](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w) [![Discord](http://i.imgur.com/gI6JEpJ.png)](https://discord.gg/qfxrqUF) [![Twitter](http://i.imgur.com/6b8vHcX.png)](https://twitter.com/McHorsy) [![GitHub](http://i.imgur.com/DmTn1f1.png)](https://github.com/mchorse) 
+[![YouTube](http://i.imgur.com/yA4qam9.png)](https://www.youtube.com/channel/UCSLuDXxxql4EVK_Ktd6PNbw) [![Discord](http://i.imgur.com/gI6JEpJ.png)](https://discord.gg/qfxrqUF) [![Twitter](http://i.imgur.com/6b8vHcX.png)](https://twitter.com/McHorsy) [![GitHub](http://i.imgur.com/DmTn1f1.png)](https://github.com/mchorse) 
 
 Also, I would really appreciate if you will support me on Patreon!
 
