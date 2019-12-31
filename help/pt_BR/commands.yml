@@ -11,7 +11,7 @@ aperture.commands:
     aperture:
         help: 
             |
-                {r}{o}Aperture comando do servidor{r}. Este comando pode ser usado para fazer com que um determinado jogador (por um seletor de entidade) comece a reproduzir o perfil da câmera.
+                {r}{o}Comando de Servidor do Aperture{r}. Este comando pode ser usado para fazer com que um determinado jogador (por um seletor de entidade) comece a reproduzir o perfil da câmera.
                 
                 {l}{6}/{r}aperture {8}play{r} {7}<target|camera_profile> [camera_profile]{r}
                 
@@ -25,7 +25,7 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}start{r} {7}[tick]{r}
                 
-                {r}Inicia um perfil de câmera. Opcionalmente a partir do dado {7}[tick]{r}.
+                {r}Inicia um perfil de câmera. Opcionalmente a partir do devido {7}[tick]{r}.
         stop: 
             |
                 {l}{6}/{r}camera {8}stop{r}
@@ -36,27 +36,27 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}default{r}
                 
-                {r}Redefine o {7}campo de visão{r} da câmera e o{7}rolamento{r} para os valores padrão ({7}70.0{r} e {7}0.0{r} graus).
+                {r}Redefine o {7}campo de visão{r} da câmera e o{7}rolamento{r} para os valores padrão de ({7}70.0{r} e {7}0.0{r} graus).
         fov: 
             |
                 {l}{6}/{r}camera {8}fov{r} {7}[fov]{r}
                 
-                Definir ou obter a configuração do {l}campo de visão{r} ({8}fov{r}) da câmera do cliente.
+                Definir ou obter a configuração do {l}campo de visão{r} ({8}fov{r}) da câmera no cliente.
         roll: 
             |
                 {l}{6}/{r}camera {8}roll{r} {7}[roll]{r}
                 
-                {r}Set or get client's camera {7}[roll]{r} (rotation across {7}Z-axis{r}).
+                {r}Definir ou obter a câmera do cliente {7}[roll]{r} (rotação no {7}eixo-Z{r}).
         
         rotate:
             |
                 {l}{6}/{r}camera {8}rotate{r} {7}[yaw] [pitch]{r}
                 
-                {r}Defina o ângulo da câmera com base em valores absolutos ou relativos. Você pode definir o ângulo absoluto da câmera especificando números simples de ponto flutuante {6}/camera {8}rotate {7}90 90{r}. Ou você pode fornecer um valor relativo usando {7}~+{r} ou {7}~-{r} sinais {6}/camera {8}rotate {7}~0.5 ~-0.5{r}.
+                {r}Define o ângulo da câmera com base em valores absolutos ou relativos. Você pode definir o ângulo absoluto da câmera especificando números simples de ponto flutuante {6}/camera {8}rotate {7}90 90{r}. Ou você pode fornecer um valor relativo usando os sinais de {7}~+{r} ou {7}~-{r} {6}/camera {8}rotate {7}~0.5 ~-0.5{r}.
         
         step:
             |
                 {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
                 
-                {r}Defina a posição da câmera com base em valores absolutos ou relativos. Você pode definir a posição absoluta da câmera especificando números simples de ponto flutuante {6}/camera {8}step {7}0 4 0{r}. Ou você pode fornecer um valor relativo usando {7}~+{r} ou {7}~-{r} sinais {6}/camera {8}step {7}~0 ~0.1 ~0{r}. Funciona de forma semelhante ao comando {6}/tp{r}.
+                {r}Define a posição da câmera com base em valores absolutos ou relativos. Você pode definir a posição absoluta da câmera especificando números simples de ponto flutuante {6}/camera {8}step {7}0 4 0{r}. Ou você pode fornecer um valor relativo usando os sinais de {7}~+{r} ou {7}~-{r} {6}/camera {8}step {7}~0 ~0.1 ~0{r}. Funciona de forma semelhante ao comando {6}/tp{r}.
 © 2019 GitHub, Inc.
