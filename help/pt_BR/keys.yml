@@ -9,7 +9,7 @@ key.aperture:
 
     # Camera control
     control: 
-        title: Controle de Aperture
+        title: Controle do Aperture
         
         stepUp: Subir
         stepDown: Descer
