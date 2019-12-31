@@ -6,7 +6,7 @@ aperture.error:
     # Camera fixtures errors
     fixture:
         few_args: "{f}Você não passou argumentos suficientes para este comando!"
-        wrong_type: "{f}Dispositivo elétrico da câmera por tipo %s{f} não existe!"
+        wrong_type: "{f}Dispositivo elétrico da câmera do tipo %s{f} não existe!"
         no_entity: "{f}Você deve olhar para qualquer entidade para adicionar este acessório!"
         
         empty: "{f}O perfil desta câmera está vazio!"
