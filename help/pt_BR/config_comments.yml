@@ -3,16 +3,16 @@ aperture.config.comments:
     camera:
         camera_duration_step: Etapa padrão a ser usada ao adicionar ou reduzir a duração do equipamento da câmera (em ticks)
         camera_duration: Duração padrão do equipamento da câmera (em ticks)
-        camera_interpolate_target: Alterne o resultado dos equipamentos de câmera com base em alvo (siga e observe)
-        camera_interpolate_target_value: Valor de interpolação para interpolação de equipamento de câmera com base em alvo
+        camera_interpolate_target: Alterne o resultado dos acessórios de câmera com base em alvo (siga e observe)
+        camera_interpolate_target_value: Valor da interpolação para interpolação de acessórios de câmera com base em alvo
         camera_spectator: Alterne para o modo de espectador ao iniciar a reprodução da câmera
         camera_step_factor: Fator de etapa da câmera para teclas de etapas
         camera_rotate_factor: Fator de rotação da câmera para girar as teclas
         camera_minema: Ative a gravação do Minema na inicialização da câmera e desative na parada da câmera
         camera_path_default_interp: Método de interpolação padrão para fixação de caminho
-        camera_command_name: Permite religar o nome do comando da câmera (requer que a atualização do jogo entre em vigor)
+        camera_command_name: Permite religar o nome do comando da câmera (requer que o jogo seja reiniciado)
         camera_simulate_velocity: Simule a velocidade do player durante a reprodução da câmera (veja as pernas em perspectiva)
-        camera_debug_ticks: Escreva o tique atual da reprodução da câmera no log
+        camera_debug_ticks: Escreva o tick atual da reprodução da câmera no log
         camera_first_tick_zero: Quando o corredor da câmera iniciar, inicie a reprodução real quando o tick parcial for exatamente zero
         camera_profile_render: Renderizar perfil de câmera no mundo?
         camera_auto_save: Salve todos os perfis de câmera ao sair do mundo
@@ -22,7 +22,7 @@ aperture.config.comments:
         aspect_ratio: Relação de aspecto para o recurso de caixa de correio do editor de câmera
         
     outside:
-        camera_outside: Se a câmera deve ser reproduzida de fora (permitindo que o jogador atue como ator corporal)
+        camera_outside: Se a câmera deve ser reproduzida de fora (permitindo que o jogador atue como um ator)
         camera_outside_hide_player: Se o player deve ficar oculto durante a reprodução da câmera, se o modo externo estiver ativado
         camera_outside_sky: Se ativado, corrige o céu, mas desativa a seleção de blocos (devido a um bug)
         camera_outside_hide_guis: Impedir que as telas da GUI sejam renderizadas durante o modo externo
@@ -33,7 +33,7 @@ aperture.config.comments:
         camera_editor_overlay_rl: Caminho do local do recurso para a textura que será usada como sobreposição
 
     smooth:
-        camera_smooth_clamp: Clipe da afinação suave da câmera entre -90 e 90 graus?
+        camera_smooth_clamp: Prender da afinação suave da câmera entre -90 e 90 graus?
 
         roll_speed: Velocidade de aceleração do rolamento
         roll_friction: Atrito de aceleração do rolamento (com que rapidez diminui)
