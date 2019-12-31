@@ -1,0 +1,170 @@
+# GUI
+
+aperture.gui:
+    # General strings
+    done: Feito
+    next: Próximo
+    previous: Anterior
+    restore: Restaurar padrão
+    reset: Redefinir
+    add: Adicionar
+    edit: Editar
+    remove: Remover
+    detach: Separar
+    record: Gravar
+    pick: Escolher morph...
+    duplicate: Duplicar
+    search: "Procurar:"
+    cancel: Cancelar
+    break: Pausar
+    select: Selecionar
+    ok: Ok
+
+    config:
+        title: Opções de Câmera
+
+        outside: Modo externo (O)
+        minema: Minema
+        spectator: Espectador
+        show_path: Mostrar caminho
+        sync: Sincronizar (S)
+        flight: Modo de Voo (F)
+        display_info: Mostrar posição
+        minecrafttp_teleport: Usar /minecraft:tp
+        tp_teleport: Usar /tp
+        rule_of_thirds: Regra dos terços
+        letter_box: Caixa de correio
+        repeat: Repetir acessório (R)
+        overlay: Habilitar sobreposição
+        pick_overlay: Escolher sobreposição
+
+    tooltips:
+        jump_next_fixture: Ir para o próximo acessório (Shift + Seta Direita)
+        jump_next_frame: Ir para o próximo frame (Seta Direita)
+        plause: Reproduzir/Pausar (Barra Espaço)
+        jump_prev_frame: Ir para o frame anterior (Seta Esquerda)
+        jump_prev_fixture: Ir para o acessório anterior (Shift + Seta Esquerda)
+
+        move_up: Avançar o acessório
+        move_duration: Mover a duração para o cursor (M)
+        copy_position: Copiar a posição do jogador (B)
+        move_down: Mover o acessório para trás
+
+        save: Salvar perfil da câmera (Ctrl + S)
+        profiles: Mostrar perfis de câmera
+        config: Mostrar opções do editor de câmera
+        modifiers: Mostrar painel de modificadores (N)
+        goto: Ir para o quadro específico
+        cut: Corte o dispositivo em dois no cursor (C)
+        creation: Criação interativa do acessório (I)
+        add: Adicionar acessório
+        dupe: Duplicar acessório
+        replace: Substituir o acessório selecionado
+        remove: Remover o acessório selecionado
+
+    editor:
+        f1: Pressione F1 para mostrar a GUI novamente...
+        speed: Velocidade
+
+    fixtures:
+        idle: Parado
+        path: Caminho
+        circular: Circular
+        keyframe: Keyframe
+        null: "Nulo"
+
+    modifiers:
+        title: Modificadores
+        select: Selecionar um acessório de câmera...
+
+        shake: Tremer
+        math: Matemática
+        look: Olhar
+        follow: Seguir
+        translate: Transformar
+        angle: Ângulo
+        orbit: Orbitar
+        drag: Levar
+
+        panels:
+            copy_entity: Copiar entidade
+
+            shake: Tremer
+            shake_amount: Quantidade
+
+            relative: Relativo?
+            at_block: Olhe para o bloco?
+            forward: Esperar ansiosamente?
+            
+            factor: Fator
+
+    profiles:
+        title: Perfis
+        rename: Renomear
+        
+        rename_modal: Digite um novo nome para renomear o perfil atual da câmera.
+        add_modal: Digite um nome para um novo perfil de câmera.
+        dupe_modal: Digite um nome para uma cópia de um perfil de câmera.
+        remove_modal: Tem certeza de que deseja remover este perfil de câmera (não será possível restaurá-lo)?
+        
+        convert_tooltip: Converter o perfil
+        rename_tooltip: Renomear o perfil
+        add_tooltip: Adicionar um perfil
+        dupe_tooltip: Duplicar o perfil
+        remove_tooltip: Remover o perfil
+
+    panels:
+        name: Nome
+        duration: Duração
+
+        x: X
+        y: "Y"
+        z: Z
+
+        yaw: Rotação
+        pitch: Inclinação
+        roll: Rolamento
+        fov: FOV
+
+        offset: Deslocamento
+        circles: Círculos
+        distance: Distância
+
+        path_points: Pontos de caminho
+        position: Posição
+        angle: Ângulo
+        circle: Círculo
+        selector: Seletor
+        per_point: Duração por ponto
+        to_keyframe: Gerar keyframe
+        use_speed: Controle de velocidade
+
+        all: Todos
+        tick: Tick
+        value: Valor
+        
+        previous: Anterior
+
+        interps:
+            const: Constante
+            linear: Linear
+            quad: Quadratico
+            cubic: Cúbico
+            hermite: Hermite
+            exp: Exponencial
+            bezier: Bezier
+
+            quad_in: Quadratico In
+            quad_out: Quadratico Out
+            quad_inout: Quadratico In/out
+            cubic_in: Cúbico In
+            cubic_out: Cúbico Out
+            cubic_inout: Cúbico In/out
+            exp_in: Exponencial In
+            exp_out: Exponencial Out
+            exp_inout: Exponencial In/out
+
+        easing:
+            in: Ease in
+            out: Ease out
+            inout: Ease in/out
