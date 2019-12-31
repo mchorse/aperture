@@ -34,15 +34,15 @@ aperture.gui:
         tp_teleport: Usar /tp
         rule_of_thirds: Regra dos terços
         letter_box: Caixa de correio
-        repeat: Repetir fixação (R)
+        repeat: Repetir acessório (R)
         overlay: Habilitar sobreposição
         pick_overlay: Escolher sobreposição
 
     tooltips:
         jump_next_fixture: Ir para o próximo acessório (Shift + Seta Direita)
-        jump_next_frame: Ir para o próximo frame (Mouse Direito)
+        jump_next_frame: Ir para o próximo frame (Seta Direita)
         plause: Reproduzir/Pausar (Barra Espaço)
-        jump_prev_frame: Ir para o frame anterior (Mouse Esquerdo)
+        jump_prev_frame: Ir para o frame anterior (Seta Esquerda)
         jump_prev_fixture: Ir para o acessório anterior (Shift + Seta Esquerda)
 
         move_up: Avançar o acessório
@@ -67,7 +67,7 @@ aperture.gui:
         speed: Velocidade
 
     fixtures:
-        idle: Ocioso
+        idle: Parado
         path: Caminho
         circular: Circular
         keyframe: Keyframe
@@ -159,7 +159,7 @@ aperture.gui:
             quad_inout: Quadratico In/out
             cubic_in: Cúbico In
             cubic_out: Cúbico Out
-            cubic_inout: Cubico In/out
+            cubic_inout: Cúbico In/out
             exp_in: Exponencial In
             exp_out: Exponencial Out
             exp_inout: Exponencial In/out
