@@ -1,0 +1,24 @@
+aperture.info:
+    # Camera duration
+    camera:
+        duration:
+            fixture: "{f}O equipamento da câmera no índice %s{f} é executado por %s{f} ticks."
+            profile: "{f}O perfil da câmera é executado por %s{f} ticks e possui %s{f} acessórios para a câmera."
+        
+        # Camera roll and fov
+        fov: "{f}Seu campo de visão é %s{f} graus."
+        roll: "{f}Seu rolamento é %s{f} graus."
+    
+    # General command infos
+    commands:
+        load_chunks: "{f}Carregou todos os pedaços gerados na distância de renderização."
+    
+    # Camera profile
+    profile:
+        new: "{f}Criou um novo perfil de câmera com o nome do arquivo %s{f}."
+        loaded: "{f}O perfil da câmera pelo nome %s{f} já está carregado!"
+        start: "{f}O perfil atual da câmera foi iniciado."
+        stop: "{f}O perfil da câmera atualmente em execução foi parado."
+        closed: "{f}O perfil da câmera %s era de %s foi fechado."
+    
+    no_loaded_profiles: "{f}Não há perfis de câmera carregados."
