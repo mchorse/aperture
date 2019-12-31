@@ -1,0 +1,60 @@
+# Config strings
+aperture.config:
+    camera:
+        title: Câmera
+        tooltip: Opções gerais da câmera
+
+        camera_duration_step: Etapa de duração
+        camera_duration: Duração padrão do aparelho
+        camera_interpolate_target: Interpolar luminárias alvo
+        camera_interpolate_target_value: Valor alvo da interpolação
+        camera_spectator: Mudar para espectador
+        camera_step_factor: Fator de etapa da câmera
+        camera_rotate_factor: Fator de rotação da câmera
+        camera_minema: Minema
+        camera_path_default_interp: Interpolação de caminho padrão
+        camera_command_name: Nome do comando da câmera
+        camera_simulate_velocity: Simulação de velocidade
+        camera_first_tick_zero: Primeiro tick zero
+        camera_debug_ticks: Depuração de ticks
+        camera_profile_render: Renderizar perfil da câmera
+        camera_auto_save: Salvar perfis automaticamente
+
+        gui_render_mouse: Renderizar o cursor do mouse nas GUIs
+
+        minecrafttp_teleport: Use /minecraft:tp
+        tp_teleport: Use /tp
+        aspect_ratio: Proporção da tela
+
+    outside: 
+        title: Modo externo
+        tooltip: Opções de configuração relacionadas ao modo externo
+        
+        camera_outside: Modo externo
+        camera_outside_hide_player: Ocultar jogador
+        camera_outside_sky: Consertar céu
+        camera_outside_hide_guis: Esconder GUIs
+        camera_outside_hide_overlays: Ocultar sobreposições
+
+    overlay:
+        title: Sobreposição do editor de câmera
+        tooltip: Permite configurar uma imagem de sobreposição que seria usada no editor de câmera
+        
+        camera_editor_overlay: Ativar sobreposição
+        camera_editor_overlay_rl: Caminho do recurso para sobrepor
+
+    smooth:
+        title: Câmera suave
+        tooltip: Opções de câmera suave
+
+        camera_smooth_clamp: Limite de inclinação
+
+        roll_speed: Velocidade de rolagem
+        roll_friction: Atrito de rolagem
+
+        fov_speed: Velocidade do FOV
+        fov_friction: Atrito do FOV
+
+        smooth_enabled: Câmera suave ativada
+        mouse_x_friction: Atrito do mouse X
+        mouse_y_friction: Atrito do mouse Y
