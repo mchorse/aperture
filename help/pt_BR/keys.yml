@@ -11,22 +11,22 @@ key.aperture:
     control: 
         title: Controle de Aperture
         
-        stepUp: Para cima
-        stepDown: Para baixo
-        stepLeft: Para esquerda
-        stepRight: Para direita
-        stepFront: Para frente
-        stepBack: Para trás
+        stepUp: Subir
+        stepDown: Descer
+        stepLeft: Andar para esquerda
+        stepRight: Andar para direita
+        stepFront: Andar para frente
+        stepBack: Andar para trás
         
-        rotateUp: Rodar para cima
-        rotateDown: Rodar para baixo
-        rotateLeft: Rodar para esquerda
-        rotateRight: Rodar para direito
+        rotateUp: Girar para cima
+        rotateDown: Girar para baixo
+        rotateLeft: Girar para esquerda
+        rotateRight: Girar para direito
     
     # Roll controlling keys
     roll:
         add: Rolar no sentido horário
-        reduce: Rolar anti-horário
+        reduce: Rolar no sentido anti-horário
         reset: Redefinir rolamento
     
     # Roll controlling keys
@@ -42,4 +42,4 @@ key.aperture:
         toggle: Alternar renderização de perfil de câmera
         start: Iniciar perfil da câmera
         stop: Parar o perfil da câmera
-        point: Adicionar ponto do caminho
+        point: Adicionar ponto de caminho
