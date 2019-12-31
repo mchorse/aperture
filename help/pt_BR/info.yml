@@ -6,8 +6,8 @@ aperture.info:
             profile: "{f}O perfil da câmera é executado por %s{f} ticks e possui %s{f} acessórios para a câmera."
         
         # Camera roll and fov
-        fov: "{f}Seu campo de visão é %s{f} graus."
-        roll: "{f}Seu rolamento é %s{f} graus."
+        fov: "{f}Seu campo de visão é de %s{f} graus."
+        roll: "{f}Seu rolamento é de %s{f} graus."
     
     # General command infos
     commands:
