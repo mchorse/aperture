@@ -6,7 +6,7 @@ aperture.config:
 
         camera_duration_step: Etapa de duração
         camera_duration: Duração padrão do aparelho
-        camera_interpolate_target: Interpolar luminárias alvo
+        camera_interpolate_target: Alternar alvo dos acessórios
         camera_interpolate_target_value: Valor alvo da interpolação
         camera_spectator: Mudar para espectador
         camera_step_factor: Fator de etapa da câmera
@@ -22,8 +22,8 @@ aperture.config:
 
         gui_render_mouse: Renderizar o cursor do mouse nas GUIs
 
-        minecrafttp_teleport: Use /minecraft:tp
-        tp_teleport: Use /tp
+        minecrafttp_teleport: Usar /minecraft:tp
+        tp_teleport: Usar /tp
         aspect_ratio: Proporção da tela
 
     outside: 
