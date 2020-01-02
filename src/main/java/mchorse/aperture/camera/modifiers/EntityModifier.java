@@ -53,6 +53,11 @@ public abstract class EntityModifier extends AbstractModifier
             String selector = this.selector;
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
+            if (!this.selector.contains("@"))
+            {
+                selector = "@e[name=" + selector + "]";
+            }
+
             this.entities = EntitySelector.matchEntities(player, selector, Entity.class);
 
             if (this.entities.isEmpty())
