@@ -54,7 +54,6 @@ aperture.gui:
         profiles: 显示相机配置
         config: 显示相机编辑器选项
         modifiers: 打开调整器面板 (N)
-        goto: 前往指定的帧
         cut: 切割关键点（C）
         creation: 交互添加关键点（I）
         add: 添加关键点
