@@ -38,6 +38,8 @@ public class GuiModifiersManager extends GuiElement
     private String stringTitle = I18n.format("aperture.gui.modifiers.title");
     private String stringGlobal = I18n.format("aperture.gui.modifiers.global");
 
+    private AbstractModifier clipboard;
+
     /**
      * Fixture whose modifiers are getting managed 
      */
@@ -72,6 +74,11 @@ public class GuiModifiersManager extends GuiElement
     public GuiButtonElement<GuiTextureButton> add;
 
     /**
+     * Button to paste a modifier in the clipboard
+     */
+    public GuiButtonElement<GuiTextureButton> paste;
+
+    /**
      * Reference to the parent screen (the camera editor) 
      */
     public GuiCameraEditor editor;
@@ -88,6 +95,18 @@ public class GuiModifiersManager extends GuiElement
             this.addButtons.setVisible(!this.addButtons.isVisible());
         });
 
+        this.paste = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 144, 64, 144, 80, (b) ->
+        {
+            if (this.clipboard != null)
+            {
+                AbstractModifier modifier = this.clipboard.clone();
+
+                this.getModifiers().add(modifier);
+                this.setFixture(this.fixture);
+                this.editor.updateProfile();
+            }
+        });
+
         int i = 0;
 
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
@@ -101,7 +120,7 @@ public class GuiModifiersManager extends GuiElement
 
             GuiButtonElement<GuiFlatButton> button = new GuiButtonElement<GuiFlatButton>(mc, new GuiFlatButton(info.type, 0, 0, 0, 0, color, 0xff000000 + dark.getHex(), I18n.format(info.title)), (b) ->
             {
-                this.addCameraModifier(b.button.id, this.fixture == null ? this.editor.getProfile().getModifiers() : this.fixture.getModifiers());
+                this.addCameraModifier(b.button.id, this.getModifiers());
                 this.addButtons.setVisible(false);
             });
 
@@ -114,7 +133,18 @@ public class GuiModifiersManager extends GuiElement
         this.addButtons.setVisible(false);
 
         this.add.resizer().parent(this.area).set(0, 2, 16, 16).x(1, -18);
-        this.children.add(this.add, this.addButtons);
+        this.paste.resizer().relative(this.add.resizer()).set(-20, 0, 16, 16);
+        this.children.add(this.add, this.paste, this.addButtons);
+    }
+
+    public List<AbstractModifier> getModifiers()
+    {
+        return this.fixture == null ? this.editor.getProfile().getModifiers() : this.fixture.getModifiers();
+    }
+
+    public void setClipboard(AbstractModifier modifier)
+    {
+        this.clipboard = modifier.clone();
     }
 
     /**
@@ -198,7 +228,7 @@ public class GuiModifiersManager extends GuiElement
     public void removeModifier(GuiAbstractModifierPanel<? extends AbstractModifier> panel)
     {
         this.panels.elements.remove(panel);
-        this.fixture.getModifiers().remove(panel.modifier);
+        this.getModifiers().remove(panel.modifier);
 
         this.recalcPanels();
         this.scroll.clamp();
