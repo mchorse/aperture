@@ -3,6 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import net.minecraft.entity.Entity;
 
 /**
  * Follow modifier
@@ -16,25 +17,33 @@ public class FollowModifier extends EntityModifier
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
     {
-        if (this.entity == null || this.entity.isDead)
+        if (this.checkForDead())
         {
             this.tryFindingEntity();
         }
 
-        if (this.entity == null)
+        if (this.entities == null)
         {
             return;
         }
 
         fixture.applyFixture(0, 0, profile, this.position);
 
-        float x = (float) (this.entity.lastTickPosX + (this.entity.posX - this.entity.lastTickPosX) * partialTick);
-        float y = (float) (this.entity.lastTickPosY + (this.entity.posY - this.entity.lastTickPosY) * partialTick);
-        float z = (float) (this.entity.lastTickPosZ + (this.entity.posZ - this.entity.lastTickPosZ) * partialTick);
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        int size = this.entities.size();
 
-        x += pos.point.x - this.position.point.x;
-        y += pos.point.y - this.position.point.y;
-        z += pos.point.z - this.position.point.z;
+        for (Entity entity : this.entities)
+        {
+            x += entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTick;
+            y += entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTick;
+            z += entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTick;
+        }
+
+        x = x / size + pos.point.x - this.position.point.x;
+        y = y / size + pos.point.y - this.position.point.y;
+        z = z / size + pos.point.z - this.position.point.z;
 
         pos.point.set(x, y, z);
     }

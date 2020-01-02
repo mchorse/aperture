@@ -10,6 +10,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Abstract entity modifier
  * 
@@ -28,7 +31,7 @@ public abstract class EntityModifier extends AbstractModifier
     /**
      * Target entity 
      */
-    public Entity entity;
+    public List<Entity> entities;
 
     /**
      * Target (entity) selector
@@ -43,14 +46,50 @@ public abstract class EntityModifier extends AbstractModifier
      */
     public void tryFindingEntity()
     {
-        this.entity = null;
+        this.entities = null;
 
         if (this.selector != null && !this.selector.isEmpty())
         {
+            String selector = this.selector;
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-            this.entity = EntitySelector.matchOneEntity(player, this.selector, Entity.class);
+            this.entities = EntitySelector.matchEntities(player, selector, Entity.class);
+
+            if (this.entities.isEmpty())
+            {
+                this.entities = null;
+            }
         }
+    }
+
+    /**
+     * Check for dead entities
+     */
+    protected boolean checkForDead()
+    {
+        if (this.entities == null)
+        {
+            return true;
+        }
+
+        Iterator<Entity> it = this.entities.iterator();
+
+        while (it.hasNext())
+        {
+            Entity entity = it.next();
+
+            if (entity.isDead || entity == Minecraft.getMinecraft().thePlayer)
+            {
+                it.remove();
+            }
+        }
+
+        if (this.entities.isEmpty())
+        {
+            this.entities = null;
+        }
+
+        return this.entities == null;
     }
 
     /* Save/load methods */
