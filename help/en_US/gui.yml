@@ -54,7 +54,6 @@ aperture.gui:
         profiles: Show camera profiles
         config: Show camera editor options
         modifiers: Show modifiers panel (N)
-        goto: Go to specific frame
         cut: Cut fixture in two at cursor (C)
         creation: Interactive fixture creation (I)
         add: Add fixture
@@ -75,7 +74,7 @@ aperture.gui:
 
     modifiers:
         title: Modifiers
-        select: Select camera fixture...
+        global: Global modifiers
 
         shake: Shake
         math: Math

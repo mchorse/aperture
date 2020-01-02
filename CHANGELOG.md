@@ -4,7 +4,7 @@ Aperture's change log.
 
 ## Aperture 1.3.3
 
-This small patch adds more path fixture intepolations, cut fixture feature and fixes few annoying bugs.
+This small patch adds more path fixture intepolations, workflow enhancement features (cut, replace and interactively create fixtures) and fixes few annoying bugs.
 
 **Compatible** with McLib `1.0.4`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
 

@@ -54,7 +54,6 @@ aperture.gui:
         profiles: 顯示相機配置
         config: 顯示相機編輯器選項
         modifiers: 開啟調整器面板 (N)
-        goto: 前往指定的幀
         cut: 切割關鍵點（C）
         creation: 交互加入關鍵點（I）
         add: 加入關鍵點

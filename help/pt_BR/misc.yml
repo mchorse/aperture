@@ -1,0 +1,6 @@
+# Miscellaneous
+aperture.misc:
+    profile_info: "{f}%s \"%s\" (%st, %s acessórios)"
+    profile_info_current: "{6}Current %s \"%s\" (%st, %s acessórios)"
+    server: Servidor
+    client: Cliente

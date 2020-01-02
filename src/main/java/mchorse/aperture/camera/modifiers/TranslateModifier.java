@@ -19,8 +19,11 @@ public class TranslateModifier extends AbstractModifier
     @Expose
     public Point translate = new Point(0, 0, 0);
 
+    public TranslateModifier()
+    {}
+
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
         pos.point.x += this.translate.x;
         pos.point.y += this.translate.y;

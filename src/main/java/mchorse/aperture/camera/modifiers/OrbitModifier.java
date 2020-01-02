@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -44,30 +45,41 @@ public class OrbitModifier extends EntityModifier
     @Expose
     public boolean copy;
 
+    public OrbitModifier()
+    {}
+
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        if (this.entity == null || this.entity.isDead)
+        if (this.checkForDead())
         {
             this.tryFindingEntity();
         }
 
-        if (this.entity == null)
+        if (this.entities == null)
         {
             return;
         }
 
-        fixture.applyFixture(0, 0, profile, this.position);
+        if (fixture != null)
+        {
+            fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+        }
+        else
+        {
+            this.position.copy(pos);
+        }
 
         float yaw = 0;
         float pitch = 0;
         float distance = this.distance;
+        Entity entity = this.entities.get(0);
 
         /* Copy entity's yaw and pitch */
         if (this.copy)
         {
-            yaw = this.entity.prevRotationYaw + (this.entity.rotationYaw - this.entity.prevRotationYaw) * partialTick;
-            pitch = this.entity.prevRotationPitch + (this.entity.rotationPitch - this.entity.prevRotationPitch) * partialTick;
+            yaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick;
+            pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
 
             if (entity instanceof EntityLivingBase)
             {
@@ -94,9 +106,9 @@ public class OrbitModifier extends EntityModifier
         distance += pos.point.z - this.position.point.z;
 
         /* Calculate entity's position */
-        float x = (float) (this.entity.lastTickPosX + (this.entity.posX - this.entity.lastTickPosX) * partialTick);
-        float y = (float) (this.entity.lastTickPosY + (this.entity.posY - this.entity.lastTickPosY) * partialTick);
-        float z = (float) (this.entity.lastTickPosZ + (this.entity.posZ - this.entity.lastTickPosZ) * partialTick);
+        float x = (float) (entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTick);
+        float y = (float) (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTick);
+        float z = (float) (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTick);
 
         /* Calculate look vector */
         final float degToPi = (float) Math.PI / 180;

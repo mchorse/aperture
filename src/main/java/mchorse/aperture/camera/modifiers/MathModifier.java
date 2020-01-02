@@ -100,15 +100,15 @@ public class MathModifier extends ComponentModifier
     }
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
         if (this.expression != null)
         {
             this.ticks.set(ticks);
             this.offset.set(offset);
-            this.partial.set(partialTick);
-            this.fixtureDuration.set(fixture.getDuration());
-            this.progress.set(ticks + partialTick);
+            this.partial.set(previewPartialTick);
+            this.fixtureDuration.set(fixture == null ? profile.getDuration() : fixture.getDuration());
+            this.progress.set(ticks + previewPartialTick);
 
             this.x.set(pos.point.x);
             this.y.set(pos.point.y);

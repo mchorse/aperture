@@ -428,7 +428,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             GlStateManager.disableTexture2D();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            GL11.glLineWidth(2);
+            GL11.glLineWidth(Minecraft.getMinecraft().gameSettings.guiScale * 1.5F);
 
             VertexBuffer vb = Tessellator.getInstance().getBuffer();
 
@@ -439,7 +439,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             Tessellator.getInstance().draw();
 
             int i = 0;
-            GL11.glPointSize(12);
+            GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 6);
             GL11.glBegin(GL11.GL_POINTS);
 
             for (Keyframe frame : sheet.channel.getKeyframes())
@@ -461,7 +461,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             GL11.glEnd();
 
             i = 0;
-            GL11.glPointSize(8);
+            GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 4);
             GL11.glBegin(GL11.GL_POINTS);
 
             for (Keyframe frame : sheet.channel.getKeyframes())

@@ -1,0 +1,8 @@
+aperture.success:
+    profile:
+        clear: "{f}O perfil da câmera usado atualmente foi apagado."
+        save: "{f}O perfil atual da câmera foi salvo no arquivo %s{f}."
+        load: "{f}O perfil da câmera foi carregado do arquivo %s{f}."
+        
+        client_save: "{f}O perfil da câmera do cliente foi salvo no arquivo %s{f}."
+        client_load: "{f}O perfil da câmera do cliente foi carregado do arquivo %s{f}."
