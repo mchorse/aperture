@@ -31,7 +31,7 @@ public class ShakeModifier extends ComponentModifier
     }
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
         float x = (ticks + partialTick) / (this.shake == 0 ? 1 : this.shake);
 

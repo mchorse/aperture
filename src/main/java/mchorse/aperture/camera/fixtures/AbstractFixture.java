@@ -177,9 +177,17 @@ public abstract class AbstractFixture
     /* Abstract methods */
 
     /**
+     * Apply this fixture onto position with same preview partial tick
+     */
+    public void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos)
+    {
+        this.applyFixture(ticks, partialTick, partialTick, profile, pos);
+    }
+
+    /**
      * Apply this fixture onto position
      */
-    public abstract void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos);
+    public abstract void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos);
 
     /**
      * Apply this fixture onto position using a double between 0 and 1
@@ -200,13 +208,13 @@ public abstract class AbstractFixture
     /**
      * Apply camera modifiers
      */
-    public void applyModifiers(long ticks, long offset, float partialTick, CameraProfile profile, Position pos)
+    public void applyModifiers(long ticks, long offset, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
         for (AbstractModifier modifier : this.modifiers)
         {
             if (modifier.enabled)
             {
-                modifier.modify(ticks, offset, this, partialTick, profile, pos);
+                modifier.modify(ticks, offset, this, partialTick, previewPartialTick, profile, pos);
             }
         }
     }

@@ -221,7 +221,7 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTicks, CameraProfile profile, Position pos)
+    public void applyFixture(long ticks, float partialTicks, float previewPartialTick, CameraProfile profile, Position pos)
     {
         long duration = this.getDuration();
 
@@ -263,7 +263,7 @@ public class PathFixture extends AbstractFixture
             {
                 float diff = point - prevPoint;
 
-                x = ((ticks + partialTicks) - prevPoint) / (diff == 0 ? 1.0F : diff);
+                x = ((ticks + previewPartialTick) - prevPoint) / (diff == 0 ? 1.0F : diff);
             }
             else
             {
@@ -275,7 +275,7 @@ public class PathFixture extends AbstractFixture
         }
         else
         {
-            x = (ticks / (float) this.duration) + (1.0F / duration) * partialTicks;
+            x = (ticks / (float) this.duration) + (1.0F / duration) * previewPartialTick;
             x = MathHelper.clamp_float(x * length, 0, length);
             index = (int) Math.floor(x);
             x = x - index;
@@ -284,7 +284,7 @@ public class PathFixture extends AbstractFixture
         /* If use speed is enabled */
         if (this.useSpeed)
         {
-            float tick = ticks + partialTicks;
+            float tick = ticks + previewPartialTick;
 
             /* Just calculate enough for the speed for the difference */
             if (tick != this.lastTick || tick == 0)

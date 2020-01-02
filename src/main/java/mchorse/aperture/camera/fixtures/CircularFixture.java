@@ -45,7 +45,7 @@ public class CircularFixture extends AbstractFixture
     public float circles = 360;
 
     /**
-     * Pitch of the
+     * Pitch of the circular fixture
      */
     @Expose
     public float pitch = 0;
@@ -63,9 +63,9 @@ public class CircularFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTicks, CameraProfile profile, Position pos)
+    public void applyFixture(long ticks, float partialTicks, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        float progress = (ticks / (float) this.duration) + (1.0F / this.duration * partialTicks);
+        float progress = (ticks / (float) this.duration) + (1.0F / this.duration * previewPartialTick);
         float angle = (float) (Math.toRadians(this.offset) + progress * Math.toRadians(this.circles));
 
         double cos = this.distance * Math.cos(angle);

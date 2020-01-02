@@ -19,7 +19,7 @@ public class NullFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos)
+    public void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
         List<AbstractFixture> list = profile.getAll();
         int index = list.indexOf(this);
@@ -36,8 +36,8 @@ public class NullFixture extends AbstractFixture
             long target = this.previous ? fixture.getDuration() : 0;
             long offset = profile.calculateOffset(fixture);
 
-            fixture.applyFixture(target, 0, profile, pos);
-            fixture.applyModifiers(offset, target, 0, profile, pos);
+            fixture.applyFixture(target, 0, previewPartialTick, profile, pos);
+            fixture.applyModifiers(offset, target, 0, previewPartialTick, profile, pos);
         }
     }
 

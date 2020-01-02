@@ -336,12 +336,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     @Override
     public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub)
     {
-        if (!this.runner.isRunning() && (this.syncing || this.runner.outside.active))
-        {
-            this.lastPartialTick = 0.0F;
-            this.updatePlayer(value, 0.0F);
-        }
-        else
+        if (this.runner.isRunning())
         {
             this.runner.ticks = value;
         }
@@ -755,7 +750,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
         this.position.set(player);
-        this.profile.applyProfile(tick, ticks, this.position);
+        this.profile.applyProfile(tick, ticks, this.lastPartialTick, this.position);
 
         this.position.apply(this.getCamera());
         ClientProxy.control.setRollAndFOV(this.position.angle.roll, this.position.angle.fov);
@@ -1341,14 +1336,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             return;
         }
 
-        int x = 2;
+        int x = this.width - 18;
         int y = 22;
 
         this.mc.renderEngine.bindTexture(EDITOR_TEXTURE);
 
         if (this.syncing || this.flight.enabled)
         {
-            Gui.drawRect(0, y - 2, (this.syncing ? 20 : 0) + (this.flight.enabled ? 20 : 0), y + 18, 0x88000000);
+            Gui.drawRect(this.width - (this.syncing ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
         }
 
         GlStateManager.color(1, 1, 1, 1);
@@ -1356,7 +1351,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (this.syncing)
         {
             Gui.drawModalRectWithCustomSizedTexture(x, y, 64, 32, 16, 16, 256, 256);
-            x += 20;
+            x -= 20;
         }
 
         if (this.flight.enabled)

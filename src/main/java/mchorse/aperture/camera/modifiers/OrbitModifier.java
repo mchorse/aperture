@@ -46,7 +46,7 @@ public class OrbitModifier extends EntityModifier
     public boolean copy;
 
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
         if (this.checkForDead())
         {
@@ -58,7 +58,7 @@ public class OrbitModifier extends EntityModifier
             return;
         }
 
-        fixture.applyFixture(0, 0, profile, this.position);
+        fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
 
         float yaw = 0;
         float pitch = 0;
