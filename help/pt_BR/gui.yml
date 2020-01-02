@@ -54,7 +54,6 @@ aperture.gui:
         profiles: Mostrar perfis de câmera
         config: Mostrar opções do editor de câmera
         modifiers: Mostrar painel de modificadores (N)
-        goto: Ir para o quadro específico
         cut: Corte o dispositivo em dois no cursor (C)
         creation: Criação interativa do acessório (I)
         add: Adicionar acessório
