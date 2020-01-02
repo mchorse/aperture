@@ -31,6 +31,7 @@ aperture.config.comments:
     overlay:
         camera_editor_overlay: Enables camera editor overlay
         camera_editor_overlay_rl: Resource location path to the texture which will be used as overlay
+        camera_editor_f1_tooltip: Hide the tooltip in the bottom left corner which explains how to show back the GUI
 
     smooth:
         camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range? WUB WUB WUB

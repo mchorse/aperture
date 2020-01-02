@@ -28,4 +28,3 @@ aperture.error:
         client_cant_load: "{f}Não é possível carregar o perfil da câmera do cliente pelo nome do arquivo %s{f}."
         
         wrong_filename: "{f}O perfil da câmera não pode ser salvo, porque o nome do arquivo \"{7}%s{f}\" contém caracteres ilegais. Apenas letras, dígitos, sublinhados, traços, pontos e espaços são permitidos!"
-© 2019 GitHub, Inc.

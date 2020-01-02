@@ -1204,7 +1204,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (!this.elements.isVisible() || (isRunning && Aperture.proxy.config.camera_minema))
         {
             /* Little tip for the users who don't know what they did */
-            if (!isRunning)
+            if (!isRunning && Aperture.proxy.config.camera_editor_f1_tooltip)
             {
                 this.fontRendererObj.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
             }
