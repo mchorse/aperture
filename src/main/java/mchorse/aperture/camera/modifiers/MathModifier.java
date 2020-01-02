@@ -106,9 +106,9 @@ public class MathModifier extends ComponentModifier
         {
             this.ticks.set(ticks);
             this.offset.set(offset);
-            this.partial.set(partialTick);
+            this.partial.set(previewPartialTick);
             this.fixtureDuration.set(fixture.getDuration());
-            this.progress.set(ticks + partialTick);
+            this.progress.set(ticks + previewPartialTick);
 
             this.x.set(pos.point.x);
             this.y.set(pos.point.y);
