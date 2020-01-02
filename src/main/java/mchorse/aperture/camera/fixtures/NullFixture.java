@@ -28,7 +28,7 @@ public class NullFixture extends AbstractFixture
         {
             AbstractFixture fixture = profile.get(index + (this.previous ? -1 : 1));
 
-            if (fixture == null)
+            if (fixture == null || fixture instanceof NullFixture)
             {
                 return;
             }
