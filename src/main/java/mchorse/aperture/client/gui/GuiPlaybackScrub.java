@@ -458,14 +458,18 @@ public class GuiPlaybackScrub extends GuiElement
                 {
                     int lw = this.font.getStringWidth(name);
                     int textColor = selected ? 16777120 : 0xffffff;
+                    boolean shortened = false;
 
-                    if (lw + 4 < rightMargin - leftMargin)
+                    while (lw + 10 >= rightMargin - leftMargin && !name.isEmpty())
                     {
-                        this.font.drawStringWithShadow(name, leftMargin + 4, y + 6, textColor);
+                        name = name.substring(0, name.length() - 1);
+                        lw = this.font.getStringWidth(name);
+                        shortened = true;
                     }
-                    else
+
+                    if (!name.isEmpty())
                     {
-                        this.font.drawStringWithShadow("...", leftMargin + 4, y + 6, textColor);
+                        this.font.drawStringWithShadow(shortened ? name + "..." : name, leftMargin + 4, y + 6, textColor);
                     }
                 }
 
