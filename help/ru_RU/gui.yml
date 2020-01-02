@@ -36,7 +36,7 @@ aperture.gui:
         letter_box: Каше
         repeat: Повторить клип (R)
         overlay: Добавить оверлей
-        pick_overlay: Убрать оверлей
+        pick_overlay: Выбрать оверлей
 
     tooltips:
         jump_next_fixture: Перейти к следующему клипу (Shift + Right)
@@ -158,7 +158,7 @@ aperture.gui:
             quad_inout: Квадратическое Торможение
             cubic_in: Кубическое Ускорение
             cubic_out: Кубическое Замедление
-            cubic_inout: Кубичесое Торможение
+            cubic_inout: Кубическое Торможение
             exp_in: Экспоненциальное Ускорение
             exp_out: Экспоненциальное Замедление
             exp_inout: Экспоненциальное Торможение
