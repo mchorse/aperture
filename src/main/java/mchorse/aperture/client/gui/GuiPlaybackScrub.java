@@ -391,6 +391,18 @@ public class GuiPlaybackScrub extends GuiElement
                 int leftMargin = this.calcMouseFromValue(pos) - 1;
                 int rightMargin = this.calcMouseFromValue(pos + (int) fixture.getDuration()) - 1;
 
+                if (rightMargin < this.area.x)
+                {
+                    pos += fixture.getDuration();
+                    i++;
+
+                    continue;
+                }
+                else if (leftMargin > this.area.getX(1))
+                {
+                    break;
+                }
+
                 /* Draw fixture's background and the hinge */
                 Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
                 Gui.drawRect(rightMargin, y + 1, rightMargin + 1, y + h - 1, 0xff000000 + color);
@@ -440,7 +452,7 @@ public class GuiPlaybackScrub extends GuiElement
                     }
                 }
 
-                if (this.area.isInside(mouseX, mouseY) && !this.resize && !drawnMarker)
+                if (this.area.isInside(mouseX, mouseY) && !this.resize && !drawnMarker && i != 0)
                 {
                     boolean left = Math.abs(leftMargin - mouseX) < 5;
                     boolean right = Math.abs(rightMargin - mouseX) < 5;
