@@ -61,7 +61,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             if (b.button.isChecked())
             {
                 ClientProxy.runner.attachOutside();
-                this.editor.updatePlayerCurrently(0.0F);
+                this.editor.updatePlayerCurrently();
             }
             else
             {

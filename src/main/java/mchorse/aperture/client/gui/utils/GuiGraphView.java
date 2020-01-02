@@ -527,7 +527,7 @@ public class GuiGraphView extends GuiKeyframeElement
         }
 
         /* Draw graph of the keyframe channel */
-        GL11.glLineWidth(3);
+        GL11.glLineWidth(Minecraft.getMinecraft().gameSettings.guiScale * 1.5F);
         GlStateManager.disableTexture2D();
 
         BufferBuilder vb = Tessellator.getInstance().getBuffer();
@@ -596,7 +596,7 @@ public class GuiGraphView extends GuiKeyframeElement
         Tessellator.getInstance().draw();
 
         /* Draw points */
-        GL11.glPointSize(10);
+        GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 5);
 
         for (Keyframe frame : this.channel.getKeyframes())
         {
@@ -608,7 +608,7 @@ public class GuiGraphView extends GuiKeyframeElement
 
         int i = 0;
         prev = null;
-        GL11.glPointSize(6);
+        GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 3);
 
         for (Keyframe frame : this.channel.getKeyframes())
         {

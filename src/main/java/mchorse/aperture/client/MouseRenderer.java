@@ -1,6 +1,7 @@
 package mchorse.aperture.client;
 
 import mchorse.aperture.Aperture;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -22,7 +23,7 @@ public class MouseRenderer
     @SubscribeEvent
     public void onDrawEvent(DrawScreenEvent.Post event)
     {
-        if (!Aperture.proxy.config.gui_render_mouse)
+        if (!shouldRenderMouse())
         {
             return;
         }
@@ -78,5 +79,20 @@ public class MouseRenderer
 
         GlStateManager.disableAlpha();
         GlStateManager.popMatrix();
+    }
+
+    private static boolean shouldRenderMouse()
+    {
+        if (Aperture.proxy.config.gui_render_mouse)
+        {
+            return false;
+        }
+
+        if (!Aperture.proxy.config.camera_editor_f1_tooltip && Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor && !((GuiCameraEditor) Minecraft.getMinecraft().currentScreen).elements.isVisible())
+        {
+            return false;
+        }
+
+        return true;
     }
 }

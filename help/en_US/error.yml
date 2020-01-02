@@ -27,4 +27,4 @@ aperture.error:
         client_cant_save: "{f}Can't save client camera profile by file name %s{f}."
         client_cant_load: "{f}Can't load client camera profile by file name %s{f}."
         
-        wrong_filename: "{f}Camera profile can't be saved, because filename \"{7}%s{f}\" contains illegal characters. Only letters, digits, underscores, dashes and spaces are allowed!"
+        wrong_filename: "{f}Camera profile can't be saved, because filename \"{7}%s{f}\" contains illegal characters. Only letters, digits, underscores, dashes, periods and spaces are allowed!"

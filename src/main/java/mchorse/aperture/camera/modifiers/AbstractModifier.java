@@ -23,14 +23,13 @@ public abstract class AbstractModifier
     public boolean enabled = true;
 
     /**
-     * Modify (apply, filter, process, however you name it) modifier on 
-     * given position
-     * 
+     * Modify (apply, filter, process, however you name it) modifier on given position
+     *
      * @param ticks - Amount of ticks from start
      * @param offset - Amount of ticks from current camera fixture
      * @param fixture - Currently running camera fixture
      */
-    public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos);
+    public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos);
 
     @Override
     public abstract AbstractModifier clone();

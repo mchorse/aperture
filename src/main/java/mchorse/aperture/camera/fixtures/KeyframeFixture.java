@@ -91,9 +91,9 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTick, CameraProfile profile, Position pos)
+    public void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        float t = ticks + partialTick;
+        float t = ticks + previewPartialTick;
 
         if (!this.x.isEmpty()) pos.point.x = this.x.interpolate(t);
         if (!this.y.isEmpty()) pos.point.y = this.y.interpolate(t);

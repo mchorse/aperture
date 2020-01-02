@@ -42,6 +42,7 @@ aperture.config:
         
         camera_editor_overlay: Enable overlay
         camera_editor_overlay_rl: Resource path to overlay
+        camera_editor_f1_tooltip: F1 hide tooltip
 
     smooth:
         title: Smooth camera

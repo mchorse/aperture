@@ -1,0 +1,45 @@
+# Keys localization
+key.aperture:
+    # Categories
+    misc: Aperture
+    camera: Aperture Rolamento & FOV
+    
+    camera_editor: Editor de Câmera
+    smooth_camera: Câmera suave
+
+    # Camera control
+    control: 
+        title: Controle do Aperture
+        
+        stepUp: Subir
+        stepDown: Descer
+        stepLeft: Andar para esquerda
+        stepRight: Andar para direita
+        stepFront: Andar para frente
+        stepBack: Andar para trás
+        
+        rotateUp: Girar para cima
+        rotateDown: Girar para baixo
+        rotateLeft: Girar para esquerda
+        rotateRight: Girar para direito
+    
+    # Roll controlling keys
+    roll:
+        add: Rolar no sentido horário
+        reduce: Rolar no sentido anti-horário
+        reset: Redefinir rolamento
+    
+    # Roll controlling keys
+    fov:
+        add: Aumentar FOV
+        reduce: Reduzir FOV
+        reset: Redefinir FOV
+
+    # Profile management keys
+    profile:
+        title: Aperture Câmeras
+
+        toggle: Alternar renderização de perfil de câmera
+        start: Iniciar perfil da câmera
+        stop: Parar o perfil da câmera
+        point: Adicionar ponto de caminho

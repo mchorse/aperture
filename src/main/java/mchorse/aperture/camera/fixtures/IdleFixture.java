@@ -30,7 +30,7 @@ public class IdleFixture extends AbstractFixture
     }
 
     @Override
-    public void applyFixture(long ticks, float partialTicks, CameraProfile profile, Position pos)
+    public void applyFixture(long ticks, float partialTicks, float previewPartialTick, CameraProfile profile, Position pos)
     {
         pos.copy(this.position);
     }

@@ -46,7 +46,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         this.duration = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.duration"), (value) ->
         {
             this.updateDuration(value.longValue());
-            this.editor.updatePlayerCurrently(0.0F);
+            this.editor.updatePlayerCurrently();
             this.editor.updateProfile();
         });
         this.duration.trackpad.amplitude = 1.0F;

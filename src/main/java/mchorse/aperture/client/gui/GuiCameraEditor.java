@@ -113,6 +113,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private float lastFov = 70.0F;
     private float lastRoll = 0;
+    private float lastPartialTick = 0;
     private GameType lastGameMode = GameType.NOT_SET;
     public ResourceLocation overlayLocation;
 
@@ -203,10 +204,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiButtonElement<GuiTextureButton> replace;
     public GuiButtonElement<GuiTextureButton> remove;
 
-    public GuiButtonElement<GuiTextureButton> goTo;
     public GuiButtonElement<GuiTextureButton> cut;
     public GuiButtonElement<GuiTextureButton> creation;
-    public GuiTrackpadElement frame;
 
     /* Widgets */
     public GuiCameraConfig config;
@@ -253,7 +252,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             if (!this.playing)
             {
                 this.runner.attachOutside();
-                this.updatePlayerCurrently(0.0F);
+                this.updatePlayerCurrently();
             }
 
             ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.scrub.value));
@@ -273,17 +272,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.creation = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 224, 32, 224, 48, (b) -> this.toggleCreation()).tooltip(I18n.format("aperture.gui.tooltips.creation"), TooltipDirection.BOTTOM);
         this.cut = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 32, 192, 48, (b) -> this.cutFixture()).tooltip(I18n.format("aperture.gui.tooltips.cut"), TooltipDirection.BOTTOM);
-        this.goTo = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 32, 144, 48, (b) -> this.frame.toggleVisible()).tooltip(I18n.format("aperture.gui.tooltips.goto"), TooltipDirection.BOTTOM);
         this.moveForward = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 0, 144, 16, (b) -> this.moveTo(1)).tooltip(I18n.format("aperture.gui.tooltips.move_up"), TooltipDirection.BOTTOM);
         this.moveDuration = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 0, 192, 16, (b) -> this.shiftDurationToCursor()).tooltip(I18n.format("aperture.gui.tooltips.move_duration"), TooltipDirection.BOTTOM);
         this.copyPosition = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 176, 0, 176, 16, (b) -> this.editFixture()).tooltip(I18n.format("aperture.gui.tooltips.copy_position"), TooltipDirection.BOTTOM);
         this.moveBackward = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 160, 0, 160, 16, (b) -> this.moveTo(-1)).tooltip(I18n.format("aperture.gui.tooltips.move_down"), TooltipDirection.BOTTOM);
-
-        this.frame = new GuiTrackpadElement(mc, "Frame", (value) -> this.scrub.setValueFromScrub(value.intValue()));
-
-        this.frame.trackpad.title = "Frame";
-        this.frame.trackpad.amplitude = 1.0F;
-        this.frame.trackpad.integer = true;
 
         /* Button placement */
         this.toNextFixture.resizer().parent(this.area).set(0, 2, 16, 16).x(0.5F, 32);
@@ -297,20 +289,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.openModifiers.resizer().relative(this.openConfig.resizer()).set(-20, 0, 16, 16);
         this.save.resizer().relative(this.openModifiers.resizer()).set(-20, 0, 16, 16);
 
-        this.add.resizer().relative(this.save.resizer()).set(-90, 0, 16, 16);
+        this.add.resizer().relative(this.save.resizer()).set(-100, 0, 16, 16);
         this.dupe.resizer().relative(this.add.resizer()).set(20, 0, 16, 16);
         this.replace.resizer().relative(this.dupe.resizer()).set(20, 0, 16, 16);
         this.remove.resizer().relative(this.replace.resizer()).set(20, 0, 16, 16);
 
         this.creation.resizer().relative(this.cut.resizer()).set(20, 0, 16, 16);
-        this.cut.resizer().relative(this.goTo.resizer()).set(20, 0, 16, 16);
-        this.goTo.resizer().parent(this.area).set(82, 2, 16, 16);
-        this.moveForward.resizer().relative(this.goTo.resizer()).set(-20, 0, 16, 16);
+        this.cut.resizer().parent(this.area).set(82, 0, 16, 16);
+        this.moveForward.resizer().relative(this.cut.resizer()).set(-20, 0, 16, 16);
         this.moveDuration.resizer().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
         this.copyPosition.resizer().relative(this.moveDuration.resizer()).set(-20, 0, 16, 16);
         this.moveBackward.resizer().relative(this.copyPosition.resizer()).set(-20, 0, 16, 16);
-
-        this.frame.resizer().relative(this.goTo.resizer()).set(-2, 18, 80, 20);
 
         /* Setup areas of widgets */
         this.scrub.resizer().parent(this.area).set(10, 0, 0, 20).y(1, -20).w(1, -20);
@@ -323,16 +312,15 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         /* Adding everything */
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
-        this.hidden.add(this.creation, this.cut, this.goTo, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
+        this.hidden.add(this.creation, this.cut, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
         this.hidden.add(this.add, this.dupe, this.replace, this.remove, this.save, this.openConfig, this.openModifiers);
-        this.hidden.add(this.scrub, this.panel, this.frame, this.popup, this.config, this.modifiers);
+        this.hidden.add(this.scrub, this.panel, this.popup, this.config, this.modifiers);
 
         this.cameraProfileWasChanged(this.profile);
         this.updatePlauseButton();
         this.updateValues();
 
         this.hidePopups(this.profiles);
-        this.frame.setVisible(false);
 
         this.elements.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
 
@@ -348,16 +336,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     @Override
     public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub)
     {
-        if (!this.frame.trackpad.text.isFocused())
-        {
-            this.frame.setValue(value);
-        }
-
-        if (!this.runner.isRunning() && (this.syncing || this.runner.outside.active))
-        {
-            this.updatePlayer(value, 0.0F);
-        }
-        else
+        if (this.runner.isRunning())
         {
             this.runner.ticks = value;
         }
@@ -742,14 +721,19 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
     }
 
+    public void updatePlayerCurrently()
+    {
+        this.updatePlayerCurrently(this.lastPartialTick);
+    }
+
     /**
      * Update player to current value in the scrub
      */
-    public void updatePlayerCurrently(float ticks)
+    public void updatePlayerCurrently(float partialTicks)
     {
         if ((this.syncing || this.runner.outside.active) && !this.runner.isRunning())
         {
-            this.updatePlayer(this.scrub.value, ticks);
+            this.updatePlayer(this.scrub.value, partialTicks);
         }
     }
 
@@ -766,7 +750,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         EntityPlayer player = Minecraft.getMinecraft().player;
 
         this.position.set(player);
-        this.profile.applyProfile(tick, ticks, this.position);
+        this.profile.applyProfile(tick, ticks, this.lastPartialTick, this.position);
 
         this.position.apply(this.getCamera());
         ClientProxy.control.setRollAndFOV(this.position.angle.roll, this.position.angle.fov);
@@ -777,21 +761,15 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updateValues()
     {
-        this.frame.trackpad.min = 0;
-
         if (this.profile != null)
         {
             this.scrub.max = Math.max((int) this.profile.getDuration(), this.maxScrub);
             this.scrub.setValue(this.scrub.value);
-            this.frame.trackpad.max = this.profile.getDuration();
-            this.frame.setValue(this.scrub.value);
         }
         else
         {
             this.scrub.max = this.maxScrub;
             this.scrub.setValue(0);
-            this.frame.trackpad.max = 0;
-            this.frame.setValue(0);
         }
     }
 
@@ -1063,7 +1041,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
         else if (keyCode == Keyboard.KEY_N)
         {
-            this.modifiers.toggleVisible();
+            this.openModifiers.mouseClicked(this.openModifiers.area.x, this.openModifiers.area.y, 0);
         }
         else if (keyCode == Keyboard.KEY_R)
         {
@@ -1136,6 +1114,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         boolean isRunning = this.runner.isRunning();
+
+        if (isRunning)
+        {
+            this.lastPartialTick = partialTicks;
+        }
 
         if (this.repeat && isRunning && this.panel.delegate != null)
         {
@@ -1222,7 +1205,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (!this.elements.isVisible() || (isRunning && Aperture.proxy.config.camera_minema))
         {
             /* Little tip for the users who don't know what they did */
-            if (!isRunning)
+            if (!isRunning && Aperture.proxy.config.camera_editor_f1_tooltip)
             {
                 this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
             }
@@ -1263,11 +1246,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 }
             }
 
-            if (this.frame.isVisible())
-            {
-                Gui.drawRect(this.goTo.area.x - 2, 0, this.goTo.area.x + 18, 20, 0xaa000000);
-            }
-
             if (this.creating)
             {
                 Gui.drawRect(this.creation.area.x - 2, 0, this.creation.area.x + 18, 20, 0xaa000000);
@@ -1279,7 +1257,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             {
                 this.scrub.value = (int) this.runner.ticks;
                 this.scrub.value = MathHelper.clamp(this.scrub.value, this.scrub.min, this.scrub.max);
-                this.frame.setValue(this.scrub.value);
             }
 
             if (!running && this.playing)
@@ -1295,7 +1272,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             /* Sync the player on current tick */
             if ((this.runner.outside.active || (this.syncing && this.haveScrubbed)) && !this.flight.enabled)
             {
-                this.updatePlayerCurrently(0.0F);
+                this.updatePlayerCurrently(partialTicks);
             }
 
             this.drawIcons();

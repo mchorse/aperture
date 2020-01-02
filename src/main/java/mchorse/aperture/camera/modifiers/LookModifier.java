@@ -7,6 +7,7 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -29,26 +30,36 @@ public class LookModifier extends EntityModifier
     @Expose
     public Point block = new Point(0, 0, 0);
 
+    public LookModifier()
+    {}
+
     @Override
-    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, CameraProfile profile, Position pos)
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        if (this.entity == null || this.entity.isDead)
+        if (this.checkForDead())
         {
             this.tryFindingEntity();
         }
 
-        if (this.entity == null && !(this.atBlock || this.forward))
+        if (this.entities == null && !(this.atBlock || this.forward))
         {
             return;
         }
 
-        if (this.forward)
+        if (fixture != null)
         {
-            fixture.applyFixture(offset - 1, partialTick, profile, this.position);
+            if (this.forward)
+            {
+                fixture.applyFixture(offset - 1, partialTick, previewPartialTick, profile, this.position);
+            }
+            else
+            {
+                fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+            }
         }
         else
         {
-            fixture.applyFixture(0, 0, profile, this.position);
+            this.position.copy(pos);
         }
 
         double x = 0;
@@ -63,9 +74,21 @@ public class LookModifier extends EntityModifier
         }
         else if (!this.forward)
         {
-            x = this.entity.lastTickPosX + (this.entity.posX - this.entity.lastTickPosX) * partialTick;
-            y = this.entity.lastTickPosY + (this.entity.posY - this.entity.lastTickPosY) * partialTick;
-            z = this.entity.lastTickPosZ + (this.entity.posZ - this.entity.lastTickPosZ) * partialTick;
+            double sx = 0;
+            double sy = 0;
+            double sz = 0;
+            int size = this.entities.size();
+
+            for (Entity entity : this.entities)
+            {
+                sx += entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTick;
+                sy += entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTick;
+                sz += entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTick;
+            }
+
+            x = sx / size;
+            y = sy / size;
+            z = sz / size;
         }
 
         double dX = x - pos.point.x;

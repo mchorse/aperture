@@ -144,6 +144,8 @@ task buildLangFiles {
          * Compile YML file's contents to ini string
          */
         def compile = {File file ->
+            println "- Converting ${file.getName()} YML file..."
+
             def output = "\n\n# " + file.getName() + "\n";
             def yaml = new org.yaml.snakeyaml.Yaml()
             def map = yaml.load(file.text)
@@ -194,6 +196,7 @@ task buildLangFiles {
             {
                 if (lang_dir.isDirectory())
                 {
+                    println "Converting ${lang_dir.getName()}"
                     convert(lang_dir)
                     println "Converted ${lang_dir.getName()} to language file"
                 }
