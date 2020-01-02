@@ -19,6 +19,9 @@ public class AngleModifier extends AbstractModifier
     @Expose
     public Angle angle = new Angle(0, 0, 0, 0);
 
+    public AngleModifier()
+    {}
+
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {

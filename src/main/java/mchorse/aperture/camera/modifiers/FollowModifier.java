@@ -14,6 +14,9 @@ import net.minecraft.entity.Entity;
  */
 public class FollowModifier extends EntityModifier
 {
+    public FollowModifier()
+    {}
+
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
@@ -27,7 +30,14 @@ public class FollowModifier extends EntityModifier
             return;
         }
 
-        fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+        if (fixture != null)
+        {
+            fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+        }
+        else
+        {
+            this.position.copy(pos);
+        }
 
         double x = 0;
         double y = 0;

@@ -30,6 +30,9 @@ public class LookModifier extends EntityModifier
     @Expose
     public Point block = new Point(0, 0, 0);
 
+    public LookModifier()
+    {}
+
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
@@ -43,13 +46,20 @@ public class LookModifier extends EntityModifier
             return;
         }
 
-        if (this.forward)
+        if (fixture != null)
         {
-            fixture.applyFixture(offset - 1, partialTick, previewPartialTick, profile, this.position);
+            if (this.forward)
+            {
+                fixture.applyFixture(offset - 1, partialTick, previewPartialTick, profile, this.position);
+            }
+            else
+            {
+                fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+            }
         }
         else
         {
-            fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+            this.position.copy(pos);
         }
 
         double x = 0;

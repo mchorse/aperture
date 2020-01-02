@@ -28,6 +28,9 @@ public class DragModifier extends ComponentModifier
     @Expose
     public float factor = 0.5F;
 
+    public DragModifier()
+    {}
+
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {

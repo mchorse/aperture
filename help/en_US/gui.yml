@@ -74,7 +74,7 @@ aperture.gui:
 
     modifiers:
         title: Modifiers
-        select: Select camera fixture...
+        global: Global modifiers
 
         shake: Shake
         math: Math

@@ -11,7 +11,9 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.events.CameraProfileChangedEvent;
+import mchorse.mclib.math.functions.Abs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -36,6 +38,12 @@ public class CameraProfile
     protected List<AbstractFixture> fixtures = new ArrayList<AbstractFixture>();
 
     /**
+     * List of profile's global camera fixtures
+     */
+    @Expose
+    protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
+
+    /**
      * Where the camera profile is stored. Needs only on the client 
      */
     protected AbstractDestination destination;
@@ -48,6 +56,16 @@ public class CameraProfile
     public CameraProfile(AbstractDestination destination)
     {
         this.destination = destination;
+    }
+
+    public List<AbstractModifier> getModifiers()
+    {
+        if (this.modifiers == null)
+        {
+            this.modifiers = new ArrayList<AbstractModifier>();
+        }
+
+        return this.modifiers;
     }
 
     public AbstractDestination getDestination()
@@ -194,6 +212,11 @@ public class CameraProfile
      */
     public List<AbstractFixture> getAll()
     {
+        if (this.fixtures == null)
+        {
+            this.fixtures = new ArrayList<AbstractFixture>();
+        }
+
         return this.fixtures;
     }
 
@@ -269,7 +292,8 @@ public class CameraProfile
      */
     public void reset()
     {
-        this.fixtures.clear();
+        this.getAll().clear();
+        this.getModifiers().clear();
         this.dirty();
     }
 
@@ -323,6 +347,21 @@ public class CameraProfile
         if (modifiers)
         {
             fixture.applyModifiers(originalProgress, progress, partialTick, previewPartialTick, this, position);
+            this.applyModifiers(originalProgress, originalProgress, partialTick, previewPartialTick, this, position);
+        }
+    }
+
+    /**
+     * Apply global modifiers
+     */
+    public void applyModifiers(long ticks, long offset, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
+    {
+        for (AbstractModifier modifier : this.getModifiers())
+        {
+            if (modifier.enabled)
+            {
+                modifier.modify(ticks, offset, null, partialTick, previewPartialTick, profile, pos);
+            }
         }
     }
 
@@ -340,6 +379,16 @@ public class CameraProfile
                 this.fixtures.add(fixture);
             }
         }
+
+        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        {
+            AbstractModifier modifier = ModifierRegistry.fromByteBuf(buffer);
+
+            if (modifier != null)
+            {
+                this.getModifiers().add(modifier);
+            }
+        }
     }
 
     /**
@@ -352,6 +401,13 @@ public class CameraProfile
         for (AbstractFixture fixture : this.fixtures)
         {
             FixtureRegistry.toByteBuf(fixture, buffer);
+        }
+
+        buffer.writeInt(this.getModifiers().size());
+
+        for (AbstractModifier modifier : this.getModifiers())
+        {
+            ModifierRegistry.toByteBuf(modifier, buffer);
         }
     }
 
@@ -392,9 +448,14 @@ public class CameraProfile
         CameraProfile profile = new CameraProfile(dest);
 
         /* Copy fixtures */
-        for (AbstractFixture fixture : this.fixtures)
+        for (AbstractFixture fixture : this.getAll())
         {
             profile.fixtures.add(fixture.clone());
+        }
+
+        for (AbstractModifier modifier : this.getModifiers())
+        {
+            profile.modifiers.add(modifier.clone());
         }
 
         return profile;
