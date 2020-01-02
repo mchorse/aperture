@@ -42,6 +42,7 @@ aperture.config:
         
         camera_editor_overlay: Включить оверлей
         camera_editor_overlay_rl: Путь к оверлею
+        camera_editor_f1_tooltip: Спрятать подсказку с F1
 
     smooth:
         title: Гладкое движение камеры
