@@ -113,6 +113,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private float lastFov = 70.0F;
     private float lastRoll = 0;
+    private float lastPartialTick = 0;
     private GameType lastGameMode = GameType.NOT_SET;
     public ResourceLocation overlayLocation;
 
@@ -253,7 +254,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             if (!this.playing)
             {
                 this.runner.attachOutside();
-                this.updatePlayerCurrently(0.0F);
+                this.updatePlayerCurrently();
             }
 
             ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.scrub.value));
@@ -355,6 +356,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (!this.runner.isRunning() && (this.syncing || this.runner.outside.active))
         {
+            this.lastPartialTick = 0.0F;
             this.updatePlayer(value, 0.0F);
         }
         else
@@ -745,11 +747,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     /**
      * Update player to current value in the scrub
      */
-    public void updatePlayerCurrently(float ticks)
+    public void updatePlayerCurrently()
     {
         if ((this.syncing || this.runner.outside.active) && !this.runner.isRunning())
         {
-            this.updatePlayer(this.scrub.value, ticks);
+            this.updatePlayer(this.scrub.value, this.lastPartialTick);
         }
     }
 
@@ -1136,6 +1138,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         boolean isRunning = this.runner.isRunning();
 
+        if (isRunning)
+        {
+            this.lastPartialTick = partialTicks;
+        }
+
         if (this.repeat && isRunning && this.panel.delegate != null)
         {
             AbstractFixture fixture = this.panel.delegate.fixture;
@@ -1294,7 +1301,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             /* Sync the player on current tick */
             if ((this.runner.outside.active || (this.syncing && this.haveScrubbed)) && !this.flight.enabled)
             {
-                this.updatePlayerCurrently(0.0F);
+                this.updatePlayerCurrently();
             }
 
             this.drawIcons();
