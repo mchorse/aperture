@@ -1040,7 +1040,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
         else if (keyCode == Keyboard.KEY_N)
         {
-            this.modifiers.toggleVisible();
+            this.openModifiers.mouseClicked(this.openModifiers.area.x, this.openModifiers.area.y, 0);
         }
         else if (keyCode == Keyboard.KEY_R)
         {
