@@ -1113,6 +1113,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        /* What the fuck, why is partial tick is always 0.32 on 1.12.2? */
+        partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+
         boolean isRunning = this.runner.isRunning();
 
         if (isRunning)
