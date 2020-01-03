@@ -139,7 +139,16 @@ public class GuiModifiersManager extends GuiElement
 
     public List<AbstractModifier> getModifiers()
     {
-        return this.fixture == null ? this.editor.getProfile().getModifiers() : this.fixture.getModifiers();
+        if (this.fixture != null)
+        {
+            return this.fixture.getModifiers();
+        }
+        else if (this.editor.getProfile() != null)
+        {
+            return this.editor.getProfile().getModifiers();
+        }
+
+        return null;
     }
 
     public void setClipboard(AbstractModifier modifier)
@@ -154,23 +163,17 @@ public class GuiModifiersManager extends GuiElement
     {
         this.panels.elements.clear();
         this.scroll.scrollSize = 20;
-
-        if (fixture == null)
-        {
-            for (AbstractModifier modifier : this.editor.getProfile().getModifiers())
-            {
-                this.addModifier(modifier);
-            }
-        }
-        else
-        {
-            for (AbstractModifier modifier : fixture.getModifiers())
-            {
-                this.addModifier(modifier);
-            }
-        }
-
         this.fixture = fixture;
+
+        if (this.getModifiers() == null)
+        {
+            return;
+        }
+
+        for (AbstractModifier modifier : this.getModifiers())
+        {
+            this.addModifier(modifier);
+        }
     }
 
     /**
@@ -216,7 +219,7 @@ public class GuiModifiersManager extends GuiElement
             return;
         }
 
-        List<AbstractModifier> modifiers = this.fixture.getModifiers();
+        List<AbstractModifier> modifiers = this.getModifiers();
 
         this.panels.elements.add(to, this.panels.elements.remove(index));
         modifiers.add(to, modifiers.remove(index));
