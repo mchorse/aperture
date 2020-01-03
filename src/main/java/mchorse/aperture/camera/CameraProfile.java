@@ -282,6 +282,7 @@ public class CameraProfile
             AbstractFixture present = this.get(index);
             AbstractFixture.copyModifiers(present, fixture);
 
+            fixture.setName(present.getName());
             fixture.setDuration(present.getDuration());
             this.fixtures.set(index, fixture);
         }
