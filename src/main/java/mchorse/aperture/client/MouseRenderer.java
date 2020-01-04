@@ -83,7 +83,7 @@ public class MouseRenderer
 
     private static boolean shouldRenderMouse()
     {
-        if (Aperture.proxy.config.gui_render_mouse)
+        if (!Aperture.proxy.config.gui_render_mouse)
         {
             return false;
         }
