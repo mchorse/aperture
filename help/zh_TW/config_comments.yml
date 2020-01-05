@@ -31,6 +31,7 @@ aperture.config.comments:
     overlay:
         camera_editor_overlay: 啟用相機編輯器附加層
         camera_editor_overlay_rl: 作為附加層圖像使用的材質資源路徑
+        camera_editor_f1_tooltip: 在左下角提示如何再次啟用 GUI 的方法
 
     smooth:
         camera_smooth_clamp: 在 －90 和 90 度之間，修剪平滑相機的俯仰程度？嗡!嗡!嗡!
