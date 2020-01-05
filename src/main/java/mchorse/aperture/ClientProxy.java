@@ -68,6 +68,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
+    public static boolean server = false;
+
     /* Camera stuff */
     public static CameraRenderer renderer = new CameraRenderer();
     public static CameraControl control = new CameraControl();
@@ -86,7 +88,7 @@ public class ClientProxy extends CommonProxy
     public static File cameras;
 
     /**
-     * An instance of camera editor 
+     * An instance of a camera editor
      */
     public static GuiCameraEditor cameraEditor;
 
