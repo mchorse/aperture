@@ -263,7 +263,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.openProfiles = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 96, 0, 96, 16, (b) -> this.hidePopups(this.profiles)).tooltip(I18n.format("aperture.gui.tooltips.profiles"), TooltipDirection.BOTTOM);
         this.openConfig = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 208, 0, 208, 16, (b) -> this.hidePopups(this.config)).tooltip(I18n.format("aperture.gui.tooltips.config"), TooltipDirection.BOTTOM);
         this.openModifiers = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 80, 32, 80, 48, (b) -> this.hidePopups(this.modifiers)).tooltip(I18n.format("aperture.gui.tooltips.modifiers"), TooltipDirection.BOTTOM);
-        this.save = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) -> this.profile.save()).tooltip(I18n.format("aperture.gui.tooltips.save"), TooltipDirection.BOTTOM);
+        this.save = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) -> this.saveProfile()).tooltip(I18n.format("aperture.gui.tooltips.save"), TooltipDirection.BOTTOM);
 
         this.add = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 224, 0, 224, 16, (b) -> this.hideReplacingPopups(this.popup, false)).tooltip(I18n.format("aperture.gui.tooltips.add"), TooltipDirection.BOTTOM);
         this.dupe = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 176, 32, 176, 48, (b) -> this.dupeFixture()).tooltip(I18n.format("aperture.gui.tooltips.dupe"), TooltipDirection.BOTTOM);
@@ -785,6 +785,18 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
+     * Saves camera profile
+     */
+    public void saveProfile()
+    {
+        if (this.profile != null)
+        {
+            this.profile.dirty();
+            this.profiles.init();
+        }
+    }
+
+    /**
      * Get player's current position 
      */
     public Position getPosition()
@@ -983,8 +995,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && this.profile != null)
             {
                 /* Save camera profile */
-                this.save.button.playPressSound(this.mc.getSoundHandler());
-                this.profile.save();
+                this.save.mouseClicked(this.save.area.x, this.save.area.y, 0);
             }
             else
             {

@@ -185,6 +185,7 @@ public class KeyboardHandler
     public void onUserLogOut(ClientDisconnectionFromServerEvent event)
     {
         ClientProxy.control.reset();
+        ClientProxy.server = false;
 
         if (Loader.isModLoaded("replaymod"))
         {

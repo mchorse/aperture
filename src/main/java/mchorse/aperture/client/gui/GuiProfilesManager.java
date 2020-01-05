@@ -188,6 +188,8 @@ public class GuiProfilesManager extends GuiElement
             entry.profile.setDestination(newDest);
             entry.destination = newDest;
         }
+
+        this.init();
     }
 
     private void remove()
@@ -269,15 +271,20 @@ public class GuiProfilesManager extends GuiElement
             this.profiles.add(this.createEntry(profile.getDestination()));
         }
 
-        for (String filename : CameraAPI.getClientProfiles())
+        if (ClientProxy.server)
         {
-            this.profiles.add(this.createEntry(new ClientDestination(filename)));
+            for (String filename : CameraAPI.getClientProfiles())
+            {
+                this.profiles.add(this.createEntry(new ClientDestination(filename)));
+            }
+
+            this.profiles.filter("", true);
+            this.selectProfile(ClientProxy.control.currentProfile);
         }
-
-        Dispatcher.sendToServer(new PacketRequestCameraProfiles());
-
-        this.profiles.filter("", true);
-        this.selectProfile(ClientProxy.control.currentProfile);
+        else
+        {
+            Dispatcher.sendToServer(new PacketRequestCameraProfiles());
+        }
     }
 
     public CameraProfileEntry createEntry(AbstractDestination dest)

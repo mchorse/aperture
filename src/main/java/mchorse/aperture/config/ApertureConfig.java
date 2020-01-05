@@ -201,7 +201,7 @@ public class ApertureConfig
         /* Camera editor overlay */
         this.camera_editor_overlay = this.getBoolean("camera_editor_overlay", overlay, false, "Enables camera editor overlay");
         this.camera_editor_overlay_rl = this.getString("camera_editor_overlay_rl", overlay, "", "Resource location path to the texture which will be used as overlay");
-        this.camera_editor_f1_tooltip = this.getBoolean("camera_editor_f1_tooltip", overlay, true, "Hide the tooltip in the bottom left corner which explains how to show back the GUI");
+        this.camera_editor_f1_tooltip = this.getBoolean("camera_editor_f1_tooltip", overlay, true, "Show the tooltip in the bottom left corner which explains how to show back the GUI");
 
         /* Processing camera command name */
         this.camera_command_name = this.camera_command_name.trim().replaceAll("[^\\w\\d_\\-]+", "");
