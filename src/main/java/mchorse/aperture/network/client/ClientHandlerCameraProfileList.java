@@ -1,8 +1,10 @@
 package mchorse.aperture.network.client;
 
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraAPI;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.destination.AbstractDestination;
+import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
@@ -26,6 +28,11 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
         if (current instanceof GuiCameraEditor)
         {
             GuiProfilesManager manager = ((GuiCameraEditor) current).profiles;
+
+            for (String filename : CameraAPI.getClientProfiles())
+            {
+                manager.profiles.add(manager.createEntry(new ClientDestination(filename)));
+            }
 
             for (String profile : message.cameras)
             {

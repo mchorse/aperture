@@ -1,11 +1,13 @@
 package mchorse.aperture.network;
 
 import mchorse.aperture.Aperture;
+import mchorse.aperture.network.client.ClientHandlerAperture;
 import mchorse.aperture.network.client.ClientHandlerCameraProfile;
 import mchorse.aperture.network.client.ClientHandlerCameraProfileList;
 import mchorse.aperture.network.client.ClientHandlerCameraState;
 import mchorse.aperture.network.client.ClientHandlerRenameCameraProfile;
 import mchorse.aperture.network.client.ClientHandlerRemoveCameraProfile;
+import mchorse.aperture.network.common.PacketAperture;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketCameraProfileList;
 import mchorse.aperture.network.common.PacketCameraReset;
@@ -38,6 +40,8 @@ public class Dispatcher
         @Override
         public void register()
         {
+            this.register(PacketAperture.class, ClientHandlerAperture.class, Side.CLIENT);
+
             this.register(PacketCameraProfile.class, ClientHandlerCameraProfile.class, Side.CLIENT);
             this.register(PacketCameraProfile.class, ServerHandlerCameraProfile.class, Side.SERVER);
             this.register(PacketCameraReset.class, ServerHandlerCameraReset.class, Side.SERVER);
