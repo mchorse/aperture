@@ -1,8 +1,11 @@
 package mchorse.aperture.camera.destination;
 
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Abstract destination class
@@ -31,9 +34,10 @@ public abstract class AbstractDestination
      * Create an abstract destination based on the game's state (i.e. 
      * whether it's single or multiplayer game). 
      */
+    @SideOnly(Side.CLIENT)
     public static AbstractDestination create(String filename)
     {
-        return Minecraft.getMinecraft().isSingleplayer() ? new ServerDestination(filename) : new ClientDestination(filename);
+        return ClientProxy.server ? new ServerDestination(filename) : new ClientDestination(filename);
     }
 
     /**
