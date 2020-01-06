@@ -1,5 +1,6 @@
 package mchorse.aperture.camera;
 
+import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.Aperture;
@@ -29,6 +30,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL20;
 
 /**
  * Profile path renderer
@@ -252,6 +254,13 @@ public class CameraRenderer
      */
     private void drawFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
     {
+        int shader = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
+
+        if (shader != 0)
+        {
+            OpenGlHelper.glUseProgram(0);
+        }
+
         if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture)
         {
             this.drawPathFixture(color, fixture, prev, next);
@@ -259,6 +268,11 @@ public class CameraRenderer
         else if (fixture instanceof CircularFixture)
         {
             this.drawCircularFixture(partialTicks, color, fixture, prev, next);
+        }
+
+        if (shader != 0)
+        {
+            OpenGlHelper.glUseProgram(shader);
         }
     }
 

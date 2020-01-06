@@ -791,7 +791,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         if (this.profile != null)
         {
-            this.profile.dirty();
+            this.profile.save();
             this.profiles.init();
         }
     }
