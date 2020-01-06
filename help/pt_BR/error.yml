@@ -27,4 +27,4 @@ aperture.error:
         client_cant_save: "{f}Não é possível salvar o perfil da câmera do cliente com o nome do arquivo %s{f}."
         client_cant_load: "{f}Não é possível carregar o perfil da câmera do cliente pelo nome do arquivo %s{f}."
         
-        wrong_filename: "{f}O perfil da câmera não pode ser salvo, porque o nome do arquivo \"{7}%s{f}\" contém caracteres ilegais. Apenas letras, dígitos, sublinhados, traços, pontos e espaços são permitidos!"
+        wrong_filename: "{f}O perfil da câmera não pode ser salvo, porque o nome do arquivo \"{7}%s{f}\" contem caracteres não permitidos. Apenas letras, dígitos, sublinhados, traços, pontos e espaços são permitidos!"
