@@ -74,7 +74,7 @@ aperture.gui:
 
     modifiers:
         title: Modificadores
-        select: Selecionar um acessório de câmera...
+        global: Modificadores globais
 
         shake: Tremer
         math: Matemática
