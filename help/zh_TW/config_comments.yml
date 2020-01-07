@@ -12,7 +12,7 @@ aperture.config.comments:
         camera_path_default_interp: 插入路徑時，路徑的預設類型
         camera_command_name: 允許你重新綁定相機命令的名字（需要重啟遊戲來生效）
         camera_simulate_velocity: 在回放時模擬玩家走動搖擺（從腿的角度）
-        camera_debug_ticks: 將目前播放的 tick 時間寫入日誌檔案
+        camera_debug_ticks: 將當前播放的 tick 時間寫入日誌檔案
         camera_first_tick_zero: 當相機播放時將當前幀歸零
         camera_profile_render: 在世界中渲染出相機配置？
         gui_render_mouse: 在開啟 GUI 的時候渲染出游標的材質
