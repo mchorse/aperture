@@ -19,11 +19,12 @@ aperture.error:
         cant_move: "{f}無法將關鍵點從 %s{f} 移動至 %s{f}，因爲其中之一的指數超出了範圍！"
         
         not_path: "{f}在索引號 %s{f} 的關鍵點不是路徑關鍵點！"
-        not_exists: "{f}在目前的相機配置檔案裡沒有相機關鍵點在 %s{f} 索引號裡！"
+        not_exists: "{f}在當前的相機配置檔案裡沒有相機關鍵點在 %s{f} 索引號裡！"
+        no_current: "{f}沒有選擇當前的相機配置文件！"
         no_path_point: "{f}路徑索引號 %s{f} 裡在索引號 %s{f} 裡沒有路徑定點！"
         move_no_path_point: "{f}路徑索引號 %s{f} 裡在索引號 %s{f} 或 %s{f} 裡沒有定點！"
         
         client_cant_save: "{f}無法以檔案名 %s{f} 儲存客戶端相機配置。"
         client_cant_load: "{f}無法以檔案名 %s{f} 載入客戶端相機配置。"
         
-        wrong_filename: "{f}相機配置無法儲存。檔案名 \"{7}%s{f}\" 包含非法字符。只能使用字母，數字，下劃線，破折號和空格！"
+        wrong_filename: "{f}相機配置無法儲存。檔案名 \"{7}%s{f}\" 包含非法字符。只能使用字母，數字，下劃線，破折號，句號和空格！"
