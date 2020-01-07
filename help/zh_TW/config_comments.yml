@@ -12,7 +12,7 @@ aperture.config.comments:
         camera_path_default_interp: 插入路徑時，路徑的預設類型
         camera_command_name: 允許你重新綁定相機命令的名字（需要重啟遊戲來生效）
         camera_simulate_velocity: 在回放時模擬玩家走動搖擺（從腿的角度）
-        camera_debug_ticks: 將目前播放的 tick 時間寫入日誌檔案
+        camera_debug_ticks: 將當前播放的 tick 時間寫入日誌檔案
         camera_first_tick_zero: 當相機播放時將當前幀歸零
         camera_profile_render: 在世界中渲染出相機配置？
         gui_render_mouse: 在開啟 GUI 的時候渲染出游標的材質
@@ -31,6 +31,7 @@ aperture.config.comments:
     overlay:
         camera_editor_overlay: 啟用相機編輯器附加層
         camera_editor_overlay_rl: 作為附加層圖像使用的材質資源路徑
+        camera_editor_f1_tooltip: 在左下角提示如何再次啟用 GUI 的方法
 
     smooth:
         camera_smooth_clamp: 在 －90 和 90 度之間，修剪平滑相機的俯仰程度？嗡!嗡!嗡!

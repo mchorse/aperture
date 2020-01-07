@@ -2,6 +2,32 @@
 
 Aperture's change log.
 
+## Aperture 1.3.4
+
+This small patch improves UX experience and also adds Brazilian Portuguese localization, camera profile modifiers, copy-paste modifiers, and improves and simplifies look and follow modifiers.
+
+**Compatible** with McLib `1.0.4`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
+
+<a href="https://youtu.be/goooUv_OWIs"><img src="https://img.youtube.com/vi/goooUv_OWIs/0.jpg"></a> 
+
+* Added an ability for `look` and `follow` modifiers to use multiple entities and just calculate the mid point
+* Added an ability for target modifiers to use just a name tag instead of target selector
+* Added a config option to disable rendering of F1 tool tip in the camera editor (suggested by Andruxioid)
+* Added copy-paste modifiers
+* Added global modifiers panel (suggested by KazerLight)
+* Added `pt_BR` translations (thanks to D-H-U on GitHub)
+* Fixed a bug where camera profiles with `.` in them disappear (reported by Agirres)
+* Fixed crash with continuous `null` fixtures
+* Fixed little flick when pausing camera editor (basically save `partialTick`)
+* Fixed preview not being smooth with sync mode
+* Fixed pressing `N` in camera editor not hiding other panels
+* Fixed scaling of points in different MC scales (reported by Auraman)
+* Fixed fixture's label hide fully instead of partially
+* Fixed camera profile list not updating when saving, etc.
+* Fixed paths not rendering with shaders
+* Fixed camera profile list not updating when converting or saving
+* Removed go to frame button and track pad field
+
 ## Aperture 1.3.3
 
 This small patch adds more path fixture intepolations, workflow enhancement features (cut, replace and interactively create fixtures) and fixes few annoying bugs.

@@ -31,6 +31,7 @@ aperture.config.comments:
     overlay:
         camera_editor_overlay: Ativa a sobreposição do editor de câmera
         camera_editor_overlay_rl: Caminho do local do recurso para a textura que será usada como sobreposição
+        camera_editor_f1_tooltip: Mostrar a dica no canto inferior esquerdo, que explica como retornar a GUI
 
     smooth:
         camera_smooth_clamp: Prender da afinação suave da câmera entre -90 e 90 graus?

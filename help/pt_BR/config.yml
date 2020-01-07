@@ -42,6 +42,7 @@ aperture.config:
         
         camera_editor_overlay: Ativar sobreposição
         camera_editor_overlay_rl: Caminho do recurso para sobrepor
+        camera_editor_f1_tooltip: F1 ocultar dica
 
     smooth:
         title: Câmera suave
