@@ -74,7 +74,7 @@ aperture.gui:
 
     modifiers:
         title: 調整器
-        select: 選取相機關鍵點……
+        global: 全局調整器
 
         shake: 搖晃
         math: 數學
