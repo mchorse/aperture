@@ -42,6 +42,7 @@ aperture.config:
 
         camera_editor_overlay: 启用附加层
         camera_editor_overlay_rl: 附加层的资源路径
+        camera_editor_f1_tooltip: F1 隐藏提示
 
     smooth:
         title: 平滑相机

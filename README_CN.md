@@ -24,9 +24,11 @@
 
 ## 视频
 
-这是一个关于 Aperture 的播放列表，内含更新和教程。（由Noble团队制作的[中文教程](http://www.bilibili.com/video/av15303499/)不代表 McHorse 观点，内容可能过时）
+这是一个关于 Aperture 的播放列表，内含更新和教程。
 
-<a href="https://youtu.be/_vfZYtiRfRs?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/_vfZYtiRfRs/0.jpg"></a> 
+<a href="https://youtu.be/5Tnp4z6GWME?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/5Tnp4z6GWME/0.jpg"></a> 
+
+也可前往 [McHorse's Mods 哔哩哔哩中文频道](https://space.bilibili.com/472615413) 观看。
 
 ## 安装
 
@@ -42,12 +44,12 @@
 * 确保你所描述的东西是真实存在的。失实写的东西，比如支持的 Minecraft 版本或者不存在的功能，由你背锅。
 * 上传一个由你自己编译的版本，你编译的版本是你的锅。
 * 请提供来源链接。提供 [CurseForge](https://minecraft.curseforge.com/projects/aperture) 最棒。
-* 请提供一个链接到我的 [YouTube 频道](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w)。非常感谢！
+* 请提供一个链接到我的 [YouTube 频道](https://www.youtube.com/channel/UCSLuDXxxql4EVK_Ktd6PNbw)。非常感谢！
 * 当你转发时你可以使用 Aperture 的 [banner](https://i.imgur.com/Wras78u.png) 或 [封面](https://i.imgur.com/rckGnn4.png)。不要加个水印，那很残忍。
 
 如果你对此项目感兴趣，你可以关注我的社交媒体账号：
 
-[![YouTube](http://i.imgur.com/yA4qam9.png)](https://www.youtube.com/channel/UCWVDjAcecHHa8UrEWMRGI8w) [![Discord](http://i.imgur.com/gI6JEpJ.png)](https://discord.gg/qfxrqUF) [![Twitter](http://i.imgur.com/6b8vHcX.png)](https://twitter.com/McHorsy) [![GitHub](http://i.imgur.com/DmTn1f1.png)](https://github.com/mchorse)  
+[![YouTube](http://i.imgur.com/yA4qam9.png)](https://www.youtube.com/channel/UCSLuDXxxql4EVK_Ktd6PNbw) [![Discord](http://i.imgur.com/gI6JEpJ.png)](https://discord.gg/qfxrqUF) [![Twitter](http://i.imgur.com/6b8vHcX.png)](https://twitter.com/McHorsy) [![GitHub](http://i.imgur.com/DmTn1f1.png)](https://github.com/mchorse)  
 
 另外，如果你在 Patreon 上支持我的话，我会很感激的！
 
