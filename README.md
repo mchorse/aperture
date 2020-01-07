@@ -30,7 +30,7 @@ This playlist is a tutorial series. It should teach you how to use Aperture mod 
 
 Meanwhile, this playlist contains a list of videos about Aperture's updates. These are so-called change log videos, which showcase new changes added to Aperture mod.
 
-<a href="https://youtu.be/5Tnp4z6GWME?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/5Tnp4z6GWME/0.jpg"></a> 
+<a href="https://youtu.be/goooUv_OWIs?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/goooUv_OWIs/0.jpg"></a> 
 
 ## Install
 
