@@ -19,7 +19,8 @@ aperture.error:
         cant_move: "{f}无法将关键点从 %s{f} 移动到 %s{f}，因为其中之一的指数超出了范围！"
         
         not_path: "{f}在索引号 %s{f} 的关键点不是路径关键点！"
-        not_exists: "{f}在目前的相机配置文件里没有相机关键点在 %s{f} 索引号里！"
+        not_exists: "{f}在当前的相机配置文件里没有相机关键点在 %s{f} 索引号里！"
+        no_current: "{f}没有选择当前的相机配置文件！"
         no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 里没有路径定点！"
         move_no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 或 %s{f} 里没有定点！"
         
