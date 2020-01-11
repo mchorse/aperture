@@ -5,6 +5,8 @@ import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.CameraProvider;
 import mchorse.aperture.capabilities.camera.ICamera;
+import mchorse.aperture.network.Dispatcher;
+import mchorse.aperture.network.common.PacketAperture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
@@ -49,5 +51,7 @@ public class CapabilityHandler
 
             camera.setCurrentProfileTimestamp(System.currentTimeMillis());
         }
+
+        Dispatcher.sendTo(new PacketAperture(), (EntityPlayerMP) player);
     }
 }
