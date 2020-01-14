@@ -52,7 +52,7 @@ public abstract class AbstractFixture
     {
         for (AbstractModifier modifier : from.modifiers)
         {
-            AbstractModifier copy = modifier.clone();
+            AbstractModifier copy = modifier.copy();
 
             if (copy != null)
             {
@@ -69,6 +69,9 @@ public abstract class AbstractFixture
     {
         this.setDuration(duration);
     }
+
+    public void initiate()
+    {}
 
     /* Duration management */
 
@@ -230,6 +233,5 @@ public abstract class AbstractFixture
     /**
      * Clone this fixture
      */
-    @Override
-    public abstract AbstractFixture clone();
+    public abstract AbstractFixture copy();
 }

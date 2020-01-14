@@ -32,7 +32,7 @@ public class AngleModifier extends AbstractModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         AngleModifier modifier = new AngleModifier();
 

@@ -55,7 +55,7 @@ public class DragModifier extends ComponentModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         DragModifier modifier = new DragModifier();
 

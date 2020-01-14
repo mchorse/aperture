@@ -31,7 +31,7 @@ public class TranslateModifier extends AbstractModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         TranslateModifier modifier = new TranslateModifier();
 

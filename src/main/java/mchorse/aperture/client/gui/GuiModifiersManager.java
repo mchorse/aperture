@@ -99,7 +99,7 @@ public class GuiModifiersManager extends GuiElement
         {
             if (this.clipboard != null)
             {
-                AbstractModifier modifier = this.clipboard.clone();
+                AbstractModifier modifier = this.clipboard.copy();
 
                 this.getModifiers().add(modifier);
                 this.setFixture(this.fixture);
@@ -153,7 +153,7 @@ public class GuiModifiersManager extends GuiElement
 
     public void setClipboard(AbstractModifier modifier)
     {
-        this.clipboard = modifier.clone();
+        this.clipboard = modifier.copy();
     }
 
     /**
