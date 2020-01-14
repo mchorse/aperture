@@ -273,6 +273,10 @@ public class GuiProfilesManager extends GuiElement
 
         if (ClientProxy.server)
         {
+            Dispatcher.sendToServer(new PacketRequestCameraProfiles());
+        }
+        else
+        {
             for (String filename : CameraAPI.getClientProfiles())
             {
                 this.profiles.add(this.createEntry(new ClientDestination(filename)));
@@ -280,10 +284,6 @@ public class GuiProfilesManager extends GuiElement
 
             this.profiles.filter("", true);
             this.selectProfile(ClientProxy.control.currentProfile);
-        }
-        else
-        {
-            Dispatcher.sendToServer(new PacketRequestCameraProfiles());
         }
     }
 
