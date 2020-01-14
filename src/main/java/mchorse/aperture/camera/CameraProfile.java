@@ -13,7 +13,6 @@ import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.events.CameraProfileChangedEvent;
-import mchorse.mclib.math.functions.Abs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -436,8 +435,7 @@ public class CameraProfile
     /**
      * Clone this camera profile 
      */
-    @Override
-    public CameraProfile clone()
+    public CameraProfile copy()
     {
         /* Increment filename */
         ResourceLocation path = this.destination.toResourceLocation();
@@ -459,12 +457,12 @@ public class CameraProfile
         /* Copy fixtures */
         for (AbstractFixture fixture : this.getAll())
         {
-            profile.fixtures.add(fixture.clone());
+            profile.fixtures.add(fixture.copy());
         }
 
         for (AbstractModifier modifier : this.getModifiers())
         {
-            profile.modifiers.add(modifier.clone());
+            profile.modifiers.add(modifier.copy());
         }
 
         return profile;
@@ -487,7 +485,7 @@ public class CameraProfile
 
             fixture.setDuration(diff);
 
-            AbstractFixture newFixture = fixture.clone();
+            AbstractFixture newFixture = fixture.copy();
             newFixture.setDuration(duration - diff);
 
             this.add(newFixture, this.fixtures.indexOf(fixture));

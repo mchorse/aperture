@@ -575,7 +575,7 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture clone()
+    public AbstractFixture copy()
     {
         PathFixture fixture = new PathFixture(this.duration);
 

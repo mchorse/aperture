@@ -83,7 +83,7 @@ public class CircularFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture clone()
+    public AbstractFixture copy()
     {
         CircularFixture fixture = new CircularFixture(this.duration);
 

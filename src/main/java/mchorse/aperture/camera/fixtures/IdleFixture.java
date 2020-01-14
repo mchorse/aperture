@@ -36,7 +36,7 @@ public class IdleFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture clone()
+    public AbstractFixture copy()
     {
         IdleFixture fixture = new IdleFixture(this.duration);
 

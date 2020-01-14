@@ -91,7 +91,7 @@ public class ShakeModifier extends ComponentModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         ShakeModifier modifier = new ShakeModifier();
 

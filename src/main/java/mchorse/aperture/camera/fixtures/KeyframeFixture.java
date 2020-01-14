@@ -114,7 +114,7 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture clone()
+    public AbstractFixture copy()
     {
         KeyframeFixture fixture = new KeyframeFixture(this.duration);
 

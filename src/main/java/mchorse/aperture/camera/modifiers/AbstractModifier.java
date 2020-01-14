@@ -31,8 +31,7 @@ public abstract class AbstractModifier
      */
     public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos);
 
-    @Override
-    public abstract AbstractModifier clone();
+    public abstract AbstractModifier copy();
 
     public void toJSON(JsonObject object)
     {}

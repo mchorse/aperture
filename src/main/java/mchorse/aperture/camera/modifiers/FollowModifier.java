@@ -59,7 +59,7 @@ public class FollowModifier extends EntityModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         FollowModifier modifier = new FollowModifier();
 
