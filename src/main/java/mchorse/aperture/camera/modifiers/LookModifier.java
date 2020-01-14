@@ -126,7 +126,7 @@ public class LookModifier extends EntityModifier
         modifier.relative = this.relative;
         modifier.atBlock = this.atBlock;
         modifier.forward = this.forward;
-        modifier.block = this.block.clone();
+        modifier.block = this.block.copy();
 
         return modifier;
     }

@@ -112,7 +112,7 @@ public class GuiModifiersManager extends GuiElement
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
             int color = 0xff000000 + info.color.getHex();
-            Color dark = info.color.clone();
+            Color dark = info.color.copy();
 
             dark.red *= 0.9;
             dark.green *= 0.9;

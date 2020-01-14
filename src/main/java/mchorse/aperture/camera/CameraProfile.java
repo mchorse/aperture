@@ -465,6 +465,8 @@ public class CameraProfile
             profile.modifiers.add(modifier.copy());
         }
 
+        profile.initiate();
+
         return profile;
     }
 

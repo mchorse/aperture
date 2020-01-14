@@ -349,7 +349,7 @@ public class KeyframeFixture extends AbstractFixture
 
             for (Keyframe frame : channel.keyframes)
             {
-                this.keyframes.add(frame.clone());
+                this.keyframes.add(frame.copy());
             }
 
             this.sort();
@@ -456,8 +456,7 @@ public class KeyframeFixture extends AbstractFixture
             return this.interp.interpolate(this, frame, x);
         }
 
-        @Override
-        public Keyframe clone()
+        public Keyframe copy()
         {
             Keyframe frame = new Keyframe(this.tick, this.value);
 
@@ -562,7 +561,12 @@ public class KeyframeFixture extends AbstractFixture
             @Override
             public float interpolate(Keyframe a, Keyframe b, float x)
             {
-                return (float) Interpolations.cubicHermite(a.prev.value, a.value, b.value, b.next.value, x);
+                double v0 = a.prev.value;
+                double v1 = a.value;
+                double v2 = b.value;
+                double v3 = b.next.value;
+
+                return (float) Interpolations.cubicHermite(v0, v1, v2, v3, x);
             }
         },
         EXP("exp")

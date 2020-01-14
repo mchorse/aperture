@@ -37,7 +37,7 @@ public class AngleModifier extends AbstractModifier
         AngleModifier modifier = new AngleModifier();
 
         modifier.enabled = this.enabled;
-        modifier.angle = this.angle.clone();
+        modifier.angle = this.angle.copy();
 
         return modifier;
     }

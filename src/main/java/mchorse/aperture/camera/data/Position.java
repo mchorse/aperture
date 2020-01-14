@@ -87,9 +87,9 @@ public class Position
         this.angle.toByteBuf(buffer);
     }
 
-    public Position clone()
+    public Position copy()
     {
-        return new Position(this.point.clone(), this.angle.clone());
+        return new Position(this.point.copy(), this.angle.copy());
     }
 
     @Override
