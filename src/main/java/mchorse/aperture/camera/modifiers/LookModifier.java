@@ -117,7 +117,7 @@ public class LookModifier extends EntityModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         LookModifier modifier = new LookModifier();
 

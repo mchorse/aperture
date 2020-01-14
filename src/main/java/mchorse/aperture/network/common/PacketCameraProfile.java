@@ -33,6 +33,7 @@ public class PacketCameraProfile implements IMessage
         this.filename = ByteBufUtils.readUTF8String(buf);
         this.profile = new CameraProfile(null);
         this.profile.fromByteBuf(buf);
+        this.profile.initiate();
     }
 
     @Override

@@ -78,6 +78,12 @@ public class PathFixture extends AbstractFixture
         this.speed.insert(0, 1);
     }
 
+    @Override
+    public void initiate()
+    {
+        this.speed.sort();
+    }
+
     public DurablePosition getPoint(int index)
     {
         if (this.points.size() == 0)
@@ -569,7 +575,7 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture clone()
+    public AbstractFixture copy()
     {
         PathFixture fixture = new PathFixture(this.duration);
 

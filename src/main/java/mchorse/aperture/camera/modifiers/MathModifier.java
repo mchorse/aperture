@@ -164,7 +164,7 @@ public class MathModifier extends ComponentModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         MathModifier modifier = new MathModifier();
 

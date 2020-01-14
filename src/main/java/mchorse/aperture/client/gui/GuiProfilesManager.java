@@ -129,7 +129,7 @@ public class GuiProfilesManager extends GuiElement
 
         if (entry != null)
         {
-            CameraProfile profile = entry.profile.clone();
+            CameraProfile profile = entry.profile.copy();
 
             profile.getDestination().setFilename(name);
             profile.dirty();

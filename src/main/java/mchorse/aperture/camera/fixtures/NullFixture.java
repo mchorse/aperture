@@ -42,7 +42,7 @@ public class NullFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture clone()
+    public AbstractFixture copy()
     {
         NullFixture fixture = new NullFixture(this.duration);
 

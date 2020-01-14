@@ -1,9 +1,7 @@
 package mchorse.aperture.client.gui;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,6 @@ import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.utils.Resizer;
 import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
@@ -447,7 +444,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.profile.has(index))
         {
-            AbstractFixture fixture = this.profile.get(index).clone();
+            AbstractFixture fixture = this.profile.get(index).copy();
 
             this.profile.add(fixture);
             this.pickCameraFixture(fixture, 0);

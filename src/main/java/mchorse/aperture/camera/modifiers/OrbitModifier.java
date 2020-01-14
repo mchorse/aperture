@@ -140,7 +140,7 @@ public class OrbitModifier extends EntityModifier
     }
 
     @Override
-    public AbstractModifier clone()
+    public AbstractModifier copy()
     {
         OrbitModifier modifier = new OrbitModifier();
 
