@@ -89,7 +89,7 @@ public class CircularFixture extends AbstractFixture
 
         AbstractFixture.copyModifiers(this, fixture);
         fixture.name = this.name;
-        fixture.start = this.start.clone();
+        fixture.start = this.start.copy();
         fixture.offset = this.offset;
         fixture.distance = this.distance;
         fixture.circles = this.circles;

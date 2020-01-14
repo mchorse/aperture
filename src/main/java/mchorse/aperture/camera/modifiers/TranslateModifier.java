@@ -36,7 +36,7 @@ public class TranslateModifier extends AbstractModifier
         TranslateModifier modifier = new TranslateModifier();
 
         modifier.enabled = this.enabled;
-        modifier.translate = this.translate.clone();
+        modifier.translate = this.translate.copy();
 
         return modifier;
     }
