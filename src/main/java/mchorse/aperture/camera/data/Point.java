@@ -65,7 +65,7 @@ public class Point
         buffer.writeDouble(this.z);
     }
 
-    public Point clone()
+    public Point copy()
     {
         return new Point(this.x, this.y, this.z);
     }

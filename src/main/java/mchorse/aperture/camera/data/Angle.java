@@ -84,8 +84,7 @@ public class Angle
         buffer.writeFloat(this.fov);
     }
 
-    @Override
-    public Angle clone()
+    public Angle copy()
     {
         return new Angle(this.yaw, this.pitch, this.roll, this.fov);
     }

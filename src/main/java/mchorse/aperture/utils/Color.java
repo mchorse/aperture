@@ -32,7 +32,7 @@ public class Color
         this.blue = blue;
     }
 
-    public Color clone()
+    public Color copy()
     {
         return new Color(this.red, this.green, this.blue);
     }

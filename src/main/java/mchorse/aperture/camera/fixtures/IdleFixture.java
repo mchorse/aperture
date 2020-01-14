@@ -42,7 +42,7 @@ public class IdleFixture extends AbstractFixture
 
         AbstractFixture.copyModifiers(this, fixture);
         fixture.name = this.name;
-        fixture.position = this.position.clone();
+        fixture.position = this.position.copy();
 
         return fixture;
     }

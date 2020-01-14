@@ -582,7 +582,7 @@ public class PathFixture extends AbstractFixture
         AbstractFixture.copyModifiers(this, fixture);
         for (DurablePosition pos : this.points)
         {
-            fixture.addPoint((DurablePosition) pos.clone());
+            fixture.addPoint((DurablePosition) pos.copy());
         }
 
         fixture.name = this.name;
@@ -726,9 +726,9 @@ public class PathFixture extends AbstractFixture
         }
 
         @Override
-        public Position clone()
+        public Position copy()
         {
-            return new DurablePosition(this.duration, this.point.clone(), this.angle.clone());
+            return new DurablePosition(this.duration, this.point.copy(), this.angle.copy());
         }
 
         @Override
