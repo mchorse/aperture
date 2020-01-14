@@ -77,6 +77,15 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
+    public void initiate()
+    {
+        for (KeyframeChannel channel : this.channels)
+        {
+            channel.sort();
+        }
+    }
+
+    @Override
     public void fromPlayer(EntityPlayer player)
     {
         Position pos = new Position(player);

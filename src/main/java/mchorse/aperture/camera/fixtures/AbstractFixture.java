@@ -70,6 +70,9 @@ public abstract class AbstractFixture
         this.setDuration(duration);
     }
 
+    public void initiate()
+    {}
+
     /* Duration management */
 
     /**

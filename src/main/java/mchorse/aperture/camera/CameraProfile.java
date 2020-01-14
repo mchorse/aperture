@@ -94,6 +94,14 @@ public class CameraProfile
         return duration;
     }
 
+    public void initiate()
+    {
+        for (AbstractFixture fixture : this.fixtures)
+        {
+            fixture.initiate();
+        }
+    }
+
     public void dirty()
     {
         this.setDirty(true);
