@@ -71,6 +71,7 @@ public class CameraControl
      */
     public void addProfile(CameraProfile profile)
     {
+        profile.initiate();
         this.insertProfile(profile);
         this.currentProfile = profile;
 
