@@ -66,6 +66,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         this.editor.updateValues();
     }
 
+    public void profileWasUpdated()
+    {}
+
     @Override
     public void select(T fixture, long duration)
     {

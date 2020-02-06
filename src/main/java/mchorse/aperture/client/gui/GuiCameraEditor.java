@@ -739,6 +739,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updatePlayer(long tick, float ticks)
     {
+        if (this.profile == null)
+        {
+            return;
+        }
+
         long duration = this.profile.getDuration();
 
         tick = tick < 0 ? 0 : tick;
@@ -778,6 +783,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (this.profile != null)
         {
             this.profile.dirty();
+        }
+
+        if (this.panel.delegate != null)
+        {
+            this.panel.delegate.profileWasUpdated();
         }
     }
 
@@ -980,7 +990,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.flight.vertical = !this.flight.vertical;
         }
 
-        if (this.flight.enabled)
+        if (this.flight.enabled || this.profile == null)
         {
             return;
         }
@@ -1155,6 +1165,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
         }
 
+        this.drawIcons();
+
         if (this.profile != null)
         {
             if (Aperture.proxy.config.camera_editor_overlay && this.overlayLocation != null)
@@ -1285,8 +1297,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             {
                 this.updatePlayerCurrently(partialTicks);
             }
-
-            this.drawIcons();
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
