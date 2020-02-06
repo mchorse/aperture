@@ -76,6 +76,7 @@ public class GuiInterpModule extends GuiAbstractModule
             }
 
             this.interps.setVisible(false);
+            this.editor.updateProfile();
         });
 
         this.pos.resizer().parent(this.area).set(0, 0, 0, 20).w(1, 0);
@@ -101,7 +102,7 @@ public class GuiInterpModule extends GuiAbstractModule
     {
         super.draw(tooltip, mouseX, mouseY, partialTicks);
 
-        font.drawStringWithShadow(I18n.format("aperture.gui.panels.position"), this.pos.area.x + this.pos.area.w + 5, this.pos.area.y + 6, 0xffffff);
-        font.drawStringWithShadow(I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w + 5, this.angle.area.y + 6, 0xffffff);
+        this.font.drawStringWithShadow(I18n.format("aperture.gui.panels.position"), this.pos.area.x + this.pos.area.w + 5, this.pos.area.y + 6, 0xffffff);
+        this.font.drawStringWithShadow(I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w + 5, this.angle.area.y + 6, 0xffffff);
     }
 }
