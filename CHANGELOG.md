@@ -2,6 +2,18 @@
 
 Aperture's change log.
 
+## Aperture 1.3.5
+
+This tiny patch offers a couple of important bugs, crashes and optimizes performance of path preview when used with velocity control.
+
+**Compatible** with McLib `1.0.4`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
+
+* Fixed camera profiles not being shown in the list (sorry, I accidentally broke it)
+* Fixed hermite crashing Minecraft due to being unsorted (reported and fixed by terbin)
+* Fixed crash which happens if fixture/camera profile related keybinds are pressed when no camera profile is selected (reported by Chunk7)
+* Fixed optimize velocity control's performance in path preview (reported by Negative_Entropy and terbin)
+* Fixed playback scrub being stuck at 0/0 when switching/adding camera profiles with no fixtures (reported by Koki)
+
 ## Aperture 1.3.4
 
 This small patch improves UX experience and also adds Brazilian Portuguese localization, camera profile modifiers, copy-paste modifiers, and improves and simplifies look and follow modifiers.
