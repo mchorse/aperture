@@ -42,6 +42,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
     public DurablePosition position;
 
+    private long update;
+
     public GuiPathFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc, editor);
@@ -60,6 +62,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.fixture.useSpeed = b.button.isChecked();
             this.speed.setVisible(this.fixture.useSpeed);
             this.editor.updateProfile();
+            this.resize(editor.width, editor.height);
+
+            if (this.fixture.useSpeed)
+            {
+                this.fixture.updateSpeedCache();
+            }
         });
         this.toKeyframe = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
         this.speed = new GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel>(mc, this);
@@ -79,7 +87,16 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.children.add(this.point, this.angle, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points, this.interp);
     }
 
-    private void toKeyframe()
+	@Override
+	public void profileWasUpdated()
+	{
+		if (this.fixture.useSpeed)
+		{
+			this.update = System.currentTimeMillis() + 200;
+		}
+	}
+
+	private void toKeyframe()
     {
         int c = this.fixture.getCount();
 
@@ -140,7 +157,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.angle.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -170);
 
-        if (h)
+        if (h && !this.speed.isVisible())
         {
             this.angle.resizer().x(1, -80).y(120);
         }
@@ -255,6 +272,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
     {
+    	if (this.fixture.useSpeed && this.update > 0 && System.currentTimeMillis() >= this.update)
+	    {
+	    	this.fixture.updateSpeedCache();
+	    	this.update = 0;
+	    }
+
         super.draw(tooltip, mouseX, mouseY, partialTicks);
 
         this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.area.x + this.point.area.w / 2, this.point.area.y - 14, 0xffffffff);
