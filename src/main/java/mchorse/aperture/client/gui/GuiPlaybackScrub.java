@@ -75,7 +75,7 @@ public class GuiPlaybackScrub extends GuiElement
         this.profile = profile;
         this.index = -1;
 
-        this.max = profile == null ? 0 : (int) profile.getDuration();
+        this.max = Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub);
         this.value = MathHelper.clamp_int(this.value, this.min, this.max);
 
         if (!same)
