@@ -227,6 +227,11 @@ public class CameraRenderer
 
         for (AbstractFixture fixture : profile.getAll())
         {
+            if (fixture instanceof PathFixture)
+            {
+                ((PathFixture) fixture).disableSpeed();
+            }
+
             fixture.applyFixture(0, 0.0F, profile, this.prev);
             fixture.applyFixture(fixture.getDuration(), 0.0F, profile, this.next);
 
@@ -242,6 +247,11 @@ public class CameraRenderer
 
             this.drawCard(color, i++, duration, this.prev);
             this.drawFixture(0.0F, color, fixture, this.prev, this.next);
+
+            if (fixture instanceof PathFixture)
+            {
+                ((PathFixture) fixture).reenableSpeed();
+            }
         }
 
         GlStateManager.disableBlend();

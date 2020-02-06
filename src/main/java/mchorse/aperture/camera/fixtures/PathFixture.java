@@ -60,6 +60,7 @@ public class PathFixture extends AbstractFixture
     private Point tmpPoint = new Point(0, 0, 0);
     private CachedPosition result = new CachedPosition();
     private List<CachedPosition> cache = new ArrayList<CachedPosition>();
+    private boolean disableSpeed = false;
 
     public PathFixture()
     {
@@ -100,6 +101,16 @@ public class PathFixture extends AbstractFixture
             this.applyPoint(this.lastPoint, 0, 0);
             this.cache.add(previous = this.calculateResult(target, true, previous).copy());
         }
+    }
+
+    public void disableSpeed()
+    {
+        this.disableSpeed = true;
+    }
+
+    public void reenableSpeed()
+    {
+        this.disableSpeed = false;
     }
 
     public DurablePosition getPoint(int index)
@@ -255,7 +266,7 @@ public class PathFixture extends AbstractFixture
         }
 
         /* If use speed is enabled */
-        if (this.useSpeed)
+        if (this.useSpeed && !this.disableSpeed)
         {
             float tick = ticks + previewPartialTick;
 
