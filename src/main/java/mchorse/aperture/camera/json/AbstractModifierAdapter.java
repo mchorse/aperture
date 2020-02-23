@@ -43,9 +43,13 @@ public class AbstractModifierAdapter implements JsonSerializer<AbstractModifier>
         if (object.has("type"))
         {
             String type = object.get("type").getAsString();
+            Class<? extends AbstractModifier> clazz = ModifierRegistry.NAME_TO_CLASS.get(type);
 
-            modifier = this.gson.fromJson(json, ModifierRegistry.NAME_TO_CLASS.get(type));
-            modifier.fromJSON(object);
+            if (clazz != null)
+            {
+                modifier = this.gson.fromJson(json, clazz);
+                modifier.fromJSON(object);
+            }
         }
 
         return modifier;

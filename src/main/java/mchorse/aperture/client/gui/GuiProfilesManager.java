@@ -203,6 +203,12 @@ public class GuiProfilesManager extends GuiElement
         if (confirmed)
         {
             CameraProfileEntry entry = this.profiles.list.getCurrent();
+
+            if (entry == null)
+            {
+                return;
+            }
+
             ClientProxy.control.profiles.remove(entry.profile);
 
             /* Reset current camera profile only removed one is was current profile */
@@ -214,7 +220,7 @@ public class GuiProfilesManager extends GuiElement
 
             this.profiles.elements.remove(entry);
             this.profiles.filter("", true);
-            entry.profile.getDestination().remove();
+            entry.destination.remove();
         }
     }
 

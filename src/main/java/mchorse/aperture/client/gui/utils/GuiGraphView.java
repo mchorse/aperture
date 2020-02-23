@@ -174,11 +174,19 @@ public class GuiGraphView extends GuiKeyframeElement
         }
         else
         {
-            Keyframe first = this.channel.get(0);
+            minX = 0;
+            maxX = this.duration;
+            minY = -10;
+            maxY = 10;
 
-            minX = Math.min(first.tick, 0);
-            maxX = Math.max(first.tick, this.duration);
-            minY = maxY = first.value;
+            if (c == 1)
+            {
+                Keyframe first = this.channel.get(0);
+
+                minX = Math.min(0, first.tick);
+                maxX = Math.min(this.duration, first.tick);
+                minY = maxY = first.value;
+            }
         }
 
         if (Math.abs(maxY - minY) < 0.01F)
@@ -423,7 +431,7 @@ public class GuiGraphView extends GuiKeyframeElement
      */
     private void drawGraph(int mouseX, int mouseY, int w, int h)
     {
-        if (this.channel == null || this.channel.isEmpty())
+        if (this.channel == null)
         {
             return;
         }
@@ -524,6 +532,11 @@ public class GuiGraphView extends GuiKeyframeElement
             cx = this.toGraphX(cx);
 
             Gui.drawRect(cx - 1, cy, cx + 1, h, 0xff57f52a);
+        }
+
+        if (this.channel.isEmpty())
+        {
+            return;
         }
 
         /* Draw graph of the keyframe channel */

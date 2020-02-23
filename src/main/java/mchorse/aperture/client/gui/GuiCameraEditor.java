@@ -1165,8 +1165,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
         }
 
-        this.drawIcons();
-
         if (this.profile != null)
         {
             if (Aperture.proxy.config.camera_editor_overlay && this.overlayLocation != null)
@@ -1237,6 +1235,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         this.drawGradientRect(0, 0, width, 20, 0x66000000, 0);
+        this.drawIcons();
 
         if (this.profiles.isVisible())
         {
