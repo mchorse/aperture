@@ -15,6 +15,7 @@ import com.google.gson.stream.JsonWriter;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.json.AbstractFixtureAdapter;
 import mchorse.aperture.camera.json.AbstractModifierAdapter;
+import mchorse.aperture.camera.json.CameraProfileAdapter;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
@@ -36,7 +37,7 @@ public class CameraUtils
     /**
      * Get path to camera profile file (located in current world save's folder)
      */
-    public static String cameraFile(String filename)
+    public static File cameraFile(String filename)
     {
         File file = new File(DimensionManager.getCurrentSaveRootDirectory() + "/aperture/cameras");
 
@@ -45,7 +46,7 @@ public class CameraUtils
             file.mkdirs();
         }
 
-        return file.getAbsolutePath() + "/" + filename + ".json";
+        return new File(file, filename + ".json");
     }
 
     /**
@@ -66,6 +67,7 @@ public class CameraUtils
         /* Serializer and deserializer */
         builder.registerTypeAdapter(AbstractFixture.class, new AbstractFixtureAdapter());
         builder.registerTypeAdapter(AbstractModifier.class, new AbstractModifierAdapter());
+        builder.registerTypeAdapter(CameraProfile.class, new CameraProfileAdapter());
 
         return builder.create();
     }
@@ -75,8 +77,8 @@ public class CameraUtils
      */
     public static String readCameraProfile(String filename) throws Exception
     {
-        String path = cameraFile(filename);
-        DataInputStream stream = new DataInputStream(new FileInputStream(path));
+        File file = cameraFile(filename);
+        DataInputStream stream = new DataInputStream(new FileInputStream(file));
         Scanner scanner = new Scanner(stream, "UTF-8");
         String content = scanner.useDelimiter("\\A").next();
 
@@ -113,6 +115,13 @@ public class CameraUtils
                 return;
             }
 
+            if (!cameraFile(filename).isFile())
+            {
+                L10n.error(player, "profile.cant_load", filename);
+
+                return;
+            }
+
             CameraProfile profile = cameraJSONBuilder(true).fromJson(readCameraProfile(filename), CameraProfile.class);
             ICamera recording = Camera.get(player);
 
@@ -134,7 +143,7 @@ public class CameraUtils
     private static boolean playerHasProfile(EntityPlayerMP player, String filename, boolean play)
     {
         ICamera recording = Camera.get(player);
-        File profile = new File(cameraFile(filename));
+        File profile = cameraFile(filename);
 
         boolean hasSame = recording.currentProfile().equals(filename);
         boolean isNewer = recording.currentProfileTimestamp() >= profile.lastModified();
@@ -202,8 +211,8 @@ public class CameraUtils
      */
     public static boolean renameProfile(String from, String to)
     {
-        File fromFile = new File(cameraFile(from));
-        File toFile = new File(cameraFile(to));
+        File fromFile = cameraFile(from);
+        File toFile = cameraFile(to);
 
         return fromFile.renameTo(toFile);
     }
@@ -213,7 +222,7 @@ public class CameraUtils
      */
     public static boolean removeProfile(String profile)
     {
-        File file = new File(cameraFile(profile));
+        File file = cameraFile(profile);
 
         return file.delete();
     }

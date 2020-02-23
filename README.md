@@ -14,7 +14,7 @@
 * **Duration is measured in ticks**. A tick is basically an update in game's logic. Minecraft's logic loop running at 20 ticks per second. Why ticks? They're static, while frames depend on framerate, and can be easily converted into seconds (while not depending on real-time).
 * **Flexible camera setup with multiple camera fixtures within a camera profile**. Other camera mods usually gives you an ability to setup only one path at the time. Aperture allows you to have as much camera paths (and not only) as you need to within same camera profile. There are few types of camera fixtures in Aperture: 
     * Idle fixture – holds camera in given position and angle.
-    * Path fixture – animates the camera through a set of given points using one of the three interpolations: linear, cubic or hermite. Also supports keyframeable velocity control.
+    * Path fixture – animates the camera through a set of given points using one of the three interpolations: linear, cubic or hermite. Also supports keyframeable velocity control and per point durations.
     * Circular fixture – circulate around the center point and facing at it.
     * Keyframe fixture – allows you create a camera behavior based on specified keyframes (which can have different interpolations and easing).
     * Null fixture – a placeholder fixture, which mimics next fixture's first position or previous fixture's last position.
@@ -37,17 +37,6 @@ Meanwhile, this playlist contains a list of videos about **Aperture's updates**.
 Install [Minecraft Forge](http://files.minecraftforge.net/), download the latest stable version of jar file for available Minecraft version. Also install following mods: [McLib](https://minecraft.curseforge.com/projects/mchorses-mclib). Put it in minecraft's `mods` folder, and launch the game.
 
 After that, Aperture mod should be installed and will appear in Minecraft's mods menu. If Aperture didn't appear in the mods menu, then something went wrong. 
-
-## For mod reviewers and reposters
-
-When reposting my mod on your own website or reviewing it, please consider following (if you want to support me and my mod):
-
-* Don't distort the mod name. It's the *Aperture* mod.
-* Make sure that information and description of my mod is legit. Misleading information, like Minecraft version support or non-existent features, is your responsibility.
-* By uploading a custom build of this mod, the build becomes your responsibility.
-* Provide the source link, please. [CurseForge](https://minecraft.curseforge.com/projects/aperture) page is preferable.
-* Provide a link to my [YouTube channel](https://www.youtube.com/channel/UCSLuDXxxql4EVK_Ktd6PNbw), please. This will be really appreciated! 
-* You can use Aperture [banner](https://i.imgur.com/Wras78u.png) or [cover](https://i.imgur.com/rckGnn4.png) for your repost page. Don't apply the watermark, though, that's just rude.
 
 If you're interested in this project, you might as well follow me on any of social media accounts listed below:
 
