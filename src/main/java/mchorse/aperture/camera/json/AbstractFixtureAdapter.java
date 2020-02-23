@@ -52,9 +52,13 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         if (object.has("type"))
         {
             String type = object.get("type").getAsString();
+            Class<? extends AbstractFixture> clazz = FixtureRegistry.NAME_TO_CLASS.get(type);
 
-            fixture = this.gson.fromJson(json, FixtureRegistry.NAME_TO_CLASS.get(type));
-            fixture.fromJSON(object);
+            if (clazz != null)
+            {
+                fixture = this.gson.fromJson(json, clazz);
+                fixture.fromJSON(object);
+            }
         }
 
         return fixture;
