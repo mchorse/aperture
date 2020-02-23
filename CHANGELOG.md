@@ -13,7 +13,7 @@ This tiny patch offers a couple of bugs and crashes fixes as well as some of my 
 * Fixed unable to turn head up and down when in outside mode
 * Fixed crash with empty graph view (reported by SCraft Systems)
 * Fixed crash with unpopulated camera profile entry (reported by SCraft Systems)
-* Fixed camera profile not being loading due to outdated camera fixtures present (reported by SCraft Systems)
+* Fixed camera profile not being loading due to outdated camera fixtures present
 
 ## Aperture 1.3.5
 
