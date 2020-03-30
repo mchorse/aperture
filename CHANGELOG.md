@@ -2,6 +2,19 @@
 
 Aperture's change log.
 
+## Aperture 1.3.6
+
+This tiny patch offers a couple of bugs and crashes fixes as well as some of my stupidity fixes.
+
+**Compatible** with McLib `1.0.4`. It doesn't mean that future versions of McLib would be incompatible, but older versions are most likely incompatible.
+
+* Fixed exception being thrown when no camera file was found (internal clean up)
+* Fixed flight and sync icons showing in F1 in camera editor (i.e. hide them)
+* Fixed unable to turn head up and down when in outside mode
+* Fixed crash with empty graph view (reported by SCraft Systems)
+* Fixed crash with unpopulated camera profile entry (reported by SCraft Systems)
+* Fixed camera profile not being loading due to outdated camera fixtures present
+
 ## Aperture 1.3.5
 
 This tiny patch offers a couple of important bugs, crashes and optimizes performance of path preview when used with velocity control.
