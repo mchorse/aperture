@@ -2,63 +2,55 @@ package mchorse.aperture.client.gui.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTexturePicker;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTexturePicker;
+import mchorse.mclib.client.gui.utils.resizers.layout.ColumnResizer;
 import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
-import net.minecraftforge.fml.common.Loader;
 
 public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 {
     private String title = I18n.format("aperture.gui.config.title");
 
-    public GuiButtonElement<GuiCheckBox> outside;
-    public GuiButtonElement<GuiCheckBox> minema;
-    public GuiButtonElement<GuiCheckBox> spectator;
-    public GuiButtonElement<GuiCheckBox> renderPath;
-    public GuiButtonElement<GuiCheckBox> sync;
-    public GuiButtonElement<GuiCheckBox> flight;
-    public GuiButtonElement<GuiCheckBox> displayPosition;
-    public GuiButtonElement<GuiCheckBox> minecrafttpTeleport;
-    public GuiButtonElement<GuiCheckBox> tpTeleport;
-    public GuiButtonElement<GuiCheckBox> ruleOfThirds;
-    public GuiButtonElement<GuiCheckBox> letterBox;
+    public GuiToggleElement outside;
+    public GuiToggleElement spectator;
+    public GuiToggleElement renderPath;
+    public GuiToggleElement sync;
+    public GuiToggleElement flight;
+    public GuiToggleElement displayPosition;
+    public GuiToggleElement minecrafttpTeleport;
+    public GuiToggleElement tpTeleport;
+    public GuiToggleElement ruleOfThirds;
+    public GuiToggleElement letterBox;
     public GuiTextElement aspectRatio;
-    public GuiButtonElement<GuiCheckBox> repeat;
-    public GuiButtonElement<GuiCheckBox> overlay;
-    public GuiButtonElement<GuiButton> pickOverlay;
+    public GuiToggleElement repeat;
+    public GuiToggleElement overlay;
+    public GuiButtonElement pickOverlay;
     public GuiTexturePicker overlayPicker;
-
-    public int maxW;
-    public int maxH;
 
     public GuiConfigCameraOptions(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc, editor);
 
-        this.outside = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.outside"), Aperture.proxy.config.camera_outside, (b) ->
+        this.outside = new GuiToggleElement(mc, I18n.format("aperture.gui.config.outside"), Aperture.proxy.config.camera_outside, (b) ->
         {
             Property prop = Aperture.proxy.forge.getCategory("outside").get("camera_outside");
 
-            prop.set(b.button.isChecked());
+            prop.set(b.isToggled());
 
             Aperture.proxy.forge.save();
             Aperture.proxy.config.reload();
 
-            if (b.button.isChecked())
+            if (b.isToggled())
             {
                 ClientProxy.runner.attachOutside();
                 this.editor.updatePlayerCurrently();
@@ -69,67 +61,59 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             }
         });
 
-        this.minema = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.minema"), Aperture.proxy.config.camera_minema, (b) ->
-        {
-            Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_minema");
-
-            prop.set(b.button.isChecked());
-            this.saveConfig();
-        });
-
-        this.spectator = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.spectator"), Aperture.proxy.config.camera_spectator, (b) ->
+        this.spectator = new GuiToggleElement(mc, I18n.format("aperture.gui.config.spectator"), Aperture.proxy.config.camera_spectator, (b) ->
         {
             Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_spectator");
 
-            prop.set(b.button.isChecked());
+            prop.set(b.isToggled());
             this.saveConfig();
         });
 
-        this.renderPath = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.show_path"), Aperture.proxy.config.camera_profile_render, (b) ->
+        this.renderPath = new GuiToggleElement(mc, I18n.format("aperture.gui.config.show_path"), Aperture.proxy.config.camera_profile_render, (b) ->
         {
             ClientProxy.renderer.toggleRender();
-            b.button.setIsChecked(Aperture.proxy.config.camera_profile_render);
+            b.toggled(Aperture.proxy.config.camera_profile_render);
         });
 
-        this.sync = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.sync"), this.editor.syncing, (b) ->
+        this.sync = new GuiToggleElement(mc, I18n.format("aperture.gui.config.sync"), this.editor.syncing, (b) ->
         {
-            this.editor.syncing = b.button.isChecked();
+            this.editor.syncing = b.isToggled();
         });
 
-        this.flight = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled, (b) ->
+        this.flight = new GuiToggleElement(mc, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled, (b) ->
         {
-            this.editor.setFlight(b.button.isChecked());
+            this.editor.setFlight(b.isToggled());
         });
 
-        this.displayPosition = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.display_info"), this.editor.displayPosition, (b) ->
+        this.displayPosition = new GuiToggleElement(mc, I18n.format("aperture.gui.config.display_info"), this.editor.displayPosition, (b) ->
         {
-            this.editor.displayPosition = b.button.isChecked();
+            this.editor.displayPosition = b.isToggled();
         });
 
-        this.minecrafttpTeleport = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.minecrafttp_teleport"), Aperture.proxy.config.minecrafttp_teleport, (b) ->
+        this.minecrafttpTeleport = new GuiToggleElement(mc, I18n.format("aperture.gui.config.minecrafttp_teleport"), Aperture.proxy.config.minecrafttp_teleport, (b) ->
         {
             Property prop = Aperture.proxy.forge.getCategory("camera").get("minecrafttp_teleport");
 
-            prop.set(b.button.isChecked());
+            prop.set(b.isToggled());
             this.saveConfig();
         });
 
-        this.tpTeleport = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.tp_teleport"), Aperture.proxy.config.tp_teleport, (b) ->
+        this.tpTeleport = new GuiToggleElement(mc, I18n.format("aperture.gui.config.tp_teleport"), Aperture.proxy.config.tp_teleport, (b) ->
         {
             Property prop = Aperture.proxy.forge.getCategory("camera").get("tp_teleport");
 
-            prop.set(b.button.isChecked());
+            prop.set(b.isToggled());
             this.saveConfig();
         });
 
-        this.ruleOfThirds = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.rule_of_thirds"), Aperture.proxy.config.tp_teleport, (b) ->
+        this.ruleOfThirds = new GuiToggleElement(mc, I18n.format("aperture.gui.config.rule_of_thirds"), Aperture.proxy.config.tp_teleport, (b) ->
         {
-            this.editor.ruleOfThirds = b.button.isChecked();
+            this.editor.ruleOfThirds = b.isToggled();
         });
 
-        this.letterBox = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.letter_box"), Aperture.proxy.config.tp_teleport, (b) ->
+        this.letterBox = new GuiToggleElement(mc, I18n.format("aperture.gui.config.letter_box"), Aperture.proxy.config.tp_teleport, (b) ->
         {
-            this.editor.letterBox = b.button.isChecked();
+            this.editor.letterBox = b.isToggled();
         });
 
         this.aspectRatio = new GuiTextElement(mc, (v) ->
@@ -142,26 +126,25 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         });
         this.aspectRatio.setText(Aperture.proxy.config.aspect_ratio);
 
-        this.repeat = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.repeat"), this.editor.repeat, (b) ->
+        this.repeat = new GuiToggleElement(mc, I18n.format("aperture.gui.config.repeat"), this.editor.repeat, (b) ->
         {
-            this.editor.repeat = b.button.isChecked();
+            this.editor.repeat = b.isToggled();
         });
 
-        this.overlay = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.config.overlay"), Aperture.proxy.config.tp_teleport, (b) ->
+        this.overlay = new GuiToggleElement(mc, I18n.format("aperture.gui.config.overlay"), Aperture.proxy.config.tp_teleport, (b) ->
         {
             Property prop = Aperture.proxy.forge.getCategory("overlay").get("camera_editor_overlay");
 
-            prop.set(b.button.isChecked());
+            prop.set(b.isToggled());
             this.saveConfig();
         });
 
-        this.pickOverlay = GuiButtonElement.button(mc, I18n.format("aperture.gui.config.pick_overlay"), (b) ->
+        this.pickOverlay = new GuiButtonElement(mc, I18n.format("aperture.gui.config.pick_overlay"), (b) ->
         {
             this.overlayPicker.refresh();
             this.overlayPicker.fill(this.editor.overlayLocation);
             this.overlayPicker.setVisible(true);
         });
-        this.pickOverlay.button.width = this.font.getStringWidth(this.pickOverlay.button.displayString) + 10;
 
         this.overlayPicker = new GuiTexturePicker(mc, (rl) ->
         {
@@ -179,47 +162,22 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.editor.updateOverlay();
         });
         this.overlayPicker.setVisible(false);
-        this.overlayPicker.resizer().parent(this.editor.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
+        this.overlayPicker.flex().parent(this.editor.viewport).wh(1F, 1F);
 
-        /* Don't show that if Minema mod isn't present */
-        if (Loader.isModLoaded("minema"))
-        {
-            this.children.add(this.minema);
-        }
-
-        this.children.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
+        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
 
         /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())
         {
-            this.children.add(this.minecrafttpTeleport, this.tpTeleport);
+            this.add(this.minecrafttpTeleport, this.tpTeleport);
         }
 
-        this.maxH = 24;
-
-        for (IGuiElement element : this.children.elements)
+        for (IGuiElement element : this.getChildren())
         {
-            if (element instanceof GuiButtonElement)
-            {
-                GuiButtonElement button = (GuiButtonElement) element;
-
-                button.resizer().parent(this.area).set(4, this.maxH, button.button.width, button.button.height);
-
-                if (!(button.button instanceof GuiCheckBox))
-                {
-                    button.resizer().w(1, -8);
-                }
-
-                this.maxW = Math.max(this.maxW, button.button.width);
-                this.maxH += button.button.height + 5;
-            }
-            else if (element instanceof GuiElement)
-            {
-                ((GuiElement) element).resizer().parent(this.area).set(4, this.maxH, 0, 18).w(1, -8);
-
-                this.maxH += 23;
-            }
+            ((GuiElement) element).flex().h(20);
         }
+
+        ColumnResizer.apply(this, 5).vertical().stretch().padding(10);
     }
 
     private void saveConfig()
@@ -231,45 +189,17 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     @Override
     public void update()
     {
-        this.outside.button.setIsChecked(Aperture.proxy.config.camera_outside);
-        this.minema.button.setIsChecked(Aperture.proxy.config.camera_minema);
-        this.spectator.button.setIsChecked(Aperture.proxy.config.camera_spectator);
-        this.renderPath.button.setIsChecked(Aperture.proxy.config.camera_profile_render);
-        this.sync.button.setIsChecked(this.editor.syncing);
-        this.flight.button.setIsChecked(this.editor.flight.enabled);
-        this.displayPosition.button.setIsChecked(this.editor.displayPosition);
-        this.minecrafttpTeleport.button.setIsChecked(Aperture.proxy.config.minecrafttp_teleport);
-        this.tpTeleport.button.setIsChecked(Aperture.proxy.config.tp_teleport);
-        this.ruleOfThirds.button.setIsChecked(this.editor.ruleOfThirds);
-        this.letterBox.button.setIsChecked(this.editor.letterBox);
+        this.outside.toggled(Aperture.proxy.config.camera_outside);
+        this.spectator.toggled(Aperture.proxy.config.camera_spectator);
+        this.renderPath.toggled(Aperture.proxy.config.camera_profile_render);
+        this.sync.toggled(this.editor.syncing);
+        this.flight.toggled(this.editor.flight.enabled);
+        this.displayPosition.toggled(this.editor.displayPosition);
+        this.minecrafttpTeleport.toggled(Aperture.proxy.config.minecrafttp_teleport);
+        this.tpTeleport.toggled(Aperture.proxy.config.tp_teleport);
+        this.ruleOfThirds.toggled(this.editor.ruleOfThirds);
+        this.letterBox.toggled(this.editor.letterBox);
         this.aspectRatio.setText(Aperture.proxy.config.aspect_ratio);
-        this.overlay.button.setIsChecked(Aperture.proxy.config.camera_editor_overlay);
-    }
-
-    @Override
-    public int getWidth()
-    {
-        return Math.max(this.maxW + 8, this.font.getStringWidth(this.title) + 8);
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return this.maxH;
-    }
-
-    @Override
-    public boolean isActive()
-    {
-        return true;
-    }
-
-    @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
-    {
-        Gui.drawRect(this.area.x, this.area.y, this.area.getX(1), this.area.y + 20, 0x88000000);
-        this.font.drawString(this.title, this.area.x + 6, this.area.y + 7, 0xffffff, true);
-
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        this.overlay.toggled(Aperture.proxy.config.camera_editor_overlay);
     }
 }

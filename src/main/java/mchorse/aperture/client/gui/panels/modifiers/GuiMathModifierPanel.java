@@ -5,7 +5,8 @@ import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -23,6 +24,7 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
             this.math.field.setTextColor(this.modifier.rebuildExpression(str) ? 0xffffff : 0xff2244);
             this.modifiers.editor.updateProfile();
         });
+        this.math.tooltip(I18n.format("aperture.gui.modifiers.math"));
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {
@@ -30,35 +32,21 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
             this.modifiers.editor.updateProfile();
         });
 
-        this.math.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
-        this.active.resizer().parent(this.area).set(5, 45, 0, 20).w(1, -10);
-
-        this.children.add(this.math, this.active);
+        this.fields.add(this.math, this.active);
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.math.setText(this.modifier.expression == null ? "" : this.modifier.expression.toString());
         this.active.value = this.modifier.active;
     }
 
     @Override
-    public int getHeight()
+    public void draw(GuiContext context)
     {
-        return 70;
-    }
-
-    @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
-
-        if (!this.math.field.isFocused())
-        {
-            GuiUtils.drawRightString(font, I18n.format("aperture.gui.modifiers.math"), this.math.area.x + this.math.area.w - 4, this.math.area.y + 6, 0xffaaaaaa);
-        }
+        super.draw(context);
     }
 }

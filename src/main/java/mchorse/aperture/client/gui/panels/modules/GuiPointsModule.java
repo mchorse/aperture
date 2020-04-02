@@ -1,17 +1,16 @@
 package mchorse.aperture.client.gui.panels.modules;
 
-import org.lwjgl.opengl.GL11;
-
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
-import mchorse.mclib.client.gui.utils.GuiUtils;
+import mchorse.aperture.utils.APIcons;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
+import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.ScrollArea;
 import mchorse.mclib.client.gui.utils.ScrollArea.ScrollDirection;
-import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -42,7 +41,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
         this.picker = picker;
 
-        GuiButtonElement<GuiTextureButton> back = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 160, 0, 160, 16, (b) ->
+        GuiIconElement back = new GuiIconElement(mc, APIcons.MOVE_BACK, (b) ->
         {
             if (this.index == 0) return;
 
@@ -51,10 +50,10 @@ public class GuiPointsModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        GuiButtonElement<GuiTextureButton> add = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 224, 0, 224, 16, (b) -> this.addPoint());
-        GuiButtonElement<GuiTextureButton> remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 240, 0, 240, 16, (b) -> this.removePoint());
+        GuiIconElement add = new GuiIconElement(mc, Icons.ADD, (b) -> this.addPoint());
+        GuiIconElement remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.removePoint());
 
-        GuiButtonElement<GuiTextureButton> forward = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 144, 0, 144, 16, (b) ->
+        GuiIconElement forward = new GuiIconElement(mc, APIcons.MOVE_FORWARD, (b) ->
         {
             if (this.index >= this.path.getCount() - 1) return;
 
@@ -63,12 +62,12 @@ public class GuiPointsModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        back.resizer().parent(this.area).set(-38, 2, 16, 16);
-        remove.resizer().parent(this.area).set(-18, 2, 16, 16);
-        add.resizer().parent(this.area).set(0, 2, 16, 16).x(1, 2);
-        forward.resizer().parent(this.area).set(0, 2, 16, 16).x(1, 22);
+        back.flex().parent(this.area).set(-38, 2, 16, 16);
+        remove.flex().parent(this.area).set(-18, 2, 16, 16);
+        add.flex().parent(this.area).set(0, 2, 16, 16).x(1, 2);
+        forward.flex().parent(this.area).set(0, 2, 16, 16).x(1, 22);
 
-        this.children.add(back, add, remove, forward);
+        this.add(back, add, remove, forward);
         this.scroll.direction = ScrollDirection.HORIZONTAL;
     }
 
@@ -133,9 +132,9 @@ public class GuiPointsModule extends GuiAbstractModule
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.scroll.copy(this.area);
     }
@@ -147,22 +146,25 @@ public class GuiPointsModule extends GuiAbstractModule
      * fixture and initiating scrolling.
      */
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(GuiContext context)
     {
-        if (super.mouseClicked(mouseX, mouseY, mouseButton))
+        if (super.mouseClicked(context))
         {
             return true;
         }
 
-        if (this.scroll.isInside(mouseX, mouseY))
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
+
+        if (this.scroll.isInside(context))
         {
-            if (mouseButton == 1)
+            if (context.mouseButton == 1)
             {
                 this.scroll.dragging = true;
 
                 return true;
             }
-            else if (mouseButton == 0)
+            else if (context.mouseButton == 0)
             {
                 int index = this.scroll.getIndex(mouseX, mouseY);
                 int size = this.path.getCount();
@@ -186,9 +188,9 @@ public class GuiPointsModule extends GuiAbstractModule
     }
 
     @Override
-    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
+    public boolean mouseScrolled(GuiContext context)
     {
-        return super.mouseScrolled(mouseX, mouseY, scroll) || this.scroll.mouseScroll(mouseX, mouseY, scroll);
+        return super.mouseScrolled(context) || this.scroll.mouseScroll(context);
     }
 
     /**
@@ -199,14 +201,11 @@ public class GuiPointsModule extends GuiAbstractModule
      * location of the of current path point.
      */
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
+    public void mouseReleased(GuiContext context)
     {
-        this.scroll.dragging = false;
+        super.mouseReleased(context);
+        this.scroll.mouseReleased(context);
     }
-
-    @Override
-    public void keyTyped(char typedChar, int keyCode)
-    {}
 
     /**
      * Draw the module
@@ -215,10 +214,10 @@ public class GuiPointsModule extends GuiAbstractModule
      * the buttons. It also responsible for scrolling.
      */
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
         /* Scroll this view */
-        this.scroll.drag(mouseX, mouseY);
+        this.scroll.drag(context);
 
         int x = this.scroll.x;
         int y = this.scroll.y;
@@ -226,7 +225,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
         /* Draw background and buttons */
         Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.h, 0x88000000);
-        GuiUtils.scissor(this.scroll.x, this.scroll.y, this.scroll.w, this.scroll.h, this.editor.width, this.editor.height);
+        GuiDraw.scissor(this.scroll.x, this.scroll.y, this.scroll.w, this.scroll.h, context);
 
         for (int i = 0; i < c; i++)
         {
@@ -239,7 +238,7 @@ public class GuiPointsModule extends GuiAbstractModule
             this.font.drawStringWithShadow(label, xx + 10 - w / 2, y + 6, 0xffffff);
         }
 
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        GuiDraw.unscissor(context);
 
         /* Display scroll bar */
         int mw = this.scroll.w;
@@ -256,15 +255,15 @@ public class GuiPointsModule extends GuiAbstractModule
         /* Overlay "shadows" for informing the user that  */
         if (this.scroll.scroll > 0 && this.scroll.scrollSize >= this.scroll.w - 40)
         {
-            GuiUtils.drawHorizontalGradientRect(x, y, x + 4, y + this.scroll.h, 0x88000000, 0x0, 0);
+            GuiDraw.drawHorizontalGradientRect(x, y, x + 4, y + this.scroll.h, 0x88000000, 0x0, 0);
         }
 
         if (this.scroll.scroll < this.scroll.scrollSize - this.scroll.w && this.scroll.scrollSize >= this.scroll.w)
         {
-            GuiUtils.drawHorizontalGradientRect(x + this.scroll.w - 4, y, x + this.scroll.w, y + this.scroll.h, 0x0, 0x88000000, 0);
+            GuiDraw.drawHorizontalGradientRect(x + this.scroll.w - 4, y, x + this.scroll.w, y + this.scroll.h, 0x0, 0x88000000, 0);
         }
 
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
 
         String label = I18n.format("aperture.gui.panels.path_points");
         int w = this.font.getStringWidth(label);

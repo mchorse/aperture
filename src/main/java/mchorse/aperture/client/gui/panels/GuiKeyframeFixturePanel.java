@@ -8,24 +8,24 @@ import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
 public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
 {
     public GuiElements<GuiButtonElement> buttons;
 
-    public GuiButtonElement<GuiButton> all;
-    public GuiButtonElement<GuiButton> x;
-    public GuiButtonElement<GuiButton> y;
-    public GuiButtonElement<GuiButton> z;
-    public GuiButtonElement<GuiButton> yaw;
-    public GuiButtonElement<GuiButton> pitch;
-    public GuiButtonElement<GuiButton> roll;
-    public GuiButtonElement<GuiButton> fov;
+    public GuiButtonElement all;
+    public GuiButtonElement x;
+    public GuiButtonElement y;
+    public GuiButtonElement z;
+    public GuiButtonElement yaw;
+    public GuiButtonElement pitch;
+    public GuiButtonElement roll;
+    public GuiButtonElement fov;
 
     public GuiFixtureKeyframesGraphEditor<GuiKeyframeFixturePanel> graph;
     public GuiFixtureKeyframesDopeSheetEditor dope;
@@ -40,18 +40,18 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         super(mc, editor);
 
-        this.buttons = new GuiElements<>();
+        this.buttons = new GuiElements<GuiButtonElement>(this);
         this.graph = new GuiFixtureKeyframesGraphEditor<GuiKeyframeFixturePanel>(mc, this);
         this.dope = new GuiFixtureKeyframesDopeSheetEditor(mc, this);
 
-        this.all = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
-        this.x = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
-        this.y = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
-        this.z = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
-        this.yaw = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.yaw"), (b) -> this.selectChannel(this.fixture.yaw));
-        this.pitch = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch));
-        this.roll = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll));
-        this.fov = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov));
+        this.all = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
+        this.x = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
+        this.y = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
+        this.z = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
+        this.yaw = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.yaw"), (b) -> this.selectChannel(this.fixture.yaw));
+        this.pitch = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch));
+        this.roll = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll));
+        this.fov = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov));
 
         this.buttons.add(this.all);
         this.buttons.add(this.x);
@@ -64,7 +64,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         for (int i = 0; i < this.titles.length; i++)
         {
-            this.titles[i] = this.buttons.elements.get(i).button.displayString;
+            this.titles[i] = this.buttons.elements.get(i).label;
         }
 
         int i = 0;
@@ -72,18 +72,21 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         for (GuiButtonElement button : this.buttons.elements)
         {
-            if (i > 7) break;
+            if (i > 7)
+            {
+                break;
+            }
 
-            button.resizer().parent(this.area).set(x, 0, this.font.getStringWidth(button.button.displayString) + 15, 20).y(0.5F, -25);
+            button.flex().parent(this.area).set(x, 0, this.font.getStringWidth(button.label) + 15, 20).y(0.5F, -25);
 
-            x += button.resizer().getW() + 5;
+            x += button.flex().getW() + 5;
             i++;
         }
 
-        this.graph.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
-        this.dope.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
+        this.graph.flex().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
+        this.dope.flex().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
 
-        this.children.add(this.graph, this.dope, this.buttons);
+        this.add(this.graph, this.dope, this.buttons);
     }
 
     @Override
@@ -164,11 +167,11 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
         /* Draw title of the channel */
-        this.font.drawStringWithShadow(this.title, this.area.getX(1) - this.font.getStringWidth(this.title), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
+        this.font.drawStringWithShadow(this.title, this.area.ex() - this.font.getStringWidth(this.title), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
 
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
     }
 }

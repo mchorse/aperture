@@ -1,30 +1,30 @@
 package mchorse.aperture.client.gui.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
-import mchorse.aperture.client.gui.GuiCameraEditor;
-import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.opengl.GL11;
-
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframe;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
 import mchorse.aperture.client.gui.panels.keyframe.KeyframeCell;
 import mchorse.aperture.utils.Scale;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class GuiDopeSheet extends GuiKeyframeElement
 {
@@ -50,12 +50,12 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
     public int toGraph(float tick)
     {
-        return (int) (this.scale.to(tick)) + this.area.getX(0.5F);
+        return (int) (this.scale.to(tick)) + this.area.mx();
     }
 
     public float fromGraph(int mouseX)
     {
-        return this.scale.from(mouseX - this.area.getX(0.5F));
+        return this.scale.from(mouseX - this.area.mx());
     }
 
     public void resetView()
@@ -123,7 +123,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
         {
             int count = this.sheets.size();
             int h = (this.area.h - 15) / count;
-            int i = (mouseY - (this.area.getY(1) - h * count)) / h;
+            int i = (mouseY - (this.area.ey() - h * count)) / h;
 
             if (i < 0 || i >= count)
             {
@@ -199,17 +199,20 @@ public class GuiDopeSheet extends GuiKeyframeElement
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(GuiContext context)
     {
-        if (super.mouseClicked(mouseX, mouseY, mouseButton))
+        if (super.mouseClicked(context))
         {
             return true;
         }
 
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
+
         /* Select current point with a mouse click */
         if (this.area.isInside(mouseX, mouseY))
         {
-            if (mouseButton == 0)
+            if (context.mouseButton == 0)
             {
                 /* Duplicate the keyframe */
                 if (GuiScreen.isAltKeyDown() && this.current != null && this.which == 0)
@@ -234,7 +237,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
                 int count = this.sheets.size();
                 int h = (this.area.h - 15) / count;
-                int y = this.area.getY(1) - h * count;
+                int y = this.area.ey() - h * count;
                 boolean reset = true;
 
                 for (GuiSheet sheet : this.sheets)
@@ -273,7 +276,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
                     this.dragging = true;
                 }
             }
-            else if (mouseButton == 2)
+            else if (context.mouseButton == 2)
             {
                 this.scrolling = true;
                 this.lastX = mouseX;
@@ -292,15 +295,17 @@ public class GuiDopeSheet extends GuiKeyframeElement
     }
 
     @Override
-    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
+    public boolean mouseScrolled(GuiContext context)
     {
-        if (super.mouseScrolled(mouseX, mouseY, scroll))
+        if (super.mouseScrolled(context))
         {
             return true;
         }
 
-        if (this.area.isInside(mouseX, mouseY) && !this.scrolling)
+        if (this.area.isInside(context.mouseX, context.mouseY) && !this.scrolling)
         {
+            int scroll = context.mouseWheel;
+
             if (!Minecraft.IS_RUNNING_ON_MAC)
             {
                 scroll = -scroll;
@@ -316,9 +321,9 @@ public class GuiDopeSheet extends GuiKeyframeElement
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
+    public void mouseReleased(GuiContext context)
     {
-        super.mouseReleased(mouseX, mouseY, state);
+        super.mouseReleased(context);
 
         if (this.current != null)
         {
@@ -351,8 +356,10 @@ public class GuiDopeSheet extends GuiKeyframeElement
     }
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
+        int mouseX = context.mouseX;
+
         if (this.dragging && !this.moving && (Math.abs(this.lastX - mouseX) > 3))
         {
             this.moving = true;
@@ -400,7 +407,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
         {
             int x = (int) this.toGraph(j * this.scale.mult);
 
-            Gui.drawRect(this.area.x + x, this.area.y, this.area.x + x + 1, this.area.getY(1), 0x44ffffff);
+            Gui.drawRect(this.area.x + x, this.area.y, this.area.x + x + 1, this.area.ey(), 0x44ffffff);
             this.font.drawString(String.valueOf(j * this.scale.mult), this.area.x + x + 4, this.area.y + 4, 0xffffff);
         }
 
@@ -411,13 +418,13 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
             cx = this.toGraph(cx);
 
-            Gui.drawRect(cx - 1, this.area.y, cx + 1, this.area.getY(1), 0xff57f52a);
+            Gui.drawRect(cx - 1, this.area.y, cx + 1, this.area.ey(), 0xff57f52a);
         }
 
         /* Draw dope sheet */
         int count = this.sheets.size();
         int h = (this.area.h - 15) / count;
-        int y = this.area.getY(1) - h * count;
+        int y = this.area.ey() - h * count;
 
         for (GuiSheet sheet : this.sheets)
         {
@@ -434,7 +441,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
             vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
             vb.pos(this.area.x, y + h / 2, 0).color(r, g, b, 0.65F).endVertex();
-            vb.pos(this.area.getX(1), y + h / 2, 0).color(r, g, b, 0.65F).endVertex();
+            vb.pos(this.area.ex(), y + h / 2, 0).color(r, g, b, 0.65F).endVertex();
 
             Tessellator.getInstance().draw();
 
@@ -483,13 +490,13 @@ public class GuiDopeSheet extends GuiKeyframeElement
             GL11.glEnd();
 
             int lw = this.font.getStringWidth(sheet.title) + 10;
-            GuiUtils.drawHorizontalGradientRect(this.area.getX(1) - lw - 10, y, this.area.getX(1), y + h, sheet.color, 0xaa000000 + sheet.color, 0);
-            this.font.drawStringWithShadow(sheet.title, this.area.getX(1) - lw + 5, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
+            GuiDraw.drawHorizontalGradientRect(this.area.ex() - lw - 10, y, this.area.ex(), y + h, sheet.color, 0xaa000000 + sheet.color, 0);
+            this.font.drawStringWithShadow(sheet.title, this.area.ex() - lw + 5, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
 
             y += h;
         }
 
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
     }
 
     public static class GuiSheet

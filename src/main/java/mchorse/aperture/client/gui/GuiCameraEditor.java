@@ -1,18 +1,6 @@
 package mchorse.aperture.client.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import mchorse.aperture.camera.fixtures.IdleFixture;
-import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
-import org.lwjgl.input.Keyboard;
-
 import com.google.gson.JsonParser;
-
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
@@ -21,20 +9,24 @@ import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.fixtures.IdleFixture;
+import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiPlaybackScrub.IScrubListener;
 import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.events.CameraEditorEvent;
+import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.GuiBase;
-import mchorse.mclib.client.gui.framework.GuiTooltip.TooltipDirection;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
-import mchorse.mclib.client.gui.utils.Resizer;
-import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
+import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.resizers.IResizer;
+import mchorse.mclib.utils.Direction;
 import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -48,6 +40,13 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Camera editor GUI
@@ -177,32 +176,32 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     /**
      * Play/pause button (very clever name, eh?)
      */
-    public GuiButtonElement<GuiTextureButton> plause;
+    public GuiIconElement plause;
 
-    public GuiButtonElement<GuiTextureButton> nextFrame;
-    public GuiButtonElement<GuiTextureButton> prevFrame;
+    public GuiIconElement nextFrame;
+    public GuiIconElement prevFrame;
 
-    public GuiButtonElement<GuiTextureButton> toPrevFixture;
-    public GuiButtonElement<GuiTextureButton> toNextFixture;
+    public GuiIconElement toPrevFixture;
+    public GuiIconElement toNextFixture;
 
-    public GuiButtonElement<GuiTextureButton> moveForward;
-    public GuiButtonElement<GuiTextureButton> moveBackward;
+    public GuiIconElement moveForward;
+    public GuiIconElement moveBackward;
 
-    public GuiButtonElement<GuiTextureButton> copyPosition;
-    public GuiButtonElement<GuiTextureButton> moveDuration;
+    public GuiIconElement copyPosition;
+    public GuiIconElement moveDuration;
 
-    public GuiButtonElement<GuiTextureButton> save;
-    public GuiButtonElement<GuiTextureButton> openConfig;
-    public GuiButtonElement<GuiTextureButton> openModifiers;
-    public GuiButtonElement<GuiTextureButton> openProfiles;
+    public GuiIconElement save;
+    public GuiIconElement openConfig;
+    public GuiIconElement openModifiers;
+    public GuiIconElement openProfiles;
 
-    public GuiButtonElement<GuiTextureButton> add;
-    public GuiButtonElement<GuiTextureButton> dupe;
-    public GuiButtonElement<GuiTextureButton> replace;
-    public GuiButtonElement<GuiTextureButton> remove;
+    public GuiIconElement add;
+    public GuiIconElement dupe;
+    public GuiIconElement replace;
+    public GuiIconElement remove;
 
-    public GuiButtonElement<GuiTextureButton> cut;
-    public GuiButtonElement<GuiTextureButton> creation;
+    public GuiIconElement cut;
+    public GuiIconElement creation;
 
     /* Widgets */
     public GuiCameraConfig config;
@@ -212,7 +211,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiConfigCameraOptions cameraOptions;
     public GuiModifiersManager modifiers;
     public GuiDelegateElement<GuiAbstractFixturePanel> panel;
-    public GuiElements<IGuiElement> hidden = new GuiElements<IGuiElement>();
+    public GuiElements<IGuiElement> hidden = new GuiElements<IGuiElement>(this.root);
 
     /**
      * Initialize the camera editor with a camera profile.
@@ -236,9 +235,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.config = new GuiCameraConfig(mc, this);
 
         /* Setup elements */
-        this.toNextFixture = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 64, 0, 64, 16, (b) -> this.jumpToNextFixture()).tooltip(I18n.format("aperture.gui.tooltips.jump_next_fixture"), TooltipDirection.BOTTOM);
-        this.nextFrame = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 32, 0, 32, 16, (b) -> this.jumpToNextFrame()).tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"), TooltipDirection.BOTTOM);
-        this.plause = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) ->
+        this.toNextFixture = new GuiIconElement(mc, APIcons.FRAME_NEXT, (b) -> this.jumpToNextFixture());
+        this.toNextFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_next_fixture"));
+        this.nextFrame = new GuiIconElement(mc, APIcons.FORWARD, (b) -> this.jumpToNextFrame());
+        this.nextFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"));
+        this.plause = new GuiIconElement(mc, APIcons.PLAY, (b) ->
         {
             this.setFlight(false);
             this.runner.toggle(this.profile, this.scrub.value);
@@ -253,63 +254,80 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
 
             ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.scrub.value));
-        }).tooltip(I18n.format("aperture.gui.tooltips.plause"), TooltipDirection.BOTTOM);
-        this.prevFrame = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 48, 0, 48, 16, (b) -> this.jumpToPrevFrame()).tooltip(I18n.format("aperture.gui.tooltips.jump_prev_frame"), TooltipDirection.BOTTOM);
-        this.toPrevFixture = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 80, 0, 80, 16, (b) -> this.jumpToPrevFixture()).tooltip(I18n.format("aperture.gui.tooltips.jump_prev_fixture"), TooltipDirection.BOTTOM);
+        });
+        this.plause.tooltip(I18n.format("aperture.gui.tooltips.plause"), Direction.BOTTOM);
+        this.prevFrame = new GuiIconElement(mc, APIcons.BACKWARD, (b) -> this.jumpToPrevFrame());
+        this.prevFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_frame"));
+        this.toPrevFixture = new GuiIconElement(mc, APIcons.FRAME_PREV, (b) -> this.jumpToPrevFixture());
+        this.toPrevFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_fixture"));
 
-        this.openProfiles = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 96, 0, 96, 16, (b) -> this.hidePopups(this.profiles)).tooltip(I18n.format("aperture.gui.tooltips.profiles"), TooltipDirection.BOTTOM);
-        this.openConfig = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 208, 0, 208, 16, (b) -> this.hidePopups(this.config)).tooltip(I18n.format("aperture.gui.tooltips.config"), TooltipDirection.BOTTOM);
-        this.openModifiers = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 80, 32, 80, 48, (b) -> this.hidePopups(this.modifiers)).tooltip(I18n.format("aperture.gui.tooltips.modifiers"), TooltipDirection.BOTTOM);
-        this.save = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 0, 0, 0, 0, (b) -> this.saveProfile()).tooltip(I18n.format("aperture.gui.tooltips.save"), TooltipDirection.BOTTOM);
+        this.openProfiles = new GuiIconElement(mc, Icons.MORE, (b) -> this.hidePopups(this.profiles));
+        this.openProfiles.tooltip(I18n.format("aperture.gui.tooltips.profiles"));
+        this.openConfig = new GuiIconElement(mc, Icons.GEAR, (b) -> this.hidePopups(this.config));
+        this.openConfig.tooltip(I18n.format("aperture.gui.tooltips.config"));
+        this.openModifiers = new GuiIconElement(mc, Icons.FILTER, (b) -> this.hidePopups(this.modifiers));
+        this.openModifiers.tooltip(I18n.format("aperture.gui.tooltips.modifiers"));
+        this.save = new GuiIconElement(mc, Icons.SAVED, (b) -> this.saveProfile());
+        this.save.tooltip(I18n.format("aperture.gui.tooltips.save"));
 
-        this.add = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 224, 0, 224, 16, (b) -> this.hideReplacingPopups(this.popup, false)).tooltip(I18n.format("aperture.gui.tooltips.add"), TooltipDirection.BOTTOM);
-        this.dupe = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 176, 32, 176, 48, (b) -> this.dupeFixture()).tooltip(I18n.format("aperture.gui.tooltips.dupe"), TooltipDirection.BOTTOM);
-        this.replace = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 208, 32, 208, 48, (b) -> this.hideReplacingPopups(this.popup, true)).tooltip(I18n.format("aperture.gui.tooltips.replace"), TooltipDirection.BOTTOM);
-        this.remove = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 240, 0, 240, 16, (b) -> this.removeFixture()).tooltip(I18n.format("aperture.gui.tooltips.remove"), TooltipDirection.BOTTOM);
+        this.add = new GuiIconElement(mc, Icons.ADD, (b) -> this.hideReplacingPopups(this.popup, false));
+        this.add.tooltip(I18n.format("aperture.gui.tooltips.add"));
+        this.dupe = new GuiIconElement(mc, Icons.DUPE, (b) -> this.dupeFixture());
+        this.dupe.tooltip(I18n.format("aperture.gui.tooltips.dupe"));
+        this.replace = new GuiIconElement(mc, Icons.REFRESH, (b) -> this.hideReplacingPopups(this.popup, true));
+        this.replace.tooltip(I18n.format("aperture.gui.tooltips.replace"));
+        this.remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.removeFixture());
+        this.remove.tooltip(I18n.format("aperture.gui.tooltips.remove"));
 
-        this.creation = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 224, 32, 224, 48, (b) -> this.toggleCreation()).tooltip(I18n.format("aperture.gui.tooltips.creation"), TooltipDirection.BOTTOM);
-        this.cut = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 32, 192, 48, (b) -> this.cutFixture()).tooltip(I18n.format("aperture.gui.tooltips.cut"), TooltipDirection.BOTTOM);
-        this.moveForward = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 144, 0, 144, 16, (b) -> this.moveTo(1)).tooltip(I18n.format("aperture.gui.tooltips.move_up"), TooltipDirection.BOTTOM);
-        this.moveDuration = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 192, 0, 192, 16, (b) -> this.shiftDurationToCursor()).tooltip(I18n.format("aperture.gui.tooltips.move_duration"), TooltipDirection.BOTTOM);
-        this.copyPosition = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 176, 0, 176, 16, (b) -> this.editFixture()).tooltip(I18n.format("aperture.gui.tooltips.copy_position"), TooltipDirection.BOTTOM);
-        this.moveBackward = GuiButtonElement.icon(mc, EDITOR_TEXTURE, 160, 0, 160, 16, (b) -> this.moveTo(-1)).tooltip(I18n.format("aperture.gui.tooltips.move_down"), TooltipDirection.BOTTOM);
+        this.creation = new GuiIconElement(mc, APIcons.INTERACTIVE, (b) -> this.toggleCreation());
+        this.creation.tooltip(I18n.format("aperture.gui.tooltips.creation"));
+        this.cut = new GuiIconElement(mc, Icons.CUT, (b) -> this.cutFixture());
+        this.cut.tooltip(I18n.format("aperture.gui.tooltips.cut"));
+        this.moveForward = new GuiIconElement(mc, APIcons.MOVE_FORWARD, (b) -> this.moveTo(1));
+        this.moveForward.tooltip(I18n.format("aperture.gui.tooltips.move_up"));
+        this.moveDuration = new GuiIconElement(mc, APIcons.SHIFT, (b) -> this.shiftDurationToCursor());
+        this.moveDuration.tooltip(I18n.format("aperture.gui.tooltips.move_duration"));
+        this.copyPosition = new GuiIconElement(mc, APIcons.POSITION, (b) -> this.editFixture());
+        this.copyPosition.tooltip(I18n.format("aperture.gui.tooltips.copy_position"));
+        this.moveBackward = new GuiIconElement(mc, APIcons.MOVE_BACK, (b) -> this.moveTo(-1));
+        this.moveBackward.tooltip(I18n.format("aperture.gui.tooltips.move_down"));
 
         /* Button placement */
-        this.toNextFixture.resizer().parent(this.area).set(0, 2, 16, 16).x(0.5F, 32);
-        this.nextFrame.resizer().relative(this.toNextFixture.resizer()).set(-20, 0, 16, 16);
-        this.plause.resizer().relative(this.nextFrame.resizer()).set(-20, 0, 16, 16);
-        this.prevFrame.resizer().relative(this.plause.resizer()).set(-20, 0, 16, 16);
-        this.toPrevFixture.resizer().relative(this.prevFrame.resizer()).set(-20, 0, 16, 16);
+        this.toNextFixture.flex().parent(this.viewport).set(0, 2, 16, 16).x(0.5F, 32);
+        this.nextFrame.flex().relative(this.toNextFixture.resizer()).set(-20, 0, 16, 16);
+        this.plause.flex().relative(this.nextFrame.resizer()).set(-20, 0, 16, 16);
+        this.prevFrame.flex().relative(this.plause.resizer()).set(-20, 0, 16, 16);
+        this.toPrevFixture.flex().relative(this.prevFrame.resizer()).set(-20, 0, 16, 16);
 
-        this.openProfiles.resizer().parent(this.area).set(0, 2, 16, 16).x(1, -18);
-        this.openConfig.resizer().relative(this.openProfiles.resizer()).set(-20, 0, 16, 16);
-        this.openModifiers.resizer().relative(this.openConfig.resizer()).set(-20, 0, 16, 16);
-        this.save.resizer().relative(this.openModifiers.resizer()).set(-20, 0, 16, 16);
+        this.openProfiles.flex().parent(this.viewport).set(0, 2, 16, 16).x(1, -18);
+        this.openConfig.flex().relative(this.openProfiles.resizer()).set(-20, 0, 16, 16);
+        this.openModifiers.flex().relative(this.openConfig.resizer()).set(-20, 0, 16, 16);
+        this.save.flex().relative(this.openModifiers.resizer()).set(-20, 0, 16, 16);
 
-        this.add.resizer().relative(this.save.resizer()).set(-100, 0, 16, 16);
-        this.dupe.resizer().relative(this.add.resizer()).set(20, 0, 16, 16);
-        this.replace.resizer().relative(this.dupe.resizer()).set(20, 0, 16, 16);
-        this.remove.resizer().relative(this.replace.resizer()).set(20, 0, 16, 16);
+        this.add.flex().relative(this.save.resizer()).set(-100, 0, 16, 16);
+        this.dupe.flex().relative(this.add.resizer()).set(20, 0, 16, 16);
+        this.replace.flex().relative(this.dupe.resizer()).set(20, 0, 16, 16);
+        this.remove.flex().relative(this.replace.resizer()).set(20, 0, 16, 16);
 
-        this.creation.resizer().relative(this.cut.resizer()).set(20, 0, 16, 16);
-        this.cut.resizer().parent(this.area).set(82, 0, 16, 16);
-        this.moveForward.resizer().relative(this.cut.resizer()).set(-20, 0, 16, 16);
-        this.moveDuration.resizer().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
-        this.copyPosition.resizer().relative(this.moveDuration.resizer()).set(-20, 0, 16, 16);
-        this.moveBackward.resizer().relative(this.copyPosition.resizer()).set(-20, 0, 16, 16);
+        this.cut.flex().parent(this.viewport).set(82, 0, 16, 16);
+        this.creation.flex().relative(this.cut.resizer()).set(20, 0, 16, 16);
+        this.moveForward.flex().relative(this.cut.resizer()).set(-20, 0, 16, 16);
+        this.moveDuration.flex().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
+        this.copyPosition.flex().relative(this.moveDuration.resizer()).set(-20, 0, 16, 16);
+        this.moveBackward.flex().relative(this.copyPosition.resizer()).set(-20, 0, 16, 16);
 
         /* Setup areas of widgets */
-        this.scrub.resizer().parent(this.area).set(10, 0, 0, 20).y(1, -20).w(1, -20);
+        this.scrub.flex().parent(this.viewport).set(10, 0, 0, 20).y(1, -20).w(1, -20);
 
-        this.panel.resizer().parent(this.area).set(10, 40, 0, 0).w(1, -20).h(1, -70);
-        this.popup.resizer().relative(this.add.resizer()).set(-44, 18, 62, 122);
-        this.config.resizer().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
-        this.profiles.resizer().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);
-        this.modifiers.resizer().relative(this.panel.resizer()).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
+        this.panel.flex().parent(this.viewport).set(10, 40, 0, 0).w(1, -20).h(1, -70);
+        this.popup.flex().relative(this.add.resizer()).set(-44, 18, 62, 122);
+        this.config.flex().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
+        this.profiles.flex().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);
+        this.modifiers.flex().relative(this.panel.resizer()).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
 
         /* Adding everything */
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
-        this.hidden.add(this.creation, this.cut, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
+        this.hidden.add(this.cut, this.creation, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
         this.hidden.add(this.add, this.dupe, this.replace, this.remove, this.save, this.openConfig, this.openModifiers);
         this.hidden.add(this.scrub, this.panel, this.popup, this.config, this.modifiers);
 
@@ -319,7 +337,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.hidePopups(this.profiles);
 
-        this.elements.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
+        this.root.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
 
         /* Let other classes have fun with camera editor's fields' 
          * position and such */
@@ -556,12 +574,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         if (this.save != null)
         {
-            boolean dirty = profile == null ? false : profile.dirty;
-
-            int x = dirty ? 128 : 112;
-            int y = dirty ? 0 : 0;
-
-            this.save.button.setTexPos(x, y).setActiveTexPos(x, y + 16);
+            this.save.both(profile != null && profile.dirty ? Icons.SAVE : Icons.SAVED);
         }
     }
 
@@ -859,8 +872,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.replacing = replacing;
 
-        this.popup.resizer().relative(replacing ? this.replace.resizer() : this.add.resizer());
-        this.popup.resize(this.width, this.height);
+        this.popup.flex().relative(replacing ? this.replace.resizer() : this.add.resizer());
+        this.popup.resize();
 
         this.hidePopups(exception);
     }
@@ -882,9 +895,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void updatePlauseButton()
     {
-        int x = this.runner.isRunning() ? 16 : 0;
-
-        this.plause.button.setTexPos(x, 0).setActiveTexPos(x, 16);
+        this.plause.both(this.runner.isRunning() ? APIcons.PAUSE : APIcons.PLAY);
     }
 
     /**
@@ -975,13 +986,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         if (keyCode == Keyboard.KEY_F1)
         {
-            this.elements.setVisible(!this.elements.isVisible());
+            this.root.setVisible(!this.root.isVisible());
         }
 
         if (keyCode == Keyboard.KEY_F)
         {
             /* Toggle flight */
-            this.cameraOptions.flight.mouseClicked(this.cameraOptions.flight.area.x + 1, this.cameraOptions.flight.area.y + 1, 0);
+            this.cameraOptions.flight.clickItself(this.context);
             this.cameraOptions.update();
         }
 
@@ -1002,24 +1013,24 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && this.profile != null)
             {
                 /* Save camera profile */
-                this.save.mouseClicked(this.save.area.x, this.save.area.y, 0);
+                this.save.clickItself(this.context);
             }
             else
             {
                 /* Toggle sync */
-                this.cameraOptions.sync.mouseClicked(this.cameraOptions.sync.area.x + 1, this.cameraOptions.sync.area.y + 1, 0);
+                this.cameraOptions.sync.clickItself(this.context);
             }
 
         }
         else if (keyCode == Keyboard.KEY_O)
         {
             /* Toggle outside mode */
-            this.cameraOptions.outside.mouseClicked(this.cameraOptions.outside.area.x + 1, this.cameraOptions.outside.area.y + 1, 0);
+            this.cameraOptions.outside.clickItself(this.context);
         }
         else if (keyCode == Keyboard.KEY_SPACE)
         {
             /* Play/pause */
-            this.plause.mouseClicked(this.plause.area.x, this.plause.area.y, 0);
+            this.plause.clickItself(this.context);
         }
         else if (keyCode == Keyboard.KEY_D)
         {
@@ -1059,19 +1070,19 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
         else if (keyCode == Keyboard.KEY_N)
         {
-            this.openModifiers.mouseClicked(this.openModifiers.area.x, this.openModifiers.area.y, 0);
+            this.openModifiers.clickItself(this.context);
         }
         else if (keyCode == Keyboard.KEY_R)
         {
-            this.cameraOptions.repeat.mouseClicked(this.cameraOptions.repeat.area.x + 1, this.cameraOptions.repeat.area.y + 1, 0);
+            this.cameraOptions.repeat.clickItself(this.context);
         }
         else if (keyCode == Keyboard.KEY_C)
         {
-            this.cut.mouseClicked(this.cut.area.x + 1, this.cut.area.y + 1, 0);
+            this.cut.clickItself(this.context);
         }
         else if (keyCode == Keyboard.KEY_I)
         {
-            this.creation.mouseClicked(this.creation.area.x + 1, this.creation.area.y + 1, 0);
+            this.creation.clickItself(this.context);
         }
     }
 
@@ -1211,7 +1222,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 }
             }
 
-            if (this.ruleOfThirds && this.elements.isVisible())
+            if (this.ruleOfThirds && this.root.isVisible())
             {
                 int color = 0xcccc0000;
 
@@ -1223,7 +1234,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
         }
 
-        if (!this.elements.isVisible() || (isRunning && Aperture.proxy.config.camera_minema))
+        if (!this.root.isVisible() || (isRunning && Aperture.proxy.config.camera_minema))
         {
             /* Little tip for the users who don't know what they did */
             if (!isRunning && Aperture.proxy.config.camera_editor_f1_tooltip)
@@ -1242,7 +1253,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             Gui.drawRect(width - 20, 0, width, 20, 0xaa000000);
         }
 
-        Resizer panel = this.panel.resizer();
+        IResizer panel = this.panel.resizer();
 
         if (this.profile != null)
         {
@@ -1360,8 +1371,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         int x = this.width - 18;
         int y = 22;
 
-        this.mc.renderEngine.bindTexture(EDITOR_TEXTURE);
-
         if (this.syncing || this.flight.enabled)
         {
             Gui.drawRect(this.width - (this.syncing ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
@@ -1371,15 +1380,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.syncing)
         {
-            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, 32, 16, 16, 256, 256);
+            Icons.DOWNLOAD.render(x, y);
             x -= 20;
         }
 
         if (this.flight.enabled)
         {
-            int v = this.flight.vertical ? 64 : 48;
-
-            Gui.drawModalRectWithCustomSizedTexture(x, y, 64, v, 16, 16, 256, 256);
+            (this.flight.vertical ? APIcons.HELICOPTER : APIcons.PLANE).render(x, y);
         }
     }
 }

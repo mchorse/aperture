@@ -35,7 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class Dispatcher
 {
-    public static final AbstractDispatcher DISPATCHER = new AbstractDispatcher(Aperture.MODID)
+    public static final AbstractDispatcher DISPATCHER = new AbstractDispatcher(Aperture.MOD_ID)
     {
         @Override
         public void register()

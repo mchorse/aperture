@@ -6,6 +6,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -27,7 +28,7 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture>
         this.point = new GuiPointModule(mc, editor);
         this.angle = new GuiAngleModule(mc, editor);
 
-        this.children.add(this.point, this.angle);
+        this.add(this.point, this.angle);
     }
 
     @Override
@@ -40,19 +41,19 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture>
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        boolean h = this.resizer().getH() > 200;
+        boolean h = this.flex().getH() > 200;
 
-        this.point.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -80);
-        this.angle.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -170);
+        this.point.flex().parent(this.area).set(0, 10, 80, 80).x(1, -80);
+        this.angle.flex().parent(this.area).set(0, 10, 80, 80).x(1, -170);
 
         if (h)
         {
-            this.angle.resizer().x(1, -80).y(120);
+            this.angle.flex().x(1, -80).y(120);
         }
 
-        super.resize(width, height);
+        super.resize();
     }
 
     @Override
@@ -64,9 +65,9 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture>
     }
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
 
         this.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.area.x + this.point.area.w / 2, this.point.area.y - 14, 0xffffffff);
         this.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w / 2, this.angle.area.y - 14, 0xffffffff);

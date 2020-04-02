@@ -2,12 +2,12 @@ package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiModifiersManager;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.client.gui.widgets.buttons.GuiTextureButton;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.resizers.layout.ColumnResizer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -17,13 +17,16 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     public T modifier;
     public GuiModifiersManager modifiers;
 
-    public String title = "";
+    public String title;
 
-    public GuiButtonElement<GuiTextureButton> enable;
-    public GuiButtonElement<GuiTextureButton> remove;
-    public GuiButtonElement<GuiTextureButton> moveUp;
-    public GuiButtonElement<GuiTextureButton> moveDown;
-    public GuiButtonElement<GuiTextureButton> copy;
+    public GuiIconElement enable;
+    public GuiIconElement remove;
+    public GuiIconElement moveUp;
+    public GuiIconElement moveDown;
+    public GuiIconElement copy;
+
+    public GuiElement header;
+    public GuiElement fields;
 
     public GuiAbstractModifierPanel(Minecraft mc, T modifier, GuiModifiersManager modifiers)
     {
@@ -32,65 +35,58 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.modifier = modifier;
         this.modifiers = modifiers;
 
-        this.createChildren();
-        this.enable = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 0, 0, 0, 0, (b) ->
+        this.fields = new GuiElement(mc);
+        ColumnResizer.apply(this.fields, 5).vertical().stretch().height(20).padding(5);
+
+        this.enable = new GuiIconElement(mc, Icons.NONE, (b) ->
         {
             this.modifier.enabled = !this.modifier.enabled;
             this.updateEnable();
             this.modifiers.editor.updateProfile();
         });
-        this.remove = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 32, 32, 32, 48, (b) -> this.modifiers.removeModifier(this));
-        this.moveUp = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 96, 32, 96, 48, (b) -> this.modifiers.moveModifier(this, -1));
-        this.moveDown = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 96, 40, 96, 56, (b) -> this.modifiers.moveModifier(this, 1));
-        this.copy = GuiButtonElement.icon(mc, GuiCameraEditor.EDITOR_TEXTURE, 144, 32, 144, 48, (b) -> this.modifiers.setClipboard(this.modifier));
+        this.remove = new GuiIconElement(mc, Icons.CLOSE, (b) -> this.modifiers.removeModifier(this));
+        this.moveUp = new GuiIconElement(mc, Icons.MOVE_UP, (b) -> this.modifiers.moveModifier(this, -1));
+        this.moveDown = new GuiIconElement(mc, Icons.MOVE_DOWN, (b) -> this.modifiers.moveModifier(this, 1));
+        this.copy = new GuiIconElement(mc, Icons.COPY, (b) -> this.modifiers.setClipboard(this.modifier));
 
-        this.remove.resizer().parent(this.area).set(0, 2, 16, 16).x(1, -18);
-        this.enable.resizer().relative(this.remove.resizer()).set(-20, 0, 16, 16);
-        this.moveUp.resizer().relative(this.enable.resizer()).set(-20, 0, 16, 8);
-        this.moveDown.resizer().relative(this.enable.resizer()).set(-20, 8, 16, 8);
-        this.copy.resizer().relative(this.moveUp.resizer()).set(-20, 0, 16, 16);
+        this.header = new GuiElement(mc);
+        this.header.flex().h(20);
 
-        this.children.add(this.enable, this.remove, this.moveUp, this.moveDown, this.copy);
+        this.remove.flex().parent(this.header.area).set(0, 2, 16, 16).x(1, -18);
+        this.enable.flex().relative(this.remove.resizer()).set(-20, 0, 16, 16);
+        this.moveUp.flex().relative(this.enable.resizer()).set(-20, 0, 16, 8);
+        this.moveDown.flex().relative(this.enable.resizer()).set(-20, 8, 16, 8);
+        this.copy.flex().relative(this.moveUp.resizer()).set(-20, 0, 16, 16);
+
+        this.header.add(this.enable, this.remove, this.moveUp, this.moveDown, this.copy);
+
+        ColumnResizer.apply(this, 0).vertical().stretch();
+        this.add(this.header, this.fields);
 
         this.title = I18n.format(ModifierRegistry.CLIENT.get(modifier.getClass()).title);
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.updateEnable();
     }
 
-    private void updateEnable()
+    protected void updateEnable()
     {
-        int x = this.modifier.enabled ? 128 : 112;
-
-        this.enable.button.setTexPos(x, 32).setActiveTexPos(x, 48);
-    }
-
-    public int getHeight()
-    {
-        return 20;
+        this.enable.both(this.enable.isEnabled() ? Icons.UNLOCKED : Icons.LOCKED);
     }
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
-        int color = 0xaa000000 + ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getHex();
+        this.header.area.draw(0xaa000000 + ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getHex());
+        this.font.drawStringWithShadow(this.title, this.area.x + 5, this.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
 
-        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + 20, color);
-        this.font.drawStringWithShadow(this.title, this.area.x + 5, this.area.y + 7, 0xffffff);
+        this.header.setVisible(this.area.isInside(context.mouseX, context.mouseY));
 
-        boolean within = this.area.isInside(mouseX, mouseY);
-
-        this.remove.setVisible(within);
-        this.enable.setVisible(within);
-        this.moveUp.setVisible(within);
-        this.moveDown.setVisible(within);
-        this.copy.setVisible(within);
-
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
     }
 }

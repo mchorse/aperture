@@ -1,6 +1,7 @@
 package mchorse.aperture.camera.destination;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
 
@@ -46,7 +47,7 @@ public class ClientDestination extends AbstractDestination
     {
         try
         {
-            FileUtils.write(new File(ClientProxy.getClientCameras(), this.filename + ".json"), CameraUtils.toJSON(profile));
+            FileUtils.write(new File(ClientProxy.getClientCameras(), this.filename + ".json"), CameraUtils.toJSON(profile), Charset.defaultCharset());
 
             L10n.success(Minecraft.getMinecraft().player, "profile.client_save", this.filename);
         }
@@ -61,7 +62,7 @@ public class ClientDestination extends AbstractDestination
     {
         try
         {
-            String json = FileUtils.readFileToString(new File(ClientProxy.getClientCameras(), this.filename + ".json"));
+            String json = FileUtils.readFileToString(new File(ClientProxy.getClientCameras(), this.filename + ".json"), Charset.defaultCharset());
             CameraProfile newProfile = CameraUtils.cameraJSONBuilder(false).fromJson(json, CameraProfile.class);
 
             newProfile.setDestination(this);

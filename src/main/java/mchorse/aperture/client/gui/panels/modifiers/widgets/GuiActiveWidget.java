@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -32,11 +33,16 @@ public class GuiActiveWidget extends GuiElement
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(GuiContext context)
     {
-        if (this.area.isInside(mouseX, mouseY))
+        if (super.mouseClicked(context))
         {
-            int index = (mouseX - this.area.x) / (this.area.w / 7);
+            return true;
+        }
+
+        if (this.area.isInside(context.mouseX, context.mouseY) && context.mouseButton == 0)
+        {
+            int index = (context.mouseX - this.area.x) / (this.area.w / 7);
 
             this.value ^= 1 << index;
 
@@ -52,9 +58,9 @@ public class GuiActiveWidget extends GuiElement
     }
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
 
         Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0x88000000);
         int w = (this.area.w / 7);
@@ -63,7 +69,7 @@ public class GuiActiveWidget extends GuiElement
         {
             int x = this.area.x + w * i;
             boolean isSelected = ((this.value >> i) & 0x1) == 1;
-            boolean isHover = this.area.isInside(mouseX, mouseY) && (mouseX - this.area.x) / w == i;
+            boolean isHover = this.area.isInside(context.mouseX, context.mouseY) && (context.mouseX - this.area.x) / w == i;
             int right = i == 6 ? this.area.x + this.area.w : x + w;
 
             if (isSelected)
@@ -82,7 +88,7 @@ public class GuiActiveWidget extends GuiElement
                 Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, 0x880088ff);
             }
 
-            this.drawCenteredString(this.font, this.labels.get(i), x + w / 2, this.area.y + 7, 0xffffff);
+            this.drawCenteredString(this.font, this.labels.get(i), x + w / 2, this.area.my() - this.font.FONT_HEIGHT / 2, 0xffffff);
         }
     }
 }

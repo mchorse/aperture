@@ -14,12 +14,11 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 /**
  * Path fixture panel
@@ -35,9 +34,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiAngleModule angle;
     public GuiPointsModule points;
     public GuiInterpModule interp;
-    public GuiButtonElement<GuiCheckBox> perPointDuration;
-    public GuiButtonElement<GuiCheckBox> useSpeed;
-    public GuiButtonElement<GuiButton> toKeyframe;
+    public GuiToggleElement perPointDuration;
+    public GuiToggleElement useSpeed;
+    public GuiButtonElement toKeyframe;
     public GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel> speed;
 
     public DurablePosition position;
@@ -52,39 +51,39 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle = new GuiAngleModule(mc, editor);
         this.points = new GuiPointsModule(mc, editor, this);
         this.interp = new GuiInterpModule(mc, editor);
-        this.perPointDuration = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.panels.per_point"), false, (b) ->
+        this.perPointDuration = new GuiToggleElement(mc, I18n.format("aperture.gui.panels.per_point"), false, (b) ->
         {
-            this.fixture.perPointDuration = b.button.isChecked();
+            this.fixture.perPointDuration = b.isToggled();
             this.editor.updateProfile();
         });
-        this.useSpeed = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.panels.use_speed"), false, (b) ->
+        this.useSpeed = new GuiToggleElement(mc, I18n.format("aperture.gui.panels.use_speed"), false, (b) ->
         {
-            this.fixture.useSpeed = b.button.isChecked();
+            this.fixture.useSpeed = b.isToggled();
             this.speed.setVisible(this.fixture.useSpeed);
             this.editor.updateProfile();
-            this.resize(editor.width, editor.height);
+            this.resize();
 
             if (this.fixture.useSpeed)
             {
                 this.fixture.updateSpeedCache();
             }
         });
-        this.toKeyframe = GuiButtonElement.button(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
+        this.toKeyframe = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
         this.speed = new GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel>(mc, this);
         this.speed.graph.setParent(this);
         this.speed.graph.setColor(0x0088ff);
 
-        this.point.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -80);
-        this.interp.resizer().parent(this.area).set(0, 60, 100, 45);
-        this.points.resizer().parent(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
-        this.toKeyframe.resizer().relative(this.interp.resizer()).set(0, 50, 100, 20);
+        this.point.flex().parent(this.area).set(0, 10, 80, 80).x(1, -80);
+        this.interp.flex().parent(this.area).set(0, 60, 100, 45);
+        this.points.flex().parent(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
+        this.toKeyframe.flex().relative(this.interp.resizer()).set(0, 50, 100, 20);
 
-        this.perPointDuration.resizer().relative(this.name.resizer()).set(0, -16, this.perPointDuration.button.width, 11);
-        this.useSpeed.resizer().relative(this.perPointDuration.resizer()).set(this.perPointDuration.button.width + 10, 0, this.useSpeed.button.width, 11);
+        this.perPointDuration.flex().relative(this.name.resizer()).set(0, -25, 100, 20);
+        this.useSpeed.flex().relative(this.perPointDuration.resizer()).set(0, 0, 100, 20).x(1, 5);
 
-        this.speed.resizer().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
+        this.speed.flex().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
 
-        this.children.add(this.point, this.angle, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points, this.interp);
+        this.add(this.point, this.angle, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points, this.interp);
     }
 
 	@Override
@@ -151,18 +150,18 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        boolean h = this.resizer().getH() > 200;
+        boolean h = this.flex().getH() > 200;
 
-        this.angle.resizer().parent(this.area).set(0, 10, 80, 80).x(1, -170);
+        this.angle.flex().parent(this.area).set(0, 10, 80, 80).x(1, -170);
 
         if (h && !this.speed.isVisible())
         {
-            this.angle.resizer().x(1, -80).y(120);
+            this.angle.flex().x(1, -80).y(120);
         }
 
-        super.resize(width, height);
+        super.resize();
     }
 
     @Override
@@ -211,8 +210,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle.fill(this.position.angle);
         this.points.fill(fixture);
         this.interp.fill(fixture);
-        this.perPointDuration.button.setIsChecked(fixture.perPointDuration);
-        this.useSpeed.button.setIsChecked(fixture.useSpeed);
+        this.perPointDuration.toggled(fixture.perPointDuration);
+        this.useSpeed.toggled(fixture.useSpeed);
 
         if (!same)
         {
@@ -270,7 +269,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
     	if (this.fixture.useSpeed && this.update > 0 && System.currentTimeMillis() >= this.update)
 	    {
@@ -278,7 +277,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 	    	this.update = 0;
 	    }
 
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
 
         this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.area.x + this.point.area.w / 2, this.point.area.y - 14, 0xffffffff);
         this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w / 2, this.angle.area.y - 14, 0xffffffff);

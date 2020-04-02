@@ -13,14 +13,7 @@ public abstract class GuiAbstractConfigOptions extends GuiElement
         super(mc);
 
         this.editor = editor;
-        this.createChildren();
     }
 
-    public abstract int getWidth();
-
-    public abstract int getHeight();
-
     public abstract void update();
-
-    public abstract boolean isActive();
 }

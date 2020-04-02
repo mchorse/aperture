@@ -43,7 +43,7 @@ public class CameraRenderer
     /**
      * Background texture for a fixture rendering.
      */
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Aperture.MODID, "textures/gui/fixture.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Aperture.MOD_ID, "textures/gui/fixture.png");
 
     protected Minecraft mc = Minecraft.getMinecraft();
 

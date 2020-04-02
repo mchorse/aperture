@@ -13,6 +13,5 @@ public abstract class GuiAbstractModule extends GuiElement
         super(mc);
 
         this.editor = editor;
-        this.createChildren();
     }
 }

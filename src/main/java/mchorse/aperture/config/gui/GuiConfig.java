@@ -24,7 +24,7 @@ public class GuiConfig extends net.minecraftforge.fml.client.config.GuiConfig
 {
     public GuiConfig(GuiScreen parent)
     {
-        super(parent, getConfigElements(), Aperture.MODID, false, false, Aperture.MODNAME);
+        super(parent, getConfigElements(), Aperture.MOD_ID, false, false, Aperture.MODNAME);
     }
 
     private static List<IConfigElement> getConfigElements()

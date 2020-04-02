@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -26,36 +26,40 @@ public class GuiCircularModule extends GuiAbstractModule
     {
         super(mc, editor);
 
-        this.offset = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.offset"), (value) ->
+        this.offset = new GuiTrackpadElement(mc, (value) ->
         {
             this.fixture.offset = value;
             this.editor.updateProfile();
         });
+        this.offset.tooltip(I18n.format("aperture.gui.panels.offset"));
 
-        this.pitch = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.pitch"), (value) ->
+        this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
             this.fixture.pitch = value;
             this.editor.updateProfile();
         });
+        this.pitch.tooltip(I18n.format("aperture.gui.panels.pitch"));
 
-        this.circles = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.circles"), (value) ->
+        this.circles = new GuiTrackpadElement(mc, (value) ->
         {
             this.fixture.circles = value;
             this.editor.updateProfile();
         });
+        this.circles.tooltip(I18n.format("aperture.gui.panels.circles"));
 
-        this.distance = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.distance"), (value) ->
+        this.distance = new GuiTrackpadElement(mc, (value) ->
         {
             this.fixture.distance = value;
             this.editor.updateProfile();
         });
+        this.distance.tooltip(I18n.format("aperture.gui.panels.distance"));
 
-        this.offset.resizer().parent(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.pitch.resizer().parent(this.area).set(0, 20, 0, 20).w(1, 0);
-        this.circles.resizer().parent(this.area).set(0, 40, 0, 20).w(1, 0);
-        this.distance.resizer().parent(this.area).set(0, 60, 0, 20).w(1, 0);
+        this.offset.flex().parent(this.area).set(0, 0, 0, 20).w(1, 0);
+        this.pitch.flex().parent(this.area).set(0, 20, 0, 20).w(1, 0);
+        this.circles.flex().parent(this.area).set(0, 40, 0, 20).w(1, 0);
+        this.distance.flex().parent(this.area).set(0, 60, 0, 20).w(1, 0);
 
-        this.children.add(this.offset, this.pitch, this.circles, this.distance);
+        this.add(this.offset, this.pitch, this.circles, this.distance);
     }
 
     public void fill(CircularFixture fixture)

@@ -2,14 +2,13 @@ package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
-import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.Elements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 {
@@ -19,9 +18,11 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     public GuiTrackpadElement y;
     public GuiTrackpadElement z;
 
-    public GuiButtonElement<GuiCheckBox> relative;
-    public GuiButtonElement<GuiCheckBox> atBlock;
-    public GuiButtonElement<GuiCheckBox> forward;
+    public GuiToggleElement relative;
+    public GuiToggleElement atBlock;
+    public GuiToggleElement forward;
+
+    public GuiElement row;
 
     public GuiLookModifierPanel(Minecraft mc, LookModifier modifier, GuiModifiersManager modifiers)
     {
@@ -33,95 +34,88 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
             this.modifier.tryFindingEntity();
             this.modifiers.editor.updateProfile();
         });
+        this.selector.tooltip(I18n.format("aperture.gui.panels.selector"));
 
-        this.x = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.x"), (value) ->
+        this.x = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.block.x = value;
             this.modifiers.editor.updateProfile();
         });
+        this.x.tooltip(I18n.format("aperture.gui.panels.x"));
 
-        this.y = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.y"), (value) ->
+        this.y = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.block.y = value;
             this.modifiers.editor.updateProfile();
         });
+        this.y.tooltip(I18n.format("aperture.gui.panels.y"));
 
-        this.z = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.z"), (value) ->
+        this.z = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.block.z = value;
             this.modifiers.editor.updateProfile();
         });
+        this.z.tooltip(I18n.format("aperture.gui.panels.z"));
 
-        this.relative = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.relative"), false, (b) ->
+        this.relative = new GuiToggleElement(mc, I18n.format("aperture.gui.modifiers.panels.relative"), false, (b) ->
         {
-            this.modifier.relative = b.button.isChecked();
+            this.modifier.relative = b.isToggled();
             this.modifiers.editor.updateProfile();
         });
 
-        this.atBlock = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.at_block"), false, (b) ->
+        this.atBlock = new GuiToggleElement(mc, I18n.format("aperture.gui.modifiers.panels.at_block"), false, (b) ->
         {
-            this.modifier.atBlock = b.button.isChecked();
-            this.updateVisibility();
+            this.modifier.atBlock = b.isToggled();
+            this.updateVisibility(true);
             this.modifiers.editor.updateProfile();
         });
 
-        this.forward = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.forward"), false, (b) ->
+        this.forward = new GuiToggleElement(mc, I18n.format("aperture.gui.modifiers.panels.forward"), false, (b) ->
         {
-            this.modifier.forward = b.button.isChecked();
+            this.modifier.forward = b.isToggled();
             this.modifiers.editor.updateProfile();
         });
 
-        this.selector.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
-        this.x.resizer().parent(this.area).set(5, 25, 0, 20).w(0.5F, -10);
-        this.y.resizer().parent(this.area).set(5, 25, 0, 20).x(0.5F, 5).w(0.5F, -10);
-        this.z.resizer().parent(this.area).set(5, 50, 0, 20).w(1, -10);
-        this.relative.resizer().parent(this.area).set(5, 75, this.relative.button.width, 11);
-        this.atBlock.resizer().parent(this.area).set(5, 75, this.atBlock.button.width, 11).x(0.5F, 5);
-        this.forward.resizer().parent(this.area).set(5, 91, this.forward.button.width, 11);
-
-        this.children.add(this.selector, this.x, this.y, this.z, this.relative, this.atBlock, this.forward);
+        this.row = Elements.row(mc, 5, 0, 20, this.x, this.y, this.z);
+        this.updateVisibility(false);
+        this.fields.add(Elements.row(mc, 5, 0, 20,  this.relative, this.atBlock), this.forward);
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.selector.setText(this.modifier.selector);
         this.x.setValue((float) this.modifier.block.x);
         this.y.setValue((float) this.modifier.block.y);
         this.z.setValue((float) this.modifier.block.z);
-        this.relative.button.setIsChecked(this.modifier.relative);
-        this.atBlock.button.setIsChecked(this.modifier.atBlock);
-        this.forward.button.setIsChecked(this.modifier.forward);
+        this.relative.toggled(this.modifier.relative);
+        this.atBlock.toggled(this.modifier.atBlock);
+        this.forward.toggled(this.modifier.forward);
 
-        this.updateVisibility();
+        this.updateVisibility(false);
     }
 
-    private void updateVisibility()
+    private void updateVisibility(boolean resize)
     {
         boolean atBlock = this.modifier.atBlock;
 
-        this.selector.setVisible(!atBlock);
-        this.x.setVisible(atBlock);
-        this.y.setVisible(atBlock);
-        this.z.setVisible(atBlock);
-    }
+        this.row.removeFromParent();
+        this.selector.removeFromParent();
 
-    @Override
-    public int getHeight()
-    {
-        return 107;
-    }
-
-    @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
-
-        if (this.selector.isVisible() && !this.selector.field.isFocused())
+        if (atBlock)
         {
-            GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.area.x + this.selector.area.w - 4, this.selector.area.y + 5, 0xffaaaaaa);
+            this.fields.prepend(this.row);
+        }
+        else
+        {
+            this.fields.prepend(this.selector);
+        }
+
+        if (resize)
+        {
+            this.getParent().resize();
         }
     }
 }

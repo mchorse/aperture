@@ -15,7 +15,7 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
         super(mc, parent);
 
         this.value.setVisible(false);
-        this.interpolations.resizer().h(1, -30);
+        this.interpolations.flex().h(1, -30);
     }
 
     @Override

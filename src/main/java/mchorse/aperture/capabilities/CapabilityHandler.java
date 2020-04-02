@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
  */
 public class CapabilityHandler
 {
-    public static final ResourceLocation CAMERA_CAP = new ResourceLocation(Aperture.MODID, "camera_capability");
+    public static final ResourceLocation CAMERA_CAP = new ResourceLocation(Aperture.MOD_ID, "camera_capability");
 
     /**
      * Attach capabilities (well, only one, right now)

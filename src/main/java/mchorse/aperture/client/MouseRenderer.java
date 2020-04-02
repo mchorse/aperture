@@ -88,7 +88,7 @@ public class MouseRenderer
             return false;
         }
 
-        if (!Aperture.proxy.config.camera_editor_f1_tooltip && Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor && !((GuiCameraEditor) Minecraft.getMinecraft().currentScreen).elements.isVisible())
+        if (!Aperture.proxy.config.camera_editor_f1_tooltip && Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor && !((GuiCameraEditor) Minecraft.getMinecraft().currentScreen).root.isVisible())
         {
             return false;
         }

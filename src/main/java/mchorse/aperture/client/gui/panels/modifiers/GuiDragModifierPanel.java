@@ -3,7 +3,7 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.DragModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -16,13 +16,12 @@ public class GuiDragModifierPanel extends GuiAbstractModifierPanel<DragModifier>
     {
         super(mc, modifier, modifiers);
 
-        this.factor = new GuiTrackpadElement(mc, I18n.format("aperture.gui.modifiers.panels.factor"), (value) ->
+        this.factor = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.factor = value;
             this.modifiers.editor.updateProfile();
         });
-        this.factor.setLimit(0, 1);
-        this.factor.trackpad.amplitude = 0.05F;
+        this.factor.limit(0, 1).values(0.05F, 0.01F, 0.2F).increment(0.1F).tooltip(I18n.format("aperture.gui.modifiers.panels.factor"));
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {
@@ -30,24 +29,15 @@ public class GuiDragModifierPanel extends GuiAbstractModifierPanel<DragModifier>
             this.modifiers.editor.updateProfile();
         });
 
-        this.factor.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
-        this.active.resizer().parent(this.area).set(5, 50, 0, 20).w(1, -10);
-
-        this.children.add(this.factor, this.active);
+        this.fields.add(this.factor, this.active);
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.factor.setValue(this.modifier.factor);
         this.active.value = this.modifier.active;
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return 75;
     }
 }

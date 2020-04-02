@@ -3,13 +3,13 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.OrbitModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Elements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifier>
 {
@@ -17,34 +17,37 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
     public GuiTrackpadElement pitch;
     public GuiTrackpadElement distance;
 
-    public GuiButtonElement<GuiCheckBox> copy;
+    public GuiToggleElement copy;
     public GuiTextElement selector;
 
     public GuiOrbitModifierPanel(Minecraft mc, OrbitModifier modifier, GuiModifiersManager modifiers)
     {
         super(mc, modifier, modifiers);
 
-        this.yaw = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.yaw"), (value) ->
+        this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.yaw = value;
             this.modifiers.editor.updateProfile();
         });
+        this.yaw.tooltip(I18n.format("aperture.gui.panels.yaw"));
 
-        this.pitch = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.pitch"), (value) ->
+        this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.pitch = value;
             this.modifiers.editor.updateProfile();
         });
+        this.pitch.tooltip(I18n.format("aperture.gui.panels.pitch"));
 
-        this.distance = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.distance"), (value) ->
+        this.distance = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.distance = value;
             this.modifiers.editor.updateProfile();
         });
+        this.distance.tooltip(I18n.format("aperture.gui.panels.distance"));
 
-        this.copy = GuiButtonElement.checkbox(mc, I18n.format("aperture.gui.modifiers.panels.copy_entity"), false, (b) ->
+        this.copy = new GuiToggleElement(mc, I18n.format("aperture.gui.modifiers.panels.copy_entity"), false, (b) ->
         {
-            this.modifier.copy = b.button.isChecked();
+            this.modifier.copy = b.isToggled();
             this.modifiers.editor.updateProfile();
         });
 
@@ -54,43 +57,27 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
             this.modifier.tryFindingEntity();
             this.modifiers.editor.updateProfile();
         });
+        this.selector.tooltip(I18n.format("aperture.gui.panels.selector"));
 
-        this.selector.resizer().parent(this.area).set(5, 25, 0, 20).w(1, -10);
-        this.yaw.resizer().parent(this.area).set(5, 50, 0, 20).w(0.5F, -10);
-        this.pitch.resizer().parent(this.area).set(5, 50, 0, 20).x(0.5F, 5).w(0.5F, -10);
-        this.distance.resizer().parent(this.area).set(5, 75, 0, 20).w(0.5F, -10);
-        this.copy.resizer().parent(this.area).set(5, 79, this.copy.button.width, 11).x(0.5F, 5).w(0.5F, -10);
-
-        this.children.add(this.selector, this.yaw, this.pitch, this.distance, this.copy);
+        this.fields.add(this.selector, Elements.row(mc, 5, 0, 20, this.yaw, this.pitch), Elements.row(mc, 5, 0, 20, this.distance, this.copy));
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.yaw.setValue(this.modifier.yaw);
         this.pitch.setValue(this.modifier.pitch);
         this.distance.setValue(this.modifier.distance);
 
-        this.copy.button.setIsChecked(this.modifier.copy);
+        this.copy.toggled(this.modifier.copy);
         this.selector.setText(this.modifier.selector);
     }
 
     @Override
-    public int getHeight()
+    public void draw(GuiContext context)
     {
-        return 100;
-    }
-
-    @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
-    {
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
-
-        if (!this.selector.field.isFocused())
-        {
-            GuiUtils.drawRightString(font, I18n.format("aperture.gui.panels.selector"), this.selector.area.x + this.selector.area.w - 4, this.selector.area.y + 5, 0xffaaaaaa);
-        }
+        super.draw(context);
     }
 }

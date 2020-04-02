@@ -3,14 +3,15 @@ package mchorse.aperture.client.gui.utils;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
-import mchorse.mclib.client.gui.framework.elements.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
-import mchorse.mclib.client.gui.widgets.buttons.GuiCirculate;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
 public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends GuiElement
@@ -18,9 +19,9 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
     public GuiElements<GuiElement> frameButtons;
     public GuiTrackpadElement tick;
     public GuiTrackpadElement value;
-    public GuiButtonElement<GuiButton> interp;
+    public GuiButtonElement interp;
     public GuiListElement<KeyframeInterpolation> interpolations;
-    public GuiButtonElement<GuiCirculate> easing;
+    public GuiCirculateElement easing;
 
     public T graph;
 
@@ -31,67 +32,53 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
     {
         super(mc);
 
-        /* Create all elements */
-        this.createChildren();
-
-        this.frameButtons = new GuiElements<GuiElement>();
+        this.frameButtons = new GuiElements<GuiElement>(this);
         this.frameButtons.setVisible(false);
-        this.tick = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.tick"), (value) -> this.setTick(value.longValue()))
-        {
-            @Override
-            public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
-            {
-                return super.mouseClicked(mouseX, mouseY, mouseButton) || (this.isVisible() && this.area.isInside(mouseX, mouseY));
-            }
-        };
-        this.tick.setLimit(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        this.value = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.value"), (value) -> this.setValue(value))
-        {
-            @Override
-            public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
-            {
-                return super.mouseClicked(mouseX, mouseY, mouseButton) || (this.isVisible() && this.area.isInside(mouseX, mouseY));
-            }
-        };
+        this.tick = new GuiTrackpadElement(mc, (value) -> this.setTick(value.longValue()));
+        this.tick.limit(Integer.MIN_VALUE, Integer.MAX_VALUE, true).tooltip(I18n.format("aperture.gui.panels.tick"), Direction.BOTTOM);
+        this.value = new GuiTrackpadElement(mc, (value) -> this.setValue(value));
+        this.value.tooltip(I18n.format("aperture.gui.panels.value"), Direction.BOTTOM);
+        this.interp = new GuiButtonElement(mc, "", (b) -> this.interpolations.toggleVisible());
+        this.interpolations = new GuiKeyframeInterpolationsList(mc, (interp) -> this.pickInterpolation(interp.get(0)));
 
-        this.interp = GuiButtonElement.button(mc, "", (b) -> this.interpolations.toggleVisible());
-        this.interpolations = new GuiKeyframeInterpolationsList(mc, (interp) -> this.pickInterpolation(interp));
-
-        this.easing = new GuiButtonElement<GuiCirculate>(mc, new GuiCirculate(0, 0, 0, 80, 20), (b) -> this.changeEasing());
-        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.in"));
-        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.out"));
-        this.easing.button.addLabel(I18n.format("aperture.gui.panels.easing.inout"));
+        this.easing = new GuiCirculateElement(mc, (b) -> this.changeEasing());
+        this.easing.addLabel(I18n.format("aperture.gui.panels.easing.in"));
+        this.easing.addLabel(I18n.format("aperture.gui.panels.easing.out"));
+        this.easing.addLabel(I18n.format("aperture.gui.panels.easing.inout"));
 
         this.graph = this.createElement(mc);
 
         /* Position the elements */
-        this.tick.resizer().parent(this.area).set(0, 10, 80, 20).x(1, -90);
-        this.value.resizer().parent(this.area).set(0, 35, 80, 20).x(1, -90);
+        this.tick.flex().parent(this.area).set(0, 10, 80, 20).x(1, -90);
+        this.value.flex().parent(this.area).set(0, 35, 80, 20).x(1, -90);
 
-        this.interp.resizer().relative(this.tick.resizer()).set(-90, 0, 80, 20);
-        this.easing.resizer().relative(this.value.resizer()).set(-90, 0, 80, 20);
-        this.interpolations.resizer().parent(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(16 * 7);
-        this.graph.resizer().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
+        this.interp.flex().relative(this.tick.resizer()).set(-90, 0, 80, 20);
+        this.easing.flex().relative(this.value.resizer()).set(-90, 0, 80, 20);
+        this.interpolations.flex().parent(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(16 * 7);
+        this.graph.flex().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         /* Add all elements */
-        this.children.add(this.graph, this.frameButtons);
+        this.add(this.graph, this.frameButtons);
         this.frameButtons.add(this.interp, this.easing, this.tick, this.value, this.interpolations);
     }
 
     protected abstract T createElement(Minecraft mc);
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(GuiContext context)
     {
-        if (super.mouseClicked(mouseX, mouseY, mouseButton))
+        if (super.mouseClicked(context))
         {
             return true;
         }
 
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
+
         if (this.area.isInside(mouseX, mouseY))
         {
             /* On double click add or remove a keyframe */
-            if (mouseButton == 0)
+            if (context.mouseButton == 0)
             {
                 long time = System.currentTimeMillis();
 
@@ -124,9 +111,9 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
     }
 
     @Override
-    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
+    public boolean mouseScrolled(GuiContext context)
     {
-        return super.mouseScrolled(mouseX, mouseY, scroll) || this.area.isInside(mouseX, mouseY);
+        return super.mouseScrolled(context) || this.area.isInside(context.mouseX, context.mouseY);
     }
 
     public void setTick(long value)
@@ -148,7 +135,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         }
 
         this.graph.getCurrent().setInterpolation(interp);
-        this.interp.button.displayString = I18n.format("aperture.gui.panels.interps." + interp.key);
+        this.interp.label = I18n.format("aperture.gui.panels.interps." + interp.key);
         this.interpolations.setVisible(false);
     }
 
@@ -159,7 +146,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
             return;
         }
 
-        this.graph.getCurrent().setEasing(Easing.values()[this.easing.button.getValue()]);
+        this.graph.getCurrent().setEasing(Easing.values()[this.easing.getValue()]);
     }
 
     public void fillData(Keyframe frame)
@@ -173,8 +160,8 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
         this.tick.setValue(frame.tick);
         this.value.setValue(frame.value);
-        this.interp.button.displayString = I18n.format("aperture.gui.panels.interps." + frame.interp.key);
+        this.interp.label = I18n.format("aperture.gui.panels.interps." + frame.interp.key);
         this.interpolations.setCurrent(frame.interp);
-        this.easing.button.setValue(frame.easing.ordinal());
+        this.easing.setValue(frame.easing.ordinal());
     }
 }

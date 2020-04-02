@@ -3,7 +3,9 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -17,17 +19,19 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     {
         super(mc, modifier, panel);
 
-        this.shake = new GuiTrackpadElement(mc, I18n.format("aperture.gui.modifiers.panels.shake"), (value) ->
+        this.shake = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.shake = value;
             this.modifiers.editor.updateProfile();
         });
+        this.shake.tooltip(I18n.format("aperture.gui.modifiers.panels.shake"), Direction.BOTTOM);
 
-        this.shakeAmount = new GuiTrackpadElement(mc, I18n.format("aperture.gui.modifiers.panels.shake_amount"), (value) ->
+        this.shakeAmount = new GuiTrackpadElement(mc, (value) ->
         {
             this.modifier.shakeAmount = value;
             this.modifiers.editor.updateProfile();
         });
+        this.shakeAmount.tooltip(I18n.format("aperture.gui.modifiers.panels.shake_amount"), Direction.BOTTOM);
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {
@@ -35,26 +39,16 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
             this.modifiers.editor.updateProfile();
         });
 
-        this.shake.resizer().parent(this.area).set(5, 25, 0, 20).w(0.5F, -10);
-        this.shakeAmount.resizer().parent(this.area).set(0, 25, 0, 20).x(0.5F, 5).w(0.5F, -10);
-        this.active.resizer().parent(this.area).set(5, 50, 0, 20).w(1, -10);
-
-        this.children.add(this.shake, this.shakeAmount, this.active);
+        this.fields.add(Elements.row(mc, 5, 0, 20, this.shake, this.shakeAmount), this.active);
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.shake.setValue(this.modifier.shake);
         this.shakeAmount.setValue(this.modifier.shakeAmount);
         this.active.value = this.modifier.active;
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return 75;
     }
 }

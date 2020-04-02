@@ -260,7 +260,7 @@ public class ApertureConfig
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
     {
-        if (event.getModID().equals(Aperture.MODID) && this.config.hasChanged())
+        if (event.getModID().equals(Aperture.MOD_ID) && this.config.hasChanged())
         {
             this.reload();
         }

@@ -4,10 +4,11 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTextElement;
-import mchorse.mclib.client.gui.framework.elements.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -35,7 +36,6 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     {
         super(mc);
 
-        this.createChildren();
         this.name = new GuiTextElement(mc, 80, (str) ->
         {
             this.fixture.setName(str);
@@ -43,19 +43,19 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
             this.editor.updateProfile();
         });
 
-        this.duration = new GuiTrackpadElement(mc, I18n.format("aperture.gui.panels.duration"), (value) ->
+        this.duration = new GuiTrackpadElement(mc, (value) ->
         {
             this.updateDuration(value.longValue());
             this.editor.updatePlayerCurrently();
             this.editor.updateProfile();
         });
-        this.duration.trackpad.amplitude = 1.0F;
-        this.duration.trackpad.min = 1;
+        this.duration.tooltip(I18n.format("aperture.gui.panels.duration"), Direction.BOTTOM);
+        this.duration.values(1.0F).limit(1, Float.POSITIVE_INFINITY, true);
 
-        this.name.resizer().parent(this.area).set(0, 10, 100, 20);
-        this.duration.resizer().parent(this.area).set(0, 35, 100, 20);
+        this.name.flex().parent(this.area).set(0, 10, 100, 20);
+        this.duration.flex().parent(this.area).set(0, 35, 100, 20);
 
-        this.children.add(this.name, this.duration);
+        this.add(this.name, this.duration);
 
         this.editor = editor;
     }
@@ -91,9 +91,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     }
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
 
         if (!this.name.field.isFocused())
         {

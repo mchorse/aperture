@@ -64,7 +64,7 @@ public class CommonProxy
         MinecraftForge.EVENT_BUS.register(this.config);
 
         /* Capabilities */
-        CapabilityManager.INSTANCE.register(ICamera.class, new CameraStorage(), Camera.class);
+        CapabilityManager.INSTANCE.register(ICamera.class, new CameraStorage(), Camera::new);
 
         /* Register camera fixtures and modifiers */
         FixtureRegistry.register("idle", IdleFixture.class);

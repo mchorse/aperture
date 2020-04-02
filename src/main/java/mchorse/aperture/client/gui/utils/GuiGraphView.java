@@ -2,6 +2,8 @@ package mchorse.aperture.client.gui.utils;
 
 import java.util.function.Consumer;
 
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
@@ -129,22 +131,22 @@ public class GuiGraphView extends GuiKeyframeElement
 
     public int toGraphX(float tick)
     {
-        return (int) (this.scaleX.to(tick)) + this.area.getX(0.5F);
+        return (int) (this.scaleX.to(tick)) + this.area.mx();
     }
 
     public int toGraphY(float value)
     {
-        return (int) (this.scaleY.to(value)) + this.area.getY(0.5F);
+        return (int) (this.scaleY.to(value)) + this.area.my();
     }
 
     public float fromGraphX(int mouseX)
     {
-        return this.scaleX.from(mouseX - this.area.getX(0.5F));
+        return this.scaleX.from(mouseX - this.area.mx());
     }
 
     public float fromGraphY(int mouseY)
     {
-        return this.scaleY.from(mouseY - this.area.getY(0.5F));
+        return this.scaleY.from(mouseY - this.area.my());
     }
 
     /**
@@ -245,17 +247,20 @@ public class GuiGraphView extends GuiKeyframeElement
     /* Input handling */
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(GuiContext context)
     {
-        if (super.mouseClicked(mouseX, mouseY, mouseButton))
+        if (super.mouseClicked(context))
         {
             return true;
         }
 
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
+
         /* Select current point with a mouse click */
         if (this.area.isInside(mouseX, mouseY))
         {
-            if (mouseButton == 0)
+            if (context.mouseButton == 0)
             {
                 /* Duplicate the keyframe */
                 if (GuiScreen.isAltKeyDown() && this.which == 0)
@@ -312,7 +317,7 @@ public class GuiGraphView extends GuiKeyframeElement
                     this.dragging = true;
                 }
             }
-            else if (mouseButton == 2)
+            else if (context.mouseButton == 2)
             {
                 this.scrolling = true;
                 this.lastX = mouseX;
@@ -335,15 +340,20 @@ public class GuiGraphView extends GuiKeyframeElement
     }
 
     @Override
-    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
+    public boolean mouseScrolled(GuiContext context)
     {
-        if (super.mouseScrolled(mouseX, mouseY, scroll))
+        if (super.mouseScrolled(context))
         {
             return true;
         }
 
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
+
         if (this.area.isInside(mouseX, mouseY) && !this.scrolling)
         {
+            int scroll = context.mouseWheel;
+
             if (!Minecraft.IS_RUNNING_ON_MAC)
             {
                 scroll = -scroll;
@@ -374,9 +384,9 @@ public class GuiGraphView extends GuiKeyframeElement
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
+    public void mouseReleased(GuiContext context)
     {
-        super.mouseReleased(mouseX, mouseY, state);
+        super.mouseReleased(context);
 
         if (this.selected != -1)
         {
@@ -404,11 +414,13 @@ public class GuiGraphView extends GuiKeyframeElement
     /* Rendering */
 
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
         GuiScreen screen = this.mc.currentScreen;
         int w = screen.width;
         int h = screen.height;
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
 
         if (this.dragging && !this.moving && (Math.abs(this.lastX - mouseX) > 3 || Math.abs(this.lastY - mouseY) > 3))
         {
@@ -417,13 +429,13 @@ public class GuiGraphView extends GuiKeyframeElement
         }
 
         this.area.draw(0x88000000);
-        GuiUtils.scissor(this.area.x, this.area.y, this.area.w, this.area.h, w, h);
+        GuiDraw.scissor(this.area.x, this.area.y, this.area.w, this.area.h, w, h);
 
         this.drawGraph(mouseX, mouseY, w, h);
 
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        GuiDraw.unscissor(context);
 
-        super.draw(tooltip, mouseX, mouseY, partialTicks);
+        super.draw(context);
     }
 
     /**
@@ -501,11 +513,11 @@ public class GuiGraphView extends GuiKeyframeElement
         {
             int x = this.toGraphX(j * this.scaleX.mult);
 
-            Gui.drawRect(this.area.x + x, this.area.y, this.area.x + x + 1, this.area.getY(1), 0x44ffffff);
+            Gui.drawRect(this.area.x + x, this.area.y, this.area.x + x + 1, this.area.ey(), 0x44ffffff);
             this.font.drawString(String.valueOf(j * this.scaleX.mult), this.area.x + x + 4, this.area.y + 4, 0xffffff);
         }
 
-        int ty = (int) this.fromGraphY(this.area.getY(1));
+        int ty = (int) this.fromGraphY(this.area.ey());
         int by = (int) this.fromGraphY(this.area.y);
 
         int min = Math.min(ty, by) - 1;
@@ -519,7 +531,7 @@ public class GuiGraphView extends GuiKeyframeElement
         {
             int y = this.toGraphY(min + j * mult);
 
-            Gui.drawRect(this.area.x, y, this.area.getX(1), y + 1, 0x44ffffff);
+            Gui.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
             this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
         }
 

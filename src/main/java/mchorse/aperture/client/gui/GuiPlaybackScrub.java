@@ -1,5 +1,7 @@
 package mchorse.aperture.client.gui;
 
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.opengl.GL11;
 
@@ -56,9 +58,9 @@ public class GuiPlaybackScrub extends GuiElement
     }
 
     @Override
-    public void resize(int width, int height)
+    public void resize()
     {
-        super.resize(width, height);
+        super.resize();
 
         this.clampScroll();
     }
@@ -157,16 +159,19 @@ public class GuiPlaybackScrub extends GuiElement
      * Mouse was clicked
      */
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(GuiContext context)
     {
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
+
         if (this.area.isInside(mouseX, mouseY))
         {
-            if (mouseButton == 0)
+            if (context.mouseButton == 0)
             {
                 this.scrubbing = true;
                 this.setValueFromScrub(this.calcValueFromMouse(mouseX));
             }
-            else if (mouseButton == 1 && this.profile != null)
+            else if (context.mouseButton == 1 && this.profile != null)
             {
                 int tick = this.calcValueFromMouse(mouseX);
 
@@ -212,7 +217,7 @@ public class GuiPlaybackScrub extends GuiElement
                 this.editor.pickCameraFixture(fixture, tick - offset);
                 this.index = index;
             }
-            else if (mouseButton == 2)
+            else if (context.mouseButton == 2)
             {
                 this.scrolling = true;
                 this.lastX = mouseX;
@@ -223,18 +228,18 @@ public class GuiPlaybackScrub extends GuiElement
     }
 
     @Override
-    public boolean mouseScrolled(int mouseX, int mouseY, int scroll)
+    public boolean mouseScrolled(GuiContext context)
     {
         if (!Minecraft.IS_RUNNING_ON_MAC)
         {
             scroll = -scroll;
         }
 
-        if (this.area.isInside(mouseX, mouseY) && !this.scrolling)
+        if (this.area.isInside(context.mouseX, context.mouseY) && !this.scrolling)
         {
             float scale = this.scale;
             float factor = 0.1F;
-            int value = (int) (this.calcValueFromMouse(mouseX) * scale);
+            int value = (int) (this.calcValueFromMouse(context.mouseX) * scale);
 
             if (this.scale < 0.1F) factor = 0.005F;
             else if (this.scale < 1) factor = 0.05F;
@@ -260,14 +265,14 @@ public class GuiPlaybackScrub extends GuiElement
             return true;
         }
 
-        return super.mouseScrolled(mouseX, mouseY, scroll);
+        return super.mouseScrolled(context);
     }
 
     /**
      * Mouse was released
      */
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
+    public void mouseReleased(GuiContext context)
     {
         if (this.resize)
         {
@@ -288,15 +293,18 @@ public class GuiPlaybackScrub extends GuiElement
      * timeline thingy. Scrub also renders all of available camera fixtures.
      */
     @Override
-    public void draw(GuiTooltip tooltip, int mouseX, int mouseY, float partialTicks)
+    public void draw(GuiContext context)
     {
+        int mouseX = context.mouseX;
+        int mouseY = context.mouseY;
+
         if (this.scrubbing)
         {
             this.setValueFromScrub(this.calcValueFromMouse(mouseX));
 
             if (this.max * this.scale - this.area.w + 4 > 0)
             {
-                int delta = mouseX - this.area.getX(0.5F);
+                int delta = mouseX - this.area.mx();
                 int edge = (int) Math.copySign(this.area.w / 2 - 50, -delta) + delta;
 
                 if (Math.copySign(1, edge) == Math.copySign(1, delta) && delta != 0)
@@ -381,7 +389,7 @@ public class GuiPlaybackScrub extends GuiElement
             int leftMarginMarker = 0;
             int rightMarginMarker = 0;
 
-            GuiUtils.scissor(x + 2, y - 16, w - 4, h + 16, this.editor.width, this.editor.height);
+            GuiDraw.scissor(x + 2, y - 16, w - 4, h + 16, context);
 
             for (AbstractFixture fixture : this.profile.getAll())
             {
@@ -398,7 +406,7 @@ public class GuiPlaybackScrub extends GuiElement
 
                     continue;
                 }
-                else if (leftMargin > this.area.getX(1))
+                else if (leftMargin > this.area.ex())
                 {
                     break;
                 }
@@ -500,13 +508,13 @@ public class GuiPlaybackScrub extends GuiElement
             }
 
             /* Draw shadows to indicate that there are still stuff to scroll */
-            if (this.scroll > this.min * this.scale) GuiUtils.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
-            if (this.scroll < this.max * this.scale - this.area.w + 4) GuiUtils.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
+            if (this.scroll > this.min * this.scale) GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
+            if (this.scroll < this.max * this.scale - this.area.w + 4) GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
 
             /* Draw end marker and also shadow of area where there is no  */
             int stopX = this.calcMouseFromValue((int) this.profile.getDuration());
 
-            if (stopX < this.area.getX(1) - 2)
+            if (stopX < this.area.ex() - 2)
             {
                 this.drawGradientRect(stopX + 1, y + h / 2, x + w - 1, y + h, 0x00, 0x88000000);
                 Gui.drawRect(stopX, y + h / 2, stopX + 1, y + h, 0xaaffffff);
@@ -531,7 +539,7 @@ public class GuiPlaybackScrub extends GuiElement
             Gui.drawRect(tx + 2, y + h - 3 - this.font.FONT_HEIGHT, tx + 2 + width, y + h - 1, 0xaa57f52a);
             this.font.drawStringWithShadow(label, tx + 4, y + h - this.font.FONT_HEIGHT - 1, 0xffffff);
 
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            GuiDraw.unscissor(context);
 
             /* Draw resizing markers */
             if (drawnMarker)
