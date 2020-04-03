@@ -1,5 +1,6 @@
 package mchorse.aperture.camera.smooth;
 
+import mchorse.mclib.config.values.ValueFloat;
 import mchorse.mclib.utils.Interpolations;
 
 /**
@@ -28,12 +29,12 @@ public class Filter
      * Friction for acceleration, this value decides how fast acceleration
      * slow downs.
      */
-    public float friction = 0.9F;
+    public ValueFloat friction;
 
     /**
      * Factor for acceleration (should be used externally)
      */
-    public float factor = 0.1F;
+    public ValueFloat factor;
 
     /**
      * Set the value for the filter 
@@ -60,7 +61,7 @@ public class Filter
     public void accelerate(float value)
     {
         this.acc += value;
-        this.acc *= this.friction;
+        this.acc *= this.friction.get();
 
         if (Math.abs(this.acc) < 0.005F)
         {

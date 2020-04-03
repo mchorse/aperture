@@ -2,7 +2,6 @@ package mchorse.aperture.client;
 
 import java.lang.reflect.Field;
 
-import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
 import mchorse.aperture.Aperture;
@@ -18,7 +17,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -229,17 +227,15 @@ public class KeyboardHandler
         if (this.smoothCamera.isPressed())
         {
             SmoothCamera camera = ClientProxy.renderer.smooth;
-            Property enabled = Aperture.proxy.forge.getCategory("smooth").get("smooth_enabled");
 
-            enabled.set(!enabled.getBoolean());
+            camera.enabled.set(!camera.enabled.get());
 
-            Aperture.proxy.onConfigChange(Aperture.proxy.config);
-            Aperture.proxy.forge.save();
-
-            if (camera.enabled)
+            if (camera.enabled.get())
             {
                 camera.set(player.rotationYaw, -player.rotationPitch);
             }
+
+            camera.enabled.category.config.save();
         }
 
         if (this.addPoint.isPressed())
@@ -297,7 +293,7 @@ public class KeyboardHandler
                 return;
             }
 
-            if (!ClientProxy.renderer.smooth.enabled)
+            if (!ClientProxy.renderer.smooth.enabled.get())
             {
                 CameraControl control = ClientProxy.control;
 
@@ -322,8 +318,8 @@ public class KeyboardHandler
                 }
             }
 
-            double factor = Aperture.proxy.config.camera_step_factor;
-            double angleFactor = Aperture.proxy.config.camera_rotate_factor;
+            double factor = Aperture.stepFactor.get();
+            double angleFactor = Aperture.rotateFactor.get();
 
             float yaw = player.rotationYaw;
             float pitch = player.rotationPitch;

@@ -1,6 +1,6 @@
 # Config strings
 aperture.config.comments:
-    camera:
+    general:
         camera_duration_step: What is default step to use when adding or reducing duration of the camera fixture (in ticks)
         camera_duration: What is default duration of the camera fixture (in ticks)
         camera_interpolate_target: Interpolate target based camera fixtures (follow and look) outcome
@@ -16,10 +16,7 @@ aperture.config.comments:
         camera_first_tick_zero: When camera runner starts, start the actual playback when partial tick is exactly zero
         camera_profile_render: Render camera profile in the world?
         camera_auto_save: Save all camera profiles upon exiting the world
-        gui_render_mouse: Render on the screen a texture of a mouse pointer during GUI
         minecrafttp_teleport: When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)
-        tp_teleport: When start the camera playback in multiplayer, teleport you with /tp command (For Vanilla or Forge)
-        aspect_ratio: Aspect ratio for camera editor's letterbox feature
         
     outside:
         camera_outside: Whether camera should be played back from outside (allowing the player to act as a body actor)
@@ -32,9 +29,10 @@ aperture.config.comments:
         camera_editor_overlay: Enables camera editor overlay
         camera_editor_overlay_rl: Resource location path to the texture which will be used as overlay
         camera_editor_f1_tooltip: Show the tooltip in the bottom left corner which explains how to show back the GUI
+        aspect_ratio: Aspect ratio for camera editor's letterbox feature
 
     smooth:
-        camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range? WUB WUB WUB
+        camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range?
 
         roll_speed: Roll acceleration speed
         roll_friction: Roll acceleration friction (how fast it slows down)
@@ -42,6 +40,6 @@ aperture.config.comments:
         fov_speed: FOV acceleration speed
         fov_friction: FOV acceleration friction (how fast it slows down)
 
-        smooth_enabled: Enable smooth camera. WUB WUB WUB
+        smooth_enabled: Enable smooth camera
         mouse_x_friction: Smooth mouse X friction
         mouse_y_friction: Smooth mouse Y friction

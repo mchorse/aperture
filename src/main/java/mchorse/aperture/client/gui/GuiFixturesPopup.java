@@ -59,7 +59,7 @@ public class GuiFixturesPopup extends GuiElement
      */
     private void actionPerformed(byte type)
     {
-        long duration = Aperture.proxy.config.camera_duration;
+        long duration = Aperture.duration.get();
         AbstractFixture fixture = null;
 
         try

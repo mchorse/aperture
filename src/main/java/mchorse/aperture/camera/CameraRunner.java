@@ -160,7 +160,7 @@ public class CameraRunner
             this.gameMode = this.getGameMode(this.mc.player);
             this.position.set(this.mc.player);
 
-            if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
+            if (Aperture.spectator.get() && !Aperture.outside.get() && this.gameMode != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode 3");
             }
@@ -177,7 +177,7 @@ public class CameraRunner
         this.ticks = start;
 
         this.firstTick = true;
-        this.firstTickZero = Aperture.proxy.config.camera_first_tick_zero;
+        this.firstTickZero = Aperture.firstTickZero.get();
         this.firstTickZeroStart = false;
     }
 
@@ -190,12 +190,12 @@ public class CameraRunner
         {
             if (this.mc.player != null)
             {
-                if (Aperture.proxy.config.camera_spectator && !Aperture.proxy.config.camera_outside && this.gameMode != GameType.SPECTATOR)
+                if (Aperture.spectator.get() && !Aperture.outside.get() && this.gameMode != GameType.SPECTATOR)
                 {
                     this.mc.player.sendChatMessage("/gamemode " + this.gameMode.getID());
                 }
 
-                if (Aperture.proxy.config.camera_minema)
+                if (false)
                 {
                     ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema disable");
                 }
@@ -221,7 +221,7 @@ public class CameraRunner
      */
     public void attachOutside()
     {
-        if (!this.outside.active && Aperture.proxy.config.camera_outside)
+        if (!this.outside.active && false)
         {
             this.outside.start();
         }
@@ -257,7 +257,7 @@ public class CameraRunner
         {
             if (this.outside.active)
             {
-                this.mc.setRenderViewEntity(Aperture.proxy.config.camera_outside_sky ? this.mc.player : this.outside.camera);
+                this.mc.setRenderViewEntity(Aperture.outsideSky.get() ? this.mc.player : this.outside.camera);
             }
 
             return;
@@ -267,7 +267,7 @@ public class CameraRunner
         {
             /* Currently Minema supports client side /minema command which
              * record video */
-            if (Aperture.proxy.config.camera_minema)
+            if (false)
             {
                 ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
             }
@@ -285,7 +285,7 @@ public class CameraRunner
         {
             if (this.outside.active)
             {
-                this.mc.setRenderViewEntity(Aperture.proxy.config.camera_outside_sky ? this.outside.camera : this.mc.player);
+                this.mc.setRenderViewEntity(Aperture.outsideSky.get() ? this.outside.camera : this.mc.player);
             }
 
             if (this.firstTickZero && event.renderTickTime == 0.0)
@@ -293,7 +293,7 @@ public class CameraRunner
                 this.firstTickZeroStart = true;
             }
 
-            if (Aperture.proxy.config.camera_debug_ticks)
+            if (Aperture.debugTicks.get())
             {
                 Aperture.LOGGER.info("Camera render frame: " + event.renderTickTime + " " + this.ticks);
             }
@@ -316,7 +316,7 @@ public class CameraRunner
             double y = point.y + Math.sin(progress) * 0.000000001 + 0.000000001;
 
             /* Velocity simulation (useful for recording the player) */
-            if (Aperture.proxy.config.camera_simulate_velocity)
+            if (Aperture.simulateVelocity.get())
             {
                 if (this.ticks == 0)
                 {
@@ -350,12 +350,11 @@ public class CameraRunner
                 if (dx * dx + dy * dy + dz * dz >= 10 * 10)
                 {
                     /* Make it compatible with Essentials plugin, which replaced the native /tp command */
-                    if (Aperture.proxy.config.minecrafttp_teleport)
+                    if (Aperture.essentialsTeleport.get())
                     {
                         this.mc.player.sendChatMessage("/minecraft:tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
                     }
-
-                    if (Aperture.proxy.config.tp_teleport)
+                    else
                     {
                         this.mc.player.sendChatMessage("/tp " + point.x + " " + point.y + " " + point.z + " " + angle.yaw + " " + angle.pitch);
                     }
@@ -404,7 +403,7 @@ public class CameraRunner
     {
         if (event.side == Side.CLIENT && event.player == this.mc.player && event.phase == Phase.START)
         {
-            if (Aperture.proxy.config.camera_debug_ticks)
+            if (Aperture.debugTicks.get())
             {
                 Aperture.LOGGER.info("Camera frame: " + this.ticks);
             }

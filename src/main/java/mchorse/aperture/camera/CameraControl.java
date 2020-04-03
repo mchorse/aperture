@@ -49,7 +49,7 @@ public class CameraControl
     public void reset()
     {
         /* Saving dirty camera profiles */
-        if (Aperture.proxy.config.camera_auto_save)
+        if (Aperture.profileAutoSave.get())
         {
             for (CameraProfile profile : this.profiles)
             {

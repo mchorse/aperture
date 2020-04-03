@@ -1,6 +1,8 @@
 package mchorse.aperture.camera.smooth;
 
 import mchorse.aperture.Aperture;
+import mchorse.mclib.config.values.ValueBoolean;
+import mchorse.mclib.config.values.ValueFloat;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -15,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SmoothCamera
 {
-    public boolean enabled;
+    public ValueBoolean enabled;
 
     public float yaw;
     public float pitch;
@@ -26,21 +28,21 @@ public class SmoothCamera
     public float accX;
     public float accY;
 
-    public float fricX = 0.9F;
-    public float fricY = 0.9F;
+    public ValueFloat fricX;
+    public ValueFloat fricY;
 
     public void update(EntityPlayer player, float dx, float dy)
     {
         this.accX += dx / 10.0F;
         this.accY += dy / 10.0F;
 
-        this.accX *= this.fricX;
-        this.accY *= this.fricY;
+        this.accX *= this.fricX.get();
+        this.accY *= this.fricY.get();
 
         this.yaw += this.accX;
         this.pitch += this.accY;
 
-        if (Aperture.proxy.config.camera_smooth_clamp)
+        if (Aperture.smoothClampPitch.get())
         {
             this.pitch = MathHelper.clamp(this.pitch, -90, 90);
         }

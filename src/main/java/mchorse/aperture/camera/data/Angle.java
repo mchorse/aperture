@@ -59,7 +59,7 @@ public class Angle
 
     public void set(float yaw, float pitch)
     {
-        if (Aperture.proxy != null && Aperture.proxy.config.camera_smooth_clamp)
+        if (Aperture.smoothClampPitch != null && Aperture.smoothClampPitch.get())
         {
             /* Clamp pitch */
             pitch = MathHelper.clamp(pitch, -90, 90);

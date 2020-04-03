@@ -25,7 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -63,12 +62,8 @@ public class CameraRenderer
      */
     public void toggleRender()
     {
-        Property prop = Aperture.proxy.forge.getCategory("camera").get("camera_profile_render");
-
-        prop.set(!prop.getBoolean());
-
-        Aperture.proxy.forge.save();
-        Aperture.proxy.config.reload();
+        Aperture.profileRender.set(!Aperture.profileRender.get());
+        Aperture.profileRender.category.config.save();
     }
 
     /**
@@ -103,7 +98,7 @@ public class CameraRenderer
             event.setYaw(-180 + runner.yaw);
             event.setPitch(runner.pitch);
 
-            if (Aperture.proxy.config.camera_outside && !Aperture.proxy.config.camera_outside_hide_player)
+            if (Aperture.outside.get() && !Aperture.outsideHidePlayer.get())
             {
                 this.mc.gameSettings.thirdPersonView = 1;
             }
@@ -115,7 +110,7 @@ public class CameraRenderer
             event.setYaw(-180 + position.angle.yaw);
             event.setPitch(position.angle.pitch);
         }
-        else if (this.smooth.enabled && !this.mc.isGamePaused())
+        else if (this.smooth.enabled.get() && !this.mc.isGamePaused())
         {
             /* Yaw and pitch */
             float yaw = this.smooth.getInterpYaw(ticks);
@@ -172,7 +167,7 @@ public class CameraRenderer
         SmoothCamera camera = ClientProxy.renderer.smooth;
         EntityPlayer player = this.mc.player;
 
-        if (event.side == Side.CLIENT && event.player == player && camera.enabled)
+        if (event.side == Side.CLIENT && event.player == player && camera.enabled.get())
         {
             /* Copied from EntityRenderer */
             float sensetivity = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
@@ -189,8 +184,8 @@ public class CameraRenderer
             float roll = keys.addRoll.isKeyDown() ? 1 : (keys.reduceRoll.isKeyDown() ? -1 : 0F);
             float fov = keys.addFov.isKeyDown() ? 1 : (keys.reduceFov.isKeyDown() ? -1 : 0F);
 
-            this.roll.accelerate(roll * this.roll.factor);
-            this.fov.accelerate(fov * this.fov.factor);
+            this.roll.accelerate(roll * this.roll.factor.get());
+            this.fov.accelerate(fov * this.fov.factor.get());
         }
     }
 
@@ -205,7 +200,7 @@ public class CameraRenderer
 
         boolean badProfile = profile == null || profile.getCount() < 1;
 
-        if (!Aperture.proxy.config.camera_profile_render) return;
+        if (!Aperture.profileRender.get()) return;
         if (runner.isRunning()) return;
         if (badProfile) return;
 

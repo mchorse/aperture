@@ -1,11 +1,13 @@
 # Config strings
 aperture.config:
-    camera:
-        title: Camera
+    title: Aperture
+
+    general:
+        title: General
         tooltip: General camera options
 
         camera_duration_step: Duration step
-        camera_duration: Default fixture duration
+        camera_duration: Fixture duration
         camera_interpolate_target: Interpolate target fixtures
         camera_interpolate_target_value: Target interpolation value
         camera_spectator: Switch to specator
@@ -19,12 +21,7 @@ aperture.config:
         camera_debug_ticks: Debug ticks
         camera_profile_render: Render camera profile
         camera_auto_save: Auto save profiles
-
-        gui_render_mouse: Render mouse cursor in GUIs
-
         minecrafttp_teleport: Use /minecraft:tp
-        tp_teleport: Use /tp
-        aspect_ratio: Aspect ratio
 
     outside: 
         title: Outside mode
@@ -41,8 +38,9 @@ aperture.config:
         tooltip: Allows to setup an overlay image that would be used in the camera editor
         
         camera_editor_overlay: Enable overlay
-        camera_editor_overlay_rl: Resource path to overlay
+        camera_editor_overlay_rl: Overlay path
         camera_editor_f1_tooltip: F1 hide tooltip
+        aspect_ratio: Aspect ratio
 
     smooth:
         title: Smooth camera

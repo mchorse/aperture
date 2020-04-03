@@ -73,7 +73,7 @@ public class PathFixture extends AbstractFixture
     {
         super(duration);
 
-        InterpolationType type = interpFromString(Aperture.proxy.config.camera_path_default_interp);
+        InterpolationType type = InterpolationType.HERMITE;
 
         this.interpolationPos = type;
         this.interpolationAngle = type;

@@ -1,6 +1,5 @@
 package mchorse.aperture.client.gui;
 
-import com.google.gson.JsonParser;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
@@ -18,6 +17,7 @@ import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.aperture.utils.APIcons;
+import mchorse.mclib.client.MouseRenderer;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -27,7 +27,6 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.resizers.IResizer;
 import mchorse.mclib.utils.Direction;
-import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -692,9 +691,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
         this.lastRoll = ClientProxy.control.roll;
         this.lastGameMode = ClientProxy.runner.getGameMode(player);
-        this.setAspectRatio(Aperture.proxy.config.aspect_ratio);
+        this.setAspectRatio(Aperture.editorLetterboxAspect.get());
 
-        if (Aperture.proxy.config.camera_spectator)
+        if (Aperture.spectator.get())
         {
             if (this.lastGameMode != GameType.SPECTATOR)
             {
@@ -721,14 +720,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
     public void updateOverlay()
     {
-        try
-        {
-            this.overlayLocation = RLUtils.create(new JsonParser().parse(Aperture.proxy.config.camera_editor_overlay_rl));
-        }
-        catch (Exception e)
-        {
-            this.overlayLocation = null;
-        }
+        this.overlayLocation = Aperture.editorOverlayRL.get();
     }
 
     public void updatePlayerCurrently()
@@ -1178,7 +1170,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.profile != null)
         {
-            if (Aperture.proxy.config.camera_editor_overlay && this.overlayLocation != null)
+            if (Aperture.editorOverlay.get() && this.overlayLocation != null)
             {
                 this.mc.renderEngine.bindTexture(this.overlayLocation);
                 Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
@@ -1234,10 +1226,12 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
         }
 
-        if (!this.root.isVisible() || (isRunning && Aperture.proxy.config.camera_minema))
+        if (!this.root.isVisible())
         {
+            MouseRenderer.disable();
+
             /* Little tip for the users who don't know what they did */
-            if (!isRunning && Aperture.proxy.config.camera_editor_f1_tooltip)
+            if (!isRunning && Aperture.editorF1Tooltip.get())
             {
                 this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
             }

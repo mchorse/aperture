@@ -1,8 +1,5 @@
 package mchorse.aperture;
 
-import java.io.File;
-import java.util.HashMap;
-
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.CameraRunner;
@@ -26,7 +23,6 @@ import mchorse.aperture.camera.modifiers.OrbitModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.camera.modifiers.TranslateModifier;
 import mchorse.aperture.client.KeyboardHandler;
-import mchorse.aperture.client.MouseRenderer;
 import mchorse.aperture.client.RenderingHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiModifiersManager;
@@ -45,7 +41,6 @@ import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiTranslateModifierPanel;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
-import mchorse.aperture.config.ApertureConfig;
 import mchorse.aperture.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
@@ -57,6 +52,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.io.File;
+import java.util.HashMap;
 
 /**
  * Client proxy
@@ -198,33 +196,23 @@ public class ClientProxy extends CommonProxy
         super.load(event);
 
         /* Event listeners */
-        MinecraftForge.EVENT_BUS.register(new MouseRenderer());
         MinecraftForge.EVENT_BUS.register(new RenderingHandler());
         MinecraftForge.EVENT_BUS.register(keys = new KeyboardHandler());
         MinecraftForge.EVENT_BUS.register(renderer);
 
+        renderer.smooth.enabled = Aperture.smooth;
+        renderer.smooth.fricX = Aperture.smoothFricX;
+        renderer.smooth.fricY = Aperture.smoothFricY;
+
+        renderer.roll.friction = Aperture.rollFriction;
+        renderer.roll.factor = Aperture.rollFactor;
+
+        renderer.fov.friction = Aperture.fovFriction;
+        renderer.fov.factor = Aperture.fovFactor;
+
         /* Client commands */
         ClientCommandHandler.instance.registerCommand(new CommandCamera());
         ClientCommandHandler.instance.registerCommand(new CommandLoadChunks());
-    }
-
-    /**
-     * Applies client side options
-     */
-    @Override
-    public void onConfigChange(ApertureConfig config)
-    {
-        String smooth = "smooth";
-
-        renderer.roll.friction = config.getFloat("roll_friction", smooth, 0.985F, 0.0F, 0.99999F, "Roll acceleration friction (how fast it slows down)");
-        renderer.fov.friction = config.getFloat("fov_friction", smooth, 0.985F, 0.0F, 0.99999F, "FOV acceleration friction (how fast it slows down)");
-
-        renderer.roll.factor = config.getFloat("roll_speed", smooth, 0.01F, 0.0F, 10.0F, "Roll acceleration speed");
-        renderer.fov.factor = config.getFloat("fov_speed", smooth, 0.075F, 0.0F, 10.0F, "FOV acceleration speed");
-
-        renderer.smooth.enabled = config.getBoolean("smooth_enabled", smooth, false, "Enable smooth camera");
-        renderer.smooth.fricX = config.getFloat("mouse_x_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse X friction");
-        renderer.smooth.fricY = config.getFloat("mouse_y_friction", smooth, 0.92F, 0.0F, 1.0F, "Smooth mouse Y friction");
     }
 
     /**

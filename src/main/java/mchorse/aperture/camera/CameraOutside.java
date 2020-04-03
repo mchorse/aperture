@@ -121,7 +121,7 @@ public class CameraOutside
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPreRenderPlayer(RenderPlayerEvent.Pre event)
     {
-        if (!Aperture.proxy.config.camera_outside_hide_player && event.getEntityPlayer() == this.mc.player)
+        if (!Aperture.outsideHidePlayer.get() && event.getEntityPlayer() == this.mc.player)
         {
             this.mc.getRenderManager().renderViewEntity = this.mc.player;
         }
@@ -133,7 +133,7 @@ public class CameraOutside
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPostRenderPlayer(RenderPlayerEvent.Post event)
     {
-        if (!Aperture.proxy.config.camera_outside_hide_player && event.getEntityPlayer() == this.mc.player)
+        if (!Aperture.outsideHidePlayer.get() && event.getEntityPlayer() == this.mc.player)
         {
             this.mc.getRenderManager().renderViewEntity = this.camera;
             this.mc.gameSettings.thirdPersonView = 0;
