@@ -18,8 +18,6 @@ import net.minecraft.client.resources.I18n;
 
 public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 {
-    private String title = I18n.format("aperture.gui.config.title");
-
     public GuiToggleElement outside;
     public GuiToggleElement spectator;
     public GuiToggleElement renderPath;
@@ -151,10 +149,11 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 
         for (IGuiElement element : this.getChildren())
         {
-            ((GuiElement) element).flex().h(20);
+            if (element instanceof GuiToggleElement)
+            {
+                ((GuiElement) element).flex().h(10);
+            }
         }
-
-        ColumnResizer.apply(this, 5).vertical().stretch().padding(10);
     }
 
     private void saveConfig()
@@ -176,5 +175,11 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.letterBox.toggled(this.editor.letterBox);
         this.aspectRatio.setText(Aperture.editorLetterboxAspect.get());
         this.overlay.toggled(Aperture.editorOverlay.get());
+    }
+
+    @Override
+    public String getTitle()
+    {
+        return I18n.format("aperture.gui.config.title");
     }
 }
