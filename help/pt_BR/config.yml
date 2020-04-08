@@ -1,11 +1,13 @@
 # Config strings
 aperture.config:
-    camera:
-        title: Câmera
+    title: Aperture
+    
+    general:
+        title: Geral
         tooltip: Opções gerais da câmera
 
         camera_duration_step: Etapa de duração
-        camera_duration: Duração padrão do aparelho
+        camera_duration: Duração do acessório
         camera_interpolate_target: Alternar alvo dos acessórios
         camera_interpolate_target_value: Valor alvo da interpolação
         camera_spectator: Mudar para espectador
@@ -19,12 +21,7 @@ aperture.config:
         camera_debug_ticks: Depuração de ticks
         camera_profile_render: Renderizar perfil da câmera
         camera_auto_save: Salvar perfis automaticamente
-
-        gui_render_mouse: Renderizar o cursor do mouse nas GUIs
-
         minecrafttp_teleport: Usar /minecraft:tp
-        tp_teleport: Usar /tp
-        aspect_ratio: Proporção da tela
 
     outside: 
         title: Modo externo
@@ -41,8 +38,9 @@ aperture.config:
         tooltip: Permite configurar uma imagem de sobreposição que seria usada no editor de câmera
         
         camera_editor_overlay: Ativar sobreposição
-        camera_editor_overlay_rl: Caminho do recurso para sobrepor
+        camera_editor_overlay_rl: Caminho de sobreposição
         camera_editor_f1_tooltip: F1 ocultar dica
+        aspect_ratio: Proporção da tela
 
     smooth:
         title: Câmera suave
