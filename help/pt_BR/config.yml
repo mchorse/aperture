@@ -7,8 +7,8 @@ aperture.config:
         tooltip: Opções gerais da câmera
 
         camera_duration_step: Etapa de duração
-        camera_duration: Duração do acessório
-        camera_interpolate_target: Alternar alvo dos acessórios
+        camera_duration: Duração do suporte
+        camera_interpolate_target: Alternar alvo dos suportes
         camera_interpolate_target_value: Valor alvo da interpolação
         camera_spectator: Mudar para espectador
         camera_step_factor: Fator de etapa da câmera
