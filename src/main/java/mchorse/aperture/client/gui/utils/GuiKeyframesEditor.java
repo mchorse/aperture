@@ -49,13 +49,13 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         this.graph = this.createElement(mc);
 
         /* Position the elements */
-        this.tick.flex().parent(this.area).set(0, 10, 80, 20).x(1, -90);
-        this.value.flex().parent(this.area).set(0, 35, 80, 20).x(1, -90);
+        this.tick.flex().relative(this.area).set(0, 10, 80, 20).x(1, -90);
+        this.value.flex().relative(this.area).set(0, 35, 80, 20).x(1, -90);
 
         this.interp.flex().relative(this.tick.resizer()).set(-90, 0, 80, 20);
         this.easing.flex().relative(this.value.resizer()).set(-90, 0, 80, 20);
-        this.interpolations.flex().parent(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(16 * 7);
-        this.graph.flex().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
+        this.interpolations.flex().relative(this.area).set(0, 30, 80, 20).x(1, -180).h(1, -60).maxH(16 * 7);
+        this.graph.flex().relative(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         /* Add all elements */
         this.add(this.graph, this.frameButtons);

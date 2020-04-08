@@ -52,8 +52,8 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         this.duration.tooltip(I18n.format("aperture.gui.panels.duration"), Direction.BOTTOM);
         this.duration.values(1.0F).limit(1, Float.POSITIVE_INFINITY, true);
 
-        this.name.flex().parent(this.area).set(0, 10, 100, 20);
-        this.duration.flex().parent(this.area).set(0, 35, 100, 20);
+        this.name.flex().relative(this.area).set(0, 10, 100, 20);
+        this.duration.flex().relative(this.area).set(0, 35, 100, 20);
 
         this.add(this.name, this.duration);
 

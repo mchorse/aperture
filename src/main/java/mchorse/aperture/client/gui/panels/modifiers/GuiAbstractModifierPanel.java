@@ -52,7 +52,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.header = new GuiElement(mc);
         this.header.flex().h(20);
 
-        this.remove.flex().parent(this.header.area).set(0, 2, 16, 16).x(1, -18);
+        this.remove.flex().relative(this.header.area).set(0, 2, 16, 16).x(1, -18);
         this.enable.flex().relative(this.remove.resizer()).set(-20, 0, 16, 16);
         this.moveUp.flex().relative(this.enable.resizer()).set(-20, 0, 16, 8);
         this.moveDown.flex().relative(this.enable.resizer()).set(-20, 8, 16, 8);

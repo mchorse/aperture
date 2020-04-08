@@ -69,13 +69,13 @@ public class GuiProfilesManager extends GuiElement
         this.remove.tooltip(I18n.format("aperture.gui.profiles.remove_tooltip"));
         this.modal = new GuiDelegateElement<GuiModal>(mc, null);
 
-        this.profiles.flex().parent(this.area).set(5, 25, 0, 0).w(1, -10).h(1, -35);
-        this.remove.flex().parent(this.area).set(0, 2, 16, 16).x(1, -18);
+        this.profiles.flex().relative(this.area).set(5, 25, 0, 0).w(1, -10).h(1, -35);
+        this.remove.flex().relative(this.area).set(0, 2, 16, 16).x(1, -18);
         this.dupe.flex().relative(this.remove.resizer()).set(-20, 0, 16, 16);
         this.add.flex().relative(this.dupe.resizer()).set(-20, 0, 16, 16);
         this.rename.flex().relative(this.add.resizer()).set(-20, 0, 16, 16);
         this.convert.flex().relative(this.rename.resizer()).set(-20, 0, 16, 16);
-        this.modal.flex().parent(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
+        this.modal.flex().relative(this.area).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         this.convert.setEnabled(false);
         this.add(this.profiles, this.rename, this.convert, this.add, this.dupe, this.remove, this.modal);

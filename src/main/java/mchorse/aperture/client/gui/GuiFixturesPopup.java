@@ -39,7 +39,7 @@ public class GuiFixturesPopup extends GuiElement
                 this.actionPerformed(type);
             });
 
-            button.color(color).flex().parent(this.area).set(2, i * 20 + 2, 0, 20).w(1, -4);
+            button.color(color).flex().relative(this.area).set(2, i * 20 + 2, 0, 20).w(1, -4);
             this.add(button);
 
             i++;

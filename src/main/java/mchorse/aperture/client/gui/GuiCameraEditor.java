@@ -292,13 +292,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.moveBackward.tooltip(I18n.format("aperture.gui.tooltips.move_down"));
 
         /* Button placement */
-        this.toNextFixture.flex().parent(this.viewport).set(0, 2, 16, 16).x(0.5F, 32);
+        this.toNextFixture.flex().relative(this.viewport).set(0, 2, 16, 16).x(0.5F, 32);
         this.nextFrame.flex().relative(this.toNextFixture.resizer()).set(-20, 0, 16, 16);
         this.plause.flex().relative(this.nextFrame.resizer()).set(-20, 0, 16, 16);
         this.prevFrame.flex().relative(this.plause.resizer()).set(-20, 0, 16, 16);
         this.toPrevFixture.flex().relative(this.prevFrame.resizer()).set(-20, 0, 16, 16);
 
-        this.openProfiles.flex().parent(this.viewport).set(0, 2, 16, 16).x(1, -18);
+        this.openProfiles.flex().relative(this.viewport).set(0, 2, 16, 16).x(1, -18);
         this.openConfig.flex().relative(this.openProfiles.resizer()).set(-20, 0, 16, 16);
         this.openModifiers.flex().relative(this.openConfig.resizer()).set(-20, 0, 16, 16);
         this.save.flex().relative(this.openModifiers.resizer()).set(-20, 0, 16, 16);
@@ -308,7 +308,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.replace.flex().relative(this.dupe.resizer()).set(20, 0, 16, 16);
         this.remove.flex().relative(this.replace.resizer()).set(20, 0, 16, 16);
 
-        this.cut.flex().parent(this.viewport).set(82, 0, 16, 16);
+        this.cut.flex().relative(this.viewport).set(82, 0, 16, 16);
         this.creation.flex().relative(this.cut.resizer()).set(20, 0, 16, 16);
         this.moveForward.flex().relative(this.cut.resizer()).set(-20, 0, 16, 16);
         this.moveDuration.flex().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
@@ -316,9 +316,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.moveBackward.flex().relative(this.copyPosition.resizer()).set(-20, 0, 16, 16);
 
         /* Setup areas of widgets */
-        this.scrub.flex().parent(this.viewport).set(10, 0, 0, 20).y(1, -20).w(1, -20);
+        this.scrub.flex().relative(this.viewport).set(10, 0, 0, 20).y(1, -20).w(1, -20);
 
-        this.panel.flex().parent(this.viewport).set(10, 40, 0, 0).w(1, -20).h(1, -70);
+        this.panel.flex().relative(this.viewport).set(10, 40, 0, 0).w(1, -20).h(1, -70);
         this.popup.flex().relative(this.add.resizer()).set(-44, 18, 62, 122);
         this.config.flex().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
         this.profiles.flex().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);

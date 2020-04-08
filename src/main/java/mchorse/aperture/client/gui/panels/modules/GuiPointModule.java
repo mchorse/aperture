@@ -45,9 +45,9 @@ public class GuiPointModule extends GuiAbstractModule
         });
         this.z.tooltip(I18n.format("aperture.gui.panels.z"));
 
-        this.x.flex().parent(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.y.flex().parent(this.area).set(0, 30, 0, 20).w(1, 0);
-        this.z.flex().parent(this.area).set(0, 60, 0, 20).w(1, 0);
+        this.x.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
+        this.y.flex().relative(this.area).set(0, 30, 0, 20).w(1, 0);
+        this.z.flex().relative(this.area).set(0, 60, 0, 20).w(1, 0);
 
         this.x.values(0.1F);
         this.y.values(0.1F);

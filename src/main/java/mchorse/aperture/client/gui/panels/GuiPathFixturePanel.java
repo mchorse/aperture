@@ -73,15 +73,15 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.speed.graph.setParent(this);
         this.speed.graph.setColor(0x0088ff);
 
-        this.point.flex().parent(this.area).set(0, 10, 80, 80).x(1, -80);
-        this.interp.flex().parent(this.area).set(0, 60, 100, 45);
-        this.points.flex().parent(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
+        this.point.flex().relative(this.area).set(0, 10, 80, 80).x(1, -80);
+        this.interp.flex().relative(this.area).set(0, 60, 100, 45);
+        this.points.flex().relative(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
         this.toKeyframe.flex().relative(this.interp.resizer()).set(0, 50, 100, 20);
 
         this.perPointDuration.flex().relative(this.name.resizer()).set(0, -25, 100, 20);
         this.useSpeed.flex().relative(this.perPointDuration.resizer()).set(0, 0, 100, 20).x(1, 5);
 
-        this.speed.flex().parent(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
+        this.speed.flex().relative(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
 
         this.add(this.point, this.angle, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points, this.interp);
     }
@@ -154,7 +154,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     {
         boolean h = this.flex().getH() > 200;
 
-        this.angle.flex().parent(this.area).set(0, 10, 80, 80).x(1, -170);
+        this.angle.flex().relative(this.area).set(0, 10, 80, 80).x(1, -170);
 
         if (h && !this.speed.isVisible())
         {

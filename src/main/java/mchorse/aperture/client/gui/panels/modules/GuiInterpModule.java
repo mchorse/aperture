@@ -78,8 +78,8 @@ public class GuiInterpModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        this.pos.flex().parent(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.angle.flex().parent(this.area).set(0, 25, 0, 20).w(1, 0);
+        this.pos.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
+        this.angle.flex().relative(this.area).set(0, 25, 0, 20).w(1, 0);
         this.interps.flex().y(20).w(1, 0).h(96);
 
         this.add(this.pos, this.angle, this.interps);

@@ -137,7 +137,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.editor.updateOverlay();
         });
         this.overlayPicker.setVisible(false);
-        this.overlayPicker.flex().parent(this.editor.viewport).wh(1F, 1F);
+        this.overlayPicker.flex().relative(this.editor.viewport).wh(1F, 1F);
 
         this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
 

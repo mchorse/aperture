@@ -54,10 +54,10 @@ public class GuiCircularModule extends GuiAbstractModule
         });
         this.distance.tooltip(I18n.format("aperture.gui.panels.distance"));
 
-        this.offset.flex().parent(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.pitch.flex().parent(this.area).set(0, 20, 0, 20).w(1, 0);
-        this.circles.flex().parent(this.area).set(0, 40, 0, 20).w(1, 0);
-        this.distance.flex().parent(this.area).set(0, 60, 0, 20).w(1, 0);
+        this.offset.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
+        this.pitch.flex().relative(this.area).set(0, 20, 0, 20).w(1, 0);
+        this.circles.flex().relative(this.area).set(0, 40, 0, 20).w(1, 0);
+        this.distance.flex().relative(this.area).set(0, 60, 0, 20).w(1, 0);
 
         this.add(this.offset, this.pitch, this.circles, this.distance);
     }
