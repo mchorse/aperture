@@ -34,32 +34,32 @@ aperture.gui:
         tp_teleport: Usar /tp
         rule_of_thirds: Regra dos terços
         letter_box: Caixa de correio
-        repeat: Repetir acessório (R)
+        repeat: Repetir suporte (R)
         overlay: Habilitar sobreposição
         pick_overlay: Escolher sobreposição
 
     tooltips:
-        jump_next_fixture: Ir para o próximo acessório (Shift + Seta Direita)
+        jump_next_fixture: Ir para o próximo suporte (Shift + Seta Direita)
         jump_next_frame: Ir para o próximo frame (Seta Direita)
         plause: Reproduzir/Pausar (Barra Espaço)
         jump_prev_frame: Ir para o frame anterior (Seta Esquerda)
-        jump_prev_fixture: Ir para o acessório anterior (Shift + Seta Esquerda)
+        jump_prev_fixture: Ir para o suporte anterior (Shift + Seta Esquerda)
 
-        move_up: Avançar o acessório
+        move_up: Avançar o suporte
         move_duration: Mover a duração para o cursor (M)
         copy_position: Copiar a posição do jogador (B)
-        move_down: Mover o acessório para trás
+        move_down: Mover o suporte para trás
 
         save: Salvar perfil da câmera (Ctrl + S)
         profiles: Mostrar perfis de câmera
         config: Mostrar opções do editor de câmera
         modifiers: Mostrar painel de modificadores (N)
         cut: Corte o dispositivo em dois no cursor (C)
-        creation: Criação interativa do acessório (I)
-        add: Adicionar acessório
-        dupe: Duplicar acessório
-        replace: Substituir o acessório selecionado
-        remove: Remover o acessório selecionado
+        creation: Criação interativa do suporte (I)
+        add: Adicionar suporte
+        dupe: Duplicar suporte
+        replace: Substituir o suporte selecionado
+        remove: Remover o suporte selecionado
 
     editor:
         f1: Pressione F1 para mostrar a GUI novamente...
@@ -76,7 +76,7 @@ aperture.gui:
         title: Modificadores
         global: Modificadores globais
 
-        shake: Tremer
+        shake: Balançar
         math: Matemática
         look: Olhar
         follow: Seguir
@@ -124,7 +124,7 @@ aperture.gui:
         pitch: Inclinação
         roll: Rolamento
         fov: FOV
-
+        
         offset: Deslocamento
         circles: Círculos
         distance: Distância
