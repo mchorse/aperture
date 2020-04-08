@@ -6,8 +6,8 @@ aperture.error:
     # Camera fixtures errors
     fixture:
         few_args: "{f}Você não passou argumentos suficientes para este comando!"
-        wrong_type: "{f}Dispositivo elétrico da câmera do tipo %s{f} não existe!"
-        no_entity: "{f}Você deve olhar para qualquer entidade para adicionar este acessório!"
+        wrong_type: "{f}Suporte da câmera do tipo %s{f} não existe!"
+        no_entity: "{f}Você deve olhar para qualquer entidade para adicionar este suporte!"
         
         empty: "{f}O perfil desta câmera está vazio!"
     
@@ -16,12 +16,12 @@ aperture.error:
         empty_filename: "{f}O perfil desta câmera possui um nome de arquivo vazio! Na situação atual, especifique o argumento {7}[filename]{f}, por favor."
         cant_save: "{f}Não é possível salvar o perfil da câmera com o nome do arquivo %s{f}."
         cant_load: "{f}Não é possível carregar o perfil da câmera com o nome do arquivo %s{f}."
-        cant_move: "{f}Não é possível mover o aparelho em %s{f} para %s{f}, porque um dos índices está fora da faixa!"
+        cant_move: "{f}Não é possível mover o suporte em %s{f} para %s{f}, porque um dos índices está fora da faixa!"
         
-        not_path: "{f}O acessório no índice %s{f} não é um acessório de caminho!"
+        not_path: "{f}O suporte no índice %s{f} não é um suporte de caminho!"
         not_exists: "{f}Não há suporte para câmera no índice %s{f} no perfil atual da câmera!"
         no_current: "{f}Não há um perfil de câmera atual selecionado!"
-        no_path_point: "{f}O dispositivo elétrico de caminho no índice %s{f} não tem nenhum ponto no índice %s{f}!"
+        no_path_point: "{f}O suporte de caminho no índice %s{f} não tem nenhum ponto no índice %s{f}!"
         move_no_path_point: "{f}A localização do caminho no índice %s{f} não tem nenhum ponto no índice %s{f} ou no índice %s{f}!"
         
         client_cant_save: "{f}Não é possível salvar o perfil da câmera do cliente com o nome do arquivo %s{f}."
