@@ -19,7 +19,7 @@ aperture.commands:
     
     # Camera's commands
     camera:
-        help: "{r}{o}Comando da câmera{r}. Fornece subcomandos para gerenciar o perfil da câmera e seus acessórios."
+        help: "{r}{o}Comando da câmera{r}. Fornece subcomandos para gerenciar o perfil da câmera e suas fixações."
         
         start: 
             |
