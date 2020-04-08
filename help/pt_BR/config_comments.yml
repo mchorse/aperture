@@ -1,6 +1,6 @@
 # Config strings
 aperture.config.comments:
-    camera:
+    general:
         camera_duration_step: Etapa padrão a ser usada ao adicionar ou reduzir a duração do equipamento da câmera (em ticks)
         camera_duration: Duração padrão do equipamento da câmera (em ticks)
         camera_interpolate_target: Alterne o resultado dos acessórios de câmera com base em alvo (siga e observe)
@@ -16,10 +16,7 @@ aperture.config.comments:
         camera_first_tick_zero: Quando o corredor da câmera iniciar, inicie a reprodução real quando o tick parcial for exatamente zero
         camera_profile_render: Renderizar perfil de câmera no mundo?
         camera_auto_save: Salve todos os perfis de câmera ao sair do mundo
-        gui_render_mouse: Renderizar na tela a textura de um ponteiro do mouse durante a GUI
         minecrafttp_teleport: Ao iniciar a reprodução da câmera no modo multiplayer, teleporte-o com o comando /minecraft:tp (para o Essentials)
-        tp_teleport: Ao iniciar a reprodução da câmera no modo multiplayer, teleporte-o com o comando /tp (para Vanilla ou Forge)
-        aspect_ratio: Relação de aspecto para o recurso de caixa de correio do editor de câmera
         
     outside:
         camera_outside: Se a câmera deve ser reproduzida de fora (permitindo que o jogador atue como um ator)
@@ -32,6 +29,7 @@ aperture.config.comments:
         camera_editor_overlay: Ativa a sobreposição do editor de câmera
         camera_editor_overlay_rl: Caminho do local do recurso para a textura que será usada como sobreposição
         camera_editor_f1_tooltip: Mostrar a dica no canto inferior esquerdo, que explica como retornar a GUI
+        aspect_ratio: Relação de aspecto para o recurso de caixa postal do editor de câmera
 
     smooth:
         camera_smooth_clamp: Prender da afinação suave da câmera entre -90 e 90 graus?
