@@ -30,14 +30,13 @@ import java.io.File;
  *
  * This mod provides a lot of tools related to camera.
  */
-@Mod(modid = Aperture.MOD_ID, name = Aperture.MODNAME, version = Aperture.VERSION, guiFactory = Aperture.GUI_FACTORY, dependencies = "required-after:mclib@[%MCLIB%,)", updateJSON = "https://raw.githubusercontent.com/mchorse/aperture/master/version.json")
+@Mod(modid = Aperture.MOD_ID, name = Aperture.MODNAME, version = Aperture.VERSION, dependencies = "required-after:mclib@[%MCLIB%,)", updateJSON = "https://raw.githubusercontent.com/mchorse/aperture/master/version.json")
 public class Aperture
 {
     /* Mod info */
     public static final String MOD_ID = "aperture";
     public static final String MODNAME = "Aperture";
     public static final String VERSION = "%VERSION%";
-    public static final String GUI_FACTORY = "mchorse.aperture.config.gui.GuiFactory";
 
     /* Proxies */
     public static final String CLIENT_PROXY = "mchorse.aperture.ClientProxy";
@@ -88,7 +87,7 @@ public class Aperture
     @SubscribeEvent
     public void onConfigRegister(RegisterConfigEvent event)
     {
-        ConfigBuilder builder = new ConfigBuilder("aperture", new File(event.configs, "aperture/config.json"));
+        ConfigBuilder builder = event.createBuilder(MOD_ID);
 
         /* Camera */
         durationStep = builder.category("general").getInt("camera_duration_step", 10, 1, 100);
@@ -105,11 +104,11 @@ public class Aperture
         essentialsTeleport = builder.getBoolean("minecrafttp_teleport", false);
 
         /* Processing camera command name */
-        String camera_command_name = Aperture.commandName.get().trim().replaceAll("[^\\w\\d_\\-]+", "");
+        String camera_command_name = commandName.get().trim().replaceAll("[^\\w\\d_\\-]+", "");
 
         if (camera_command_name.isEmpty())
         {
-            Aperture.commandName.set("camera");
+            commandName.set("camera");
         }
 
         /* Camera outside mode */
