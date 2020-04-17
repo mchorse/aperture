@@ -1,11 +1,12 @@
 package mchorse.aperture.client.gui;
 
 import mchorse.aperture.Aperture;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
-import org.lwjgl.input.Keyboard;
-
 import mchorse.aperture.camera.data.Position;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
+import mchorse.mclib.utils.MathUtils;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.input.Keyboard;
 
 public class Flight
 {
@@ -13,23 +14,25 @@ public class Flight
     public boolean vertical;
     public int speed = 1000;
 
-    private boolean dragging;
+    private int dragging;
     private int lastX;
     private int lastY;
+    private int firstX;
+    private int firstY;
 
     public void mouseClicked(GuiContext context)
     {
         if (this.enabled)
         {
-            this.dragging = true;
-            this.lastX = context.mouseX;
-            this.lastY = context.mouseY;
+            this.dragging = MathUtils.clamp(context.mouseButton, 0, 2);
+            this.lastX = this.firstX = context.mouseX;
+            this.lastY = this.firstY = context.mouseY;
         }
     }
 
     public void mouseReleased(GuiContext context)
     {
-        this.dragging = false;
+        this.dragging = -1;
     }
 
     public void animate(GuiContext context, Position position)
@@ -54,10 +57,21 @@ public class Flight
         float roll = position.angle.roll;
         float fov = position.angle.fov;
 
-        if (this.dragging)
+        if (this.dragging != -1)
         {
-            yaw += (context.mouseX - this.lastX) * (multiplier * 0.35F);
-            pitch += (context.mouseY - this.lastY) * (multiplier * 0.35F);
+            if (this.dragging == 0)
+            {
+                yaw += (context.mouseX - this.lastX) * (multiplier * 0.35F);
+                pitch += (context.mouseY - this.lastY) * (multiplier * 0.35F);
+            }
+            else if (this.dragging == 1)
+            {
+                roll += (context.mouseX - this.lastX) * (multiplier * 0.35F);
+            }
+            else if (this.dragging == 2)
+            {
+                fov += (context.mouseY - this.lastY) * (multiplier * 0.35F);
+            }
 
             this.lastX = context.mouseX;
             this.lastY = context.mouseY;
