@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.CameraProfile;
@@ -102,6 +103,20 @@ public class GuiPlaybackScrub extends GuiElement
         {
             this.editor.setFlight(false);
             this.editor.scrubbed(this, this.value, fromScrub);
+
+            int v = (int) (this.value * this.scale);
+            int w = this.area.w - 4;
+
+            if (this.scroll  > v)
+            {
+                this.scroll = v;
+            }
+            else if (v > this.scroll + w)
+            {
+                this.scroll = v - w;
+            }
+
+            this.clampScroll();
         }
     }
 
@@ -230,12 +245,14 @@ public class GuiPlaybackScrub extends GuiElement
     @Override
     public boolean mouseScrolled(GuiContext context)
     {
+        int scroll = context.mouseWheel;
+
         if (!Minecraft.IS_RUNNING_ON_MAC)
         {
             scroll = -scroll;
         }
 
-        if (this.area.isInside(context.mouseX, context.mouseY) && !this.scrolling)
+        if (this.area.isInside(context) && !this.scrolling)
         {
             float scale = this.scale;
             float factor = 0.1F;
