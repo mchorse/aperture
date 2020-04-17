@@ -41,6 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1101,6 +1102,20 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    {
+        this.context.setMouse(mouseX, mouseY, mouseButton);
+
+        if (this.root.isEnabled())
+        {
+            if (!this.root.mouseClicked(this.context))
+            {
+                this.flight.mouseClicked(this.context);
+            }
+        }
+    }
+
+    @Override
     protected void mouseScrolled(int x, int y, int scroll)
     {
         super.mouseScrolled(x, y, scroll);
@@ -1126,6 +1141,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.flight.speed -= Math.copySign(factor, scroll);
             this.flight.speed = MathHelper.clamp(this.flight.speed, 1, 50000);
         }
+    }
+
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state)
+    {
+        super.mouseReleased(mouseX, mouseY, state);
+        this.flight.mouseReleased(this.context);
     }
 
     /**
@@ -1157,7 +1179,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.flight.enabled)
         {
-            this.flight.animate(this.position);
+            this.flight.animate(this.context, this.position);
             this.position.apply(this.getCamera());
             ClientProxy.control.roll = this.position.angle.roll;
             this.mc.gameSettings.fovSetting = this.position.angle.fov;

@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui;
 
 import mchorse.aperture.Aperture;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import org.lwjgl.input.Keyboard;
 
 import mchorse.aperture.camera.data.Position;
@@ -8,13 +9,33 @@ import net.minecraft.util.math.Vec3d;
 
 public class Flight
 {
-    public boolean enabled = false;
-    public boolean vertical = false;
+    public boolean enabled;
+    public boolean vertical;
     public int speed = 1000;
 
-    public void animate(Position position)
+    private boolean dragging;
+    private int lastX;
+    private int lastY;
+
+    public void mouseClicked(GuiContext context)
     {
-        float multiplier = this.speed / 1000F;
+        if (this.enabled)
+        {
+            this.dragging = true;
+            this.lastX = context.mouseX;
+            this.lastY = context.mouseY;
+        }
+    }
+
+    public void mouseReleased(GuiContext context)
+    {
+        this.dragging = false;
+    }
+
+    public void animate(GuiContext context, Position position)
+    {
+        float f = this.speed / 1000F;
+        float multiplier = 1F;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
         {
@@ -25,13 +46,22 @@ public class Flight
             multiplier *= 0.2F;
         }
 
-        double factor = 0.1 * multiplier;
-        double angleFactor = 0.35 * multiplier;
+        double factor = 0.1 * f * multiplier;
+        double angleFactor = 0.35 * f * multiplier;
 
         float yaw = position.angle.yaw;
         float pitch = position.angle.pitch;
         float roll = position.angle.roll;
         float fov = position.angle.fov;
+
+        if (this.dragging)
+        {
+            yaw += (context.mouseX - this.lastX) * (multiplier * 0.35F);
+            pitch += (context.mouseY - this.lastY) * (multiplier * 0.35F);
+
+            this.lastX = context.mouseX;
+            this.lastY = context.mouseY;
+        }
 
         if (Keyboard.isKeyDown(Aperture.flightCameraUp.get()) || Keyboard.isKeyDown(Aperture.flightCameraDown.get()))
         {
