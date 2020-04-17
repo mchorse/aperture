@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 
@@ -53,7 +54,6 @@ public class Aperture
     public static Logger LOGGER;
 
     /* Configuration */
-    public static ValueInt durationStep;
     public static ValueInt duration;
     public static ValueBoolean spectator;
     public static ValueFloat stepFactor;
@@ -75,6 +75,21 @@ public class Aperture
     public static ValueBoolean editorF1Tooltip;
     public static ValueString editorLetterboxAspect;
 
+    public static ValueInt flightForward;
+    public static ValueInt flightBackward;
+    public static ValueInt flightLeft;
+    public static ValueInt flightRight;
+    public static ValueInt flightUp;
+    public static ValueInt flightDown;
+    public static ValueInt flightCameraUp;
+    public static ValueInt flightCameraDown;
+    public static ValueInt flightCameraLeft;
+    public static ValueInt flightCameraRight;
+    public static ValueInt flightCameraFovMinus;
+    public static ValueInt flightCameraFovPlus;
+    public static ValueInt flightCameraRollMinus;
+    public static ValueInt flightCameraRollPlus;
+
     public static ValueBoolean smoothClampPitch;
     public static ValueBoolean smooth;
     public static ValueFloat smoothFricX;
@@ -90,8 +105,7 @@ public class Aperture
         ConfigBuilder builder = event.createBuilder(MOD_ID);
 
         /* Camera */
-        durationStep = builder.category("general").getInt("camera_duration_step", 10, 1, 100);
-        duration = builder.getInt("camera_duration", 30, 1, 1000);
+        duration = builder.category("general").getInt("camera_duration", 30, 1, 1000);
         spectator = builder.getBoolean("camera_spectator", true);
         stepFactor = builder.getFloat("camera_step_factor", 0.01F, 0, 10);
         rotateFactor = builder.getFloat("camera_rotate_factor", 0.1F, 0, 10);
@@ -121,6 +135,22 @@ public class Aperture
         editorOverlayRL = builder.getRL("camera_editor_overlay_rl", null);
         editorF1Tooltip = builder.getBoolean("camera_editor_f1_tooltip", true);
         editorLetterboxAspect = builder.getString("aspect_ratio", "16:9");
+
+        /* Flight mode keybinds */
+        flightForward = builder.category("flight").getInt("forward", Keyboard.KEY_W).keybind();
+        flightBackward = builder.getInt("backward", Keyboard.KEY_S).keybind();
+        flightLeft = builder.getInt("left", Keyboard.KEY_A).keybind();
+        flightRight = builder.getInt("right", Keyboard.KEY_D).keybind();
+        flightUp = builder.getInt("up", Keyboard.KEY_SPACE).keybind();
+        flightDown = builder.getInt("down", Keyboard.KEY_LSHIFT).keybind();
+        flightCameraUp = builder.getInt("camera_up", Keyboard.KEY_UP).keybind();
+        flightCameraDown = builder.getInt("camera_down", Keyboard.KEY_DOWN).keybind();
+        flightCameraLeft = builder.getInt("camera_left", Keyboard.KEY_LEFT).keybind();
+        flightCameraRight = builder.getInt("camera_right", Keyboard.KEY_RIGHT).keybind();
+        flightCameraFovMinus = builder.getInt("fov_minus", Keyboard.KEY_LBRACKET).keybind();
+        flightCameraFovPlus = builder.getInt("fov_plus", Keyboard.KEY_RBRACKET).keybind();
+        flightCameraRollMinus = builder.getInt("roll_minus", Keyboard.KEY_APOSTROPHE).keybind();
+        flightCameraRollPlus = builder.getInt("roll_plus", Keyboard.KEY_BACKSLASH).keybind();
 
         /* Smooth camera */
         smooth = builder.category("smooth").getBoolean("smooth_enabled", false);

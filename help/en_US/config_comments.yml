@@ -1,10 +1,7 @@
 # Config strings
 aperture.config.comments:
     general:
-        camera_duration_step: What is default step to use when adding or reducing duration of the camera fixture (in ticks)
         camera_duration: What is default duration of the camera fixture (in ticks)
-        camera_interpolate_target: Interpolate target based camera fixtures (follow and look) outcome
-        camera_interpolate_target_value: Interpolation value for target based camera fixture interpolation
         camera_spectator: Switch to spectator mode when starting camera playback
         camera_step_factor: Camera step factor for step keys
         camera_rotate_factor: Camera rotate factor for rotate keys
@@ -17,7 +14,7 @@ aperture.config.comments:
         camera_profile_render: Render camera profile in the world?
         camera_auto_save: Save all camera profiles upon exiting the world
         minecrafttp_teleport: When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)
-        
+
     outside:
         camera_outside: Whether camera should be played back from outside (allowing the player to act as a body actor)
         camera_outside_hide_player: Whether player should be hidden during playback of the camera if outside mode is enabled
@@ -30,6 +27,22 @@ aperture.config.comments:
         camera_editor_overlay_rl: Resource location path to the texture which will be used as overlay
         camera_editor_f1_tooltip: Show the tooltip in the bottom left corner which explains how to show back the GUI
         aspect_ratio: Aspect ratio for camera editor's letterbox feature
+
+    flight:
+        forward: Moves the camera forward
+        backward: Moves the camera backward
+        left: Moves the camera to the left
+        right: Moves the camera to the right
+        up: Ascends the camera upward
+        down: Descends the camera downwards
+        camera_up: Tilt the camera upward toward the sky
+        camera_down: Tilt the camera downward toward the ground
+        camera_left: Pan the camera to the left
+        camera_right: Pan the camera to the right
+        fov_minus: Narrow the Field of View
+        fov_plus: Widen the Field of View
+        roll_minus: Roll counter-clockwise
+        roll_plus: Roll clockwise
 
     smooth:
         camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range?

@@ -6,10 +6,7 @@ aperture.config:
         title: General
         tooltip: General camera options
 
-        camera_duration_step: Duration step
         camera_duration: Fixture duration
-        camera_interpolate_target: Interpolate target fixtures
-        camera_interpolate_target_value: Target interpolation value
         camera_spectator: Switch to specator
         camera_step_factor: Camera step factor
         camera_rotate_factor: Camera rotate factor
@@ -41,6 +38,25 @@ aperture.config:
         camera_editor_overlay_rl: Overlay path
         camera_editor_f1_tooltip: F1 hide tooltip
         aspect_ratio: Aspect ratio
+
+    flight:
+        title: Flight mode
+        tooltip: This category allows you to set keybinds for flight mode keys within camera editor
+
+        forward: Move forward
+        backward: Move backward
+        left: Move left
+        right: Move right
+        up: Move upward
+        down: Move downward
+        camera_up: Tilt up
+        camera_down: Tilt down
+        camera_left: Pan left
+        camera_right: Pan right
+        fov_minus: Decrease FOV
+        fov_plus: Increase FOV
+        roll_minus: Roll left
+        roll_plus: Roll right
 
     smooth:
         title: Smooth camera

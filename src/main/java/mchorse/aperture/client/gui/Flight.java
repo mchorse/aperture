@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui;
 
+import mchorse.aperture.Aperture;
 import org.lwjgl.input.Keyboard;
 
 import mchorse.aperture.camera.data.Position;
@@ -32,24 +33,24 @@ public class Flight
         float roll = position.angle.roll;
         float fov = position.angle.fov;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+        if (Keyboard.isKeyDown(Aperture.flightCameraUp.get()) || Keyboard.isKeyDown(Aperture.flightCameraDown.get()))
         {
-            pitch += (Keyboard.isKeyDown(Keyboard.KEY_UP) ? -angleFactor : angleFactor);
+            pitch += (Keyboard.isKeyDown(Aperture.flightCameraUp.get()) ? -angleFactor : angleFactor);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+        if (Keyboard.isKeyDown(Aperture.flightCameraLeft.get()) || Keyboard.isKeyDown(Aperture.flightCameraRight.get()))
         {
-            yaw += (Keyboard.isKeyDown(Keyboard.KEY_LEFT) ? -angleFactor : angleFactor);
+            yaw += (Keyboard.isKeyDown(Aperture.flightCameraLeft.get()) ? -angleFactor : angleFactor);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET) || Keyboard.isKeyDown(Keyboard.KEY_RBRACKET))
+        if (Keyboard.isKeyDown(Aperture.flightCameraRollMinus.get()) || Keyboard.isKeyDown(Aperture.flightCameraRollPlus.get()))
         {
-            roll += (Keyboard.isKeyDown(Keyboard.KEY_LBRACKET) ? -angleFactor : angleFactor);
+            roll += (Keyboard.isKeyDown(Aperture.flightCameraRollMinus.get()) ? -angleFactor : angleFactor);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE) || Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH))
+        if (Keyboard.isKeyDown(Aperture.flightCameraFovMinus.get()) || Keyboard.isKeyDown(Aperture.flightCameraFovPlus.get()))
         {
-            fov += (Keyboard.isKeyDown(Keyboard.KEY_APOSTROPHE) ? -angleFactor : angleFactor);
+            fov += (Keyboard.isKeyDown(Aperture.flightCameraFovMinus.get()) ? -angleFactor : angleFactor);
         }
 
         double x = position.point.x;
@@ -60,19 +61,19 @@ public class Flight
         double yy = 0;
         double zz = 0;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+        if (Keyboard.isKeyDown(Aperture.flightUp.get()) || Keyboard.isKeyDown(Aperture.flightDown.get()))
         {
-            yy = (Keyboard.isKeyDown(Keyboard.KEY_SPACE) ? factor : -factor);
+            yy = (Keyboard.isKeyDown(Aperture.flightUp.get()) ? factor : -factor);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_D))
+        if (Keyboard.isKeyDown(Aperture.flightLeft.get()) || Keyboard.isKeyDown(Aperture.flightRight.get()))
         {
-            xx = (Keyboard.isKeyDown(Keyboard.KEY_A) ? factor : -factor);
+            xx = (Keyboard.isKeyDown(Aperture.flightLeft.get()) ? factor : -factor);
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W) || Keyboard.isKeyDown(Keyboard.KEY_S))
+        if (Keyboard.isKeyDown(Aperture.flightForward.get()) || Keyboard.isKeyDown(Aperture.flightBackward.get()))
         {
-            zz = (Keyboard.isKeyDown(Keyboard.KEY_W) ? factor : -factor);
+            zz = (Keyboard.isKeyDown(Aperture.flightForward.get()) ? factor : -factor);
         }
 
         if (xx != 0 || yy != 0 || zz != 0 || yaw != position.angle.yaw || pitch != position.angle.pitch || roll != position.angle.roll || fov != position.angle.fov)
