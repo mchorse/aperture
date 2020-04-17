@@ -621,55 +621,35 @@ public class GuiGraphView extends GuiKeyframeElement
         Tessellator.getInstance().draw();
 
         /* Draw points */
-        GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 5);
+        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         for (Keyframe frame : this.channel.getKeyframes())
         {
-            GL11.glBegin(GL11.GL_POINTS);
-            GL11.glColor4f(1, 1, 1, 1);
-            GL11.glVertex2f(this.toGraphX(frame.tick), this.toGraphY(frame.value));
-            GL11.glEnd();
+            this.drawRect(vb, this.toGraphX(frame.tick), this.toGraphY(frame.value), 3, 0xffffff);
         }
 
         int i = 0;
         prev = null;
-        GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 3);
 
         for (Keyframe frame : this.channel.getKeyframes())
         {
-            GL11.glBegin(GL11.GL_POINTS);
-
-            if (this.selected == i)
-            {
-                GL11.glColor3f(0, 0.5F, 1);
-            }
-            else
-            {
-                GL11.glColor3f(0, 0, 0);
-            }
-
-            GL11.glVertex2f(this.toGraphX(frame.tick), this.toGraphY(frame.value));
-
-            if (this.selected != i)
-            {
-                GL11.glColor3f(1, 1, 1);
-            }
+            this.drawRect(vb, this.toGraphX(frame.tick), this.toGraphY(frame.value), 2, this.selected == i ? 0x0080ff : 0);
 
             if (frame.interp == KeyframeInterpolation.BEZIER)
             {
-                GL11.glVertex2f(this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry));
+                this.drawRect(vb, this.toGraphX(frame.tick + frame.rx), this.toGraphY(frame.value + frame.ry), 2, this.selected != i ? 0xffffff : 0x0080ff);
             }
 
             if (prev != null && prev.interp == KeyframeInterpolation.BEZIER)
             {
-                GL11.glVertex2f(this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly));
+                this.drawRect(vb, this.toGraphX(frame.tick - frame.lx), this.toGraphY(frame.value + frame.ly), 2, this.selected != i ? 0xffffff : 0x0080ff);
             }
-
-            GL11.glEnd();
 
             prev = frame;
             i++;
         }
+
+        Tessellator.getInstance().draw();
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();

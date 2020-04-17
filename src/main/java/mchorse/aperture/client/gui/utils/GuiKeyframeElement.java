@@ -6,10 +6,15 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.BufferBuilder;
 
 public abstract class GuiKeyframeElement extends GuiElement
 {
+    public static final Color color = new Color();
+
     public Consumer<Keyframe> callback;
     public GuiAbstractFixturePanel<? extends AbstractFixture> parent;
 
@@ -89,5 +94,15 @@ public abstract class GuiKeyframeElement extends GuiElement
         else if (zoom <= 50.0F) factor = 1F;
 
         return factor;
+    }
+
+    protected void drawRect(BufferBuilder builder, int x, int y, int offset, int c)
+    {
+        color.set(c, false);
+
+        builder.pos(x - offset, y + offset, 0.0D).color(color.r, color.g, color.b, 1F).endVertex();
+        builder.pos(x + offset, y + offset, 0.0D).color(color.r, color.g, color.b, 1F).endVertex();
+        builder.pos(x + offset, y - offset, 0.0D).color(color.r, color.g, color.b, 1F).endVertex();
+        builder.pos(x - offset, y - offset, 0.0D).color(color.r, color.g, color.b, 1F).endVertex();
     }
 }

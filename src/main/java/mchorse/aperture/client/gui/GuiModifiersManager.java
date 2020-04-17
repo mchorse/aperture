@@ -97,7 +97,7 @@ public class GuiModifiersManager extends GuiElement
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
             byte type = info.type;
-            int color = 0xff000000 + info.color.getHex();
+            int color = info.color.getRGBAColor();
 
             GuiButtonElement button = new GuiButtonElement(mc, I18n.format(info.title), (b) ->
             {

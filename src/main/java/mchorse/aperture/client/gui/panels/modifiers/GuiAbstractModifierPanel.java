@@ -82,7 +82,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     @Override
     public void draw(GuiContext context)
     {
-        this.header.area.draw(0xaa000000 + ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getHex());
+        this.header.area.draw(0xaa000000 + ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getRGBColor());
         this.font.drawStringWithShadow(this.title, this.area.x + 5, this.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
 
         this.header.setVisible(this.area.isInside(context.mouseX, context.mouseY));

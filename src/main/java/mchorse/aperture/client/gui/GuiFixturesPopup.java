@@ -33,7 +33,7 @@ public class GuiFixturesPopup extends GuiElement
         for (FixtureInfo info : FixtureRegistry.CLIENT.values())
         {
             byte type = info.type;
-            int color = 0xff000000 + info.color.getHex();
+            int color = info.color.getRGBAColor();
             GuiButtonElement button = new GuiButtonElement(mc, I18n.format(info.title), (b) ->
             {
                 this.actionPerformed(type);

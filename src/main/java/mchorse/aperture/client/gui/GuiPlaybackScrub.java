@@ -393,7 +393,7 @@ public class GuiPlaybackScrub extends GuiElement
 
             for (AbstractFixture fixture : this.profile.getAll())
             {
-                int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getHex();
+                int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getRGBColor();
 
                 boolean selected = i == this.index;
                 int leftMargin = this.calcMouseFromValue(pos) - 1;

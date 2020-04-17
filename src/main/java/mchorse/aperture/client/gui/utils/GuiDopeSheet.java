@@ -445,49 +445,28 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
             Tessellator.getInstance().draw();
 
+            /* Draw points */
+            vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+
             int i = 0;
-            GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 6);
-            GL11.glBegin(GL11.GL_POINTS);
 
             for (Keyframe frame : sheet.channel.getKeyframes())
             {
-                if (this.current == sheet && i == sheet.selected)
-                {
-                    GL11.glColor4f(1, 1, 1, 1);
-                }
-                else
-                {
-                    GL11.glColor4f(r * 2, g * 2, b * 2, 1);
-                }
-
-                GL11.glVertex2f(this.toGraph(frame.tick), y + h / 2);
+                this.drawRect(vb, this.toGraph(frame.tick), y + h / 2, 3, this.current == sheet && i == sheet.selected ? 0xffffff : sheet.color);
 
                 i++;
             }
-
-            GL11.glEnd();
 
             i = 0;
-            GL11.glPointSize(Minecraft.getMinecraft().gameSettings.guiScale * 4);
-            GL11.glBegin(GL11.GL_POINTS);
 
             for (Keyframe frame : sheet.channel.getKeyframes())
             {
-                if (this.current == sheet && i == sheet.selected)
-                {
-                    GL11.glColor4f(0, 0.5F, 1, 1);
-                }
-                else
-                {
-                    GL11.glColor4f(0, 0, 0, 1);
-                }
-
-                GL11.glVertex2f(this.toGraph(frame.tick), y + h / 2);
+                this.drawRect(vb, this.toGraph(frame.tick), y + h / 2, 2, this.current == sheet && i == sheet.selected ? 0x0080ff : 0);
 
                 i++;
             }
 
-            GL11.glEnd();
+            Tessellator.getInstance().draw();
 
             int lw = this.font.getStringWidth(sheet.title) + 10;
             GuiDraw.drawHorizontalGradientRect(this.area.ex() - lw - 10, y, this.area.ex(), y + h, sheet.color, 0xaa000000 + sheet.color, 0);

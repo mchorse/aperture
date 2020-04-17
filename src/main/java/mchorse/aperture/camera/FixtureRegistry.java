@@ -1,16 +1,15 @@
 package mchorse.aperture.camera;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.utils.Color;
+import mchorse.mclib.utils.Color;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Fixture registry

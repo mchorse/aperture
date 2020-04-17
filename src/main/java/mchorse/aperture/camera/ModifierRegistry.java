@@ -7,7 +7,7 @@ import com.google.common.collect.HashBiMap;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.aperture.utils.Color;
+import mchorse.mclib.utils.Color;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
