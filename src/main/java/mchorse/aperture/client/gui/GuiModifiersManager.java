@@ -11,7 +11,6 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
-import mchorse.mclib.client.gui.utils.resizers.layout.ColumnResizer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -90,8 +89,7 @@ public class GuiModifiersManager extends GuiElement
 
         this.buttons = new GuiElement(mc);
         this.buttons.setVisible(false);
-        this.buttons.flex().relative(this.area).x(1, 0).y(20).w(0.5F, 0).anchor(1, 0);
-        ColumnResizer.apply(this.buttons, 0).vertical().stretch();
+        this.buttons.flex().relative(this.area).x(1, 0).y(20).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch();
 
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
@@ -109,8 +107,7 @@ public class GuiModifiersManager extends GuiElement
         }
 
         this.panels = new GuiScrollElement(mc);
-        this.panels.flex().relative(this.area).y(20).w(1F, 0).h(1, -20);
-        ColumnResizer.apply(this.panels, 0).vertical().stretch().scroll();
+        this.panels.flex().relative(this.area).y(20).w(1F, 0).h(1, -20).column(0).vertical().stretch().scroll();
 
         this.add.flex().relative(this.area).set(0, 2, 16, 16).x(1, -18);
         this.paste.flex().relative(this.add.resizer()).set(-20, 0, 16, 16);

@@ -3,7 +3,6 @@ package mchorse.aperture.client.gui.config;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
-import mchorse.mclib.client.gui.utils.resizers.layout.ColumnResizer;
 import net.minecraft.client.Minecraft;
 
 public abstract class GuiAbstractConfigOptions extends GuiElement
@@ -21,7 +20,7 @@ public abstract class GuiAbstractConfigOptions extends GuiElement
         label.flex().h(this.font.FONT_HEIGHT);
 
         this.add(label);
-        ColumnResizer.apply(this, 5).vertical().stretch().height(20).padding(10);
+        this.flex().column(5).vertical().stretch().height(20).padding(10);
     }
 
     public abstract void update();

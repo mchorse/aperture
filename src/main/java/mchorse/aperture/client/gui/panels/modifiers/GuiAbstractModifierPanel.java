@@ -9,9 +9,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
-import mchorse.mclib.client.gui.utils.resizers.layout.ColumnResizer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> extends GuiElement
 {
@@ -40,7 +38,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.modifiers = modifiers;
 
         this.fields = new GuiElement(mc);
-        ColumnResizer.apply(this.fields, 5).vertical().stretch().height(20).padding(5);
+        this.fields.flex().column(5).vertical().stretch().height(20).padding(5);
 
         this.envelopes = new GuiEnvelope(mc, this);
         this.enable = new GuiIconElement(mc, Icons.NONE, (b) ->
@@ -67,7 +65,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
 
         this.header.add(this.enable, this.remove, this.moveUp, this.moveDown, this.copy, this.envelope);
 
-        ColumnResizer.apply(this, 0).vertical().stretch();
+        this.flex().column(0).vertical().stretch();
         this.add(this.header, this.fields);
 
         this.title = ModifierRegistry.CLIENT.get(modifier.getClass()).getTitle();
