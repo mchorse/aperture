@@ -21,4 +21,5 @@ public class APIcons
 	public static final Icon INTERACTIVE = new Icon(ICONS, 160, 0);
 	public static final Icon PLANE = new Icon(ICONS, 176, 0);
 	public static final Icon HELICOPTER = new Icon(ICONS, 192, 0);
+	public static final Icon ENVELOPE = new Icon(ICONS, 208, 0);
 }

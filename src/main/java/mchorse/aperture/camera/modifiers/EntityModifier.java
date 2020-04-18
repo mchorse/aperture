@@ -108,6 +108,17 @@ public abstract class EntityModifier extends AbstractModifier
     /* Save/load methods */
 
     @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
+
+        if (from instanceof EntityModifier)
+        {
+            this.selector = ((EntityModifier) from).selector;
+        }
+    }
+
+    @Override
     public void fromByteBuf(ByteBuf buffer)
     {
         super.fromByteBuf(buffer);

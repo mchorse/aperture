@@ -12,7 +12,6 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.resizers.layout.ColumnResizer;
-import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -99,7 +98,7 @@ public class GuiModifiersManager extends GuiElement
             byte type = info.type;
             int color = info.color.getRGBAColor();
 
-            GuiButtonElement button = new GuiButtonElement(mc, I18n.format(info.title), (b) ->
+            GuiButtonElement button = new GuiButtonElement(mc, info.getTitle(), (b) ->
             {
                 this.addCameraModifier(type, this.getModifiers());
                 this.buttons.setVisible(false);

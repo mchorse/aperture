@@ -85,15 +85,18 @@ aperture.gui:
         orbit: Orbit
         drag: Drag
 
+        enabled: Enabled
+        relative: Relative
+
         panels:
             copy_entity: Copy entity
 
             shake: Shake
             shake_amount: Amount
 
-            relative: Relative?
-            at_block: Look at block?
-            forward: Look forward?
+            relative: Relative
+            at_block: Look at block
+            forward: Look forward
             
             factor: Factor
 

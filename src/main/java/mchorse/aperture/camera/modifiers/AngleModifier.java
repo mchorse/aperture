@@ -32,14 +32,20 @@ public class AngleModifier extends AbstractModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        AngleModifier modifier = new AngleModifier();
+        return new AngleModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.angle = this.angle.copy();
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        return modifier;
+        if (from instanceof AngleModifier)
+        {
+            this.angle = ((AngleModifier) from).angle.copy();
+        }
     }
 
     @Override

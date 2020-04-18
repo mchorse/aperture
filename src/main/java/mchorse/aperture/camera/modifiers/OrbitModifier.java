@@ -140,18 +140,25 @@ public class OrbitModifier extends EntityModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        OrbitModifier modifier = new OrbitModifier();
+        return new OrbitModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.selector = this.selector;
-        modifier.yaw = this.yaw;
-        modifier.pitch = this.pitch;
-        modifier.distance = this.distance;
-        modifier.copy = this.copy;
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        return modifier;
+        if (from instanceof OrbitModifier)
+        {
+            OrbitModifier modifier = (OrbitModifier) from;
+
+            this.yaw = modifier.yaw;
+            this.pitch = modifier.pitch;
+            this.distance = modifier.distance;
+            this.copy = modifier.copy;
+        }
     }
 
     @Override

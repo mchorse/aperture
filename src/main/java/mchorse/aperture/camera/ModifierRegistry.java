@@ -8,6 +8,7 @@ import com.google.common.collect.HashBiMap;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.mclib.utils.Color;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -142,6 +143,11 @@ public class ModifierRegistry
             this.type = type;
             this.title = title;
             this.color = color;
+        }
+
+        public String getTitle()
+        {
+            return I18n.format(this.title);
         }
     }
 }

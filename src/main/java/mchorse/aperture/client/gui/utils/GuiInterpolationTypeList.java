@@ -1,16 +1,13 @@
 package mchorse.aperture.client.gui.utils;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
-
 import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class GuiInterpolationTypeList extends GuiListElement<InterpolationType>
 {

@@ -7,6 +7,7 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.smooth.Envelope;
 
 /**
  * Abstract camera modifier
@@ -23,6 +24,12 @@ public abstract class AbstractModifier
     public boolean enabled = true;
 
     /**
+     * Envelope configuration
+     */
+    @Expose
+    public Envelope envelope = new Envelope();
+
+    /**
      * Modify (apply, filter, process, however you name it) modifier on given position
      *
      * @param ticks - Amount of ticks from start
@@ -31,21 +38,43 @@ public abstract class AbstractModifier
      */
     public abstract void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos);
 
-    public abstract AbstractModifier copy();
+    public final AbstractModifier copy()
+    {
+        AbstractModifier modifier = this.create();
+
+        modifier.copy(this);
+
+        return modifier;
+    }
+
+    public abstract AbstractModifier create();
+
+    public void copy(AbstractModifier from)
+    {
+        this.enabled = from.enabled;
+        this.envelope.copy(from.envelope);
+    }
 
     public void toJSON(JsonObject object)
     {}
 
     public void fromJSON(JsonObject object)
-    {}
+    {
+        if (this.envelope == null)
+        {
+            this.envelope = new Envelope();
+        }
+    }
 
     public void toByteBuf(ByteBuf buffer)
     {
         buffer.writeBoolean(this.enabled);
+        this.envelope.toByteBuf(buffer);
     }
 
     public void fromByteBuf(ByteBuf buffer)
     {
         this.enabled = buffer.readBoolean();
+        this.envelope.fromByteBuf(buffer);
     }
 }

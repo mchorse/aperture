@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.mclib.utils.Interpolations;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -79,6 +80,17 @@ public class Position
         player.setLocationAndAngles(this.point.x, this.point.y, this.point.z, this.angle.yaw, this.angle.pitch);
         player.motionX = player.motionY = player.motionZ = 0;
         player.rotationYawHead = player.prevRotationYawHead = this.angle.yaw;
+    }
+
+    public void interpolate(Position position, float factor)
+    {
+        this.point.x = Interpolations.lerp(this.point.x, position.point.x, factor);
+        this.point.y = Interpolations.lerp(this.point.y, position.point.y, factor);
+        this.point.z = Interpolations.lerp(this.point.z, position.point.z, factor);
+        this.angle.yaw = Interpolations.lerpYaw(this.angle.yaw, position.angle.yaw, factor);
+        this.angle.pitch = Interpolations.lerp(this.angle.pitch, position.angle.pitch, factor);
+        this.angle.roll = Interpolations.lerp(this.angle.roll, position.angle.roll, factor);
+        this.angle.fov = Interpolations.lerp(this.angle.fov, position.angle.fov, factor);
     }
 
     public void toByteBuf(ByteBuf buffer)

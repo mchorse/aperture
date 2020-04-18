@@ -31,14 +31,20 @@ public class TranslateModifier extends AbstractModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        TranslateModifier modifier = new TranslateModifier();
+        return new TranslateModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.translate = this.translate.copy();
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        return modifier;
+        if (from instanceof TranslateModifier)
+        {
+            this.translate = ((TranslateModifier) from).translate.copy();
+        }
     }
 
     @Override

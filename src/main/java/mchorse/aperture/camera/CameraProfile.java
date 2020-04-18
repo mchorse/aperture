@@ -368,7 +368,15 @@ public class CameraProfile
         {
             if (modifier.enabled)
             {
-                modifier.modify(ticks, offset, null, partialTick, previewPartialTick, profile, pos);
+                float factor = modifier.envelope.factor(this.getDuration(), offset + previewPartialTick);
+
+                AbstractFixture.temporary.copy(pos);
+                modifier.modify(ticks, offset, null, partialTick, previewPartialTick, profile, AbstractFixture.temporary);
+
+                if (factor != 0)
+                {
+                    pos.interpolate(AbstractFixture.temporary, factor);
+                }
             }
         }
     }

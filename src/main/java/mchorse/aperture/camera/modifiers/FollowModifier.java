@@ -59,13 +59,8 @@ public class FollowModifier extends EntityModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        FollowModifier modifier = new FollowModifier();
-
-        modifier.enabled = this.enabled;
-        modifier.selector = this.selector;
-
-        return modifier;
+        return new FollowModifier();
     }
 }

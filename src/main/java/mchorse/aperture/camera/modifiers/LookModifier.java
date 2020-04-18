@@ -117,18 +117,25 @@ public class LookModifier extends EntityModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        LookModifier modifier = new LookModifier();
+        return new LookModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.selector = this.selector;
-        modifier.relative = this.relative;
-        modifier.atBlock = this.atBlock;
-        modifier.forward = this.forward;
-        modifier.block = this.block.copy();
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        return modifier;
+        if (from instanceof LookModifier)
+        {
+            LookModifier modifier = (LookModifier) from;
+
+           this.relative = modifier.relative;
+           this.atBlock = modifier.atBlock;
+           this.forward = modifier.forward;
+           this.block = modifier.block.copy();
+        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mchorse.aperture.camera.modifiers;
 
 import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -30,6 +29,17 @@ public abstract class ComponentModifier extends AbstractModifier
         super.toByteBuf(buffer);
 
         buffer.writeByte(this.active);
+    }
+
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
+
+        if (from instanceof ComponentModifier)
+        {
+            this.active = ((ComponentModifier) from).active;
+        }
     }
 
     @Override
