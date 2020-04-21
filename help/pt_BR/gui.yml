@@ -33,6 +33,7 @@ aperture.gui:
         minecrafttp_teleport: Usar /minecraft:tp
         tp_teleport: Usar /tp
         rule_of_thirds: Regra dos terços
+        cursor: Cursor
         letter_box: Caixa de correio
         repeat: Repetir suporte (R)
         overlay: Habilitar sobreposição
