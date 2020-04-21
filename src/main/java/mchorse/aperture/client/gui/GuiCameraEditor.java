@@ -1119,28 +1119,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     protected void mouseScrolled(int x, int y, int scroll)
     {
         super.mouseScrolled(x, y, scroll);
-
-        if (this.flight.enabled)
-        {
-            float factor = 1000;
-            boolean zoomIn = scroll > 0;
-
-            if ((zoomIn && this.flight.speed <= 10) || (!zoomIn && this.flight.speed < 10))
-            {
-                factor = 1;
-            }
-            else if ((zoomIn && this.flight.speed <= 100) || (!zoomIn && this.flight.speed < 100))
-            {
-                factor = 10;
-            }
-            else if ((zoomIn && this.flight.speed <= 1000) || (!zoomIn && this.flight.speed < 1000))
-            {
-                factor = 100;
-            }
-
-            this.flight.speed -= Math.copySign(factor, scroll);
-            this.flight.speed = MathHelper.clamp(this.flight.speed, 1, 50000);
-        }
+        this.flight.mouseScrolled(x, y, scroll);
     }
 
     @Override

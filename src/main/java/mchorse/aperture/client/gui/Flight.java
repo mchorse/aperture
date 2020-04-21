@@ -3,8 +3,8 @@ package mchorse.aperture.client.gui;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.utils.MathUtils;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.input.Keyboard;
 
@@ -17,17 +17,42 @@ public class Flight
     private int dragging;
     private int lastX;
     private int lastY;
-    private int firstX;
-    private int firstY;
 
     public void mouseClicked(GuiContext context)
     {
         if (this.enabled)
         {
             this.dragging = MathUtils.clamp(context.mouseButton, 0, 2);
-            this.lastX = this.firstX = context.mouseX;
-            this.lastY = this.firstY = context.mouseY;
+            this.lastX = context.mouseX;
+            this.lastY = context.mouseY;
         }
+    }
+
+    public void mouseScrolled(int x, int y, int scroll)
+    {
+        if (!this.enabled)
+        {
+            return;
+        }
+
+        float factor = 1000;
+        boolean zoomIn = scroll > 0;
+
+        if ((zoomIn && this.speed <= 10) || (!zoomIn && this.speed < 10))
+        {
+            factor = 1;
+        }
+        else if ((zoomIn && this.speed <= 100) || (!zoomIn && this.speed < 100))
+        {
+            factor = 10;
+        }
+        else if ((zoomIn && this.speed <= 1000) || (!zoomIn && this.speed < 1000))
+        {
+            factor = 100;
+        }
+
+        this.speed -= Math.copySign(factor, scroll);
+        this.speed = MathHelper.clamp(this.speed, 1, 50000);
     }
 
     public void mouseReleased(GuiContext context)
