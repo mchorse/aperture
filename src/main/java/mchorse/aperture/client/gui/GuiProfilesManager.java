@@ -428,11 +428,6 @@ public class GuiProfilesManager extends GuiElement
         {
             boolean hasProfile = element.profile != null;
 
-            if (selected)
-            {
-                Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.scrollItemSize, 0x880088ff);
-            }
-
             if (hasProfile)
             {
                 GlStateManager.color(1, 1, 1, 1);

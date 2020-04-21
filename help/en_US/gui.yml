@@ -23,40 +23,40 @@ aperture.gui:
     config:
         title: Camera Options
 
-        outside: Outside mode (O)
+        outside: Outside mode
         minema: Minema
         spectator: Spectator
         show_path: Show path
-        sync: Sync (S)
-        flight: Flight mode (F)
+        sync: Sync
+        flight: Flight mode
         display_info: Display position
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
         rule_of_thirds: Rule of thirds
         cursor: Cursor
         letter_box: Letter box
-        repeat: Repeat fixture (R)
+        repeat: Repeat fixture
         overlay: Enable overlay
         pick_overlay: Pick overlay
 
     tooltips:
-        jump_next_fixture: Jump to next fixture (Shift + Right)
-        jump_next_frame: Jump to next frame (Right)
-        plause: Play/pause (Space)
-        jump_prev_frame: Jump to previous frame (Left)
-        jump_prev_fixture: Jump to previous fixture (Shift + Left)
+        jump_next_fixture: Jump to next fixture
+        jump_next_frame: Jump to next frame
+        plause: Play/pause
+        jump_prev_frame: Jump to previous frame
+        jump_prev_fixture: Jump to previous fixture
 
         move_up: Move fixture forward
-        move_duration: Move duration to the cursor (M)
-        copy_position: Copy player's position (B)
+        move_duration: Move duration to the cursor
+        copy_position: Copy player's position
         move_down: Move fixture backward
 
-        save: Save camera profile (Ctrl + S)
+        save: Save camera profile
         profiles: Show camera profiles
         config: Show camera editor options
-        modifiers: Show modifiers panel (N)
-        cut: Cut fixture in two at cursor (C)
-        creation: Interactive fixture creation (I)
+        modifiers: Show modifiers panel
+        cut: Cut fixture in two at cursor
+        creation: Interactive fixture creation
         add: Add fixture
         dupe: Duplicate fixture
         replace: Replace selected fixture

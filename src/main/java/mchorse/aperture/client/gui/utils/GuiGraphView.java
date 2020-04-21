@@ -186,7 +186,7 @@ public class GuiGraphView extends GuiKeyframeElement
                 Keyframe first = this.channel.get(0);
 
                 minX = Math.min(0, first.tick);
-                maxX = Math.min(this.duration, first.tick);
+                maxX = Math.max(this.duration, first.tick);
                 minY = maxY = first.value;
             }
         }

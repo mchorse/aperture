@@ -3,13 +3,20 @@ package mchorse.aperture.client.gui;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
-import mchorse.mclib.utils.MathUtils;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+@SideOnly(Side.CLIENT)
 public class Flight
 {
+    private String stringSpeed = I18n.format("aperture.gui.editor.speed");
+
     public boolean enabled;
     public boolean vertical;
     public int speed = 1000;
@@ -30,7 +37,7 @@ public class Flight
         this.lastY = context.mouseY;
     }
 
-    public void mouseScrolled(int x, int y, int scroll)
+    public void mouseScrolled(GuiContext context)
     {
         if (!this.enabled)
         {
@@ -38,7 +45,7 @@ public class Flight
         }
 
         float factor = 1000;
-        boolean zoomIn = scroll > 0;
+        boolean zoomIn = context.mouseWheel > 0;
 
         if ((zoomIn && this.speed <= 10) || (!zoomIn && this.speed < 10))
         {
@@ -53,7 +60,7 @@ public class Flight
             factor = 100;
         }
 
-        this.speed -= Math.copySign(factor, scroll);
+        this.speed -= Math.copySign(factor, context.mouseWheel);
         this.speed = MathHelper.clamp(this.speed, 1, 50000);
     }
 
@@ -166,4 +173,22 @@ public class Flight
             position.angle.set(yaw, pitch, roll, fov);
         }
     }
+
+	public void drawSpeed(FontRenderer font, int x, int y)
+    {
+        float flightSpeed = this.speed / 1000F;
+        String speedFormat = "%.0f";
+
+        if (flightSpeed < 0.01F) speedFormat = "%.3f";
+        else if (flightSpeed < 0.1F) speedFormat = "%.2f";
+        else if (flightSpeed < 1F) speedFormat = "%.1f";
+
+        String speed = String.format(this.stringSpeed + ": " + speedFormat, flightSpeed);
+        int width = font.getStringWidth(speed);
+
+        x -= width;
+
+        Gui.drawRect(x - 2, y - 3, x + width + 2, y + 10, 0xbb000000);
+        font.drawStringWithShadow(speed, x, y, 0xffffff);
+	}
 }

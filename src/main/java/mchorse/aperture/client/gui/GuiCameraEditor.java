@@ -21,9 +21,8 @@ import mchorse.mclib.client.MouseRenderer;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.client.gui.framework.elements.GuiElements;
-import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.resizers.IResizer;
 import mchorse.mclib.utils.Direction;
@@ -34,19 +33,18 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Camera editor GUI
@@ -57,11 +55,6 @@ import java.util.Map;
 public class GuiCameraEditor extends GuiBase implements IScrubListener
 {
     /**
-     * Camera editor texture
-     */
-    public static final ResourceLocation EDITOR_TEXTURE = new ResourceLocation("aperture:textures/gui/camera_editor.png");
-
-    /**
      * Registry of editing camera fixture panels. Per every fixture class type
      * there is supposed to be a class that is responsible for editing a
      * fixture.
@@ -69,7 +62,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public static final Map<Class<? extends AbstractFixture>, Class<? extends GuiAbstractFixturePanel<? extends AbstractFixture>>> PANELS = new HashMap<>();
 
     /* Strings */
-    private String stringSpeed = I18n.format("aperture.gui.editor.speed");
     private String stringX = I18n.format("aperture.gui.panels.x");
     private String stringY = I18n.format("aperture.gui.panels.y");
     private String stringZ = I18n.format("aperture.gui.panels.z");
@@ -209,6 +201,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiIconElement creation;
 
     /* Widgets */
+    public GuiElement top;
     public GuiCameraConfig config;
     public GuiFixturesPopup popup;
     public GuiPlaybackScrub scrub;
@@ -216,7 +209,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiConfigCameraOptions cameraOptions;
     public GuiModifiersManager modifiers;
     public GuiDelegateElement<GuiAbstractFixturePanel> panel;
-    public GuiElements<IGuiElement> hidden = new GuiElements<IGuiElement>(this.root);
+    public GuiElement hidden;
 
     /**
      * Initialize the camera editor with a camera profile.
@@ -225,6 +218,40 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         this.runner = runner;
 
+        this.top = new GuiElement(mc)
+        {
+            @Override
+            public boolean mouseClicked(GuiContext context)
+            {
+                if (super.mouseClicked(context))
+                {
+                    return true;
+                }
+
+                flight.mouseClicked(context);
+                return false;
+            }
+
+            @Override
+            public boolean mouseScrolled(GuiContext context)
+            {
+                if (super.mouseScrolled(context))
+                {
+                    return true;
+                }
+
+                flight.mouseScrolled(context);
+                return false;
+            }
+
+            @Override
+            public void mouseReleased(GuiContext context)
+            {
+                super.mouseReleased(context);
+                flight.mouseReleased(context);
+            }
+        };
+        this.top.flex().relative(this.viewport).wh(1F, 1F);
         this.panel = new GuiDelegateElement<GuiAbstractFixturePanel>(mc, null);
         this.scrub = new GuiPlaybackScrub(mc, this, null);
         this.popup = new GuiFixturesPopup(mc, (fixture) ->
@@ -314,7 +341,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.replace.flex().relative(this.dupe.resizer()).set(20, 0, 16, 16);
         this.remove.flex().relative(this.replace.resizer()).set(20, 0, 16, 16);
 
-        this.cut.flex().relative(this.viewport).set(82, 0, 16, 16);
+        this.cut.flex().relative(this.viewport).set(82, 2, 16, 16);
         this.creation.flex().relative(this.cut.resizer()).set(20, 0, 16, 16);
         this.moveForward.flex().relative(this.cut.resizer()).set(-20, 0, 16, 16);
         this.moveDuration.flex().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
@@ -331,6 +358,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.modifiers.flex().relative(this.panel.resizer()).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
 
         /* Adding everything */
+        this.hidden = new GuiElement(mc);
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
         this.hidden.add(this.cut, this.creation, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
         this.hidden.add(this.add, this.dupe, this.replace, this.remove, this.save, this.openConfig, this.openModifiers);
@@ -341,12 +369,45 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.updateValues();
 
         this.hidePopups(this.profiles);
+        this.top.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
+        this.root.add(this.top);
 
-        this.root.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
-
-        /* Let other classes have fun with camera editor's fields' 
-         * position and such */
+        /* Let other classes have fun with camera editor's position and such */
         ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Init(this));
+
+        /* Register keybinds */
+        String fixture = "Fixtures";
+        String modes = "Modes";
+        String editor = "Camera editor";
+
+        this.root.keys().register("Toggle camera editor's visibility", Keyboard.KEY_F1, () -> this.top.toggleVisible()).category(editor);
+        this.root.keys().register("Toggle flight mode", Keyboard.KEY_F, () -> this.cameraOptions.flight.clickItself(this.context)).category(modes);
+        this.root.keys().register("Toggle vertical flight mode", Keyboard.KEY_V, () -> this.flight.vertical = !this.flight.vertical).category(modes);
+
+        Supplier<Boolean> active = () -> !(this.flight.enabled || this.profile == null);
+
+        this.root.keys().register("Save camera profile", Keyboard.KEY_S, () -> this.save.clickItself(this.context)).held(Keyboard.KEY_LCONTROL).active(active).category(editor);
+        this.root.keys().register("Toggle sync mode", Keyboard.KEY_S, () -> this.cameraOptions.sync.clickItself(this.context)).active(active).category(modes);
+        this.root.keys().register("Toggle outside mode", Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
+        this.root.keys().register("Play/pause", Keyboard.KEY_SPACE, () -> this.plause.clickItself(this.context)).active(active).category(editor);
+        this.root.keys().register("Deselect current fixture", Keyboard.KEY_D, () -> this.pickCameraFixture(null, 0)).active(active).category(fixture);
+        this.root.keys().register("Shift duration to cursor", Keyboard.KEY_M, this::shiftDurationToCursor).active(active).category(fixture);
+        this.root.keys().register("Jump to next fixture", Keyboard.KEY_RIGHT, this::jumpToNextFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
+        this.root.keys().register("Jump to previous fixture", Keyboard.KEY_LEFT, this::jumpToPrevFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
+        this.root.keys().register("Jump to next frame", Keyboard.KEY_RIGHT, this::jumpToNextFrame).active(active).category(editor);
+        this.root.keys().register("Jump to previous frame", Keyboard.KEY_LEFT, this::jumpToPrevFrame).active(active).category(editor);
+        this.root.keys().register("Apply current camera position", Keyboard.KEY_B, () ->
+        {
+            if (this.panel.delegate != null)
+            {
+                this.editFixture();
+            }
+        }).active(active).category(fixture);
+
+        this.root.keys().register("Toggle modifiers popup", Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(fixture);
+        this.root.keys().register("Toggle fixture looping", Keyboard.KEY_R, () -> this.cameraOptions.repeat.clickItself(this.context)).active(active).category(fixture);
+        this.root.keys().register("Cut fixture", Keyboard.KEY_C, () -> this.cut.clickItself(this.context)).active(active).category(fixture);
+        this.root.keys().register("Toggle interactive mode", Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(fixture);
     }
 
     /**
@@ -980,111 +1041,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     @Override
-    public void keyPressed(char typedChar, int keyCode)
-    {
-        if (keyCode == Keyboard.KEY_F1)
-        {
-            this.root.setVisible(!this.root.isVisible());
-        }
-
-        if (keyCode == Keyboard.KEY_F)
-        {
-            /* Toggle flight */
-            this.cameraOptions.flight.clickItself(this.context);
-            this.cameraOptions.update();
-        }
-
-        if (keyCode == Keyboard.KEY_V)
-        {
-            this.flight.vertical = !this.flight.vertical;
-        }
-
-        if (this.flight.enabled || this.profile == null)
-        {
-            return;
-        }
-
-        boolean shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
-
-        if (keyCode == Keyboard.KEY_S)
-        {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && this.profile != null)
-            {
-                /* Save camera profile */
-                this.save.clickItself(this.context);
-            }
-            else
-            {
-                /* Toggle sync */
-                this.cameraOptions.sync.clickItself(this.context);
-            }
-
-        }
-        else if (keyCode == Keyboard.KEY_O)
-        {
-            /* Toggle outside mode */
-            this.cameraOptions.outside.clickItself(this.context);
-        }
-        else if (keyCode == Keyboard.KEY_SPACE)
-        {
-            /* Play/pause */
-            this.plause.clickItself(this.context);
-        }
-        else if (keyCode == Keyboard.KEY_D)
-        {
-            /* Deselect current fixture */
-            this.pickCameraFixture(null, 0);
-        }
-        else if (keyCode == Keyboard.KEY_M)
-        {
-            this.shiftDurationToCursor();
-        }
-        else if (keyCode == Keyboard.KEY_RIGHT)
-        {
-            if (shift)
-            {
-                this.jumpToNextFixture();
-            }
-            else
-            {
-                this.jumpToNextFrame();
-            }
-        }
-        else if (keyCode == Keyboard.KEY_LEFT)
-        {
-            if (shift)
-            {
-                this.jumpToPrevFixture();
-            }
-            else
-            {
-                this.jumpToPrevFrame();
-            }
-        }
-        else if (keyCode == Keyboard.KEY_B && this.panel.delegate != null)
-        {
-            /* Copy the position */
-            this.editFixture();
-        }
-        else if (keyCode == Keyboard.KEY_N)
-        {
-            this.openModifiers.clickItself(this.context);
-        }
-        else if (keyCode == Keyboard.KEY_R)
-        {
-            this.cameraOptions.repeat.clickItself(this.context);
-        }
-        else if (keyCode == Keyboard.KEY_C)
-        {
-            this.cut.clickItself(this.context);
-        }
-        else if (keyCode == Keyboard.KEY_I)
-        {
-            this.creation.clickItself(this.context);
-        }
-    }
-
-    @Override
     protected void closeScreen()
     {
         Minecraft.getMinecraft().gameSettings.hideGUI = false;
@@ -1104,34 +1060,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         super.closeScreen();
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
-        this.context.setMouse(mouseX, mouseY, mouseButton);
-
-        if (this.root.isEnabled())
-        {
-            if (!this.root.mouseClicked(this.context))
-            {
-                this.flight.mouseClicked(this.context);
-            }
-        }
-    }
-
-    @Override
-    protected void mouseScrolled(int x, int y, int scroll)
-    {
-        super.mouseScrolled(x, y, scroll);
-        this.flight.mouseScrolled(x, y, scroll);
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state)
-    {
-        super.mouseReleased(mouseX, mouseY, state);
-        this.flight.mouseReleased(this.context);
     }
 
     /**
@@ -1176,73 +1104,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.profile != null)
         {
-            if (Aperture.editorOverlay.get() && this.overlayLocation != null)
-            {
-                this.mc.renderEngine.bindTexture(this.overlayLocation);
-                Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
-            }
-
-            /* Readjustable values for rule of thirds in case of letter 
-             * box enabled */
-            int rx = 0;
-            int ry = 0;
-            int rw = this.width;
-            int rh = this.height;
-
-            if (this.letterBox && this.aspectRatio > 0)
-            {
-                int width = (int) (this.aspectRatio * this.height);
-
-                if (width != this.width)
-                {
-                    if (width < this.width)
-                    {
-                        /* Horizontal bars */
-                        int w = (this.width - width) / 2;
-
-                        Gui.drawRect(0, 0, w, this.height, 0xff000000);
-                        Gui.drawRect(this.width - w, 0, this.width, this.height, 0xff000000);
-
-                        rx = w;
-                        rw -= w * 2;
-                    }
-                    else
-                    {
-                        /* Vertical bars */
-                        int h = (int) (this.height - (1F / this.aspectRatio * this.width)) / 2;
-
-                        Gui.drawRect(0, 0, this.width, h, 0xff000000);
-                        Gui.drawRect(0, this.height - h, this.width, this.height, 0xff000000);
-
-                        ry = h;
-                        rh -= h * 2;
-                    }
-                }
-            }
-
-            if (this.ruleOfThirds && this.root.isVisible())
-            {
-                int color = 0xcccc0000;
-
-                Gui.drawRect(rx + rw / 3 - 1, ry, rx + rw / 3, ry + rh, color);
-                Gui.drawRect(rx + rw - rw / 3, ry, rx + rw - rw / 3 + 1, ry + rh, color);
-
-                Gui.drawRect(rx, ry + rh / 3 - 1, rx + rw, ry + rh / 3, color);
-                Gui.drawRect(rx, ry + rh - rh / 3, rx + rw, ry + rh - rh / 3 + 1, color);
-            }
-
-            if (this.cursor)
-            {
-                GlStateManager.enableBlend();
-                GlStateManager.enableAlpha();
-                this.mc.renderEngine.bindTexture(Gui.ICONS);
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                GlStateManager.color(1, 1, 1, 1);
-                this.drawTexturedModalRect(this.viewport.mx() - 7, this.viewport.my() - 7, 0, 0, 16, 16);
-            }
+            this.drawOverlays();
         }
 
-        if (!this.root.isVisible())
+        if (!this.top.isVisible())
         {
             MouseRenderer.disable();
 
@@ -1251,6 +1116,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             {
                 this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
             }
+
+            super.drawScreen(mouseX, mouseY, partialTicks);
 
             return;
         }
@@ -1267,6 +1134,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (this.profile != null)
         {
+            /* Draw backgrounds for popups */
             if (this.config.isVisible())
             {
                 Gui.drawRect(width - 40, 0, width - 20, 20, 0xaa000000);
@@ -1294,21 +1162,22 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 Gui.drawRect(this.creation.area.x - 2, 0, this.creation.area.x + 18, 20, 0xaa000000);
             }
 
+            /* Update playback scrub */
             boolean running = this.runner.isRunning();
 
             if (running)
             {
-                this.scrub.value = (int) this.runner.ticks;
-                this.scrub.value = MathHelper.clamp(this.scrub.value, this.scrub.min, this.scrub.max);
+                this.scrub.setValue((int) this.runner.ticks);
             }
 
+            /* Rewind playback back to 0 */
             if (!running && this.playing)
             {
                 this.updatePlauseButton();
                 this.runner.attachOutside();
                 this.scrub.setValueFromScrub(0);
 
-                ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, false, this.scrub.value));
+                ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this, this.scrub.value));
                 this.playing = false;
             }
 
@@ -1321,49 +1190,16 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        /* Display camera attributes on top of everything else */
-        boolean running = this.runner.isRunning();
-
         /* Display flight speed */
         if (this.flight.enabled)
         {
-            float flightSpeed = this.flight.speed / 1000F;
-            String speedFormat = "%.0f";
-
-            if (flightSpeed < 0.01F) speedFormat = "%.3f";
-            else if (flightSpeed < 0.1F) speedFormat = "%.2f";
-            else if (flightSpeed < 1F) speedFormat = "%.1f";
-
-            String speed = String.format(this.stringSpeed + ": " + speedFormat, flightSpeed);
-            int width = this.fontRenderer.getStringWidth(speed);
-            int x = panel.getX() + panel.getW() - 10 - width;
-            int y = panel.getY() + panel.getH() - 5;
-
-            Gui.drawRect(x - 2, y - 3, x + width + 2, y + 10, 0xbb000000);
-            this.fontRenderer.drawStringWithShadow(speed, x, y, 0xffffff);
+            this.flight.drawSpeed(this.fontRenderer, panel.getX() + panel.getW() - 10, panel.getY() + panel.getH() - 5);
         }
 
         /* Display position variables */
-        if ((this.syncing || running) && this.displayPosition)
+        if ((this.syncing || this.runner.isRunning()) && this.displayPosition)
         {
-            Position pos = running ? this.runner.getPosition() : this.position;
-            Point point = pos.point;
-            Angle angle = pos.angle;
-
-            String[] labels = new String[] {this.stringX + ": " + point.x, this.stringY + ": " + point.y, this.stringZ + ": " + point.z, this.stringYaw + ": " + angle.yaw, this.stringPitch + ": " + angle.pitch, this.stringRoll + ": " + angle.roll, this.stringFov + ": " + angle.fov};
-            int i = 6;
-
-            for (String label : labels)
-            {
-                int width = this.fontRenderer.getStringWidth(label);
-                int y = panel.getY() + panel.getH() - 5 - 15 * i;
-                int x = panel.getX();
-
-                Gui.drawRect(x, y - 3, x + width + 4, y + 10, 0xbb000000);
-                this.fontRenderer.drawStringWithShadow(label, x + 2, y, 0xffffff);
-
-                i--;
-            }
+            this.drawPosition(panel);
         }
     }
 
@@ -1381,11 +1217,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         int x = this.width - 18;
         int y = 22;
 
-        if (this.syncing || this.flight.enabled)
-        {
-            Gui.drawRect(this.width - (this.syncing ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
-        }
-
+        Gui.drawRect(this.width - (this.syncing ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
         GlStateManager.color(1, 1, 1, 1);
 
         if (this.syncing)
@@ -1397,6 +1229,107 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (this.flight.enabled)
         {
             (this.flight.vertical ? APIcons.HELICOPTER : APIcons.PLANE).render(x, y);
+        }
+    }
+
+    /**
+     * Draw information about current camera's position
+     */
+    private void drawPosition(IResizer panel)
+    {
+        Position pos = this.runner.isRunning() ? this.runner.getPosition() : this.position;
+        Point point = pos.point;
+        Angle angle = pos.angle;
+
+        String[] labels = new String[] {this.stringX + ": " + point.x, this.stringY + ": " + point.y, this.stringZ + ": " + point.z, this.stringYaw + ": " + angle.yaw, this.stringPitch + ": " + angle.pitch, this.stringRoll + ": " + angle.roll, this.stringFov + ": " + angle.fov};
+        int i = 6;
+
+        for (String label : labels)
+        {
+            int width = this.fontRenderer.getStringWidth(label);
+            int y = panel.getY() + panel.getH() - 5 - 15 * i;
+            int x = panel.getX();
+
+            Gui.drawRect(x, y - 3, x + width + 4, y + 10, 0xbb000000);
+            this.fontRenderer.drawStringWithShadow(label, x + 2, y, 0xffffff);
+
+            i--;
+        }
+    }
+
+    /**
+     * Draw different camera type overlays (custom texture overlay, letterbox, rule of thirds and crosshair)
+     */
+    private void drawOverlays()
+    {
+        if (Aperture.editorOverlay.get() && this.overlayLocation != null)
+        {
+            this.mc.renderEngine.bindTexture(this.overlayLocation);
+            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
+        }
+
+        /* Readjustable values for rule of thirds in case of letter
+         * box enabled */
+        int rx = 0;
+        int ry = 0;
+        int rw = this.width;
+        int rh = this.height;
+
+        if (this.letterBox && this.aspectRatio > 0)
+        {
+            int width = (int) (this.aspectRatio * this.height);
+
+            if (width != this.width)
+            {
+                if (width < this.width)
+                {
+                    /* Horizontal bars */
+                    int w = (this.width - width) / 2;
+
+                    Gui.drawRect(0, 0, w, this.height, 0xff000000);
+                    Gui.drawRect(this.width - w, 0, this.width, this.height, 0xff000000);
+
+                    rx = w;
+                    rw -= w * 2;
+                }
+                else
+                {
+                    /* Vertical bars */
+                    int h = (int) (this.height - (1F / this.aspectRatio * this.width)) / 2;
+
+                    Gui.drawRect(0, 0, this.width, h, 0xff000000);
+                    Gui.drawRect(0, this.height - h, this.width, this.height, 0xff000000);
+
+                    ry = h;
+                    rh -= h * 2;
+                }
+            }
+        }
+
+        if (!this.top.isVisible())
+        {
+            return;
+        }
+
+        if (this.ruleOfThirds)
+        {
+            int color = 0xcccc0000;
+
+            Gui.drawRect(rx + rw / 3 - 1, ry, rx + rw / 3, ry + rh, color);
+            Gui.drawRect(rx + rw - rw / 3, ry, rx + rw - rw / 3 + 1, ry + rh, color);
+
+            Gui.drawRect(rx, ry + rh / 3 - 1, rx + rw, ry + rh / 3, color);
+            Gui.drawRect(rx, ry + rh - rh / 3, rx + rw, ry + rh - rh / 3 + 1, color);
+        }
+
+        if (this.cursor)
+        {
+            GlStateManager.enableBlend();
+            GlStateManager.enableAlpha();
+            this.mc.renderEngine.bindTexture(Gui.ICONS);
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.color(1, 1, 1, 1);
+            this.drawTexturedModalRect(this.viewport.mx() - 7, this.viewport.my() - 7, 0, 0, 16, 16);
         }
     }
 }
