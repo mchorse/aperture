@@ -171,6 +171,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public float aspectRatio = 16F / 9F;
 
+    /**
+     * Cursor in the middle of the screen that shows the middle
+     */
+    public boolean cursor;
+
     /* GUI fields */
 
     /**
@@ -1224,6 +1229,16 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
                 Gui.drawRect(rx, ry + rh / 3 - 1, rx + rw, ry + rh / 3, color);
                 Gui.drawRect(rx, ry + rh - rh / 3, rx + rw, ry + rh - rh / 3 + 1, color);
+            }
+
+            if (this.cursor)
+            {
+                GlStateManager.enableBlend();
+                GlStateManager.enableAlpha();
+                this.mc.renderEngine.bindTexture(Gui.ICONS);
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                GlStateManager.color(1, 1, 1, 1);
+                this.drawTexturedModalRect(this.viewport.mx() - 7, this.viewport.my() - 7, 0, 0, 16, 16);
             }
         }
 

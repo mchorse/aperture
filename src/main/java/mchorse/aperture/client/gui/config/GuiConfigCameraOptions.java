@@ -25,6 +25,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiToggleElement displayPosition;
     public GuiToggleElement essentialsTeleport;
     public GuiToggleElement ruleOfThirds;
+    public GuiToggleElement cursor;
     public GuiToggleElement letterBox;
     public GuiTextElement aspectRatio;
     public GuiToggleElement repeat;
@@ -90,6 +91,11 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.editor.ruleOfThirds = b.isToggled();
         });
 
+        this.cursor = new GuiToggleElement(mc, I18n.format("aperture.gui.config.cursor"), this.editor.cursor, (b) ->
+        {
+            this.editor.cursor = b.isToggled();
+        });
+
         this.letterBox = new GuiToggleElement(mc, I18n.format("aperture.gui.config.letter_box"), this.editor.letterBox, (b) ->
         {
             this.editor.letterBox = b.isToggled();
@@ -138,7 +144,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.overlayPicker.setVisible(false);
         this.overlayPicker.flex().relative(this.editor.viewport).wh(1F, 1F);
 
-        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
+        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.cursor, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
 
         /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())
@@ -171,6 +177,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.displayPosition.toggled(this.editor.displayPosition);
         this.essentialsTeleport.toggled(Aperture.essentialsTeleport.get());
         this.ruleOfThirds.toggled(this.editor.ruleOfThirds);
+        this.ruleOfThirds.toggled(this.editor.cursor);
         this.letterBox.toggled(this.editor.letterBox);
         this.aspectRatio.setText(Aperture.editorLetterboxAspect.get());
         this.overlay.toggled(Aperture.editorOverlay.get());

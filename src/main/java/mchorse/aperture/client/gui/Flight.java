@@ -20,12 +20,14 @@ public class Flight
 
     public void mouseClicked(GuiContext context)
     {
-        if (this.enabled)
+        if (!this.enabled || context.mouseButton > 2)
         {
-            this.dragging = MathUtils.clamp(context.mouseButton, 0, 2);
-            this.lastX = context.mouseX;
-            this.lastY = context.mouseY;
+            return;
         }
+
+        this.dragging = context.mouseButton;
+        this.lastX = context.mouseX;
+        this.lastY = context.mouseY;
     }
 
     public void mouseScrolled(int x, int y, int scroll)
