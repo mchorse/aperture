@@ -290,42 +290,42 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         /* Button placement */
         this.toNextFixture.flex().relative(this.viewport).set(0, 2, 16, 16).x(0.5F, 32);
-        this.nextFrame.flex().relative(this.toNextFixture.resizer()).set(-20, 0, 16, 16);
-        this.plause.flex().relative(this.nextFrame.resizer()).set(-20, 0, 16, 16);
-        this.prevFrame.flex().relative(this.plause.resizer()).set(-20, 0, 16, 16);
-        this.toPrevFixture.flex().relative(this.prevFrame.resizer()).set(-20, 0, 16, 16);
+        this.nextFrame.flex().relative(this.toNextFixture).set(-20, 0, 16, 16);
+        this.plause.flex().relative(this.nextFrame).set(-20, 0, 16, 16);
+        this.prevFrame.flex().relative(this.plause).set(-20, 0, 16, 16);
+        this.toPrevFixture.flex().relative(this.prevFrame).set(-20, 0, 16, 16);
 
         this.openProfiles.flex().relative(this.viewport).set(0, 2, 16, 16).x(1, -18);
-        this.openConfig.flex().relative(this.openProfiles.resizer()).set(-20, 0, 16, 16);
-        this.openModifiers.flex().relative(this.openConfig.resizer()).set(-20, 0, 16, 16);
-        this.save.flex().relative(this.openModifiers.resizer()).set(-20, 0, 16, 16);
+        this.openConfig.flex().relative(this.openProfiles).set(-20, 0, 16, 16);
+        this.openModifiers.flex().relative(this.openConfig).set(-20, 0, 16, 16);
+        this.save.flex().relative(this.openModifiers).set(-20, 0, 16, 16);
 
-        this.add.flex().relative(this.save.resizer()).set(-100, 0, 16, 16);
-        this.dupe.flex().relative(this.add.resizer()).set(20, 0, 16, 16);
-        this.replace.flex().relative(this.dupe.resizer()).set(20, 0, 16, 16);
-        this.remove.flex().relative(this.replace.resizer()).set(20, 0, 16, 16);
+        this.add.flex().relative(this.save).set(-100, 0, 16, 16);
+        this.dupe.flex().relative(this.add).set(20, 0, 16, 16);
+        this.replace.flex().relative(this.dupe).set(20, 0, 16, 16);
+        this.remove.flex().relative(this.replace).set(20, 0, 16, 16);
 
         this.cut.flex().relative(this.viewport).set(82, 2, 16, 16);
-        this.creation.flex().relative(this.cut.resizer()).set(20, 0, 16, 16);
-        this.moveForward.flex().relative(this.cut.resizer()).set(-20, 0, 16, 16);
-        this.moveDuration.flex().relative(this.moveForward.resizer()).set(-20, 0, 16, 16);
-        this.copyPosition.flex().relative(this.moveDuration.resizer()).set(-20, 0, 16, 16);
-        this.moveBackward.flex().relative(this.copyPosition.resizer()).set(-20, 0, 16, 16);
+        this.creation.flex().relative(this.cut).set(20, 0, 16, 16);
+        this.moveForward.flex().relative(this.cut).set(-20, 0, 16, 16);
+        this.moveDuration.flex().relative(this.moveForward).set(-20, 0, 16, 16);
+        this.copyPosition.flex().relative(this.moveDuration).set(-20, 0, 16, 16);
+        this.moveBackward.flex().relative(this.copyPosition).set(-20, 0, 16, 16);
 
         /* Setup areas of widgets */
         this.scrub.flex().relative(this.viewport).set(10, 0, 0, 20).y(1, -20).w(1, -20);
 
         this.panel.flex().relative(this.viewport).set(10, 40, 0, 0).w(1, -20).h(1, -70);
-        this.popup.flex().relative(this.add.resizer()).set(-44, 18, 62, 122);
-        this.config.flex().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
-        this.profiles.flex().relative(this.panel.resizer()).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);
-        this.modifiers.flex().relative(this.panel.resizer()).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
+        this.popup.flex().relative(this.add).set(-44, 18, 62, 122);
+        this.config.flex().relative(this.panel).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
+        this.profiles.flex().relative(this.panel).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);
+        this.modifiers.flex().relative(this.panel).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
 
         /* Adding everything */
         this.hidden = new GuiElement(mc);
         this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
         this.hidden.add(this.cut, this.creation, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
-        this.hidden.add(this.add, this.dupe, this.replace, this.remove, this.save, this.openConfig, this.openModifiers);
+        this.hidden.add(this.openConfig, this.openModifiers, this.save, this.add, this.dupe, this.replace, this.remove);
         this.hidden.add(this.scrub, this.panel, this.popup, this.config, this.modifiers);
 
         this.cameraProfileWasChanged(this.profile);
@@ -333,7 +333,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.updateValues();
 
         this.hidePopups(this.profiles);
-        this.top.add(this.hidden, this.openProfiles, this.profiles, this.cameraOptions.overlayPicker);
+        this.top.add(this.openProfiles, this.hidden, this.profiles, this.cameraOptions.overlayPicker);
         this.root.add(this.top);
 
         /* Let other classes have fun with camera editor's position and such */

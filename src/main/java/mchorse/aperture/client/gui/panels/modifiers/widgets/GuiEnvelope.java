@@ -77,13 +77,13 @@ public class GuiEnvelope extends GuiElement
 
 		GuiElement row = Elements.row(mc, 5, 0, 20, this.enabled, this.relative, this.pickInterp);
 
-		row.flex().relative(this.area).xy(5, 5).w(1F, -10);
+		row.flex().relative(this).xy(5, 5).w(1F, -10);
 
-		this.startX.flex().relative(this.enabled.area).xy(0, 20).w(1F).h(20);
-		this.startD.flex().relative(this.startX.resizer()).xy(0, 25).w(1F).h(20);
-		this.endX.flex().relative(this.relative.area).xy(0, 20).w(1F).h(20);
-		this.endD.flex().relative(this.endX.resizer()).xy(0, 25).w(1F).h(20);
-		this.interps.flex().relative(this.pickInterp.area).xy(1F, 1F).w(110).hTo(this.area, 1F).anchor(1F, 0F);
+		this.startX.flex().relative(this.enabled).xy(0, 20).w(1F).h(20);
+		this.startD.flex().relative(this.startX).xy(0, 25).w(1F).h(20);
+		this.endX.flex().relative(this.relative).xy(0, 20).w(1F).h(20);
+		this.endD.flex().relative(this.endX).xy(0, 25).w(1F).h(20);
+		this.interps.flex().relative(this.pickInterp).xy(1F, 1F).w(110).hTo(this.area, 1F).anchor(1F, 0F);
 
 		this.add(row, this.startX, this.startD, this.endX, this.endD, this.interps);
 

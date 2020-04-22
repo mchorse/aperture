@@ -56,12 +56,12 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.header = new GuiElement(mc);
         this.header.flex().h(20);
 
-        this.remove.flex().relative(this.header.area).set(0, 2, 16, 16).x(1, -18);
-        this.enable.flex().relative(this.remove.resizer()).set(-20, 0, 16, 16);
-        this.moveUp.flex().relative(this.enable.resizer()).set(-20, 0, 16, 8);
-        this.moveDown.flex().relative(this.enable.resizer()).set(-20, 8, 16, 8);
-        this.copy.flex().relative(this.moveUp.resizer()).set(-20, 0, 16, 16);
-        this.envelope.flex().relative(this.copy.resizer()).set(-20, 0, 16, 16);
+        this.remove.flex().relative(this.header).set(0, 2, 16, 16).x(1, -18);
+        this.enable.flex().relative(this.remove).set(-20, 0, 16, 16);
+        this.moveUp.flex().relative(this.enable).set(-20, 0, 16, 8);
+        this.moveDown.flex().relative(this.enable).set(-20, 8, 16, 8);
+        this.copy.flex().relative(this.moveUp).set(-20, 0, 16, 16);
+        this.envelope.flex().relative(this.copy).set(-20, 0, 16, 16);
 
         this.header.add(this.enable, this.remove, this.moveUp, this.moveDown, this.copy, this.envelope);
 

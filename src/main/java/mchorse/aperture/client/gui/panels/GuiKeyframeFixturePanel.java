@@ -77,14 +77,14 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
                 break;
             }
 
-            button.flex().relative(this.area).set(x, 0, this.font.getStringWidth(button.label) + 15, 20).y(0.5F, -25);
+            button.flex().relative(this).set(x, 0, this.font.getStringWidth(button.label) + 15, 20).y(0.5F, -25);
 
             x += button.flex().getW() + 5;
             i++;
         }
 
-        this.graph.flex().relative(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
-        this.dope.flex().relative(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
+        this.graph.flex().relative(this).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
+        this.dope.flex().relative(this).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
 
         this.add(this.graph, this.dope, this.buttons);
     }

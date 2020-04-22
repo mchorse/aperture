@@ -89,7 +89,7 @@ public class GuiModifiersManager extends GuiElement
 
         this.buttons = new GuiElement(mc);
         this.buttons.setVisible(false);
-        this.buttons.flex().relative(this.area).x(1, 0).y(20).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch();
+        this.buttons.flex().relative(this).x(1, 0).y(20).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch();
 
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
@@ -102,15 +102,15 @@ public class GuiModifiersManager extends GuiElement
                 this.buttons.setVisible(false);
             });
 
-            button.color(color).flex().relative(this.area).h(20);
+            button.color(color).flex().relative(this).h(20);
             this.buttons.add(button);
         }
 
         this.panels = new GuiScrollElement(mc);
-        this.panels.flex().relative(this.area).y(20).w(1F, 0).h(1, -20).column(0).vertical().stretch().scroll();
+        this.panels.flex().relative(this).y(20).w(1F, 0).h(1, -20).column(0).vertical().stretch().scroll();
 
-        this.add.flex().relative(this.area).set(0, 2, 16, 16).x(1, -18);
-        this.paste.flex().relative(this.add.resizer()).set(-20, 0, 16, 16);
+        this.add.flex().relative(this).set(0, 2, 16, 16).x(1, -18);
+        this.paste.flex().relative(this.add).set(-20, 0, 16, 16);
         this.add(this.add, this.paste, this.panels, this.buttons);
 
         this.hideTooltip();

@@ -53,10 +53,10 @@ public class GuiAngleModule extends GuiAbstractModule
         });
         this.fov.tooltip(I18n.format("aperture.gui.panels.fov"));
 
-        this.yaw.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.pitch.flex().relative(this.area).set(0, 20, 0, 20).w(1, 0);
-        this.roll.flex().relative(this.area).set(0, 40, 0, 20).w(1, 0);
-        this.fov.flex().relative(this.area).set(0, 60, 0, 20).w(1, 0);
+        this.yaw.flex().relative(this).set(0, 0, 0, 20).w(1, 0);
+        this.pitch.flex().relative(this).set(0, 20, 0, 20).w(1, 0);
+        this.roll.flex().relative(this).set(0, 40, 0, 20).w(1, 0);
+        this.fov.flex().relative(this).set(0, 60, 0, 20).w(1, 0);
 
         this.add(this.yaw, this.pitch, this.roll, this.fov);
     }

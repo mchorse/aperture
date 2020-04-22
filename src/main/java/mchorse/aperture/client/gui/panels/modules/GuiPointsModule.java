@@ -62,10 +62,10 @@ public class GuiPointsModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        back.flex().relative(this.area).set(-38, 2, 16, 16);
-        remove.flex().relative(this.area).set(-18, 2, 16, 16);
-        add.flex().relative(this.area).set(0, 2, 16, 16).x(1, 2);
-        forward.flex().relative(this.area).set(0, 2, 16, 16).x(1, 22);
+        back.flex().relative(this).set(-38, 2, 16, 16);
+        remove.flex().relative(this).set(-18, 2, 16, 16);
+        add.flex().relative(this).set(0, 2, 16, 16).x(1, 2);
+        forward.flex().relative(this).set(0, 2, 16, 16).x(1, 22);
 
         this.add(back, add, remove, forward);
         this.scroll.direction = ScrollDirection.HORIZONTAL;

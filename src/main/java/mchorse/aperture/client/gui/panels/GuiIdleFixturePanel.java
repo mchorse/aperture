@@ -45,8 +45,8 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture>
     {
         boolean h = this.flex().getH() > 200;
 
-        this.point.flex().relative(this.area).set(0, 10, 80, 80).x(1, -80);
-        this.angle.flex().relative(this.area).set(0, 10, 80, 80).x(1, -170);
+        this.point.flex().relative(this).set(0, 10, 80, 80).x(1, -80);
+        this.angle.flex().relative(this).set(0, 10, 80, 80).x(1, -170);
 
         if (h)
         {

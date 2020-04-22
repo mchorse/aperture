@@ -39,7 +39,7 @@ public class GuiInterpModule extends GuiAbstractModule
                 this.interps.setCurrent(this.fixture.interpolationPos);
                 this.interps.setVisible(true);
 
-                this.interps.flex().relative(this.pos.resizer());
+                this.interps.flex().relative(this.pos);
                 this.interps.resize();
             }
         });
@@ -56,7 +56,7 @@ public class GuiInterpModule extends GuiAbstractModule
                 this.interps.setCurrent(this.fixture.interpolationAngle);
                 this.interps.setVisible(true);
 
-                this.interps.flex().relative(this.angle.resizer());
+                this.interps.flex().relative(this.angle);
                 this.interps.resize();
             }
         });
@@ -78,8 +78,8 @@ public class GuiInterpModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        this.pos.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.angle.flex().relative(this.area).set(0, 25, 0, 20).w(1, 0);
+        this.pos.flex().relative(this).set(0, 0, 0, 20).w(1, 0);
+        this.angle.flex().relative(this).set(0, 25, 0, 20).w(1, 0);
         this.interps.flex().y(20).w(1, 0).h(96);
 
         this.add(this.pos, this.angle, this.interps);
