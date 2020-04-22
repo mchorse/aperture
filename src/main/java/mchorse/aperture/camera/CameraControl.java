@@ -1,9 +1,5 @@
 package mchorse.aperture.camera;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.AbstractDestination;
@@ -12,6 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Camera control class
@@ -43,6 +43,34 @@ public class CameraControl
      */
     public boolean logged;
 
+    public int lastCounter;
+    public Float lastRoll;
+    public Float lastFov;
+
+    public void cache()
+    {
+        if (this.lastCounter == 0)
+        {
+            this.lastRoll = roll;
+            this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
+        }
+
+        this.lastCounter ++;
+    }
+
+    public void restore()
+    {
+        this.lastCounter --;
+
+        if (this.lastCounter == 0)
+        {
+            this.roll = this.lastRoll;
+            Minecraft.getMinecraft().gameSettings.fovSetting = this.lastFov;
+
+            this.lastRoll = this.lastFov = null;
+        }
+    }
+
     /**
      * Reset camera profiles 
      */
@@ -63,6 +91,8 @@ public class CameraControl
         this.profiles.clear();
         this.currentProfile = null;
         this.logged = false;
+        this.lastCounter = 0;
+        this.lastRoll = this.lastFov = null;
     }
 
     /**

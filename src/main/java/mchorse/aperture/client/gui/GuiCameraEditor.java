@@ -96,11 +96,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public boolean creating = false;
     public List<Integer> markers = new ArrayList<Integer>();
 
-    /**
-     * FOV which was user had before entering the GUI 
-     */
-    private float lastFov = 70.0F;
-    private float lastRoll = 0;
     private float lastPartialTick = 0;
     private GameType lastGameMode = GameType.NOT_SET;
     public ResourceLocation overlayLocation;
@@ -729,12 +724,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.maxScrub = 0;
         this.haveScrubbed = false;
         this.flight.enabled = false;
-        this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
-        this.lastRoll = ClientProxy.control.roll;
+        ClientProxy.control.cache();
         this.lastGameMode = ClientProxy.runner.getGameMode(player);
         this.setAspectRatio(Aperture.editorLetterboxAspect.get());
 
-        if (Aperture.spectator.get())
+        if (Aperture.spectator.get() && !Aperture.outside.get())
         {
             if (this.lastGameMode != GameType.SPECTATOR)
             {
@@ -1018,8 +1012,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     protected void closeScreen()
     {
         Minecraft.getMinecraft().gameSettings.hideGUI = false;
-        Minecraft.getMinecraft().gameSettings.fovSetting = this.lastFov;
-        ClientProxy.control.roll = this.lastRoll;
+        ClientProxy.control.restore();
         GuiIngameForge.renderHotbar = true;
         GuiIngameForge.renderCrosshairs = true;
 
