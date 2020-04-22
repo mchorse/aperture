@@ -33,7 +33,7 @@ aperture.gui:
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
         rule_of_thirds: Rule of thirds
-        cursor: Cursor
+        crosshair: Crosshair
         letter_box: Letter box
         repeat: Repeat fixture
         overlay: Enable overlay

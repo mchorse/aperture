@@ -111,20 +111,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public boolean haveScrubbed;
 
     /**
-     * Whether cameras are sync'd every render tick. Usable for target based
-     * fixtures only
-     */
-    public boolean syncing;
-
-    /**
      * Maximum scrub duration
      */
     public int maxScrub = 0;
-
-    /**
-     * Whether current camera fixture should be played on repeat 
-     */
-    public boolean repeat;
 
     /**
      * Flight mode 
@@ -144,29 +133,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     /* Display options */
 
     /**
-     * Whether camera editor should display camera information 
-     */
-    public boolean displayPosition;
-
-    /**
-     * Render rule of thirds 
-     */
-    public boolean ruleOfThirds;
-
-    /**
-     * Render black bars 
-     */
-    public boolean letterBox;
-
-    /**
      * Aspect ratio for black bars 
      */
     public float aspectRatio = 16F / 9F;
-
-    /**
-     * Cursor in the middle of the screen that shows the middle
-     */
-    public boolean cursor;
 
     /* GUI fields */
 
@@ -405,9 +374,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }).active(active).category(fixture);
 
         this.root.keys().register("Toggle modifiers popup", Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(fixture);
-        this.root.keys().register("Toggle fixture looping", Keyboard.KEY_R, () -> this.cameraOptions.repeat.clickItself(this.context)).active(active).category(fixture);
+        this.root.keys().register("Toggle fixture looping", Keyboard.KEY_R, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(fixture);
         this.root.keys().register("Cut fixture", Keyboard.KEY_C, () -> this.cut.clickItself(this.context)).active(active).category(fixture);
         this.root.keys().register("Toggle interactive mode", Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(fixture);
+    }
+
+    public boolean isSyncing()
+    {
+        return Aperture.editorSync.get();
     }
 
     /**
@@ -467,7 +441,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 this.panel.setDelegate(panel);
                 panel.select(fixture, duration);
 
-                if (this.syncing)
+                if (this.isSyncing())
                 {
                     this.scrub.setValue((int) panel.currentOffset());
                 }
@@ -800,7 +774,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updatePlayerCurrently(float partialTicks)
     {
-        if ((this.syncing || this.runner.outside.active) && !this.runner.isRunning())
+        if ((this.isSyncing() || this.runner.outside.active) && !this.runner.isRunning())
         {
             this.updatePlayer(this.scrub.value, partialTicks);
         }
@@ -1078,7 +1052,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.lastPartialTick = partialTicks;
         }
 
-        if (this.repeat && isRunning && this.panel.delegate != null)
+        if (Aperture.editorLoop.get() && isRunning && this.panel.delegate != null)
         {
             AbstractFixture fixture = this.panel.delegate.fixture;
             long target = this.profile.calculateOffset(fixture) + fixture.getDuration();
@@ -1096,7 +1070,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             ClientProxy.control.roll = this.position.angle.roll;
             this.mc.gameSettings.fovSetting = this.position.angle.fov;
 
-            if (this.syncing && this.haveScrubbed)
+            if (this.isSyncing() && this.haveScrubbed)
             {
                 this.editFixture();
             }
@@ -1182,7 +1156,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
 
             /* Sync the player on current tick */
-            if ((this.runner.outside.active || (this.syncing && this.haveScrubbed)) && !this.flight.enabled)
+            if ((this.runner.outside.active || (this.isSyncing() && this.haveScrubbed)) && !this.flight.enabled)
             {
                 this.updatePlayerCurrently(partialTicks);
             }
@@ -1197,7 +1171,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         /* Display position variables */
-        if ((this.syncing || this.runner.isRunning()) && this.displayPosition)
+        if ((this.isSyncing() || this.runner.isRunning()) && Aperture.editorDisplayPosition.get())
         {
             this.drawPosition(panel);
         }
@@ -1209,7 +1183,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void drawIcons()
     {
-        if (!this.syncing && !this.flight.enabled)
+        if (!this.isSyncing() && !this.flight.enabled)
         {
             return;
         }
@@ -1217,10 +1191,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         int x = this.width - 18;
         int y = 22;
 
-        Gui.drawRect(this.width - (this.syncing ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
+        Gui.drawRect(this.width - (this.isSyncing() ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
         GlStateManager.color(1, 1, 1, 1);
 
-        if (this.syncing)
+        if (this.isSyncing())
         {
             Icons.DOWNLOAD.render(x, y);
             x -= 20;
@@ -1275,7 +1249,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         int rw = this.width;
         int rh = this.height;
 
-        if (this.letterBox && this.aspectRatio > 0)
+        if (Aperture.editorLetterbox.get() && this.aspectRatio > 0)
         {
             int width = (int) (this.aspectRatio * this.height);
 
@@ -1311,7 +1285,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             return;
         }
 
-        if (this.ruleOfThirds)
+        if (Aperture.editorRuleOfThirds.get())
         {
             int color = 0xcccc0000;
 
@@ -1322,7 +1296,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             Gui.drawRect(rx, ry + rh - rh / 3, rx + rw, ry + rh - rh / 3 + 1, color);
         }
 
-        if (this.cursor)
+        if (Aperture.editorCrosshair.get())
         {
             GlStateManager.enableBlend();
             GlStateManager.enableAlpha();

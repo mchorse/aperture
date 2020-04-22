@@ -194,6 +194,13 @@ public class CameraRenderer
     @SubscribeEvent
     public void onLastRender(RenderWorldLastEvent event)
     {
+        int shader = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
+
+        if (shader != 0)
+        {
+            OpenGlHelper.glUseProgram(0);
+        }
+
         CameraProfile profile = ClientProxy.control.currentProfile;
         CameraRunner runner = ClientProxy.runner;
 
@@ -248,7 +255,11 @@ public class CameraRenderer
 
         GlStateManager.disableBlend();
         GlStateManager.popAttrib();
-        GL11.glLineWidth(2);
+
+        if (shader != 0)
+        {
+            OpenGlHelper.glUseProgram(shader);
+        }
     }
 
     /**
@@ -256,13 +267,6 @@ public class CameraRenderer
      */
     private void drawFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
     {
-        int shader = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
-
-        if (shader != 0)
-        {
-            OpenGlHelper.glUseProgram(0);
-        }
-
         if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture)
         {
             this.drawPathFixture(color, fixture, prev, next);
@@ -270,11 +274,6 @@ public class CameraRenderer
         else if (fixture instanceof CircularFixture)
         {
             this.drawCircularFixture(partialTicks, color, fixture, prev, next);
-        }
-
-        if (shader != 0)
-        {
-            OpenGlHelper.glUseProgram(shader);
         }
     }
 

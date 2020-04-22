@@ -1,7 +1,5 @@
 package mchorse.aperture.client.gui.config;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
@@ -11,7 +9,6 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTexturePicker;
-import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -25,10 +22,10 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiToggleElement displayPosition;
     public GuiToggleElement essentialsTeleport;
     public GuiToggleElement ruleOfThirds;
-    public GuiToggleElement cursor;
+    public GuiToggleElement crosshair;
     public GuiToggleElement letterBox;
     public GuiTextElement aspectRatio;
-    public GuiToggleElement repeat;
+    public GuiToggleElement loop;
     public GuiToggleElement overlay;
     public GuiButtonElement pickOverlay;
     public GuiTexturePicker overlayPicker;
@@ -37,11 +34,8 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     {
         super(mc, editor);
 
-        this.outside = new GuiToggleElement(mc, I18n.format("aperture.gui.config.outside"), Aperture.outside.get(), (b) ->
+        this.outside = new GuiToggleElement(mc, Aperture.outside, (b) ->
         {
-            Aperture.outside.set(b.isToggled());
-            this.saveConfig();
-
             if (b.isToggled())
             {
                 ClientProxy.runner.attachOutside();
@@ -53,72 +47,25 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             }
         });
 
-        this.spectator = new GuiToggleElement(mc, I18n.format("aperture.gui.config.spectator"), Aperture.spectator.get(), (b) ->
-        {
-            Aperture.spectator.set(b.isToggled());
-            this.saveConfig();
-        });
-
-        this.renderPath = new GuiToggleElement(mc, I18n.format("aperture.gui.config.show_path"), Aperture.profileRender.get(), (b) ->
-        {
-            ClientProxy.renderer.toggleRender();
-            b.toggled(Aperture.profileRender.get());
-        });
-
-        this.sync = new GuiToggleElement(mc, I18n.format("aperture.gui.config.sync"), this.editor.syncing, (b) ->
-        {
-            this.editor.syncing = b.isToggled();
-        });
+        this.spectator = new GuiToggleElement(mc, Aperture.spectator);
+        this.renderPath = new GuiToggleElement(mc, Aperture.profileRender);
+        this.sync = new GuiToggleElement(mc, Aperture.editorSync);
 
         this.flight = new GuiToggleElement(mc, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled, (b) ->
         {
             this.editor.setFlight(b.isToggled());
         });
 
-        this.displayPosition = new GuiToggleElement(mc, I18n.format("aperture.gui.config.display_info"), this.editor.displayPosition, (b) ->
-        {
-            this.editor.displayPosition = b.isToggled();
-        });
-
-        this.essentialsTeleport = new GuiToggleElement(mc, I18n.format("aperture.gui.config.minecrafttp_teleport"), Aperture.essentialsTeleport.get(), (b) ->
-        {
-            Aperture.essentialsTeleport.set(b.isToggled());
-            this.saveConfig();
-        });
-
-        this.ruleOfThirds = new GuiToggleElement(mc, I18n.format("aperture.gui.config.rule_of_thirds"), this.editor.ruleOfThirds, (b) ->
-        {
-            this.editor.ruleOfThirds = b.isToggled();
-        });
-
-        this.cursor = new GuiToggleElement(mc, I18n.format("aperture.gui.config.cursor"), this.editor.cursor, (b) ->
-        {
-            this.editor.cursor = b.isToggled();
-        });
-
-        this.letterBox = new GuiToggleElement(mc, I18n.format("aperture.gui.config.letter_box"), this.editor.letterBox, (b) ->
-        {
-            this.editor.letterBox = b.isToggled();
-        });
-
-        this.aspectRatio = new GuiTextElement(mc, (v) ->
-        {
-            Aperture.editorLetterboxAspect.set(v);
-            this.editor.setAspectRatio(v);
-            this.saveConfig();
-        });
+        this.displayPosition = new GuiToggleElement(mc, Aperture.editorDisplayPosition);
+        this.essentialsTeleport = new GuiToggleElement(mc, Aperture.essentialsTeleport);
+        this.ruleOfThirds = new GuiToggleElement(mc, Aperture.editorRuleOfThirds);
+        this.crosshair = new GuiToggleElement(mc, Aperture.editorCrosshair);
+        this.letterBox = new GuiToggleElement(mc, Aperture.editorLetterbox);
+        this.aspectRatio = new GuiTextElement(mc, Aperture.editorLetterboxAspect, this.editor::setAspectRatio);
         this.aspectRatio.setText(Aperture.editorLetterboxAspect.get());
 
-        this.repeat = new GuiToggleElement(mc, I18n.format("aperture.gui.config.repeat"), this.editor.repeat, (b) ->
-        {
-            this.editor.repeat = b.isToggled();
-        });
-
-        this.overlay = new GuiToggleElement(mc, I18n.format("aperture.gui.config.overlay"), Aperture.editorOverlay.get(), (b) ->
-        {
-            Aperture.editorOverlay.set(b.isToggled());
-            this.saveConfig();
-        });
+        this.loop = new GuiToggleElement(mc, Aperture.editorLoop);
+        this.overlay = new GuiToggleElement(mc, Aperture.editorOverlay);
 
         this.pickOverlay = new GuiButtonElement(mc, I18n.format("aperture.gui.config.pick_overlay"), (b) ->
         {
@@ -129,24 +76,14 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 
         this.overlayPicker = new GuiTexturePicker(mc, (rl) ->
         {
-            JsonElement tag = RLUtils.writeJson(rl);
-            String texture = "";
-
-            if (tag != JsonNull.INSTANCE)
-            {
-                texture = tag.toString();
-            }
-
-            Aperture.editorOverlayRL.set(texture);
-            this.saveConfig();
+            Aperture.editorOverlayRL.set(rl);
             this.editor.updateOverlay();
         });
         this.overlayPicker.setVisible(false);
         this.overlayPicker.flex().relative(this.editor.viewport).wh(1F, 1F);
 
-        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.cursor, this.letterBox, this.aspectRatio, this.repeat, this.overlay, this.pickOverlay);
+        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.crosshair, this.letterBox, this.aspectRatio, this.loop, this.overlay, this.pickOverlay);
 
-        /* Show tp buttons if in multiplayer */
         if (!mc.isSingleplayer())
         {
             this.add(this.essentialsTeleport);
@@ -156,14 +93,9 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         {
             if (element instanceof GuiToggleElement)
             {
-                ((GuiElement) element).flex().h(10);
+                ((GuiElement) element).flex().h(16);
             }
         }
-    }
-
-    private void saveConfig()
-    {
-        Aperture.outside.category.config.save();
     }
 
     @Override
@@ -172,13 +104,14 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.outside.toggled(Aperture.outside.get());
         this.spectator.toggled(Aperture.spectator.get());
         this.renderPath.toggled(Aperture.profileRender.get());
-        this.sync.toggled(this.editor.syncing);
+        this.sync.toggled(Aperture.editorSync.get());
+        this.loop.toggled(Aperture.editorLoop.get());
         this.flight.toggled(this.editor.flight.enabled);
-        this.displayPosition.toggled(this.editor.displayPosition);
+        this.displayPosition.toggled(Aperture.editorDisplayPosition.get());
         this.essentialsTeleport.toggled(Aperture.essentialsTeleport.get());
-        this.ruleOfThirds.toggled(this.editor.ruleOfThirds);
-        this.ruleOfThirds.toggled(this.editor.cursor);
-        this.letterBox.toggled(this.editor.letterBox);
+        this.ruleOfThirds.toggled(Aperture.editorRuleOfThirds.get());
+        this.crosshair.toggled(Aperture.editorCrosshair.get());
+        this.letterBox.toggled(Aperture.editorLetterbox.get());
         this.aspectRatio.setText(Aperture.editorLetterboxAspect.get());
         this.overlay.toggled(Aperture.editorOverlay.get());
     }

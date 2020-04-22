@@ -47,21 +47,6 @@ public class CameraRunner
     private GameType gameMode = GameType.NOT_SET;
 
     /**
-     * Whether it's first tick during the playback
-     */
-    private boolean firstTick = false;
-
-    /**
-     * Is camera runner waits for 0.0 partial tick
-     */
-    private boolean firstTickZero = false;
-
-    /**
-     * Whether partial tick 0.0 was detected
-     */
-    private boolean firstTickZeroStart = false;
-
-    /**
      * Is camera runner running?
      */
     private boolean isRunning = false;
@@ -175,10 +160,6 @@ public class CameraRunner
         this.isRunning = true;
         this.duration = this.profile.getDuration();
         this.ticks = start;
-
-        this.firstTick = true;
-        this.firstTickZero = Aperture.firstTickZero.get();
-        this.firstTickZeroStart = false;
     }
 
     /**
@@ -221,7 +202,7 @@ public class CameraRunner
      */
     public void attachOutside()
     {
-        if (!this.outside.active && false)
+        if (!this.outside.active && Aperture.outside.get())
         {
             this.outside.start();
         }
@@ -263,18 +244,6 @@ public class CameraRunner
             return;
         }
 
-        if (this.firstTick)
-        {
-            /* Currently Minema supports client side /minema command which
-             * record video */
-            if (false)
-            {
-                ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
-            }
-
-            this.firstTick = false;
-        }
-
         long progress = Math.min(this.ticks, this.duration);
 
         if (progress >= this.duration)
@@ -286,11 +255,6 @@ public class CameraRunner
             if (this.outside.active)
             {
                 this.mc.setRenderViewEntity(Aperture.outsideSky.get() ? this.outside.camera : this.mc.player);
-            }
-
-            if (this.firstTickZero && event.renderTickTime == 0.0)
-            {
-                this.firstTickZeroStart = true;
             }
 
             if (Aperture.debugTicks.get())
@@ -316,29 +280,11 @@ public class CameraRunner
             double y = point.y + Math.sin(progress) * 0.000000001 + 0.000000001;
 
             /* Velocity simulation (useful for recording the player) */
-            if (Aperture.simulateVelocity.get())
-            {
-                if (this.ticks == 0)
-                {
-                    this.setCameraPosition(player, point.x, y, point.z, angle);
-                }
-                else
-                {
-                    this.setCameraPosition(player, player.posX, player.posY, player.posZ, angle);
-                }
+            this.setCameraPosition(player, point.x, y, point.z, angle);
 
-                player.motionX = this.position.point.x - prevX;
-                player.motionY = this.position.point.y - prevY;
-                player.motionZ = this.position.point.z - prevZ;
-            }
-            else
+            if (!this.outside.active)
             {
-                this.setCameraPosition(player, point.x, y, point.z, angle);
-
-                if (!this.outside.active)
-                {
-                    player.motionX = player.motionY = player.motionZ = 0;
-                }
+                player.motionX = player.motionY = player.motionZ = 0;
             }
 
             if (!this.mc.isSingleplayer() && !this.outside.active)
@@ -408,10 +354,7 @@ public class CameraRunner
                 Aperture.LOGGER.info("Camera frame: " + this.ticks);
             }
 
-            if (this.firstTickZero && this.firstTickZeroStart || !this.firstTickZero)
-            {
-                this.ticks++;
-            }
+            this.ticks++;
         }
     }
 }
