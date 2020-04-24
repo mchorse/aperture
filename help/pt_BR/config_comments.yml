@@ -1,45 +1,55 @@
 # Config strings
 aperture.config.comments:
     general:
-        camera_duration_step: Etapa padrão a ser usada ao adicionar ou reduzir a duração do equipamento da câmera (em ticks)
-        camera_duration: Duração padrão do equipamento da câmera (em ticks)
-        camera_interpolate_target: Alterne o final dos suportes da câmera com base no alvo (siga e observe)
-        camera_interpolate_target_value: Valor da interpolação para interpolação dos suportes da câmera com base no alvo
-        camera_spectator: Alterne para o modo de espectador ao iniciar a reprodução da câmera
-        camera_step_factor: Fator de etapa da câmera para teclas de etapas
-        camera_rotate_factor: Fator de rotação da câmera para girar as teclas
-        camera_minema: Ative a gravação do Minema na inicialização da câmera e desative na parada da câmera
-        camera_path_default_interp: Método de interpolação padrão para fixação de caminho
-        camera_command_name: Permite religar o nome do comando da câmera (requer reinicialização do jogo)
-        camera_simulate_velocity: Simule a velocidade do player durante a reprodução da câmera (veja as pernas em perspectiva)
-        camera_debug_ticks: Escreva o tick atual da reprodução da câmera no log
-        camera_first_tick_zero: Quando o canal da câmera iniciar, inicie a reprodução real quando o tick parcial for exatamente zero
-        camera_profile_render: Renderizar perfil de câmera no mundo?
-        camera_auto_save: Salve todos os perfis de câmera ao sair do mundo
-        minecrafttp_teleport: Ao iniciar a reprodução da câmera no modo multiplayer, teleporte-o com o comando /minecraft:tp (para o Essentials)
+        duration: Duração padrão do equipamento da câmera (em ticks)
+        spectator: Alterne para o modo de espectador ao iniciar a reprodução da câmera
+        step_factor: Fator de etapa da câmera para teclas de etapas
+        rotate_factor: Fator de rotação da câmera para girar as teclas
+        command_name: Permite religar o nome do comando da câmera (requer reinicialização do jogo)
+        debug_ticks: Escreva o tick atual da reprodução da câmera no log
+        profile_render: Renderizar perfil de câmera no mundo?
+        auto_save: Salve todos os perfis de câmera ao sair do mundo
+        essentials_tp: Ao iniciar a reprodução da câmera no modo multiplayer, teleporte-o com o comando /minecraft:tp (para o Essentials)
 
     outside:
-        camera_outside: Independentemente a câmera deve ser reproduzida de fora (permitindo que o jogador atue como um ator)
-        camera_outside_hide_player: Independentemente o player deve ficar oculto durante a reprodução da câmera, se o modo externo estiver ativado
-        camera_outside_sky: Se ativado, corrige o céu, mas desativa a seleção de blocos (devido a um bug)
-        camera_outside_hide_guis: Impedir que as telas da GUI sejam renderizadas durante o modo externo
-        camera_outside_hide_overlays: Impedir sobreposições da tela de renderização (como sobreposição de abóbora, fogo ao queimar, água e etc.) durante o modo externo
+        enabled: Independentemente a câmera deve ser reproduzida de fora (permitindo que o jogador atue como um ator)
+        hide_player: Independentemente o player deve ficar oculto durante a reprodução da câmera, se o modo externo estiver ativado
+        sky: Se ativado, corrige o céu, mas desativa a seleção de blocos (devido a um bug)
 
-    overlay:
-        camera_editor_overlay: Ativa a sobreposição do editor de câmera
-        camera_editor_overlay_rl: Caminho do local do recurso para a textura que será usada como sobreposição
-        camera_editor_f1_tooltip: Mostrar a dica no canto inferior esquerdo, que explica como retornar a GUI
+    editor:
+        sync: Permite sincronizar a posição da câmera no editor de câmera, que visualiza o perfil atual da câmera
+        loop: Repete a reprodução do suporte selecionado atualmente
+        overlay: Ativa a sobreposição do editor de câmera
+        overlay_rl: Caminho do local do recurso para a textura que será usada como sobreposição
+        f1_tooltip: Mostrar a dica no canto inferior esquerdo, que explica como retornar a GUI
+        position: Mostrar propriedades da câmera quando o modo de sincronização está ativado
+        rule_of_thirds: Mostrar guias de regra de terços
+        crosshair: Mostra uma mira no meio da tela do editor de câmera
+        letter_box: Mostrar caixa postal (também conhecidas como barras pretas) que estreitam ou ampliam a foto da câmera como referência
         aspect_ratio: Relação de aspecto para o recurso de caixa postal do editor de câmera
+        
+    flight:
+        forward: Mover a câmera para frente
+        backward: Mover a câmera para trás
+        left: Mover a câmera para esquerda
+        right: Mover a câmera para direito
+        up: Subir a câmera
+        down: Descer a câmera
+        camera_up: Inclinar a câmera para cima em direção ao céu
+        camera_down: Inclinar a câmera para baixo em direção ao chão
+        camera_left: Deslocar a câmera para a esquerda
+        camera_right: Deslocar a câmera para a direita
+        fov_minus: Diminuir o campo de visão
+        fov_plus: Aumentar o campo de visão
+        roll_minus: Rolar no sentido anti-horário
+        roll_plus: Rolar no sentido horário        
 
     smooth:
-        camera_smooth_clamp: Prender da afinação suave da câmera entre -90 e 90 graus?
-
-        roll_speed: Velocidade de aceleração do rolamento
-        roll_friction: Atrito de aceleração do rolamento (com que rapidez diminui)
-
-        fov_speed: Velocidade de aceleração FOV
-        fov_friction: Atrito de aceleração FOV (com que rapidez diminui)
-
-        smooth_enabled: Ativar câmera suave.
-        mouse_x_friction: Atrito suave do mouse X
-        mouse_y_friction: Atrito suave do mouse Y
+        enabled: Ativar câmera suave
+        x_friction: Deslizamento suave do mouse em X
+        y_friction: Deslizamento suave do mouse em Y
+        clamp: Prender a câmera numa inclinação suave entre -90 e 90 graus de intervalo?
+        roll_speed: Velocidade de aceleração de rolagem
+        roll_friction: Deslizamento de aceleração de rolagem (com que rapidez diminui)
+        fov_speed: Velocidade de aceleração do FOV
+        fov_friction: Delizamento de aceleração do FOV (com que rapidez diminui)
