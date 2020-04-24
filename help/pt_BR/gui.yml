@@ -23,40 +23,40 @@ aperture.gui:
     config:
         title: Opções de Câmera
 
-        outside: Modo externo (O)
+        outside: Modo externo
         minema: Minema
         spectator: Espectador
         show_path: Mostrar caminho
-        sync: Sincronizar (S)
-        flight: Modo de Voo (F)
+        sync: Sincronizar
+        flight: Modo de Voo
         display_info: Mostrar posição
         minecrafttp_teleport: Usar /minecraft:tp
         tp_teleport: Usar /tp
         rule_of_thirds: Regra dos terços
-        cursor: Cursor
-        letter_box: Caixa de correio
-        repeat: Repetir suporte (R)
+        crosshair: Mira
+        letter_box: Caixa postal
+        repeat: Repetir suporte
         overlay: Habilitar sobreposição
         pick_overlay: Escolher sobreposição
 
     tooltips:
-        jump_next_fixture: Ir para o próximo suporte (Shift + Seta Direita)
-        jump_next_frame: Ir para o próximo frame (Seta Direita)
-        plause: Reproduzir/Pausar (Barra Espaço)
-        jump_prev_frame: Ir para o frame anterior (Seta Esquerda)
-        jump_prev_fixture: Ir para o suporte anterior (Shift + Seta Esquerda)
+        jump_next_fixture: Ir para o próximo suporte
+        jump_next_frame: Ir para o próximo frame
+        plause: Reproduzir/Pausar
+        jump_prev_frame: Ir para o frame anterior
+        jump_prev_fixture: Ir para o suporte anterior
 
         move_up: Avançar o suporte
-        move_duration: Mover a duração para o cursor (M)
-        copy_position: Copiar a posição do jogador (B)
+        move_duration: Mover a duração para o cursor
+        copy_position: Copiar a posição do jogador
         move_down: Mover o suporte para trás
 
-        save: Salvar perfil da câmera (Ctrl + S)
+        save: Salvar perfil da câmera
         profiles: Mostrar perfis de câmera
         config: Mostrar opções do editor de câmera
-        modifiers: Mostrar painel de modificadores (N)
-        cut: Corte o dispositivo em dois no cursor (C)
-        creation: Criação interativa do suporte (I)
+        modifiers: Mostrar painel de modificadores
+        cut: Corte o dispositivo em dois no cursor
+        creation: Criação interativa do suporte
         add: Adicionar suporte
         dupe: Duplicar suporte
         replace: Substituir o suporte selecionado
@@ -85,16 +85,19 @@ aperture.gui:
         angle: Ângulo
         orbit: Orbitar
         drag: Levar
+        
+        enabled: Ativado
+        relative: Relativo
 
         panels:
             copy_entity: Copiar entidade
 
-            shake: Tremer
+            shake: Balançar
             shake_amount: Quantidade
 
-            relative: Relativo?
-            at_block: Olhe para o bloco?
-            forward: Esperar ansiosamente?
+            relative: Relativo
+            at_block: Olhe para o bloco
+            forward: Esperar ansiosamente
             
             factor: Fator
 
