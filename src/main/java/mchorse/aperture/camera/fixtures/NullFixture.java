@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
 
 public class NullFixture extends AbstractFixture
 {
@@ -37,7 +38,7 @@ public class NullFixture extends AbstractFixture
             long offset = profile.calculateOffset(fixture);
 
             fixture.applyFixture(target, 0, 0, profile, pos);
-            fixture.applyModifiers(offset, target, 0, 0, profile, pos);
+            AbstractModifier.applyModifiers(profile, fixture, offset, target, 0, 0, pos);
         }
     }
 

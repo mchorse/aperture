@@ -38,7 +38,7 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
             ClientProxy.runner.start(ClientProxy.control.currentProfile);
         }
 
-        if (ClientProxy.runner.getGameMode(player) != GameType.ADVENTURE)
+        if (ClientProxy.getGameMode() != GameType.ADVENTURE)
         {
             L10n.success(player, "profile.load", message.filename);
         }

@@ -9,6 +9,8 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.smooth.Envelope;
 
+import java.util.List;
+
 /**
  * Abstract camera modifier
  * 
@@ -17,6 +19,8 @@ import mchorse.aperture.camera.smooth.Envelope;
  */
 public abstract class AbstractModifier
 {
+    public static final Position temporary = new Position();
+
     /**
      * Whether this modifier is enabled 
      */
@@ -28,6 +32,33 @@ public abstract class AbstractModifier
      */
     @Expose
     public Envelope envelope = new Envelope();
+
+    /**
+     * Apply camera modifiers
+     */
+    public static void applyModifiers(CameraProfile profile, AbstractFixture fixture, long ticks, long offset, float partialTick, float previewPartialTick, Position pos)
+    {
+        long duration = fixture == null ? profile.getDuration() : fixture.getDuration();
+        List<AbstractModifier> modifiers = fixture == null ? profile.getModifiers() : fixture.getModifiers();
+
+        for (AbstractModifier modifier : modifiers)
+        {
+            if (!modifier.enabled)
+            {
+                continue;
+            }
+
+            float factor = modifier.envelope.factor(duration, offset + previewPartialTick);
+
+            temporary.copy(pos);
+            modifier.modify(ticks, offset, fixture, partialTick, previewPartialTick, profile, temporary);
+
+            if (factor != 0)
+            {
+                pos.interpolate(temporary, factor);
+            }
+        }
+    }
 
     /**
      * Modify (apply, filter, process, however you name it) modifier on given position

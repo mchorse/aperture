@@ -32,11 +32,6 @@ public class CameraRunner
     private Minecraft mc = Minecraft.getMinecraft();
 
     /**
-     * Game mode player was in before playback
-     */
-    private GameType gameMode = GameType.NOT_SET;
-
-    /**
      * Is camera runner running?
      */
     private boolean isRunning = false;
@@ -82,16 +77,6 @@ public class CameraRunner
         return this.position;
     }
 
-    /**
-     * Get game mode of the given player
-     */
-    public GameType getGameMode(EntityPlayer player)
-    {
-        NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getGameProfile().getId());
-
-        return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
-    }
-
     /* Playback methods (start/stop) */
 
     public void toggle(CameraProfile profile, long ticks)
@@ -131,10 +116,9 @@ public class CameraRunner
         if (!this.isRunning)
         {
             ClientProxy.control.cache();
-            this.gameMode = this.getGameMode(this.mc.player);
             this.position.set(this.mc.player);
 
-            if (Aperture.spectator.get() && !Aperture.outside.get() && this.gameMode != GameType.SPECTATOR)
+            if (Aperture.spectator.get() && !Aperture.outside.get() && ClientProxy.control.lastGameMode != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode 3");
             }
@@ -158,22 +142,7 @@ public class CameraRunner
     {
         if (this.isRunning)
         {
-            if (this.mc.player != null)
-            {
-                if (Aperture.spectator.get() && !Aperture.outside.get() && this.gameMode != GameType.SPECTATOR)
-                {
-                    this.mc.player.sendChatMessage("/gamemode " + this.gameMode.getID());
-                }
-
-                if (false)
-                {
-                    ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema disable");
-                }
-            }
-
             ClientProxy.control.restore();
-            this.gameMode = null;
-
             MinecraftForge.EVENT_BUS.unregister(this);
 
             this.detachOutside();

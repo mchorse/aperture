@@ -354,30 +354,8 @@ public class CameraProfile
 
         if (modifiers)
         {
-            fixture.applyModifiers(originalProgress, progress, partialTick, previewPartialTick, this, position);
-            this.applyModifiers(originalProgress, originalProgress, partialTick, previewPartialTick, this, position);
-        }
-    }
-
-    /**
-     * Apply global modifiers
-     */
-    public void applyModifiers(long ticks, long offset, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
-    {
-        for (AbstractModifier modifier : this.getModifiers())
-        {
-            if (modifier.enabled)
-            {
-                float factor = modifier.envelope.factor(this.getDuration(), offset + previewPartialTick);
-
-                AbstractFixture.temporary.copy(pos);
-                modifier.modify(ticks, offset, null, partialTick, previewPartialTick, profile, AbstractFixture.temporary);
-
-                if (factor != 0)
-                {
-                    pos.interpolate(AbstractFixture.temporary, factor);
-                }
-            }
+            AbstractModifier.applyModifiers(this, fixture, originalProgress, progress, partialTick, previewPartialTick, position);
+            AbstractModifier.applyModifiers(this, null, originalProgress, originalProgress, partialTick, previewPartialTick, position);
         }
     }
 

@@ -26,8 +26,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  */
 public abstract class AbstractFixture
 {
-    public static final Position temporary = new Position();
-
     /**
      * Duration of this fixture. Represented in ticks. There are 20 ticks in a
      * second.
@@ -209,28 +207,6 @@ public abstract class AbstractFixture
      */
     public void preApplyFixture(long ticks, Position pos)
     {}
-
-    /**
-     * Apply camera modifiers
-     */
-    public void applyModifiers(long ticks, long offset, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
-    {
-        for (AbstractModifier modifier : this.modifiers)
-        {
-            if (modifier.enabled)
-            {
-                float factor = modifier.envelope.factor(this.getDuration(), offset + previewPartialTick);
-
-                temporary.copy(pos);
-                modifier.modify(ticks, offset, this, partialTick, previewPartialTick, profile, temporary);
-
-                if (factor != 0)
-                {
-                    pos.interpolate(temporary, factor);
-                }
-            }
-        }
-    }
 
     /**
      * Get modifiers 

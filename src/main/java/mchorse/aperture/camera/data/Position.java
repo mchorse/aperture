@@ -2,7 +2,6 @@ package mchorse.aperture.camera.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.entity.player.EntityPlayer;

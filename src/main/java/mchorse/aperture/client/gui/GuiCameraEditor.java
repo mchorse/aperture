@@ -97,7 +97,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public List<Integer> markers = new ArrayList<Integer>();
 
     private float lastPartialTick = 0;
-    private GameType lastGameMode = GameType.NOT_SET;
     public ResourceLocation overlayLocation;
 
     /**
@@ -216,6 +215,27 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 super.mouseReleased(context);
                 flight.mouseReleased(context);
             }
+
+            @Override
+            public void draw(GuiContext context)
+            {
+                super.draw(context);
+
+                /* Display flight speed */
+                GuiCameraEditor editor = GuiCameraEditor.this;
+                IResizer panel = editor.panel.resizer();
+
+                if (editor.flight.enabled)
+                {
+                    editor.flight.drawSpeed(this.font, panel.getX() + panel.getW() - 10, panel.getY() + panel.getH() - 5);
+                }
+
+                /* Display position variables */
+                if ((editor.isSyncing() || editor.runner.isRunning()) && Aperture.editorDisplayPosition.get())
+                {
+                    editor.drawPosition(panel);
+                }
+            }
         };
         this.top.flex().relative(this.viewport).wh(1F, 1F);
         this.panel = new GuiDelegateElement<GuiAbstractFixturePanel>(mc, null);
@@ -238,22 +258,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.nextFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_next_fixture"));
         this.nextFrame = new GuiIconElement(mc, APIcons.FORWARD, (b) -> this.jumpToNextFrame());
         this.nextFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"));
-        this.plause = new GuiIconElement(mc, APIcons.PLAY, (b) ->
-        {
-            this.setFlight(false);
-            this.runner.toggle(this.profile, this.timeline.value);
-            this.updatePlauseButton();
-
-            this.playing = this.runner.isRunning();
-
-            if (!this.playing)
-            {
-                this.runner.attachOutside();
-                this.updatePlayerCurrently();
-            }
-
-            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.timeline.value));
-        });
+        this.plause = new GuiIconElement(mc, APIcons.PLAY, (b) -> this.togglePlayback());
         this.plause.tooltip(I18n.format("aperture.gui.tooltips.plause"), Direction.BOTTOM);
         this.prevFrame = new GuiIconElement(mc, APIcons.BACKWARD, (b) -> this.jumpToPrevFrame());
         this.prevFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_frame"));
@@ -353,18 +358,22 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.root.keys().register("Jump to previous fixture", Keyboard.KEY_LEFT, this::jumpToPrevFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
         this.root.keys().register("Jump to next frame", Keyboard.KEY_RIGHT, this::jumpToNextFrame).active(active).category(editor);
         this.root.keys().register("Jump to previous frame", Keyboard.KEY_LEFT, this::jumpToPrevFrame).active(active).category(editor);
-        this.root.keys().register("Apply current camera position", Keyboard.KEY_B, () ->
-        {
-            if (this.panel.delegate != null)
-            {
-                this.editFixture();
-            }
-        }).active(active).category(fixture);
+        this.root.keys().register("Apply current camera position", Keyboard.KEY_B, this::editFixture).active(active).category(fixture);
 
         this.root.keys().register("Toggle modifiers popup", Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(fixture);
         this.root.keys().register("Toggle fixture looping", Keyboard.KEY_R, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(fixture);
         this.root.keys().register("Cut fixture", Keyboard.KEY_C, () -> this.cut.clickItself(this.context)).active(active).category(fixture);
         this.root.keys().register("Toggle interactive mode", Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(fixture);
+    }
+
+    /**
+     * This GUI shouldn't pause the game, because camera runs on the world's
+     * update loop.
+     */
+    @Override
+    public boolean doesGuiPauseGame()
+    {
+        return false;
     }
 
     public boolean isSyncing()
@@ -666,7 +675,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
     public void addPathPoint()
     {
-        if (this.panel.delegate != null && this.panel.delegate.fixture instanceof PathFixture)
+        if (this.getFixture() instanceof PathFixture)
         {
             ((GuiPathFixturePanel) this.panel.delegate).points.addPoint();
         }
@@ -717,27 +726,32 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.haveScrubbed = false;
         this.flight.enabled = false;
         ClientProxy.control.cache();
-        this.lastGameMode = ClientProxy.runner.getGameMode(player);
         this.setAspectRatio(Aperture.editorLetterboxAspect.get());
 
         if (Aperture.spectator.get() && !Aperture.outside.get())
         {
-            if (this.lastGameMode != GameType.SPECTATOR)
+            if (ClientProxy.control.lastGameMode != GameType.SPECTATOR)
             {
                 ((EntityPlayerSP) player).sendChatMessage("/gamemode 3");
             }
-        }
-        else
-        {
-            this.lastGameMode = GameType.NOT_SET;
         }
 
         this.runner.attachOutside();
     }
 
+    public CameraRunner getRunner()
+    {
+        return this.runner;
+    }
+
     public CameraProfile getProfile()
     {
         return this.profile;
+    }
+
+    public AbstractFixture getFixture()
+    {
+        return this.panel.delegate == null ? null : this.panel.delegate.fixture;
     }
 
     public EntityPlayer getCamera()
@@ -841,8 +855,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public Position getPosition()
     {
         Position position = new Position(this.getCamera());
+        AbstractFixture fixture = this.getFixture();
 
-        if (this.panel.delegate != null && !this.panel.delegate.fixture.getModifiers().isEmpty())
+        if (fixture != null && !fixture.getModifiers().isEmpty())
         {
             Position withModifiers = new Position();
             this.profile.applyProfile(this.timeline.value, 0, withModifiers);
@@ -870,16 +885,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         return position;
-    }
-
-    /**
-     * This GUI shouldn't pause the game, because camera runs on the world's
-     * update loop.
-     */
-    @Override
-    public boolean doesGuiPauseGame()
-    {
-        return false;
     }
 
     private void hideReplacingPopups(GuiElement exception, boolean replacing)
@@ -1001,6 +1006,23 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
     }
 
+    public void togglePlayback()
+    {
+        this.setFlight(false);
+        this.runner.toggle(this.profile, this.timeline.value);
+        this.updatePlauseButton();
+
+        this.playing = this.runner.isRunning();
+
+        if (!this.playing)
+        {
+            this.runner.attachOutside();
+            this.updatePlayerCurrently();
+        }
+
+        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.timeline.value));
+    }
+
     @Override
     protected void closeScreen()
     {
@@ -1008,19 +1030,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         ClientProxy.control.restore();
         GuiIngameForge.renderHotbar = true;
         GuiIngameForge.renderCrosshairs = true;
+        this.minema.stop();
 
         if (!this.runner.isRunning())
         {
             this.runner.detachOutside();
         }
 
-        if (this.lastGameMode != GameType.NOT_SET)
-        {
-            this.mc.player.sendChatMessage("/gamemode " + this.lastGameMode.getID());
-        }
-
         super.closeScreen();
     }
+
+    /* Rendering code */
 
     /**
      * Draw everything on the screen
@@ -1031,16 +1051,57 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* What the fuck, why is partial tick is always 0.32 on 1.12.2? */
         partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
 
-        boolean isRunning = this.runner.isRunning();
-
-        if (isRunning)
+        if (this.runner.isRunning())
         {
             this.lastPartialTick = partialTicks;
         }
 
-        if (Aperture.editorLoop.get() && isRunning && this.panel.delegate != null)
+        this.updateLogic(partialTicks);
+        this.drawOverlays();
+
+        if (!this.isScreenVisible())
         {
-            AbstractFixture fixture = this.panel.delegate.fixture;
+            MouseRenderer.disable();
+
+            /* Little tip for the users who don't know what they did */
+            if (this.canRenderF1Tooltip())
+            {
+                this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
+            }
+        }
+        else
+        {
+            this.drawEditorsBackground();
+        }
+
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    private boolean isScreenVisible()
+    {
+        return this.top.isVisible() && this.root.isVisible();
+    }
+
+    /**
+     * Whether the F1 tooltip (for users who accidentally hit F1 without knowing)
+     * should be rendered?
+     */
+    private boolean canRenderF1Tooltip()
+    {
+        return Aperture.editorF1Tooltip.get() && !(this.runner.isRunning() || this.minema.isRecording());
+    }
+
+    /**
+     * Update logic for such components as repeat fixture, minema recording,
+     * sync mode, flight mode, etc.
+     */
+    private void updateLogic(float partialTicks)
+    {
+        AbstractFixture fixture = this.getFixture();
+
+        /* Loop fixture */
+        if (Aperture.editorLoop.get() && this.runner.isRunning() && fixture != null)
+        {
             long target = this.profile.calculateOffset(fixture) + fixture.getDuration();
 
             if (this.runner.ticks >= target - 1)
@@ -1049,9 +1110,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
         }
 
+        /* Animate flight mode */
         if (this.flight.enabled)
         {
             this.flight.animate(this.context, this.position);
+
             this.position.apply(this.getCamera());
             ClientProxy.control.roll = this.position.angle.roll;
             this.mc.gameSettings.fovSetting = this.position.angle.fov;
@@ -1062,106 +1125,73 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             }
         }
 
-        if (this.profile != null)
+        /* Update playback timeline */
+        if (this.runner.isRunning())
         {
-            this.drawOverlays();
+            this.timeline.setValue((int) this.runner.ticks);
         }
 
-        if (!this.top.isVisible())
+        /* Rewind playback back to 0 */
+        if (!this.runner.isRunning() && this.playing)
         {
-            MouseRenderer.disable();
+            this.updatePlauseButton();
+            this.runner.attachOutside();
+            this.timeline.setValueFromScrub(0);
 
-            /* Little tip for the users who don't know what they did */
-            if (!isRunning && Aperture.editorF1Tooltip.get())
-            {
-                this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
-            }
-
-            super.drawScreen(mouseX, mouseY, partialTicks);
-
-            return;
+            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this, this.timeline.value));
+            this.playing = false;
         }
 
+        /* Sync the player on current tick */
+        if (!this.flight.enabled && (this.runner.outside.active || (this.isSyncing() && this.haveScrubbed)))
+        {
+            this.updatePlayerCurrently(partialTicks);
+        }
+
+        this.minema.process(this.runner.isRunning() ? (int) this.runner.ticks : this.timeline.value, partialTicks);
+    }
+
+    /**
+     * Draw little squares behind some of the visible elements
+     */
+    private void drawEditorsBackground()
+    {
         this.drawGradientRect(0, 0, width, 20, 0x66000000, 0);
         this.drawIcons();
 
-        IResizer panel = this.panel.resizer();
-
-        if (this.profile != null)
+        /* Draw backgrounds for popups */
+        if (this.profiles.isVisible())
         {
-            /* Draw backgrounds for popups */
-            if (this.profiles.isVisible())
-            {
-                this.openProfiles.area.draw(0xaa000000);
-            }
-            else if (this.config.isVisible())
-            {
-                this.openConfig.area.draw(0xaa000000);
-            }
-            else if (this.modifiers.isVisible())
-            {
-                this.openModifiers.area.draw(0xaa000000);
-            }
-            else if (this.minema.isVisible())
-            {
-                this.openMinema.area.draw(0xaa000000);
-            }
+            this.openProfiles.area.draw(0xaa000000);
+        }
+        else if (this.config.isVisible())
+        {
+            this.openConfig.area.draw(0xaa000000);
+        }
+        else if (this.modifiers.isVisible())
+        {
+            this.openModifiers.area.draw(0xaa000000);
+        }
+        else if (this.minema.isVisible())
+        {
+            this.openMinema.area.draw(0xaa000000);
+        }
 
-            if (this.fixtures.isVisible())
+        if (this.fixtures.isVisible())
+        {
+            if (this.replacing)
             {
-                if (this.replacing)
-                {
-                    this.replace.area.draw(0xaa000000);
-                }
-                else
-                {
-                    this.add.area.draw(0xaa000000);
-                }
+                this.replace.area.draw(0xaa000000);
             }
-
-            if (this.creating)
+            else
             {
-                this.creation.area.draw(0xaa000000);
-            }
-
-            /* Update playback timeline */
-            boolean running = this.runner.isRunning();
-
-            if (running)
-            {
-                this.timeline.setValue((int) this.runner.ticks);
-            }
-
-            /* Rewind playback back to 0 */
-            if (!running && this.playing)
-            {
-                this.updatePlauseButton();
-                this.runner.attachOutside();
-                this.timeline.setValueFromScrub(0);
-
-                ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this, this.timeline.value));
-                this.playing = false;
-            }
-
-            /* Sync the player on current tick */
-            if ((this.runner.outside.active || (this.isSyncing() && this.haveScrubbed)) && !this.flight.enabled)
-            {
-                this.updatePlayerCurrently(partialTicks);
+                this.add.area.draw(0xaa000000);
             }
         }
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
-        /* Display flight speed */
-        if (this.flight.enabled)
+        if (this.creating)
         {
-            this.flight.drawSpeed(this.fontRenderer, panel.getX() + panel.getW() - 10, panel.getY() + panel.getH() - 5);
-        }
-
-        /* Display position variables */
-        if ((this.isSyncing() || this.runner.isRunning()) && Aperture.editorDisplayPosition.get())
-        {
-            this.drawPosition(panel);
+            this.creation.area.draw(0xaa000000);
         }
     }
 
@@ -1220,7 +1250,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
-     * Draw different camera type overlays (custom texture overlay, letterbox, rule of thirds and crosshair)
+     * Draw different camera type overlays (custom texture overlay, letterbox,
+     * rule of thirds and crosshair)
      */
     private void drawOverlays()
     {
@@ -1230,8 +1261,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
         }
 
-        /* Readjustable values for rule of thirds in case of letter
-         * box enabled */
+        /* Readjustable values for rule of thirds in case of letter box enabled */
         int rx = 0;
         int ry = 0;
         int rw = this.width;

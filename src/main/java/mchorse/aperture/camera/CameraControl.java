@@ -6,6 +6,7 @@ import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -46,11 +47,13 @@ public class CameraControl
     public int lastCounter;
     public Float lastRoll;
     public Float lastFov;
+    public GameType lastGameMode = GameType.NOT_SET;
 
     public void cache()
     {
         if (this.lastCounter == 0)
         {
+            this.lastGameMode = ClientProxy.getGameMode();
             this.lastRoll = roll;
             this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
         }
@@ -64,8 +67,15 @@ public class CameraControl
 
         if (this.lastCounter == 0)
         {
+            Minecraft mc = Minecraft.getMinecraft();
+
             this.roll = this.lastRoll;
-            Minecraft.getMinecraft().gameSettings.fovSetting = this.lastFov;
+            mc.gameSettings.fovSetting = this.lastFov;
+
+            if (this.lastGameMode != ClientProxy.getGameMode())
+            {
+                mc.player.sendChatMessage("/gamemode " + this.lastGameMode.getID());
+            }
 
             this.lastRoll = this.lastFov = null;
         }
@@ -93,6 +103,7 @@ public class CameraControl
         this.logged = false;
         this.lastCounter = 0;
         this.lastRoll = this.lastFov = null;
+        this.lastGameMode = null;
     }
 
     /**
