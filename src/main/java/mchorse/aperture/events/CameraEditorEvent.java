@@ -31,7 +31,7 @@ public abstract class CameraEditorEvent extends Event
     }
 
     /**
-     * Camera editor event when the playback scrub was scrubbed 
+     * Camera editor event when the playback timeline was scrubbed
      */
     public static class Scrubbed extends CameraEditorEvent
     {

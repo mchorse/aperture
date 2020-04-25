@@ -183,7 +183,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         if (this.editor.isSyncing())
         {
-            this.editor.scrub.setValueFromScrub((int) this.currentOffset());
+            this.editor.timeline.setValueFromScrub((int) this.currentOffset());
         }
     }
 

@@ -18,17 +18,17 @@ import java.util.function.Consumer;
  * 
  * Allows to select the type of camera fixture the user wants to create.
  */
-public class GuiFixturesPopup extends GuiElement
+public class GuiFixtures extends GuiElement
 {
     public Consumer<AbstractFixture> callback;
 
-    public GuiFixturesPopup(Minecraft mc, Consumer<AbstractFixture> callback)
+    public GuiFixtures(Minecraft mc, Consumer<AbstractFixture> callback)
     {
         super(mc);
 
         this.callback = callback;
 
-        int i = 0;
+        this.flex().column(0).vertical().stretch().height(20).padding(2);
 
         for (FixtureInfo info : FixtureRegistry.CLIENT.values())
         {
@@ -39,19 +39,8 @@ public class GuiFixturesPopup extends GuiElement
                 this.actionPerformed(type);
             });
 
-            button.color(color).flex().relative(this).set(2, i * 20 + 2, 0, 20).w(1, -4);
-            this.add(button);
-
-            i++;
+            this.add(button.color(color));
         }
-    }
-
-    @Override
-    public void resize()
-    {
-        this.flex().h(this.getChildren().size() * 20 + 4);
-
-        super.resize();
     }
 
     /**
@@ -80,7 +69,7 @@ public class GuiFixturesPopup extends GuiElement
     @Override
     public void draw(GuiContext context)
     {
-        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xaa000000);
+        this.area.draw(0xaa000000);
 
         super.draw(context);
     }

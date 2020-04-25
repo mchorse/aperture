@@ -106,7 +106,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public boolean haveScrubbed;
 
     /**
-     * Maximum scrub duration
+     * Maximum timeline duration
      */
     public int maxScrub = 0;
 
@@ -134,26 +134,31 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
     /* GUI fields */
 
+    public GuiElement leftBar;
+    public GuiElement rightBar;
+    public GuiElement middleBar;
+    public GuiElement creationBar;
+
     /**
      * Play/pause button (very clever name, eh?)
      */
     public GuiIconElement plause;
-
     public GuiIconElement nextFrame;
     public GuiIconElement prevFrame;
-
-    public GuiIconElement toPrevFixture;
-    public GuiIconElement toNextFixture;
+    public GuiIconElement prevFixture;
+    public GuiIconElement nextFixture;
 
     public GuiIconElement moveForward;
     public GuiIconElement moveBackward;
-
     public GuiIconElement copyPosition;
     public GuiIconElement moveDuration;
+    public GuiIconElement cut;
+    public GuiIconElement creation;
 
     public GuiIconElement save;
-    public GuiIconElement openConfig;
+    public GuiIconElement openMinema;
     public GuiIconElement openModifiers;
+    public GuiIconElement openConfig;
     public GuiIconElement openProfiles;
 
     public GuiIconElement add;
@@ -161,19 +166,16 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiIconElement replace;
     public GuiIconElement remove;
 
-    public GuiIconElement cut;
-    public GuiIconElement creation;
-
     /* Widgets */
     public GuiElement top;
     public GuiCameraConfig config;
-    public GuiFixturesPopup popup;
-    public GuiPlaybackScrub scrub;
+    public GuiFixtures fixtures;
+    public GuiPlaybackScrub timeline;
     public GuiProfilesManager profiles;
     public GuiConfigCameraOptions cameraOptions;
     public GuiModifiersManager modifiers;
+    public GuiMinemaPanel minema;
     public GuiDelegateElement<GuiAbstractFixturePanel> panel;
-    public GuiElement hidden;
 
     /**
      * Initialize the camera editor with a camera profile.
@@ -217,28 +219,29 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         };
         this.top.flex().relative(this.viewport).wh(1F, 1F);
         this.panel = new GuiDelegateElement<GuiAbstractFixturePanel>(mc, null);
-        this.scrub = new GuiPlaybackScrub(mc, this, null);
-        this.popup = new GuiFixturesPopup(mc, (fixture) ->
+        this.timeline = new GuiPlaybackScrub(mc, this, null);
+        this.fixtures = new GuiFixtures(mc, (fixture) ->
         {
             fixture.fromPlayer(this.getCamera());
             this.createFixture(fixture);
-            this.popup.toggleVisible();
+            this.fixtures.toggleVisible();
         });
 
         this.profiles = new GuiProfilesManager(mc, this);
         this.cameraOptions = new GuiConfigCameraOptions(mc, this);
         this.modifiers = new GuiModifiersManager(mc, this);
         this.config = new GuiCameraConfig(mc, this);
+        this.minema = new GuiMinemaPanel(mc, this);
 
         /* Setup elements */
-        this.toNextFixture = new GuiIconElement(mc, APIcons.FRAME_NEXT, (b) -> this.jumpToNextFixture());
-        this.toNextFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_next_fixture"));
+        this.nextFixture = new GuiIconElement(mc, APIcons.FRAME_NEXT, (b) -> this.jumpToNextFixture());
+        this.nextFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_next_fixture"));
         this.nextFrame = new GuiIconElement(mc, APIcons.FORWARD, (b) -> this.jumpToNextFrame());
         this.nextFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"));
         this.plause = new GuiIconElement(mc, APIcons.PLAY, (b) ->
         {
             this.setFlight(false);
-            this.runner.toggle(this.profile, this.scrub.value);
+            this.runner.toggle(this.profile, this.timeline.value);
             this.updatePlauseButton();
 
             this.playing = this.runner.isRunning();
@@ -249,28 +252,30 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 this.updatePlayerCurrently();
             }
 
-            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.scrub.value));
+            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.timeline.value));
         });
         this.plause.tooltip(I18n.format("aperture.gui.tooltips.plause"), Direction.BOTTOM);
         this.prevFrame = new GuiIconElement(mc, APIcons.BACKWARD, (b) -> this.jumpToPrevFrame());
         this.prevFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_frame"));
-        this.toPrevFixture = new GuiIconElement(mc, APIcons.FRAME_PREV, (b) -> this.jumpToPrevFixture());
-        this.toPrevFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_fixture"));
+        this.prevFixture = new GuiIconElement(mc, APIcons.FRAME_PREV, (b) -> this.jumpToPrevFixture());
+        this.prevFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_fixture"));
 
-        this.openProfiles = new GuiIconElement(mc, Icons.MORE, (b) -> this.hidePopups(this.profiles));
-        this.openProfiles.tooltip(I18n.format("aperture.gui.tooltips.profiles"));
-        this.openConfig = new GuiIconElement(mc, Icons.GEAR, (b) -> this.hidePopups(this.config));
-        this.openConfig.tooltip(I18n.format("aperture.gui.tooltips.config"));
-        this.openModifiers = new GuiIconElement(mc, Icons.FILTER, (b) -> this.hidePopups(this.modifiers));
-        this.openModifiers.tooltip(I18n.format("aperture.gui.tooltips.modifiers"));
         this.save = new GuiIconElement(mc, Icons.SAVED, (b) -> this.saveProfile());
         this.save.tooltip(I18n.format("aperture.gui.tooltips.save"));
+        this.openMinema = new GuiIconElement(mc, APIcons.RECORD, (b) -> this.hidePopups(this.minema));
+        this.openMinema.tooltip(I18n.format("aperture.gui.tooltips.minema"));
+        this.openModifiers = new GuiIconElement(mc, Icons.FILTER, (b) -> this.hidePopups(this.modifiers));
+        this.openModifiers.tooltip(I18n.format("aperture.gui.tooltips.modifiers"));
+        this.openConfig = new GuiIconElement(mc, Icons.GEAR, (b) -> this.hidePopups(this.config));
+        this.openConfig.tooltip(I18n.format("aperture.gui.tooltips.config"));
+        this.openProfiles = new GuiIconElement(mc, Icons.MORE, (b) -> this.hidePopups(this.profiles));
+        this.openProfiles.tooltip(I18n.format("aperture.gui.tooltips.profiles"));
 
-        this.add = new GuiIconElement(mc, Icons.ADD, (b) -> this.hideReplacingPopups(this.popup, false));
+        this.add = new GuiIconElement(mc, Icons.ADD, (b) -> this.hideReplacingPopups(this.fixtures, false));
         this.add.tooltip(I18n.format("aperture.gui.tooltips.add"));
         this.dupe = new GuiIconElement(mc, Icons.DUPE, (b) -> this.dupeFixture());
         this.dupe.tooltip(I18n.format("aperture.gui.tooltips.dupe"));
-        this.replace = new GuiIconElement(mc, Icons.REFRESH, (b) -> this.hideReplacingPopups(this.popup, true));
+        this.replace = new GuiIconElement(mc, Icons.REFRESH, (b) -> this.hideReplacingPopups(this.fixtures, true));
         this.replace.tooltip(I18n.format("aperture.gui.tooltips.replace"));
         this.remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.removeFixture());
         this.remove.tooltip(I18n.format("aperture.gui.tooltips.remove"));
@@ -289,51 +294,39 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.moveBackward.tooltip(I18n.format("aperture.gui.tooltips.move_down"));
 
         /* Button placement */
-        this.toNextFixture.flex().relative(this.viewport).set(0, 2, 16, 16).x(0.5F, 32);
-        this.nextFrame.flex().relative(this.toNextFixture).set(-20, 0, 16, 16);
-        this.plause.flex().relative(this.nextFrame).set(-20, 0, 16, 16);
-        this.prevFrame.flex().relative(this.plause).set(-20, 0, 16, 16);
-        this.toPrevFixture.flex().relative(this.prevFrame).set(-20, 0, 16, 16);
+        this.leftBar = new GuiElement(mc);
+        this.rightBar = new GuiElement(mc);
+        this.middleBar = new GuiElement(mc);
+        this.creationBar = new GuiElement(mc);
 
-        this.openProfiles.flex().relative(this.viewport).set(0, 2, 16, 16).x(1, -18);
-        this.openConfig.flex().relative(this.openProfiles).set(-20, 0, 16, 16);
-        this.openModifiers.flex().relative(this.openConfig).set(-20, 0, 16, 16);
-        this.save.flex().relative(this.openModifiers).set(-20, 0, 16, 16);
+        this.leftBar.flex().relative(this.top).row(0).resize().width(20).height(20);
+        this.rightBar.flex().relative(this.top).x(1F).anchorX(1F).row(0).resize().width(20).height(20);
+        this.middleBar.flex().relative(this.top).x(0.5F).anchorX(0.5F).row(0).resize().width(20).height(20);
+        this.creationBar.flex().relative(this.rightBar).x(-20).anchorX(1F).row(0).resize().width(20).height(20);
 
-        this.add.flex().relative(this.save).set(-100, 0, 16, 16);
-        this.dupe.flex().relative(this.add).set(20, 0, 16, 16);
-        this.replace.flex().relative(this.dupe).set(20, 0, 16, 16);
-        this.remove.flex().relative(this.replace).set(20, 0, 16, 16);
-
-        this.cut.flex().relative(this.viewport).set(82, 2, 16, 16);
-        this.creation.flex().relative(this.cut).set(20, 0, 16, 16);
-        this.moveForward.flex().relative(this.cut).set(-20, 0, 16, 16);
-        this.moveDuration.flex().relative(this.moveForward).set(-20, 0, 16, 16);
-        this.copyPosition.flex().relative(this.moveDuration).set(-20, 0, 16, 16);
-        this.moveBackward.flex().relative(this.copyPosition).set(-20, 0, 16, 16);
+        this.leftBar.add(this.moveForward, this.moveBackward, this.copyPosition, this.moveDuration, this.cut, this.creation);
+        this.middleBar.add(this.prevFixture, this.prevFrame, this.plause, this.nextFrame, this.nextFixture);
+        this.rightBar.add(this.save, this.openMinema, this.openModifiers, this.openConfig, this.openProfiles);
+        this.creationBar.add(this.add, this.dupe, this.replace, this.remove);
 
         /* Setup areas of widgets */
-        this.scrub.flex().relative(this.viewport).set(10, 0, 0, 20).y(1, -20).w(1, -20);
-
-        this.panel.flex().relative(this.viewport).set(10, 40, 0, 0).w(1, -20).h(1, -70);
-        this.popup.flex().relative(this.add).set(-44, 18, 62, 122);
-        this.config.flex().relative(this.panel).set(0, -20, 160, 0).x(1, -180 + 10).h(1, 20);
-        this.profiles.flex().relative(this.panel).set(0, -20, 160, 0).x(1, -160 + 10).h(1, 20);
-        this.modifiers.flex().relative(this.panel).set(0, -20, 220, 0).x(1, -260 + 10).h(1, 20);
+        this.timeline.flex().relative(this.top).set(10, 0, 0, 20).y(1, -20).w(1, -20);
+        this.panel.flex().relative(this.top).set(10, 40, 0, 0).w(1, -20).h(200).hTo(this.timeline.flex(), -10);
+        this.fixtures.flex().relative(this.add).anchorX(1F).xy(1F, 1F).w(70);
+        this.config.flex().relative(this.openConfig).xy(1F, 1F).anchorX(1F).w(160).hTo(this.panel.flex(), 1F);
+        this.profiles.flex().relative(this.openProfiles).xy(1F, 1F).anchorX(1F).w(160).hTo(this.panel.flex(), 1F);
+        this.modifiers.flex().relative(this.openModifiers).xy(1F, 1F).anchorX(1F).w(220).hTo(this.panel.flex(), 1F);
+        this.minema.flex().relative(this.openMinema).xy(1F, 1F).anchorX(1F).w(200);
 
         /* Adding everything */
-        this.hidden = new GuiElement(mc);
-        this.hidden.add(this.toNextFixture, this.nextFrame, this.plause, this.prevFrame, this.toPrevFixture);
-        this.hidden.add(this.cut, this.creation, this.moveForward, this.moveDuration, this.copyPosition, this.moveBackward);
-        this.hidden.add(this.openConfig, this.openModifiers, this.save, this.add, this.dupe, this.replace, this.remove);
-        this.hidden.add(this.scrub, this.panel, this.popup, this.config, this.modifiers);
-
         this.cameraProfileWasChanged(this.profile);
         this.updatePlauseButton();
         this.updateValues();
 
         this.hidePopups(this.profiles);
-        this.top.add(this.openProfiles, this.hidden, this.profiles, this.cameraOptions.overlayPicker);
+        this.top.add(this.leftBar, this.middleBar, this.rightBar, this.creationBar);
+        this.top.add(this.panel, this.timeline, this.fixtures, this.profiles, this.config, this.modifiers, this.minema);
+        this.top.add(this.cameraOptions.overlayPicker);
         this.root.add(this.top);
 
         /* Let other classes have fun with camera editor's position and such */
@@ -395,7 +388,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.haveScrubbed = true;
 
-            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Scrubbed(this, this.runner.isRunning(), this.scrub.value));
+            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Scrubbed(this, this.runner.isRunning(), this.timeline.value));
         }
     }
 
@@ -412,7 +405,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (fixture == null)
         {
-            this.scrub.index = -1;
+            this.timeline.index = -1;
             this.panel.setDelegate(null);
         }
         else
@@ -438,10 +431,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
                 if (this.isSyncing())
                 {
-                    this.scrub.setValue((int) panel.currentOffset());
+                    this.timeline.setValue((int) panel.currentOffset());
                 }
 
-                this.scrub.index = this.profile.getAll().indexOf(fixture);
+                this.timeline.index = this.profile.getAll().indexOf(fixture);
             }
             else
             {
@@ -462,7 +455,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             return;
         }
 
-        if (this.replacing && !this.profile.has(this.scrub.index))
+        if (this.replacing && !this.profile.has(this.timeline.index))
         {
             return;
         }
@@ -475,12 +468,12 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             if (this.replacing)
             {
-                this.profile.replace(fixture, this.scrub.index);
+                this.profile.replace(fixture, this.timeline.index);
                 this.replacing = false;
             }
             else
             {
-                this.profile.add(fixture, this.scrub.index);
+                this.profile.add(fixture, this.timeline.index);
             }
         }
 
@@ -493,7 +486,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void dupeFixture()
     {
-        int index = this.scrub.index;
+        int index = this.timeline.index;
 
         if (this.profile.has(index))
         {
@@ -510,16 +503,16 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void removeFixture()
     {
-        int index = this.scrub.index;
+        int index = this.timeline.index;
 
         if (this.profile.has(index))
         {
             this.profile.remove(index);
-            this.scrub.index--;
+            this.timeline.index--;
 
-            if (this.scrub.index >= 0)
+            if (this.timeline.index >= 0)
             {
-                this.pickCameraFixture(this.profile.get(this.scrub.index), 0);
+                this.pickCameraFixture(this.profile.get(this.timeline.index), 0);
             }
             else
             {
@@ -584,7 +577,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         if (this.profile != null)
         {
-            this.profile.cut(this.scrub.value);
+            this.profile.cut(this.timeline.value);
         }
     }
 
@@ -619,7 +612,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public void reset()
     {
         this.setProfile(null);
-        this.scrub.value = 0;
+        this.timeline.value = 0;
         this.flight.vertical = false;
         this.replacing = false;
         this.creating = false;
@@ -688,8 +681,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.profile = profile;
         this.profiles.selectProfile(profile);
-        this.scrub.setProfile(profile);
-        this.hidden.setVisible(profile != null);
+        this.timeline.setProfile(profile);
 
         if (!isOldSame)
         {
@@ -697,7 +689,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
         else if (this.panel.delegate != null)
         {
-            this.scrub.index = profile.getAll().indexOf(this.panel.delegate.fixture);
+            this.timeline.index = profile.getAll().indexOf(this.panel.delegate.fixture);
         }
 
         if (this.profile == null)
@@ -764,13 +756,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
-     * Update player to current value in the scrub
+     * Update player to current value in the timeline
      */
     public void updatePlayerCurrently(float partialTicks)
     {
         if ((this.isSyncing() || this.runner.outside.active) && !this.runner.isRunning())
         {
-            this.updatePlayer(this.scrub.value, partialTicks);
+            this.updatePlayer(this.timeline.value, partialTicks);
         }
     }
 
@@ -805,13 +797,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         if (this.profile != null)
         {
-            this.scrub.max = Math.max((int) this.profile.getDuration(), this.maxScrub);
-            this.scrub.setValue(this.scrub.value);
+            this.timeline.max = Math.max((int) this.profile.getDuration(), this.maxScrub);
+            this.timeline.setValue(this.timeline.value);
         }
         else
         {
-            this.scrub.max = this.maxScrub;
-            this.scrub.setValue(0);
+            this.timeline.max = this.maxScrub;
+            this.timeline.setValue(0);
         }
     }
 
@@ -853,10 +845,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (this.panel.delegate != null && !this.panel.delegate.fixture.getModifiers().isEmpty())
         {
             Position withModifiers = new Position();
-            this.profile.applyProfile(this.scrub.value, 0, withModifiers);
+            this.profile.applyProfile(this.timeline.value, 0, withModifiers);
 
             Position noModifiers = new Position();
-            this.profile.applyProfile(this.scrub.value, 0, noModifiers, false);
+            this.profile.applyProfile(this.timeline.value, 0, noModifiers, false);
 
             /* Get difference between modified and unmodified position */
             withModifiers.point.x -= noModifiers.point.x;
@@ -899,8 +891,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.replacing = replacing;
 
-        this.popup.flex().relative(replacing ? this.replace.resizer() : this.add.resizer());
-        this.popup.resize();
+        this.fixtures.flex().relative(replacing ? this.replace.resizer() : this.add.resizer());
+        this.fixtures.resize();
 
         this.hidePopups(exception);
     }
@@ -912,7 +904,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.profiles.setVisible(false);
         this.config.setVisible(false);
         this.modifiers.setVisible(false);
-        this.popup.setVisible(false);
+        this.fixtures.setVisible(false);
+        this.minema.setVisible(false);
 
         exception.setVisible(!was);
     }
@@ -930,7 +923,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void jumpToNextFrame()
     {
-        this.scrub.setValueFromScrub(this.scrub.value + 1);
+        this.timeline.setValueFromScrub(this.timeline.value + 1);
     }
 
     /**
@@ -938,7 +931,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void jumpToPrevFrame()
     {
-        this.scrub.setValueFromScrub(this.scrub.value - 1);
+        this.timeline.setValueFromScrub(this.timeline.value - 1);
     }
 
     private void editFixture()
@@ -961,13 +954,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             return;
         }
 
-        /* Move duration to the scrub location */
-        AbstractFixture fixture = this.profile.get(this.scrub.index);
+        /* Move duration to the timeline location */
+        AbstractFixture fixture = this.profile.get(this.timeline.index);
         long offset = this.profile.calculateOffset(fixture);
 
-        if (this.scrub.value > offset && fixture != null)
+        if (this.timeline.value > offset && fixture != null)
         {
-            fixture.setDuration(this.scrub.value - offset);
+            fixture.setDuration(this.timeline.value - offset);
             this.updateProfile();
 
             this.updateValues();
@@ -980,7 +973,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void jumpToNextFixture()
     {
-        this.scrub.setValueFromScrub((int) this.profile.calculateOffset(this.scrub.value, true));
+        this.timeline.setValueFromScrub((int) this.profile.calculateOffset(this.timeline.value, true));
     }
 
     /**
@@ -988,7 +981,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void jumpToPrevFixture()
     {
-        this.scrub.setValueFromScrub((int) this.profile.calculateOffset(this.scrub.value - 1, false));
+        this.timeline.setValueFromScrub((int) this.profile.calculateOffset(this.timeline.value - 1, false));
     }
 
     /**
@@ -997,14 +990,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     private void moveTo(int direction)
     {
         CameraProfile profile = this.profile;
-        int index = this.scrub.index;
+        int index = this.timeline.index;
         int to = index + direction;
 
         profile.move(index, to);
 
         if (profile.has(to))
         {
-            this.scrub.index = to;
+            this.timeline.index = to;
         }
     }
 
@@ -1052,7 +1045,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
             if (this.runner.ticks >= target - 1)
             {
-                this.scrub.setValueFromScrub((int) (target - fixture.getDuration()));
+                this.timeline.setValueFromScrub((int) (target - fixture.getDuration()));
             }
         }
 
@@ -1092,49 +1085,51 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.drawGradientRect(0, 0, width, 20, 0x66000000, 0);
         this.drawIcons();
 
-        if (this.profiles.isVisible())
-        {
-            Gui.drawRect(width - 20, 0, width, 20, 0xaa000000);
-        }
-
         IResizer panel = this.panel.resizer();
 
         if (this.profile != null)
         {
             /* Draw backgrounds for popups */
-            if (this.config.isVisible())
+            if (this.profiles.isVisible())
             {
-                Gui.drawRect(width - 40, 0, width - 20, 20, 0xaa000000);
+                this.openProfiles.area.draw(0xaa000000);
+            }
+            else if (this.config.isVisible())
+            {
+                this.openConfig.area.draw(0xaa000000);
+            }
+            else if (this.modifiers.isVisible())
+            {
+                this.openModifiers.area.draw(0xaa000000);
+            }
+            else if (this.minema.isVisible())
+            {
+                this.openMinema.area.draw(0xaa000000);
             }
 
-            if (this.modifiers.isVisible())
-            {
-                Gui.drawRect(width - 60, 0, width - 40, 20, 0xaa000000);
-            }
-
-            if (this.popup.isVisible())
+            if (this.fixtures.isVisible())
             {
                 if (this.replacing)
                 {
-                    Gui.drawRect(this.replace.area.x - 2, 0, this.replace.area.x + 18, 20, 0xaa000000);
+                    this.replace.area.draw(0xaa000000);
                 }
                 else
                 {
-                    Gui.drawRect(this.add.area.x - 2, 0, this.add.area.x + 18, 20, 0xaa000000);
+                    this.add.area.draw(0xaa000000);
                 }
             }
 
             if (this.creating)
             {
-                Gui.drawRect(this.creation.area.x - 2, 0, this.creation.area.x + 18, 20, 0xaa000000);
+                this.creation.area.draw(0xaa000000);
             }
 
-            /* Update playback scrub */
+            /* Update playback timeline */
             boolean running = this.runner.isRunning();
 
             if (running)
             {
-                this.scrub.setValue((int) this.runner.ticks);
+                this.timeline.setValue((int) this.runner.ticks);
             }
 
             /* Rewind playback back to 0 */
@@ -1142,9 +1137,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             {
                 this.updatePlauseButton();
                 this.runner.attachOutside();
-                this.scrub.setValueFromScrub(0);
+                this.timeline.setValueFromScrub(0);
 
-                ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this, this.scrub.value));
+                ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this, this.timeline.value));
                 this.playing = false;
             }
 

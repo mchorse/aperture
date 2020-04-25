@@ -11,8 +11,6 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.utils.Scale;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.utils.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -494,7 +492,7 @@ public class GuiGraphView extends GuiKeyframeElement
             {
                 long offset = this.parent.editor.getProfile().calculateOffset(this.parent.fixture);
 
-                this.parent.editor.scrub.setValueFromScrub((int) (x + offset));
+                this.parent.editor.timeline.setValueFromScrub((int) (x + offset));
             }
 
             this.setKeyframe(this.getCurrent());
@@ -535,7 +533,7 @@ public class GuiGraphView extends GuiKeyframeElement
             this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
         }
 
-        /* Draw current point at the scrub */
+        /* Draw current point at the timeline */
         if (this.parent != null)
         {
             int cx = this.getOffset();

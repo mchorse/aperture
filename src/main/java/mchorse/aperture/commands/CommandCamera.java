@@ -1,6 +1,7 @@
 package mchorse.aperture.commands;
 
 import mchorse.aperture.Aperture;
+import mchorse.aperture.commands.camera.SubCommandCameraReload;
 import mchorse.aperture.commands.camera.SubCommandCameraStart;
 import mchorse.aperture.commands.camera.SubCommandCameraStop;
 import mchorse.aperture.commands.camera.control.SubCommandCameraDefault;
@@ -34,6 +35,7 @@ public class CommandCamera extends SubCommandBase
         /* Start/stop */
         this.add(new SubCommandCameraStart());
         this.add(new SubCommandCameraStop());
+        this.add(new SubCommandCameraReload());
 
         /* Camera control */
         this.add(new SubCommandCameraStep());

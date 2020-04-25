@@ -12,7 +12,6 @@ import mchorse.aperture.client.gui.panels.keyframe.KeyframeCell;
 import mchorse.aperture.utils.Scale;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
-import mchorse.mclib.client.gui.utils.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -384,7 +383,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             {
                 long offset = this.parent.editor.getProfile().calculateOffset(this.parent.fixture);
 
-                this.parent.editor.scrub.setValueFromScrub((int) (x + offset));
+                this.parent.editor.timeline.setValueFromScrub((int) (x + offset));
             }
 
             this.setKeyframe(this.getCurrent());
@@ -411,7 +410,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
             this.font.drawString(String.valueOf(j * this.scale.mult), this.area.x + x + 4, this.area.y + 4, 0xffffff);
         }
 
-        /* Draw current point at the scrub */
+        /* Draw current point at the timeline */
         if (this.parent != null)
         {
             int cx = this.getOffset();

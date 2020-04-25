@@ -55,6 +55,7 @@ aperture.gui:
         profiles: Show camera profiles
         config: Show camera editor options
         modifiers: Show modifiers panel
+        minema: Minema
         cut: Cut fixture in two at cursor
         creation: Interactive fixture creation
         add: Add fixture

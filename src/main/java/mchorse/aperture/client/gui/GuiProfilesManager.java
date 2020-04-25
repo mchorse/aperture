@@ -78,7 +78,7 @@ public class GuiProfilesManager extends GuiElement
         this.modal.flex().relative(this).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         this.convert.setEnabled(false);
-        this.add(this.profiles, this.rename, this.convert, this.add, this.dupe, this.remove, this.modal);
+        this.add(this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert, this.modal);
     }
 
     private void add()

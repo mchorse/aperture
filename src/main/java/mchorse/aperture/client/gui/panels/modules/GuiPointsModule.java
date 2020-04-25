@@ -197,7 +197,7 @@ public class GuiPointsModule extends GuiAbstractModule
      * Mouse button was released
      *
      * If scrolling was initiated on click, this method will be responsible for
-     * selecting a point in the path or shifting the playback scrub to the
+     * selecting a point in the path or shifting the playback timeline to the
      * location of the of current path point.
      */
     @Override

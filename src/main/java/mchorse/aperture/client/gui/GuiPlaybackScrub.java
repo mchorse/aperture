@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * GUI playback scrub
+ * GUI playback timeline
  *
  * This class is responsible for rendering and controlling the playback
  */
@@ -129,7 +129,7 @@ public class GuiPlaybackScrub extends GuiElement
     }
 
     /**
-     * Set the value of the scrubber from scrub
+     * Set the value of the scrubber from timeline
      */
     public void setValueFromScrub(int value)
     {
@@ -304,9 +304,9 @@ public class GuiPlaybackScrub extends GuiElement
     }
 
     /**
-     * Draw scrub on the screen
+     * Draw timeline on the screen
      *
-     * This scrub looks quite simple. The line part is inspired by Blender's
+     * This timeline looks quite simple. The line part is inspired by Blender's
      * timeline thingy. Scrub also renders all of available camera fixtures.
      */
     @Override
@@ -546,7 +546,7 @@ public class GuiPlaybackScrub extends GuiElement
 
             this.font.drawStringWithShadow(offsetLabel, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
 
-            /* Move the tick line left, so it won't overflow the scrub */
+            /* Move the tick line left, so it won't overflow the timeline */
             if (tx + 3 - x + width > w)
             {
                 tx -= width + 2;

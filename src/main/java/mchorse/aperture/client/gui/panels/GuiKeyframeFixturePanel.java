@@ -7,7 +7,6 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -152,7 +151,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     @Override
     public void editFixture(Position position)
     {
-        long tick = this.editor.scrub.value - this.currentOffset();
+        long tick = this.editor.timeline.value - this.currentOffset();
 
         this.fixture.x.insert(tick, (float) position.point.x);
         this.fixture.y.insert(tick, (float) position.point.y);

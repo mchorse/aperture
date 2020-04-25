@@ -8,7 +8,6 @@ import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
 
 public abstract class GuiKeyframeElement extends GuiElement
@@ -45,7 +44,7 @@ public abstract class GuiKeyframeElement extends GuiElement
             return 0;
         }
 
-        return (int) (this.parent.editor.scrub.value - this.parent.editor.getProfile().calculateOffset(this.parent.fixture));
+        return (int) (this.parent.editor.timeline.value - this.parent.editor.getProfile().calculateOffset(this.parent.fixture));
     }
 
     public abstract Keyframe getCurrent();
