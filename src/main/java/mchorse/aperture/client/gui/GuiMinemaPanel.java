@@ -199,6 +199,15 @@ public class GuiMinemaPanel extends GuiElement
 			return;
 		}
 
+		if (!MinemaIntegration.isRecording())
+		{
+			this.stop();
+
+			GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, "Minema prematurely stopped recording!\n\nPlease exit the camera editor and check the chat for more information..."));
+
+			return;
+		}
+
 		if (this.waiting)
 		{
 			if (!this.isRunning() && partialTicks == 0)
