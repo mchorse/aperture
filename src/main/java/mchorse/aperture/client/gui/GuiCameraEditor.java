@@ -309,7 +309,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.middleBar.flex().relative(this.top).x(0.5F).anchorX(0.5F).row(0).resize().width(20).height(20);
         this.creationBar.flex().relative(this.rightBar).x(-20).anchorX(1F).row(0).resize().width(20).height(20);
 
-        this.leftBar.add(this.moveForward, this.moveBackward, this.copyPosition, this.moveDuration, this.cut, this.creation);
+        this.leftBar.add(this.moveBackward, this.moveForward, this.copyPosition, this.moveDuration, this.cut, this.creation);
         this.middleBar.add(this.prevFixture, this.prevFrame, this.plause, this.nextFrame, this.nextFixture);
         this.rightBar.add(this.save, this.openMinema, this.openModifiers, this.openConfig, this.openProfiles);
         this.creationBar.add(this.add, this.dupe, this.replace, this.remove);
@@ -1059,11 +1059,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.updateLogic(partialTicks);
         this.drawOverlays();
 
-        if (!this.isScreenVisible())
+        if (!this.top.canBeSeen())
         {
             MouseRenderer.disable();
 
-            /* Little tip for the users who don't know what they did */
+            /* Little tip for users who don't know what they did */
             if (this.canRenderF1Tooltip())
             {
                 this.fontRenderer.drawStringWithShadow(I18n.format("aperture.gui.editor.f1"), 5, this.height - 12, 0xffffff);
@@ -1075,11 +1075,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    private boolean isScreenVisible()
-    {
-        return this.top.isVisible() && this.root.isVisible();
     }
 
     /**
@@ -1148,7 +1143,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.updatePlayerCurrently(partialTicks);
         }
 
-        this.minema.process(this.runner.isRunning() ? (int) this.runner.ticks : this.timeline.value, partialTicks);
+        this.minema.minema(this.runner.isRunning() ? (int) this.runner.ticks : this.timeline.value, partialTicks);
     }
 
     /**

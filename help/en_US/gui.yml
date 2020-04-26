@@ -14,7 +14,7 @@ aperture.gui:
     record: Record
     pick: Pick morph...
     duplicate: Duplicate
-    search: "Search:"
+    search: Search...
     cancel: Cancel
     break: Break
     select: Select

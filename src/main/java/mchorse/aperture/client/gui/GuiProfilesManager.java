@@ -17,6 +17,8 @@ import mchorse.mclib.client.gui.framework.elements.modals.GuiConfirmModal;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiModal;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiPromptModal;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -69,7 +71,7 @@ public class GuiProfilesManager extends GuiElement
         this.remove.tooltip(I18n.format("aperture.gui.profiles.remove_tooltip"));
         this.modal = new GuiDelegateElement<GuiModal>(mc, null);
 
-        this.profiles.flex().relative(this).set(5, 25, 0, 0).w(1, -10).h(1, -35);
+        this.profiles.flex().relative(this).set(10, 25, 0, 0).w(1, -20).h(1, -35);
         this.remove.flex().relative(this).set(0, 2, 16, 16).x(1, -18);
         this.dupe.flex().relative(this.remove).set(-20, 0, 16, 16);
         this.add.flex().relative(this.dupe).set(-20, 0, 16, 16);
@@ -77,8 +79,11 @@ public class GuiProfilesManager extends GuiElement
         this.convert.flex().relative(this.rename).set(-20, 0, 16, 16);
         this.modal.flex().relative(this).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
-        this.convert.setEnabled(false);
-        this.add(this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert, this.modal);
+        GuiLabel label = Elements.label(I18n.format("aperture.gui.profiles.title")).background(0x88000000);
+
+        label.flex().relative(this).set(10, 10, 0, 20);
+
+        this.add(label, this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert, this.modal);
     }
 
     private void add()
@@ -227,7 +232,6 @@ public class GuiProfilesManager extends GuiElement
     public void selectProfile(CameraProfile profile)
     {
         ((GuiCameraProfilesList) this.profiles.list).setCurrent(profile);
-        this.convert.setEnabled(!this.profiles.list.current.isEmpty());
     }
 
     /**
@@ -304,9 +308,6 @@ public class GuiProfilesManager extends GuiElement
     public void draw(GuiContext context)
     {
         Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), 0xaa000000);
-        Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.y + 20, 0x88000000);
-
-        this.font.drawStringWithShadow(this.title, this.area.x + 6, this.area.y + 7, 0xffffff);
 
         super.draw(context);
     }
