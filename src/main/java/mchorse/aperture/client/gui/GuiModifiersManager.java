@@ -10,6 +10,8 @@ import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -89,7 +91,7 @@ public class GuiModifiersManager extends GuiElement
 
         this.buttons = new GuiElement(mc);
         this.buttons.setVisible(false);
-        this.buttons.flex().relative(this).x(1, 0).y(20).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch();
+        this.buttons.flex().relative(this).x(1, -10).y(24).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch();
 
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
@@ -107,11 +109,16 @@ public class GuiModifiersManager extends GuiElement
         }
 
         this.panels = new GuiScrollElement(mc);
-        this.panels.flex().relative(this).y(20).w(1F, 0).h(1, -20).column(0).vertical().stretch().scroll();
+        this.panels.flex().relative(this).y(28).w(1F, 0).h(1, -28).column(0).vertical().stretch().scroll();
 
-        this.add.flex().relative(this).set(0, 2, 16, 16).x(1, -18);
-        this.paste.flex().relative(this.add).set(-20, 0, 16, 16);
-        this.add(this.add, this.paste, this.panels, this.buttons);
+        this.add.flex().relative(this).set(0, 4, 20, 20).x(1, -30);
+        this.paste.flex().relative(this.add).set(-20, 0, 20, 20);
+
+        GuiLabel label = Elements.label(this.fixture == null ? this.stringGlobal : this.stringTitle).background(0x88000000);
+
+        label.flex().relative(this).set(10, 10, 0, 20);
+
+        this.add(label, this.add, this.paste, this.panels, this.buttons);
 
         this.hideTooltip();
     }
@@ -231,7 +238,7 @@ public class GuiModifiersManager extends GuiElement
     public void draw(GuiContext context)
     {
         /* Background */
-        int h = Math.min(this.panels.scroll.scrollSize + 20, this.area.h);
+        int h = Math.min(this.panels.scroll.scrollSize + 28, this.area.h);
 
         if (this.panels.getChildren().isEmpty())
         {
@@ -239,8 +246,11 @@ public class GuiModifiersManager extends GuiElement
         }
 
         Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.y + h, 0xaa000000);
-        Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.y + 20, 0x88000000);
-        this.font.drawStringWithShadow(this.fixture == null ? this.stringGlobal : this.stringTitle, this.area.x + 6, this.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
+
+        if (this.buttons.isVisible())
+        {
+            this.add.area.draw(0x88000000);
+        }
 
         super.draw(context);
     }

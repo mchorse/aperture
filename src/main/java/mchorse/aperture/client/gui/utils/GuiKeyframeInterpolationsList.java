@@ -42,7 +42,7 @@ public class GuiKeyframeInterpolationsList extends GuiListElement<KeyframeInterp
     }
 
     @Override
-    protected String elementToString(KeyframeInterpolation element, int i, int x, int y, boolean hover, boolean selected)
+    protected String elementToString(KeyframeInterpolation element)
     {
         return I18n.format("aperture.gui.panels.interps." + element.key);
     }

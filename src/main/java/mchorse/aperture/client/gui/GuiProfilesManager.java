@@ -71,12 +71,12 @@ public class GuiProfilesManager extends GuiElement
         this.remove.tooltip(I18n.format("aperture.gui.profiles.remove_tooltip"));
         this.modal = new GuiDelegateElement<GuiModal>(mc, null);
 
-        this.profiles.flex().relative(this).set(10, 25, 0, 0).w(1, -20).h(1, -35);
-        this.remove.flex().relative(this).set(0, 2, 16, 16).x(1, -18);
-        this.dupe.flex().relative(this.remove).set(-20, 0, 16, 16);
-        this.add.flex().relative(this.dupe).set(-20, 0, 16, 16);
-        this.rename.flex().relative(this.add).set(-20, 0, 16, 16);
-        this.convert.flex().relative(this.rename).set(-20, 0, 16, 16);
+        this.profiles.flex().relative(this).set(10, 28, 0, 0).w(1, -20).h(1, -38);
+        this.remove.flex().relative(this).set(0, 4, 20, 20).x(1, -30);
+        this.dupe.flex().relative(this.remove).set(-20, 0, 20, 20);
+        this.add.flex().relative(this.dupe).set(-20, 0, 20, 20);
+        this.rename.flex().relative(this.add).set(-20, 0, 20, 20);
+        this.convert.flex().relative(this.rename).set(-20, 0, 20, 20);
         this.modal.flex().relative(this).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         GuiLabel label = Elements.label(I18n.format("aperture.gui.profiles.title")).background(0x88000000);
@@ -223,7 +223,7 @@ public class GuiProfilesManager extends GuiElement
                 this.editor.selectProfile(null);
             }
 
-            this.profiles.elements.remove(entry);
+            this.profiles.list.remove(entry);
             this.profiles.filter("", true);
             entry.destination.remove();
         }
@@ -274,7 +274,7 @@ public class GuiProfilesManager extends GuiElement
 
     public void init()
     {
-        this.profiles.elements.clear();
+        this.profiles.list.clear();
 
         for (CameraProfile profile : ClientProxy.control.profiles)
         {
@@ -366,15 +366,14 @@ public class GuiProfilesManager extends GuiElement
 
         public void add(CameraProfileEntry element)
         {
-            if (element != null && !this.elements.contains(element))
+            if (element != null && !this.list.getList().contains(element))
             {
                 if (element.profile != null)
                 {
                     element.destination = element.profile.getDestination();
                 }
 
-                this.elements.add(element);
-                this.list.update();
+                this.list.add(element);
             }
         }
     }

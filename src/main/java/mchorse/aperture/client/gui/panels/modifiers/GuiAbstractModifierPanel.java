@@ -38,7 +38,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.modifiers = modifiers;
 
         this.fields = new GuiElement(mc);
-        this.fields.flex().column(5).vertical().stretch().height(20).padding(5);
+        this.fields.flex().column(5).vertical().stretch().height(20).padding(10);
 
         this.envelopes = new GuiEnvelope(mc, this);
         this.enable = new GuiIconElement(mc, Icons.NONE, (b) ->
@@ -104,8 +104,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     @Override
     public void draw(GuiContext context)
     {
-        this.area.draw(0xff000000 + this.color);
-        this.header.area.draw(0x44000000);
+        this.area.draw(0x88000000 + this.color);
         this.font.drawStringWithShadow(this.title, this.header.area.x + 5, this.header.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
 
         this.header.setVisible(this.area.isInside(context.mouseX, context.mouseY));
