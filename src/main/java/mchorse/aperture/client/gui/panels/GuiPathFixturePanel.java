@@ -62,6 +62,18 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.fixture.useSpeed = b.isToggled();
             this.speed.setVisible(this.fixture.useSpeed);
             this.editor.updateProfile();
+
+            if (this.fixture.useSpeed)
+            {
+                this.left.flex().hTo(this.speed.area);
+                this.right.flex().hTo(this.speed.area);
+            }
+            else
+            {
+                this.left.flex().h(1F);
+                this.right.flex().h(1F);
+            }
+
             this.resize();
 
             if (this.fixture.useSpeed)
@@ -74,17 +86,15 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.speed.graph.setParent(this);
         this.speed.graph.setColor(0x0088ff);
 
-        this.point.flex().relative(this).set(0, 10, 80, 80).x(1, -80);
-        this.interp.flex().relative(this).set(0, 60, 100, 45);
         this.points.flex().relative(this).set(140, 0, 90, 20).y(1, -20).w(1, -280);
-        this.toKeyframe.flex().relative(this.interp).set(0, 50, 100, 20);
+        this.speed.flex().relative(this).y(0.5F, 0).w(1F).h(0.5F, -30);
+        this.left.flex().w(140);
 
-        this.perPointDuration.flex().relative(this.name).set(0, -25, 100, 20);
-        this.useSpeed.flex().relative(this.perPointDuration).set(0, 0, 100, 20).x(1, 5);
+        this.left.add(this.interp, this.perPointDuration, this.useSpeed, this.toKeyframe);
+        this.right.add(this.point, this.angle);
 
-        this.speed.flex().relative(this).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
-
-        this.add(this.point, this.angle, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points, this.interp);
+        this.prepend(this.speed);
+        this.add(this.points);
     }
 
 	@Override
@@ -92,7 +102,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 	{
 		if (this.fixture.useSpeed)
 		{
-			this.update = System.currentTimeMillis() + 200;
+			this.update = System.currentTimeMillis() + 100;
 		}
 	}
 
@@ -151,21 +161,6 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     }
 
     @Override
-    public void resize()
-    {
-        boolean h = this.flex().getH() > 200;
-
-        this.angle.flex().relative(this).set(0, 10, 80, 80).x(1, -170);
-
-        if (h && !this.speed.isVisible())
-        {
-            this.angle.flex().x(1, -80).y(120);
-        }
-
-        super.resize();
-    }
-
-    @Override
     public void pickPoint(GuiPointsModule module, int index)
     {
         this.position = this.fixture.getPoint(index);
@@ -213,6 +208,19 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.interp.fill(fixture);
         this.perPointDuration.toggled(fixture.perPointDuration);
         this.useSpeed.toggled(fixture.useSpeed);
+
+        if (this.fixture.useSpeed)
+        {
+            this.left.flex().hTo(this.speed.area);
+            this.right.flex().hTo(this.speed.area);
+        }
+        else
+        {
+            this.left.flex().h(1F);
+            this.right.flex().h(1F);
+        }
+
+        this.resize();
 
         if (!same)
         {
@@ -279,8 +287,5 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 	    }
 
         super.draw(context);
-
-        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.area.x + this.point.area.w / 2, this.point.area.y - 14, 0xffffffff);
-        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w / 2, this.angle.area.y - 14, 0xffffffff);
     }
 }

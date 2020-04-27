@@ -156,6 +156,9 @@ aperture.gui:
         record: Record
         premature_stop: "Minema prematurely stopped recording!\n\nPlease exit the camera editor and check the chat for more information..."
 
+        minema_not_installed: Minema mod is not installed. Please install Minema 3.5 or above...
+        minema_wrong_version: Minema mod is installed, but it's outdated! This feature requires Minema 3.5 or above...
+
     panels:
         name: Name
         duration: Duration

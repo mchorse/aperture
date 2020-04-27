@@ -16,6 +16,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDrawable;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 
 import java.util.function.Consumer;
 
@@ -52,15 +53,15 @@ public class GuiMinemaPanel extends GuiElement
 		this.right = new GuiTrackpadElement(mc, (Consumer<Float>) null);
 		this.right.limit(0).integer();
 		this.right.setValue(0);
-		this.setLeft = new GuiButtonElement(mc, IKey.lang("aperture.gui,minema.set_start"), this::calculateLeft);
-		this.setRight = new GuiButtonElement(mc, IKey.lang("aperture.gui,minema.set_duration"), this::calculateRight);
-		this.fixture = new GuiToggleElement(mc, IKey.lang("aperture.gui,minema.fixtures_only"), null);
-		this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui,minema.record"), this::startRecording);
+		this.setLeft = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.set_start"), this::calculateLeft);
+		this.setRight = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.set_duration"), this::calculateRight);
+		this.fixture = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.fixtures_only"), null);
+		this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.record"), this::startRecording);
 
 		this.fields.flex().relative(this.flex()).w(1F).column(5).vertical().stretch().height(20).padding(10);
 		this.flex().hTo(this.fields.flex(), 1F);
 
-		this.fields.add(Elements.label(IKey.lang("aperture.gui,minema.title"), 12).background(0x88000000));
+		this.fields.add(Elements.label(IKey.lang("aperture.gui.minema.title"), 12).background(0x88000000));
 		this.fields.add(this.name);
 		this.fields.add(Elements.row(mc, 5, 0, 20, this.left, this.right));
 		this.fields.add(Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight));
@@ -204,7 +205,7 @@ public class GuiMinemaPanel extends GuiElement
 		{
 			this.stop();
 
-			GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, IKey.lang("aperture.gui,minema.premature_stop")));
+			GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, IKey.lang("aperture.gui.minema.premature_stop")));
 
 			return;
 		}
@@ -245,11 +246,11 @@ public class GuiMinemaPanel extends GuiElement
 
 		if (!MinemaIntegration.isLoaded())
 		{
-			GuiDraw.drawMultiText(this.font, "Minema mod is not installed. Please install Minema 3.5 or above...", x, y, 0xffffff, this.area.w - 20, 12, 0.5F, 0.5F);
+			GuiDraw.drawMultiText(this.font, I18n.format("aperture.gui.minema.minema_not_installed"), x, y, 0xffffff, this.area.w - 20, 12, 0.5F, 0.5F);
 		}
 		else if (!MinemaIntegration.isAvailable())
 		{
-			GuiDraw.drawMultiText(this.font, "Minema mod is installed, but it's outdated! This feature requires Minema 3.5 or above...", x, y, 0xffffff, this.area.w - 20, 12, 0.5F, 0.5F);
+			GuiDraw.drawMultiText(this.font, I18n.format("aperture.gui.minema.minema_wrong_version"), x, y, 0xffffff, this.area.w - 20, 12, 0.5F, 0.5F);
 		}
 
 		super.draw(context);

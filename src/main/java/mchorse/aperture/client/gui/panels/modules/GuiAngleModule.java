@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 
@@ -53,12 +54,8 @@ public class GuiAngleModule extends GuiAbstractModule
         });
         this.fov.tooltip(IKey.lang("aperture.gui.panels.fov"));
 
-        this.yaw.flex().relative(this).set(0, 0, 0, 20).w(1, 0);
-        this.pitch.flex().relative(this).set(0, 20, 0, 20).w(1, 0);
-        this.roll.flex().relative(this).set(0, 40, 0, 20).w(1, 0);
-        this.fov.flex().relative(this).set(0, 60, 0, 20).w(1, 0);
-
-        this.add(this.yaw, this.pitch, this.roll, this.fov);
+        this.flex().column(5).vertical().stretch().height(20);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.yaw, this.pitch, this.roll, this.fov);
     }
 
     public void fill(Angle angle)

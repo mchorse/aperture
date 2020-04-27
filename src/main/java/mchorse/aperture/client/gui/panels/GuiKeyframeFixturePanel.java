@@ -64,9 +64,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
             this.titles[i] = ((GuiButtonElement) this.buttons.getChildren().get(i)).label;
         }
 
-        this.buttons.flex().relative(this.graph).y(-30).w(1F).h(30).row(5).resize().padding(5);
-        this.graph.flex().relative(this).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
-        this.dope.flex().relative(this).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
+        this.buttons.flex().relative(this.graph).x(10).y(-25).w(1F).h(20).row(5).resize().height(20).padding(0);
+        this.graph.flex().relative(this).y(0.5F, 0).wh(1F, 0.5F);
+        this.dope.flex().relative(this).y(0.5F, 0).wh(1F, 0.5F);
 
         this.add(this.graph, this.dope, this.buttons);
     }
@@ -155,7 +155,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         {
             GuiButtonElement button = (GuiButtonElement) element;
 
-            button.flex().w(this.font.getStringWidth(button.label.get()) + 6);
+            button.flex().w(this.font.getStringWidth(button.label.get()) + 10);
         }
 
         super.resize();

@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -79,11 +80,10 @@ public class GuiInterpModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        this.pos.flex().relative(this).set(0, 0, 0, 20).w(1, 0);
-        this.angle.flex().relative(this).set(0, 25, 0, 20).w(1, 0);
-        this.interps.flex().y(20).w(1, 0).h(96);
+        // this.interps
 
-        this.add(this.pos, this.angle, this.interps);
+        this.flex().column(5).vertical().stretch().height(20);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.pos, Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.angle);
     }
 
     public void fill(PathFixture fixture)
@@ -92,17 +92,8 @@ public class GuiInterpModule extends GuiAbstractModule
 
         this.interps.setVisible(false);
         this.interps.setCurrent(fixture.interpolationPos);
-        this.pos.label.set(this.interps.getCurrent().get(0).getKey());
+        this.pos.label.set(this.interps.getCurrentFirst().getKey());
         this.interps.setCurrent(fixture.interpolationAngle);
-        this.angle.label.set(this.interps.getCurrent().get(0).getKey());
-    }
-
-    @Override
-    public void draw(GuiContext context)
-    {
-        super.draw(context);
-
-        this.font.drawStringWithShadow(I18n.format("aperture.gui.panels.position"), this.pos.area.x + this.pos.area.w + 5, this.pos.area.y + 6, 0xffffff);
-        this.font.drawStringWithShadow(I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w + 5, this.angle.area.y + 6, 0xffffff);
+        this.angle.label.set(this.interps.getCurrentFirst().getKey());
     }
 }

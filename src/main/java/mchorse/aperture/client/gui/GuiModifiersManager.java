@@ -116,11 +116,10 @@ public class GuiModifiersManager extends GuiElement
         this.add.flex().relative(this).set(0, 4, 20, 20).x(1, -30);
         this.paste.flex().relative(this.add).set(-20, 0, 20, 20);
 
-        GuiLabel label = Elements.label(IKey.lang(this.stringGlobal)).background(0x88000000);
+        this.title = Elements.label(IKey.lang(this.stringGlobal)).background(0x88000000);
+        this.title.flex().relative(this).set(10, 10, 0, 20);
 
-        label.flex().relative(this).set(10, 10, 0, 20);
-
-        this.add(label, this.add, this.paste, this.panels, this.buttons);
+        this.add(this.title, this.add, this.paste, this.panels, this.buttons);
 
         this.hideTooltip();
     }
@@ -245,7 +244,7 @@ public class GuiModifiersManager extends GuiElement
 
         if (this.panels.getChildren().isEmpty())
         {
-            h = 20;
+            h = 28;
         }
 
         Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.y + h, 0xaa000000);
