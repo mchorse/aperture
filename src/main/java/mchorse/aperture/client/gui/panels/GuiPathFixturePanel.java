@@ -91,6 +91,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.left.flex().w(140);
 
         this.left.add(this.interp, this.perPointDuration, this.useSpeed, this.toKeyframe);
+        this.left.markContainer();
         this.right.add(this.point, this.angle);
 
         this.prepend(this.speed);

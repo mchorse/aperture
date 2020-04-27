@@ -31,16 +31,16 @@ public class GuiInterpModule extends GuiAbstractModule
 
         this.pos = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
-            if (this.interps.isVisible())
+            if (this.interps.hasParent())
             {
-                this.interps.setVisible(false);
+                this.interps.removeFromParent();
             }
             else
             {
                 this.pickPos = true;
                 this.interps.setCurrent(this.fixture.interpolationPos);
-                this.interps.setVisible(true);
 
+                this.getParentContainer().add(this.interps);
                 this.interps.flex().relative(this.pos);
                 this.interps.resize();
             }
@@ -48,16 +48,16 @@ public class GuiInterpModule extends GuiAbstractModule
 
         this.angle = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
-            if (this.interps.isVisible())
+            if (this.interps.hasParent())
             {
-                this.interps.setVisible(false);
+                this.interps.removeFromParent();
             }
             else
             {
                 this.pickPos = false;
                 this.interps.setCurrent(this.fixture.interpolationAngle);
-                this.interps.setVisible(true);
 
+                this.getParentContainer().add(this.interps);
                 this.interps.flex().relative(this.angle);
                 this.interps.resize();
             }
@@ -76,21 +76,23 @@ public class GuiInterpModule extends GuiAbstractModule
                 this.angle.label.set(interp.get(0).getKey());
             }
 
-            this.interps.setVisible(false);
+            this.interps.removeFromParent();
             this.editor.updateProfile();
         });
+        this.interps.markIgnored();
 
-        // this.interps
+        this.interps.flex().y(1F).w(1F).h(96);
 
         this.flex().column(5).vertical().stretch().height(20);
-        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.pos, Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.angle);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.pos);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.angle);
     }
 
     public void fill(PathFixture fixture)
     {
         this.fixture = fixture;
 
-        this.interps.setVisible(false);
+        this.interps.removeFromParent();
         this.interps.setCurrent(fixture.interpolationPos);
         this.pos.label.set(this.interps.getCurrentFirst().getKey());
         this.interps.setCurrent(fixture.interpolationAngle);
