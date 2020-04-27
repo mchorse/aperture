@@ -10,10 +10,9 @@ import mchorse.mclib.client.gui.framework.elements.list.GuiInterpolationList;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
-import mchorse.mclib.utils.MathUtils;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.resources.I18n;
 
 public class GuiEnvelope extends GuiElement
 {
@@ -34,12 +33,12 @@ public class GuiEnvelope extends GuiElement
 
 		this.panel = panel;
 
-		this.enabled = new GuiToggleElement(mc, I18n.format("aperture.gui.modifiers.enabled"), (b) ->
+		this.enabled = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.enabled"), (b) ->
 		{
 			this.get().enabled = b.isToggled();
 			this.panel.modifiers.editor.updateProfile();
 		});
-		this.relative = new GuiToggleElement(mc, I18n.format("aperture.gui.modifiers.relative"), (b) -> this.toggleRelative(b.isToggled()));
+		this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.relative"), (b) -> this.toggleRelative(b.isToggled()));
 		this.pickInterp = new GuiIconElement(mc, Icons.GEAR, (b) -> this.interps.toggleVisible());
 		this.pickInterp.flex().wh(20, 20);
 

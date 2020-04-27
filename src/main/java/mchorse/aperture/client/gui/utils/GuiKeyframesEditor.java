@@ -10,6 +10,7 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -35,16 +36,16 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         this.frameButtons = new GuiElements<GuiElement>(this);
         this.frameButtons.setVisible(false);
         this.tick = new GuiTrackpadElement(mc, (value) -> this.setTick(value.longValue()));
-        this.tick.limit(Integer.MIN_VALUE, Integer.MAX_VALUE, true).tooltip(I18n.format("aperture.gui.panels.tick"), Direction.BOTTOM);
+        this.tick.limit(Integer.MIN_VALUE, Integer.MAX_VALUE, true).tooltip(IKey.lang("aperture.gui.panels.tick"), Direction.BOTTOM);
         this.value = new GuiTrackpadElement(mc, (value) -> this.setValue(value));
-        this.value.tooltip(I18n.format("aperture.gui.panels.value"), Direction.BOTTOM);
-        this.interp = new GuiButtonElement(mc, "", (b) -> this.interpolations.toggleVisible());
+        this.value.tooltip(IKey.lang("aperture.gui.panels.value"), Direction.BOTTOM);
+        this.interp = new GuiButtonElement(mc, IKey.lang(""), (b) -> this.interpolations.toggleVisible());
         this.interpolations = new GuiKeyframeInterpolationsList(mc, (interp) -> this.pickInterpolation(interp.get(0)));
 
         this.easing = new GuiCirculateElement(mc, (b) -> this.changeEasing());
-        this.easing.addLabel(I18n.format("aperture.gui.panels.easing.in"));
-        this.easing.addLabel(I18n.format("aperture.gui.panels.easing.out"));
-        this.easing.addLabel(I18n.format("aperture.gui.panels.easing.inout"));
+        this.easing.addLabel(IKey.lang("aperture.gui.panels.easing.in"));
+        this.easing.addLabel(IKey.lang("aperture.gui.panels.easing.out"));
+        this.easing.addLabel(IKey.lang("aperture.gui.panels.easing.inout"));
 
         this.graph = this.createElement(mc);
 
@@ -135,7 +136,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         }
 
         this.graph.getCurrent().setInterpolation(interp);
-        this.interp.label = I18n.format("aperture.gui.panels.interps." + interp.key);
+        this.interp.label.set(interp.getKey());
         this.interpolations.setVisible(false);
     }
 
@@ -160,7 +161,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
         this.tick.setValue(frame.tick);
         this.value.setValue(frame.value);
-        this.interp.label = I18n.format("aperture.gui.panels.interps." + frame.interp.key);
+        this.interp.label.set(frame.interp.getKey());
         this.interpolations.setCurrent(frame.interp);
         this.easing.setValue(frame.easing.ordinal());
     }

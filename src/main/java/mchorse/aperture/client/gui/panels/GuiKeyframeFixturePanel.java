@@ -7,15 +7,18 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
+import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
+import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
 {
-    public GuiElements<GuiButtonElement> buttons;
+    public GuiElement buttons;
 
     public GuiButtonElement all;
     public GuiButtonElement x;
@@ -30,58 +33,38 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public GuiFixtureKeyframesDopeSheetEditor dope;
 
     public AllKeyframeChannel allChannel = new AllKeyframeChannel();
-    public String[] titles = new String[8];
+    public IKey[] titles = new IKey[8];
     public int[] colors = new int[] {0xff1392, 0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
 
-    private String title = "";
+    private IKey title = IKey.EMPTY;
 
     public GuiKeyframeFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc, editor);
 
-        this.buttons = new GuiElements<GuiButtonElement>(this);
+        this.buttons = new GuiElement(mc);
         this.graph = new GuiFixtureKeyframesGraphEditor<GuiKeyframeFixturePanel>(mc, this);
         this.dope = new GuiFixtureKeyframesDopeSheetEditor(mc, this);
 
-        this.all = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
-        this.x = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
-        this.y = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
-        this.z = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
-        this.yaw = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.yaw"), (b) -> this.selectChannel(this.fixture.yaw));
-        this.pitch = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch));
-        this.roll = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll));
-        this.fov = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov));
+        this.all = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
+        this.x = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
+        this.y = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
+        this.z = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
+        this.yaw = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.yaw"), (b) -> this.selectChannel(this.fixture.yaw));
+        this.pitch = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch));
+        this.roll = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll));
+        this.fov = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov));
 
         this.buttons.add(this.all);
-        this.buttons.add(this.x);
-        this.buttons.add(this.y);
-        this.buttons.add(this.z);
-        this.buttons.add(this.yaw);
-        this.buttons.add(this.pitch);
-        this.buttons.add(this.roll);
-        this.buttons.add(this.fov);
+        this.buttons.add(this.x, this.y, this.z);
+        this.buttons.add(this.yaw, this.pitch, this.roll, this.fov);
 
         for (int i = 0; i < this.titles.length; i++)
         {
-            this.titles[i] = this.buttons.elements.get(i).label;
+            this.titles[i] = ((GuiButtonElement) this.buttons.getChildren().get(i)).label;
         }
 
-        int i = 0;
-        int x = 0;
-
-        for (GuiButtonElement button : this.buttons.elements)
-        {
-            if (i > 7)
-            {
-                break;
-            }
-
-            button.flex().relative(this).set(x, 0, this.font.getStringWidth(button.label) + 15, 20).y(0.5F, -25);
-
-            x += button.flex().getW() + 5;
-            i++;
-        }
-
+        this.buttons.flex().relative(this.graph).y(-30).w(1F).h(30).row(5).resize().padding(5);
         this.graph.flex().relative(this).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
         this.dope.flex().relative(this).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, 0);
 
@@ -166,10 +149,23 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
+    public void resize()
+    {
+        for (IGuiElement element : this.buttons.getChildren())
+        {
+            GuiButtonElement button = (GuiButtonElement) element;
+
+            button.flex().w(this.font.getStringWidth(button.label.get()) + 6);
+        }
+
+        super.resize();
+    }
+
+    @Override
     public void draw(GuiContext context)
     {
         /* Draw title of the channel */
-        this.font.drawStringWithShadow(this.title, this.area.ex() - this.font.getStringWidth(this.title), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
+        this.font.drawStringWithShadow(this.title.get(), this.area.ex() - this.font.getStringWidth(this.title.get()), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
 
         super.draw(context);
     }

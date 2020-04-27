@@ -17,6 +17,7 @@ import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -51,12 +52,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle = new GuiAngleModule(mc, editor);
         this.points = new GuiPointsModule(mc, editor, this);
         this.interp = new GuiInterpModule(mc, editor);
-        this.perPointDuration = new GuiToggleElement(mc, I18n.format("aperture.gui.panels.per_point"), false, (b) ->
+        this.perPointDuration = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.per_point"), false, (b) ->
         {
             this.fixture.perPointDuration = b.isToggled();
             this.editor.updateProfile();
         });
-        this.useSpeed = new GuiToggleElement(mc, I18n.format("aperture.gui.panels.use_speed"), false, (b) ->
+        this.useSpeed = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_speed"), false, (b) ->
         {
             this.fixture.useSpeed = b.isToggled();
             this.speed.setVisible(this.fixture.useSpeed);
@@ -68,7 +69,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
                 this.fixture.updateSpeedCache();
             }
         });
-        this.toKeyframe = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
+        this.toKeyframe = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
         this.speed = new GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel>(mc, this);
         this.speed.graph.setParent(this);
         this.speed.graph.setColor(0x0088ff);

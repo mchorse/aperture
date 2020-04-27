@@ -3,12 +3,10 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
-import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 {
@@ -24,7 +22,7 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
             this.math.field.setTextColor(this.modifier.rebuildExpression(str) ? 0xffffff : 0xff2244);
             this.modifiers.editor.updateProfile();
         });
-        this.math.tooltip(I18n.format("aperture.gui.modifiers.math"));
+        this.math.tooltip(IKey.lang("aperture.gui.modifiers.math"));
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {

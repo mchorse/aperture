@@ -3,8 +3,8 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 /**
  * Circular GUI module
@@ -31,28 +31,28 @@ public class GuiCircularModule extends GuiAbstractModule
             this.fixture.offset = value;
             this.editor.updateProfile();
         });
-        this.offset.tooltip(I18n.format("aperture.gui.panels.offset"));
+        this.offset.tooltip(IKey.lang("aperture.gui.panels.offset"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
             this.fixture.pitch = value;
             this.editor.updateProfile();
         });
-        this.pitch.tooltip(I18n.format("aperture.gui.panels.pitch"));
+        this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.circles = new GuiTrackpadElement(mc, (value) ->
         {
             this.fixture.circles = value;
             this.editor.updateProfile();
         });
-        this.circles.tooltip(I18n.format("aperture.gui.panels.circles"));
+        this.circles.tooltip(IKey.lang("aperture.gui.panels.circles"));
 
         this.distance = new GuiTrackpadElement(mc, (value) ->
         {
             this.fixture.distance = value;
             this.editor.updateProfile();
         });
-        this.distance.tooltip(I18n.format("aperture.gui.panels.distance"));
+        this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
 
         this.offset.flex().relative(this).set(0, 0, 0, 20).w(1, 0);
         this.pitch.flex().relative(this).set(0, 20, 0, 20).w(1, 0);

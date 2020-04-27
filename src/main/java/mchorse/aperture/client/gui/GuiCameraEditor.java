@@ -24,6 +24,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.client.gui.utils.resizers.IResizer;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
@@ -255,48 +256,48 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         /* Setup elements */
         this.nextFixture = new GuiIconElement(mc, APIcons.FRAME_NEXT, (b) -> this.jumpToNextFixture());
-        this.nextFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_next_fixture"));
+        this.nextFixture.tooltip(IKey.lang("aperture.gui.tooltips.jump_next_fixture"));
         this.nextFrame = new GuiIconElement(mc, APIcons.FORWARD, (b) -> this.jumpToNextFrame());
-        this.nextFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_next_frame"));
+        this.nextFrame.tooltip(IKey.lang("aperture.gui.tooltips.jump_next_frame"));
         this.plause = new GuiIconElement(mc, APIcons.PLAY, (b) -> this.togglePlayback());
-        this.plause.tooltip(I18n.format("aperture.gui.tooltips.plause"), Direction.BOTTOM);
+        this.plause.tooltip(IKey.lang("aperture.gui.tooltips.plause"), Direction.BOTTOM);
         this.prevFrame = new GuiIconElement(mc, APIcons.BACKWARD, (b) -> this.jumpToPrevFrame());
-        this.prevFrame.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_frame"));
+        this.prevFrame.tooltip(IKey.lang("aperture.gui.tooltips.jump_prev_frame"));
         this.prevFixture = new GuiIconElement(mc, APIcons.FRAME_PREV, (b) -> this.jumpToPrevFixture());
-        this.prevFixture.tooltip(I18n.format("aperture.gui.tooltips.jump_prev_fixture"));
+        this.prevFixture.tooltip(IKey.lang("aperture.gui.tooltips.jump_prev_fixture"));
 
         this.save = new GuiIconElement(mc, Icons.SAVED, (b) -> this.saveProfile());
-        this.save.tooltip(I18n.format("aperture.gui.tooltips.save"));
+        this.save.tooltip(IKey.lang("aperture.gui.tooltips.save"));
         this.openMinema = new GuiIconElement(mc, APIcons.RECORD, (b) -> this.hidePopups(this.minema));
-        this.openMinema.tooltip(I18n.format("aperture.gui.tooltips.minema"));
+        this.openMinema.tooltip(IKey.lang("aperture.gui.tooltips.minema"));
         this.openModifiers = new GuiIconElement(mc, Icons.FILTER, (b) -> this.hidePopups(this.modifiers));
-        this.openModifiers.tooltip(I18n.format("aperture.gui.tooltips.modifiers"));
+        this.openModifiers.tooltip(IKey.lang("aperture.gui.tooltips.modifiers"));
         this.openConfig = new GuiIconElement(mc, Icons.GEAR, (b) -> this.hidePopups(this.config));
-        this.openConfig.tooltip(I18n.format("aperture.gui.tooltips.config"));
+        this.openConfig.tooltip(IKey.lang("aperture.gui.tooltips.config"));
         this.openProfiles = new GuiIconElement(mc, Icons.MORE, (b) -> this.hidePopups(this.profiles));
-        this.openProfiles.tooltip(I18n.format("aperture.gui.tooltips.profiles"));
+        this.openProfiles.tooltip(IKey.lang("aperture.gui.tooltips.profiles"));
 
         this.add = new GuiIconElement(mc, Icons.ADD, (b) -> this.hideReplacingPopups(this.fixtures, false));
-        this.add.tooltip(I18n.format("aperture.gui.tooltips.add"));
+        this.add.tooltip(IKey.lang("aperture.gui.tooltips.add"));
         this.dupe = new GuiIconElement(mc, Icons.DUPE, (b) -> this.dupeFixture());
-        this.dupe.tooltip(I18n.format("aperture.gui.tooltips.dupe"));
+        this.dupe.tooltip(IKey.lang("aperture.gui.tooltips.dupe"));
         this.replace = new GuiIconElement(mc, Icons.REFRESH, (b) -> this.hideReplacingPopups(this.fixtures, true));
-        this.replace.tooltip(I18n.format("aperture.gui.tooltips.replace"));
+        this.replace.tooltip(IKey.lang("aperture.gui.tooltips.replace"));
         this.remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.removeFixture());
-        this.remove.tooltip(I18n.format("aperture.gui.tooltips.remove"));
+        this.remove.tooltip(IKey.lang("aperture.gui.tooltips.remove"));
 
         this.creation = new GuiIconElement(mc, APIcons.INTERACTIVE, (b) -> this.toggleCreation());
-        this.creation.tooltip(I18n.format("aperture.gui.tooltips.creation"));
+        this.creation.tooltip(IKey.lang("aperture.gui.tooltips.creation"));
         this.cut = new GuiIconElement(mc, Icons.CUT, (b) -> this.cutFixture());
-        this.cut.tooltip(I18n.format("aperture.gui.tooltips.cut"));
+        this.cut.tooltip(IKey.lang("aperture.gui.tooltips.cut"));
         this.moveForward = new GuiIconElement(mc, APIcons.MOVE_FORWARD, (b) -> this.moveTo(1));
-        this.moveForward.tooltip(I18n.format("aperture.gui.tooltips.move_up"));
+        this.moveForward.tooltip(IKey.lang("aperture.gui.tooltips.move_up"));
         this.moveDuration = new GuiIconElement(mc, APIcons.SHIFT, (b) -> this.shiftDurationToCursor());
-        this.moveDuration.tooltip(I18n.format("aperture.gui.tooltips.move_duration"));
+        this.moveDuration.tooltip(IKey.lang("aperture.gui.tooltips.move_duration"));
         this.copyPosition = new GuiIconElement(mc, APIcons.POSITION, (b) -> this.editFixture());
-        this.copyPosition.tooltip(I18n.format("aperture.gui.tooltips.copy_position"));
+        this.copyPosition.tooltip(IKey.lang("aperture.gui.tooltips.copy_position"));
         this.moveBackward = new GuiIconElement(mc, APIcons.MOVE_BACK, (b) -> this.moveTo(-1));
-        this.moveBackward.tooltip(I18n.format("aperture.gui.tooltips.move_down"));
+        this.moveBackward.tooltip(IKey.lang("aperture.gui.tooltips.move_down"));
 
         /* Button placement */
         this.leftBar = new GuiElement(mc);
@@ -338,32 +339,31 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Init(this));
 
         /* Register keybinds */
-        String fixture = "Fixtures";
-        String modes = "Modes";
-        String editor = "Camera editor";
-
-        this.root.keys().register("Toggle camera editor's visibility", Keyboard.KEY_F1, () -> this.top.toggleVisible()).category(editor);
-        this.root.keys().register("Toggle flight mode", Keyboard.KEY_F, () -> this.cameraOptions.flight.clickItself(this.context)).category(modes);
-        this.root.keys().register("Toggle vertical flight mode", Keyboard.KEY_V, () -> this.flight.vertical = !this.flight.vertical).category(modes);
-
+        IKey fixture = IKey.lang("aperture.gui.editor.keys.fixture.title");
+        IKey modes = IKey.lang("aperture.gui.editor.keys.modes.title");
+        IKey editor = IKey.lang("aperture.gui.editor.keys.editor.title");
         Supplier<Boolean> active = () -> !(this.flight.enabled || this.profile == null);
 
-        this.root.keys().register("Save camera profile", Keyboard.KEY_S, () -> this.save.clickItself(this.context)).held(Keyboard.KEY_LCONTROL).active(active).category(editor);
-        this.root.keys().register("Toggle sync mode", Keyboard.KEY_S, () -> this.cameraOptions.sync.clickItself(this.context)).active(active).category(modes);
-        this.root.keys().register("Toggle outside mode", Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
-        this.root.keys().register("Play/pause", Keyboard.KEY_SPACE, () -> this.plause.clickItself(this.context)).active(active).category(editor);
-        this.root.keys().register("Deselect current fixture", Keyboard.KEY_D, () -> this.pickCameraFixture(null, 0)).active(active).category(fixture);
-        this.root.keys().register("Shift duration to cursor", Keyboard.KEY_M, this::shiftDurationToCursor).active(active).category(fixture);
-        this.root.keys().register("Jump to next fixture", Keyboard.KEY_RIGHT, this::jumpToNextFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
-        this.root.keys().register("Jump to previous fixture", Keyboard.KEY_LEFT, this::jumpToPrevFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
-        this.root.keys().register("Jump to next frame", Keyboard.KEY_RIGHT, this::jumpToNextFrame).active(active).category(editor);
-        this.root.keys().register("Jump to previous frame", Keyboard.KEY_LEFT, this::jumpToPrevFrame).active(active).category(editor);
-        this.root.keys().register("Apply current camera position", Keyboard.KEY_B, this::editFixture).active(active).category(fixture);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.deselect"), Keyboard.KEY_D, () -> this.pickCameraFixture(null, 0)).active(active).category(fixture);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.shift"), Keyboard.KEY_M, this::shiftDurationToCursor).active(active).category(fixture);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.copy"), Keyboard.KEY_B, this::editFixture).active(active).category(fixture);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.cut"), Keyboard.KEY_C, () -> this.cut.clickItself(this.context)).active(active).category(fixture);
 
-        this.root.keys().register("Toggle modifiers popup", Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(fixture);
-        this.root.keys().register("Toggle fixture looping", Keyboard.KEY_R, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(fixture);
-        this.root.keys().register("Cut fixture", Keyboard.KEY_C, () -> this.cut.clickItself(this.context)).active(active).category(fixture);
-        this.root.keys().register("Toggle interactive mode", Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(fixture);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.flight"), Keyboard.KEY_F, () -> this.cameraOptions.flight.clickItself(this.context)).category(modes);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.vertical"), Keyboard.KEY_V, () -> this.flight.vertical = !this.flight.vertical).category(modes);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.sync"), Keyboard.KEY_S, () -> this.cameraOptions.sync.clickItself(this.context)).active(active).category(modes);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.ouside"), Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.looping"), Keyboard.KEY_L, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(modes);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.interactive"), Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(modes);
+
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.toggle"), Keyboard.KEY_F1, () -> this.top.toggleVisible()).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.modifiers"), Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.save"), Keyboard.KEY_S, () -> this.save.clickItself(this.context)).held(Keyboard.KEY_LCONTROL).active(active).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.plause"), Keyboard.KEY_SPACE, () -> this.plause.clickItself(this.context)).active(active).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.next_fixture"), Keyboard.KEY_RIGHT, this::jumpToNextFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.prev_fixture"), Keyboard.KEY_LEFT, this::jumpToPrevFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.next"), Keyboard.KEY_RIGHT, this::jumpToNextFrame).active(active).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.prev"), Keyboard.KEY_LEFT, this::jumpToPrevFrame).active(active).category(editor);
     }
 
     /**

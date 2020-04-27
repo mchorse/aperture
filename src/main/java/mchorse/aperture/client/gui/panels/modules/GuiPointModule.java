@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -29,21 +30,21 @@ public class GuiPointModule extends GuiAbstractModule
             this.point.x = value;
             this.editor.updateProfile();
         });
-        this.x.tooltip(I18n.format("aperture.gui.panels.x"));
+        this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
             this.point.y = value;
             this.editor.updateProfile();
         });
-        this.y.tooltip(I18n.format("aperture.gui.panels.y"));
+        this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
             this.point.z = value;
             this.editor.updateProfile();
         });
-        this.z.tooltip(I18n.format("aperture.gui.panels.z"));
+        this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 
         this.x.flex().relative(this).set(0, 0, 0, 20).w(1, 0);
         this.y.flex().relative(this).set(0, 30, 0, 20).w(1, 0);

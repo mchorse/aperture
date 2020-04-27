@@ -7,9 +7,8 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.resources.I18n;
 
 import java.util.function.Consumer;
 
@@ -34,12 +33,8 @@ public class GuiFixtures extends GuiElement
         {
             byte type = info.type;
             int color = info.color.getRGBAColor();
-            GuiButtonElement button = new GuiButtonElement(mc, I18n.format(info.title), (b) ->
-            {
-                this.actionPerformed(type);
-            });
 
-            this.add(button.color(color));
+            this.add(new GuiButtonElement(mc, IKey.lang(info.title), (b) -> this.actionPerformed(type)).color(color));
         }
     }
 

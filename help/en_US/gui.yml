@@ -67,6 +67,37 @@ aperture.gui:
         f1: Press F1 to show GUI again...
         speed: Speed
 
+        keys:
+            fixture:
+                title: Fixtures
+
+                deselect: Deselect current fixture
+                shift: Shift duration to cursor
+                copy: Apply current camera position
+                cut: Cut fixture
+
+            modes:
+                title: Modes
+
+                flight: Toggle flight mode
+                vertical: Toggle vertical flight mode
+                sync: Toggle sync mode
+                ouside: Toggle outside mode
+                looping: Toggle fixture looping
+                interactive: Toggle interactive mode
+
+            editor:
+                title: Camera editor
+
+                toggle: Toggle camera editor's visibility
+                modifiers: Toggle modifiers popup
+                save: Save camera profile
+                plause: Play/pause
+                next_fixture: Jump to next fixture
+                prev_fixture: Jump to previous fixture
+                next: Jump to next frame
+                prev: Jump to previous frame
+
     fixtures:
         idle: Idle
         path: Path
@@ -116,6 +147,14 @@ aperture.gui:
         add_tooltip: Add a profile
         dupe_tooltip: Duplicate the profile
         remove_tooltip: Remove the profile
+
+    minema:
+        title: Minema
+        set_start: Set start
+        set_duration: Set duration
+        fixtures_only: Selected fixture only
+        record: Record
+        premature_stop: "Minema prematurely stopped recording!\n\nPlease exit the camera editor and check the chat for more information..."
 
     panels:
         name: Name

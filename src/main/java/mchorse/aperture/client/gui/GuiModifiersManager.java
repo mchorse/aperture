@@ -13,9 +13,9 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.resources.I18n;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +29,8 @@ public class GuiModifiersManager extends GuiElement
     public static final Map<Class<? extends AbstractModifier>, Class<? extends GuiAbstractModifierPanel<? extends AbstractModifier>>> PANELS = new HashMap<>();
 
     /* Strings */
-    private String stringTitle = I18n.format("aperture.gui.modifiers.title");
-    private String stringGlobal = I18n.format("aperture.gui.modifiers.global");
+    private String stringTitle = "aperture.gui.modifiers.title";
+    private String stringGlobal = "aperture.gui.modifiers.global";
 
     private AbstractModifier clipboard;
 
@@ -70,6 +70,8 @@ public class GuiModifiersManager extends GuiElement
      */
     public GuiCameraEditor editor;
 
+    public GuiLabel title;
+
     public GuiModifiersManager(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc);
@@ -98,7 +100,7 @@ public class GuiModifiersManager extends GuiElement
             byte type = info.type;
             int color = info.color.getRGBAColor();
 
-            GuiButtonElement button = new GuiButtonElement(mc, info.getTitle(), (b) ->
+            GuiButtonElement button = new GuiButtonElement(mc, IKey.lang(info.title), (b) ->
             {
                 this.addCameraModifier(type, this.getModifiers());
                 this.buttons.setVisible(false);
@@ -114,7 +116,7 @@ public class GuiModifiersManager extends GuiElement
         this.add.flex().relative(this).set(0, 4, 20, 20).x(1, -30);
         this.paste.flex().relative(this.add).set(-20, 0, 20, 20);
 
-        GuiLabel label = Elements.label(this.fixture == null ? this.stringGlobal : this.stringTitle).background(0x88000000);
+        GuiLabel label = Elements.label(IKey.lang(this.stringGlobal)).background(0x88000000);
 
         label.flex().relative(this).set(10, 10, 0, 20);
 
@@ -149,6 +151,7 @@ public class GuiModifiersManager extends GuiElement
     {
         this.panels.clear();
         this.fixture = fixture;
+        this.title.label.set(fixture == null ? this.stringGlobal : this.stringTitle);
 
         if (this.getModifiers() == null)
         {

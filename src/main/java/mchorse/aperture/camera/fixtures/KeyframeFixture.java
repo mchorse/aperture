@@ -626,6 +626,11 @@ public class KeyframeFixture extends AbstractFixture
         }
 
         public abstract float interpolate(Keyframe a, Keyframe b, float x);
+
+	    public String getKey()
+        {
+            return "aperture.gui.panels.interps." + this.key;
+        }
     }
 
     public static enum Easing

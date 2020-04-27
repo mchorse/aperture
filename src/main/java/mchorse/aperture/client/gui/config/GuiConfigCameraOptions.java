@@ -9,8 +9,8 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTexturePicker;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 {
@@ -51,7 +51,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.renderPath = new GuiToggleElement(mc, Aperture.profileRender);
         this.sync = new GuiToggleElement(mc, Aperture.editorSync);
 
-        this.flight = new GuiToggleElement(mc, I18n.format("aperture.gui.config.flight"), this.editor.flight.enabled, (b) ->
+        this.flight = new GuiToggleElement(mc, IKey.lang("aperture.gui.config.flight"), this.editor.flight.enabled, (b) ->
         {
             this.editor.setFlight(b.isToggled());
         });
@@ -67,7 +67,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.loop = new GuiToggleElement(mc, Aperture.editorLoop);
         this.overlay = new GuiToggleElement(mc, Aperture.editorOverlay);
 
-        this.pickOverlay = new GuiButtonElement(mc, I18n.format("aperture.gui.config.pick_overlay"), (b) ->
+        this.pickOverlay = new GuiButtonElement(mc, IKey.lang("aperture.gui.config.pick_overlay"), (b) ->
         {
             this.overlayPicker.refresh();
             this.overlayPicker.fill(this.editor.overlayLocation);
@@ -117,8 +117,8 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     }
 
     @Override
-    public String getTitle()
+    public IKey getTitle()
     {
-        return I18n.format("aperture.gui.config.title");
+        return IKey.lang("aperture.gui.config.title");
     }
 }

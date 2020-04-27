@@ -4,6 +4,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 
 public abstract class GuiAbstractConfigOptions extends GuiElement
@@ -22,5 +23,5 @@ public abstract class GuiAbstractConfigOptions extends GuiElement
 
     public abstract void update();
 
-    public abstract String getTitle();
+    public abstract IKey getTitle();
 }

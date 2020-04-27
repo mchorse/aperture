@@ -14,6 +14,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDrawable;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 
 import java.util.function.Consumer;
@@ -51,15 +52,15 @@ public class GuiMinemaPanel extends GuiElement
 		this.right = new GuiTrackpadElement(mc, (Consumer<Float>) null);
 		this.right.limit(0).integer();
 		this.right.setValue(0);
-		this.setLeft = new GuiButtonElement(mc, "Set start", this::calculateLeft);
-		this.setRight = new GuiButtonElement(mc, "Set duration", this::calculateRight);
-		this.fixture = new GuiToggleElement(mc, "Selected fixture only", null);
-		this.record = new GuiButtonElement(mc, "Record", this::startRecording);
+		this.setLeft = new GuiButtonElement(mc, IKey.lang("aperture.gui,minema.set_start"), this::calculateLeft);
+		this.setRight = new GuiButtonElement(mc, IKey.lang("aperture.gui,minema.set_duration"), this::calculateRight);
+		this.fixture = new GuiToggleElement(mc, IKey.lang("aperture.gui,minema.fixtures_only"), null);
+		this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui,minema.record"), this::startRecording);
 
 		this.fields.flex().relative(this.flex()).w(1F).column(5).vertical().stretch().height(20).padding(10);
 		this.flex().hTo(this.fields.flex(), 1F);
 
-		this.fields.add(Elements.label("Minema", 12).background(0x88000000));
+		this.fields.add(Elements.label(IKey.lang("aperture.gui,minema.title"), 12).background(0x88000000));
 		this.fields.add(this.name);
 		this.fields.add(Elements.row(mc, 5, 0, 20, this.left, this.right));
 		this.fields.add(Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight));
@@ -157,7 +158,7 @@ public class GuiMinemaPanel extends GuiElement
 		}
 		catch (Exception e)
 		{
-			GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, MinemaIntegration.getMessage(e)));
+			GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, IKey.str(MinemaIntegration.getMessage(e))));
 
 			return;
 		}
@@ -203,7 +204,7 @@ public class GuiMinemaPanel extends GuiElement
 		{
 			this.stop();
 
-			GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, "Minema prematurely stopped recording!\n\nPlease exit the camera editor and check the chat for more information..."));
+			GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, IKey.lang("aperture.gui,minema.premature_stop")));
 
 			return;
 		}

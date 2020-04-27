@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -27,7 +28,7 @@ public class GuiInterpModule extends GuiAbstractModule
     {
         super(mc, editor);
 
-        this.pos = new GuiButtonElement(mc, "", (b) ->
+        this.pos = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
             if (this.interps.isVisible())
             {
@@ -44,7 +45,7 @@ public class GuiInterpModule extends GuiAbstractModule
             }
         });
 
-        this.angle = new GuiButtonElement(mc, "", (b) ->
+        this.angle = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
             if (this.interps.isVisible())
             {
@@ -66,12 +67,12 @@ public class GuiInterpModule extends GuiAbstractModule
             if (this.pickPos)
             {
                 this.fixture.interpolationPos = interp.get(0);
-                this.pos.label = I18n.format("aperture.gui.panels.interps." + interp.get(0).name);
+                this.pos.label.set(interp.get(0).getKey());
             }
             else
             {
                 this.fixture.interpolationAngle = interp.get(0);
-                this.angle.label = I18n.format("aperture.gui.panels.interps." + interp.get(0).name);
+                this.angle.label.set(interp.get(0).getKey());
             }
 
             this.interps.setVisible(false);
@@ -91,9 +92,9 @@ public class GuiInterpModule extends GuiAbstractModule
 
         this.interps.setVisible(false);
         this.interps.setCurrent(fixture.interpolationPos);
-        this.pos.label = I18n.format("aperture.gui.panels.interps." + this.interps.getCurrent().get(0).name);
+        this.pos.label.set(this.interps.getCurrent().get(0).getKey());
         this.interps.setCurrent(fixture.interpolationAngle);
-        this.angle.label = I18n.format("aperture.gui.panels.interps." + this.interps.getCurrent().get(0).name);
+        this.angle.label.set(this.interps.getCurrent().get(0).getKey());
     }
 
     @Override

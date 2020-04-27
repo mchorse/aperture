@@ -9,6 +9,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 
 public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> extends GuiElement
@@ -16,7 +17,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     public T modifier;
     public GuiModifiersManager modifiers;
 
-    public String title;
+    public IKey title;
     public int color;
 
     public GuiIconElement enable;
@@ -68,7 +69,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.flex().column(0).vertical().stretch();
         this.add(this.header, this.fields);
 
-        this.title = ModifierRegistry.CLIENT.get(modifier.getClass()).getTitle();
+        this.title = IKey.lang(ModifierRegistry.CLIENT.get(modifier.getClass()).title);
         this.color = ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getRGBColor();
     }
 
@@ -105,7 +106,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     public void draw(GuiContext context)
     {
         this.area.draw(0x88000000 + this.color);
-        this.font.drawStringWithShadow(this.title, this.header.area.x + 5, this.header.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
+        this.font.drawStringWithShadow(this.title.get(), this.header.area.x + 5, this.header.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
 
         this.header.setVisible(this.area.isInside(context.mouseX, context.mouseY));
 

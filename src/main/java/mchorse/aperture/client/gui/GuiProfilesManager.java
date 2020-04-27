@@ -20,6 +20,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -58,17 +59,17 @@ public class GuiProfilesManager extends GuiElement
         this.editor = editor;
 
         this.profiles = new GuiCameraProfilesSearchList(mc, (entry) -> this.pickEntry(entry.get(0)));
-        this.profiles.label = I18n.format("aperture.gui.search");
+        this.profiles.label(IKey.lang("aperture.gui.search"));
         this.rename = new GuiIconElement(mc, Icons.EDIT, (b) -> this.rename());
-        this.rename.tooltip(I18n.format("aperture.gui.profiles.rename_tooltip"));
+        this.rename.tooltip(IKey.lang("aperture.gui.profiles.rename_tooltip"));
         this.convert = new GuiIconElement(mc, Icons.SERVER, (b) -> this.convert());
-        this.convert.tooltip(I18n.format("aperture.gui.profiles.convert_tooltip"));
+        this.convert.tooltip(IKey.lang("aperture.gui.profiles.convert_tooltip"));
         this.add = new GuiIconElement(mc, Icons.ADD, (b) -> this.add());
-        this.add.tooltip(I18n.format("aperture.gui.profiles.add_tooltip"));
+        this.add.tooltip(IKey.lang("aperture.gui.profiles.add_tooltip"));
         this.dupe = new GuiIconElement(mc, Icons.DUPE, (b) -> this.dupe());
-        this.dupe.tooltip(I18n.format("aperture.gui.profiles.dupe_tooltip"));
+        this.dupe.tooltip(IKey.lang("aperture.gui.profiles.dupe_tooltip"));
         this.remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.remove());
-        this.remove.tooltip(I18n.format("aperture.gui.profiles.remove_tooltip"));
+        this.remove.tooltip(IKey.lang("aperture.gui.profiles.remove_tooltip"));
         this.modal = new GuiDelegateElement<GuiModal>(mc, null);
 
         this.profiles.flex().relative(this).set(10, 28, 0, 0).w(1, -20).h(1, -38);
@@ -79,7 +80,7 @@ public class GuiProfilesManager extends GuiElement
         this.convert.flex().relative(this.rename).set(-20, 0, 20, 20);
         this.modal.flex().relative(this).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
-        GuiLabel label = Elements.label(I18n.format("aperture.gui.profiles.title")).background(0x88000000);
+        GuiLabel label = Elements.label(IKey.lang("aperture.gui.profiles.title")).background(0x88000000);
 
         label.flex().relative(this).set(10, 10, 0, 20);
 
@@ -88,7 +89,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void add()
     {
-        this.modal.setDelegate(new GuiPromptModal(this.mc, I18n.format("aperture.gui.profiles.add_modal"), (name) -> this.add(name)));
+        this.modal.setDelegate(new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.add_modal"), (name) -> this.add(name)));
     }
 
     private void add(String name)
@@ -118,7 +119,7 @@ public class GuiProfilesManager extends GuiElement
         }
 
         String filename = entry.destination.getFilename();
-        GuiPromptModal modal = new GuiPromptModal(this.mc, I18n.format("aperture.gui.profiles.dupe_modal"), (name) ->
+        GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.dupe_modal"), (name) ->
         {
             if (!name.equals(filename))
             {
@@ -161,7 +162,7 @@ public class GuiProfilesManager extends GuiElement
             return;
         }
 
-        GuiPromptModal modal = new GuiPromptModal(this.mc, I18n.format("aperture.gui.profiles.rename_modal"), (name) -> this.rename(name));
+        GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.rename_modal"), (name) -> this.rename(name));
         modal.setValue(entry.destination.getFilename());
 
         this.modal.setDelegate(modal);
@@ -200,7 +201,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void remove()
     {
-        this.modal.setDelegate(new GuiConfirmModal(this.mc, I18n.format("aperture.gui.profiles.remove_modal"), (confirmed) -> this.remove(confirmed)));
+        this.modal.setDelegate(new GuiConfirmModal(this.mc, IKey.lang("aperture.gui.profiles.remove_modal"), (confirmed) -> this.remove(confirmed)));
     }
 
     private void remove(boolean confirmed)

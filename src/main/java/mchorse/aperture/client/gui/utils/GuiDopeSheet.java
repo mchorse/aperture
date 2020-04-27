@@ -12,6 +12,7 @@ import mchorse.aperture.client.gui.panels.keyframe.KeyframeCell;
 import mchorse.aperture.utils.Scale;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -467,9 +468,9 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
             Tessellator.getInstance().draw();
 
-            int lw = this.font.getStringWidth(sheet.title) + 10;
+            int lw = this.font.getStringWidth(sheet.title.get()) + 10;
             GuiDraw.drawHorizontalGradientRect(this.area.ex() - lw - 10, y, this.area.ex(), y + h, sheet.color, 0xaa000000 + sheet.color, 0);
-            this.font.drawStringWithShadow(sheet.title, this.area.ex() - lw + 5, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
+            this.font.drawStringWithShadow(sheet.title.get(), this.area.ex() - lw + 5, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
 
             y += h;
         }
@@ -479,12 +480,12 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
     public static class GuiSheet
     {
-        public String title = "";
+        public IKey title;
         public int color;
         public KeyframeChannel channel;
         public int selected = -1;
 
-        public GuiSheet(String title, int color, KeyframeChannel channel)
+        public GuiSheet(IKey title, int color, KeyframeChannel channel)
         {
             this.title = title;
             this.color = color;

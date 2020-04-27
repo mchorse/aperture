@@ -8,6 +8,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -49,7 +50,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
             this.editor.updatePlayerCurrently();
             this.editor.updateProfile();
         });
-        this.duration.tooltip(I18n.format("aperture.gui.panels.duration"), Direction.BOTTOM);
+        this.duration.tooltip(IKey.lang("aperture.gui.panels.duration"), Direction.BOTTOM);
         this.duration.values(1.0F).limit(1, Float.POSITIVE_INFINITY, true);
 
         this.name.flex().relative(this).set(0, 10, 100, 20);

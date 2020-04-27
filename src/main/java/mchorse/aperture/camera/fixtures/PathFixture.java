@@ -764,6 +764,11 @@ public class PathFixture extends AbstractFixture
             this.interp = interp;
             this.easing = easing;
         }
+
+	    public String getKey()
+        {
+            return "aperture.gui.panels.interps." + this.name;
+	    }
     }
 
     /**
