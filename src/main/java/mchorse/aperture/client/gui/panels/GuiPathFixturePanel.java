@@ -62,19 +62,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.fixture.useSpeed = b.isToggled();
             this.speed.setVisible(this.fixture.useSpeed);
             this.editor.updateProfile();
-
-            if (this.fixture.useSpeed)
-            {
-                this.left.flex().hTo(this.speed.area);
-                this.right.flex().hTo(this.speed.area);
-            }
-            else
-            {
-                this.left.flex().h(1F);
-                this.right.flex().h(1F);
-            }
-
-            this.resize();
+            this.updateSpeedPanel();
 
             if (this.fixture.useSpeed)
             {
@@ -86,8 +74,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.speed.graph.setParent(this);
         this.speed.graph.setColor(0x0088ff);
 
-        this.points.flex().relative(this).set(140, 0, 90, 20).y(1, -20).w(1, -280);
-        this.speed.flex().relative(this).y(0.5F, 0).w(1F).h(0.5F, -30);
+        this.points.flex().relative(this.left.flex()).x(1F, 40).y(1F, -30).wTo(this.right.flex(), -80).h(20);
+        this.speed.flex().relative(this).y(0.55F, 0).w(1F).h(0.45F);
         this.left.flex().w(140);
 
         this.left.add(this.interp, this.perPointDuration, this.useSpeed, this.toKeyframe);
@@ -98,7 +86,23 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.add(this.points);
     }
 
-	@Override
+    private void updateSpeedPanel()
+    {
+        if (this.fixture.useSpeed)
+        {
+            this.left.flex().hTo(this.speed.area);
+            this.right.flex().hTo(this.speed.area);
+        }
+        else
+        {
+            this.left.flex().h(1F);
+            this.right.flex().h(1F);
+        }
+
+        this.resize();
+    }
+
+    @Override
 	public void profileWasUpdated()
 	{
 		if (this.fixture.useSpeed)
@@ -209,19 +213,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.interp.fill(fixture);
         this.perPointDuration.toggled(fixture.perPointDuration);
         this.useSpeed.toggled(fixture.useSpeed);
-
-        if (this.fixture.useSpeed)
-        {
-            this.left.flex().hTo(this.speed.area);
-            this.right.flex().hTo(this.speed.area);
-        }
-        else
-        {
-            this.left.flex().h(1F);
-            this.right.flex().h(1F);
-        }
-
-        this.resize();
+        this.updateSpeedPanel();
 
         if (!same)
         {
