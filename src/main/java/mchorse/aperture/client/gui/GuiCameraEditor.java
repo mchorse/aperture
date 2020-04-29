@@ -366,6 +366,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.interactive"), Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(modes);
     }
 
+    public void exit()
+    {
+        this.closeScreen();
+    }
+
     /**
      * This GUI shouldn't pause the game, because camera runs on the world's
      * update loop.
@@ -698,6 +703,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
         else if (this.panel.delegate != null)
         {
+            long offset = this.profile.calculateOffset(this.panel.delegate.fixture);
+
+            this.panel.delegate.select(this.panel.delegate.fixture, this.timeline.value - offset);
             this.timeline.index = profile.getAll().indexOf(this.panel.delegate.fixture);
         }
 

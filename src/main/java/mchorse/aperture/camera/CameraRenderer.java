@@ -11,6 +11,8 @@ import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -194,6 +196,16 @@ public class CameraRenderer
     @SubscribeEvent
     public void onLastRender(RenderWorldLastEvent event)
     {
+        if (GuiManualFixturePanel.recording)
+        {
+            GuiAbstractFixturePanel panel = ClientProxy.getCameraEditor().panel.delegate;
+
+            if (panel instanceof GuiManualFixturePanel)
+            {
+                ((GuiManualFixturePanel) panel).recordFrame(this.mc.player, event.getPartialTicks());
+            }
+        }
+
         int shader = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
 
         if (shader != 0)

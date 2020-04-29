@@ -104,6 +104,7 @@ aperture.gui:
         circular: Circular
         keyframe: Keyframe
         null: "Null"
+        manual: Manual
 
     modifiers:
         title: Modifiers
@@ -190,6 +191,10 @@ aperture.gui:
         value: Value
         
         previous: Previous
+
+        manual: With this button, you can record manual movement of your camera!
+        constant_framerate: This feature doesn't support unlimited frame rate!
+        vsync: This feature doesn't support V-Sync!
 
         interps:
             const: Constant

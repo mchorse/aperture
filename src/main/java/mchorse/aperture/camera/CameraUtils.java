@@ -1,21 +1,14 @@
 package mchorse.aperture.camera;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Scanner;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
-
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.json.AbstractFixtureAdapter;
 import mchorse.aperture.camera.json.AbstractModifierAdapter;
 import mchorse.aperture.camera.json.CameraProfileAdapter;
+import mchorse.aperture.camera.json.RenderFrameAdapter;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
@@ -25,6 +18,14 @@ import mchorse.aperture.network.common.PacketCameraState;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
+
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Scanner;
 
 /**
  * Utilities for camera classes
@@ -68,6 +69,8 @@ public class CameraUtils
         builder.registerTypeAdapter(AbstractFixture.class, new AbstractFixtureAdapter());
         builder.registerTypeAdapter(AbstractModifier.class, new AbstractModifierAdapter());
         builder.registerTypeAdapter(CameraProfile.class, new CameraProfileAdapter());
+
+        builder.registerTypeAdapter(ManualFixture.RenderFrame.class, new RenderFrameAdapter());
 
         return builder.create();
     }

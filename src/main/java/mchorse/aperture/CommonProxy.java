@@ -5,6 +5,7 @@ import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.NullFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AngleModifier;
@@ -50,6 +51,7 @@ public class CommonProxy
         FixtureRegistry.register("keyframe", KeyframeFixture.class);
         FixtureRegistry.register("null", NullFixture.class);
         FixtureRegistry.register("path", PathFixture.class);
+        FixtureRegistry.register("manual", ManualFixture.class);
 
         ModifierRegistry.register("shake", ShakeModifier.class);
         ModifierRegistry.register("math", MathModifier.class);

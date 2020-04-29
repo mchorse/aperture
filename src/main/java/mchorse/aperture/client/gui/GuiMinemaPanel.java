@@ -1,8 +1,10 @@
 package mchorse.aperture.client.gui;
 
 import mchorse.aperture.Aperture;
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
+import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
@@ -163,6 +165,8 @@ public class GuiMinemaPanel extends GuiElement
 
 			return;
 		}
+
+		ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this.editor, this.start));
 
 		this.editor.timeline.setValueFromScrub(this.start);
 		this.editor.updatePlayer(this.start, 0);
