@@ -305,10 +305,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.middleBar = new GuiElement(mc);
         this.creationBar = new GuiElement(mc);
 
-        this.leftBar.flex().relative(this.top).row(0).resize().width(20).height(20);
-        this.rightBar.flex().relative(this.top).x(1F).anchorX(1F).row(0).resize().width(20).height(20);
-        this.middleBar.flex().relative(this.top).x(0.5F).anchorX(0.5F).row(0).resize().width(20).height(20);
-        this.creationBar.flex().relative(this.rightBar).x(-20).anchorX(1F).row(0).resize().width(20).height(20);
+        this.leftBar.flex().relative(this.top.flex()).row(0).resize().width(20).height(20);
+        this.rightBar.flex().relative(this.top.flex()).x(1F).anchorX(1F).row(0).resize().width(20).height(20);
+        this.middleBar.flex().relative(this.top.flex()).x(0.5F).anchorX(0.5F).row(0).resize().width(20).height(20);
+        this.creationBar.flex().row(0).resize().width(20).height(20);
 
         this.leftBar.add(this.moveBackward, this.moveForward, this.copyPosition, this.moveDuration, this.cut, this.creation);
         this.middleBar.add(this.prevFixture, this.prevFrame, this.plause, this.nextFrame, this.nextFixture);
@@ -318,7 +318,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Setup areas of widgets */
         this.timeline.flex().relative(this.top).set(10, 0, 0, 20).y(1, -20).w(1, -20);
         this.panel.flex().relative(this.top).set(0, 20, 0, 0).w(1F).hTo(this.timeline.flex(), -10);
-        this.fixtures.flex().relative(this.add).anchorX(1F).xy(1F, 1F).w(70);
         this.config.flex().relative(this.openConfig).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
         this.profiles.flex().relative(this.openProfiles).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
         this.modifiers.flex().relative(this.openModifiers).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
@@ -1029,6 +1028,23 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.timeline.value));
+    }
+
+    @Override
+    protected void viewportSet()
+    {
+        this.creationBar.flex().relative(this.rightBar.flex()).x(-20).y(0F).anchorX(1F);
+        this.fixtures.flex().anchorX(1F).xy(1F, 1F).w(70);
+
+        int a = this.creationBar.flex().getX();
+        int b = this.middleBar.flex().getX() + this.middleBar.flex().getW();
+        int diff = a - b;
+
+        if (diff < 0)
+        {
+            this.creationBar.flex().relative(this.leftBar.flex()).x(0).y(1F).anchorX(0F);
+            this.fixtures.flex().anchorX(0F).xy(0F, 1F).w(70);
+        }
     }
 
     @Override

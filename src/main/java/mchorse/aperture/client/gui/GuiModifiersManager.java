@@ -91,9 +91,18 @@ public class GuiModifiersManager extends GuiElement
             }
         });
 
-        this.buttons = new GuiElement(mc);
+        this.buttons = new GuiElement(mc)
+        {
+            @Override
+            public void draw(GuiContext context)
+            {
+                this.area.draw(0x88000000);
+
+                super.draw(context);
+            }
+        };
         this.buttons.setVisible(false);
-        this.buttons.flex().relative(this).x(1, -10).y(24).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch();
+        this.buttons.flex().relative(this).x(1, -10).y(24).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch().padding(2);
 
         for (ModifierInfo info : ModifierRegistry.CLIENT.values())
         {
