@@ -620,19 +620,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
-     * Reset the camera editor
-     */
-    public void reset()
-    {
-        this.setProfile(null);
-        this.timeline.value = 0;
-        this.flight.vertical = false;
-        this.replacing = false;
-        this.creating = false;
-        this.markers.clear();
-    }
-
-    /**
      * Set flight mode
      */
     public void setFlight(boolean flight)

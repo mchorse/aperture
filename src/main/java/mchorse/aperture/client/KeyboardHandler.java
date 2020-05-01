@@ -179,6 +179,7 @@ public class KeyboardHandler
     @SubscribeEvent
     public void onUserLogOut(ClientDisconnectionFromServerEvent event)
     {
+        ClientProxy.cameraEditor = null;
         ClientProxy.control.reset();
         ClientProxy.server = false;
 
