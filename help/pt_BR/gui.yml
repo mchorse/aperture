@@ -35,36 +35,69 @@ aperture.gui:
         rule_of_thirds: Regra dos terços
         crosshair: Mira
         letter_box: Caixa postal
-        repeat: Repetir suporte
+        repeat: Repetir acessório
         overlay: Habilitar sobreposição
         pick_overlay: Escolher sobreposição
 
     tooltips:
-        jump_next_fixture: Ir para o próximo suporte
+        jump_next_fixture: Ir para o próximo acessório
         jump_next_frame: Ir para o próximo frame
         plause: Reproduzir/Pausar
         jump_prev_frame: Ir para o frame anterior
-        jump_prev_fixture: Ir para o suporte anterior
+        jump_prev_fixture: Ir para o acessório anterior
 
-        move_up: Avançar o suporte
+        move_up: Avançar o acessório
         move_duration: Mover a duração para o cursor
         copy_position: Copiar a posição do jogador
-        move_down: Mover o suporte para trás
+        move_down: Mover o acessório para trás
 
         save: Salvar perfil da câmera
         profiles: Mostrar perfis de câmera
         config: Mostrar opções do editor de câmera
         modifiers: Mostrar painel de modificadores
+        minema: Minema
         cut: Corte o dispositivo em dois no cursor
-        creation: Criação interativa do suporte
-        add: Adicionar suporte
-        dupe: Duplicar suporte
-        replace: Substituir o suporte selecionado
-        remove: Remover o suporte selecionado
+        creation: Criação interativa do acessório
+        add: Adicionar acessório
+        dupe: Duplicar acessório
+        replace: Substituir o acessório selecionado
+        remove: Remover o acessório selecionado
 
     editor:
         f1: Pressione F1 para mostrar a GUI novamente...
         speed: Velocidade
+
+        keys:
+            fixture:
+                title: Suportes
+                
+                deselect: Desmarcar o suporte atual
+                shift: Mudar a duração para o cursor
+                copy: Aplique a posição atual da câmera
+                cut: Tirar suporte
+            
+            models:
+                title: Modos
+                
+                flight: Alternar para modo de Voo
+                vertical: Alternar para modo de Voo vertical
+                sync: Alternar modo de Sincronização
+                ouside: Alternar para modo externo
+                looping: Alternar loop do suporte
+                interactive: Alternar para modo de interação
+                
+            editor:
+                title: Camera editor
+                
+                toggle: Alternar a visibilidade do editor de câmera
+                modifiers: Alternar Pop-up de modificadores
+                save: Salvar perfil de câmera
+                plause: Reproduzir/Pausar
+                next_fixture: Ir para o próximo suporte
+                prev_fixture: Ir para o suporte anterior
+                next: Ir para o próximo frame
+                prev: Ir para o frame anterior
+
 
     fixtures:
         idle: Parado
@@ -72,6 +105,7 @@ aperture.gui:
         circular: Circular
         keyframe: Keyframe
         null: "Nulo"
+        manual: Manual
 
     modifiers:
         title: Modificadores
@@ -86,7 +120,7 @@ aperture.gui:
         orbit: Orbitar
         drag: Levar
         
-        enabled: Ativado
+        enabled: Habilitado
         relative: Relativo
 
         panels:
@@ -96,8 +130,8 @@ aperture.gui:
             shake_amount: Quantidade
 
             relative: Relativo
-            at_block: Olhe para o bloco
-            forward: Esperar ansiosamente
+            at_block: Olhar para o bloco
+            forward: Olhar para frente
             
             factor: Fator
 
@@ -116,6 +150,17 @@ aperture.gui:
         dupe_tooltip: Duplicar o perfil
         remove_tooltip: Remover o perfil
 
+    minema:
+        title: Minema
+        set_start: Definir início
+        set_duration: Definir duração
+        fixtures_only: Apenas suporte selecionado
+        record: Gravar
+        premature_stop: "Minema parou de gravar mais cedo!\n\nSaia do editor de câmera e verifique o Chat para mais informação..."
+        
+        minema_not_installed: Mod Minema não está instalado. Instale o Minema 3.5 ou superior...
+        minema_wrong_version: Mod Minema está desatualizado! Este recurso requer o Minema 3.5 ou superior...
+        
     panels:
         name: Nome
         duration: Duração
@@ -128,7 +173,7 @@ aperture.gui:
         pitch: Inclinação
         roll: Rolamento
         fov: FOV
-        
+
         offset: Deslocamento
         circles: Círculos
         distance: Distância
@@ -147,6 +192,10 @@ aperture.gui:
         value: Valor
         
         previous: Anterior
+        
+        manual: Com este botão, você pode gravar o movimento manual da sua câmera!
+        constant_framerate: Esse recurso não suporta taxa de quadro ilimitada!
+        vsync: Esse recurso não suporta Sincronização-Vertical!
 
         interps:
             const: Constante
