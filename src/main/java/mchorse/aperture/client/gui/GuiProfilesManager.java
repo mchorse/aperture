@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -224,9 +225,31 @@ public class GuiProfilesManager extends GuiElement
                 this.editor.selectProfile(null);
             }
 
+            int index = this.profiles.list.getIndex();
+
             this.profiles.list.remove(entry);
             this.profiles.filter("", true);
             entry.destination.remove();
+
+            /* If there are no camera profiles, please */
+            if (this.profiles.list.getList().isEmpty())
+            {
+                CameraProfile profile = new CameraProfile(AbstractDestination.create("default"));
+
+                ClientProxy.control.addProfile(profile);
+                this.profiles.add(new CameraProfileEntry(profile.getDestination(), profile));
+                this.selectProfile(profile);
+            }
+            else
+            {
+                if (!this.profiles.list.exists(index))
+                {
+                    index = MathHelper.clamp(index, 0, this.profiles.list.getList().size() - 1);
+                }
+
+                this.profiles.list.setIndex(index);
+                this.pickEntry(this.profiles.list.getCurrentFirst());
+            }
         }
     }
 

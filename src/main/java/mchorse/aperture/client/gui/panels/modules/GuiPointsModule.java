@@ -14,6 +14,7 @@ import mchorse.mclib.client.gui.utils.ScrollArea.ScrollDirection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Points GUI module
@@ -73,16 +74,17 @@ public class GuiPointsModule extends GuiAbstractModule
 
     public void addPoint()
     {
-        if (this.index + 1 == this.path.getPoints().size())
+        if (this.index + 1 >= this.path.getPoints().size())
         {
             this.path.addPoint(new DurablePosition(this.editor.getPosition()));
+            this.index = MathHelper.clamp(this.index + 1, 0, this.path.getCount() - 1);
         }
         else
         {
             this.path.addPoint(new DurablePosition(this.editor.getPosition()), this.index + 1);
+            this.index++;
         }
 
-        this.index++;
         this.scroll.setSize(this.path.getCount());
         this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
 
@@ -96,7 +98,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
     public void removePoint()
     {
-        if (this.path.getPoints().size() == 1)
+        if (this.path.getPoints().size() == 1 && this.index >= 0)
         {
             return;
         }
