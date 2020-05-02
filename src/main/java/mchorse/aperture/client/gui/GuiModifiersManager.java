@@ -157,7 +157,7 @@ public class GuiModifiersManager extends GuiElement
      */
     public void setFixture(AbstractFixture fixture)
     {
-        this.panels.clear();
+        this.panels.removeAll();
         this.fixture = fixture;
         this.title.label.set(fixture == null ? this.stringGlobal : this.stringTitle);
 
