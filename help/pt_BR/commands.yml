@@ -59,3 +59,9 @@ aperture.commands:
                 {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
                 
                 {r}Define a posição da câmera com base em valores absolutos ou relativos. Você pode definir a posição absoluta da câmera especificando números simples de ponto flutuante {6}/camera {8}step {7}0 4 0{r}. Ou você pode fornecer um valor relativo usando os sinais de {7}~+{r} ou {7}~-{r} {6}/camera {8}step {7}~0 ~0.1 ~0{r}. Funciona de forma semelhante ao comando {6}/tp{r}.
+
+        reload:
+            |
+                {1}{6}/{r}camera {8}reload{r}
+                
+                {r}Recarregar editor de câmera.
