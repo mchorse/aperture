@@ -1,5 +1,6 @@
 package mchorse.aperture.camera.modifiers;
 
+import com.google.gson.annotations.Expose;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -14,6 +15,9 @@ import net.minecraft.entity.Entity;
  */
 public class FollowModifier extends EntityModifier
 {
+    @Expose
+    public boolean relative;
+
     public FollowModifier()
     {}
 
@@ -30,7 +34,7 @@ public class FollowModifier extends EntityModifier
             return;
         }
 
-        if (fixture != null)
+        if (fixture != null && this.relative)
         {
             fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
         }
