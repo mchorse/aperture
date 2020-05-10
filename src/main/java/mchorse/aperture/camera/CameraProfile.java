@@ -52,6 +52,8 @@ public class CameraProfile
      */
     public boolean dirty;
 
+    public boolean temporary;
+
     public CameraProfile(AbstractDestination destination)
     {
         this.destination = destination;
@@ -410,6 +412,8 @@ public class CameraProfile
      */
     public void save()
     {
+        this.temporary = false;
+
         if (this.destination != null)
         {
             this.destination.save(this);

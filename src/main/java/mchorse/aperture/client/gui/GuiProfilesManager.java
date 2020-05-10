@@ -88,6 +88,17 @@ public class GuiProfilesManager extends GuiElement
         this.add(label, this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert, this.modal);
     }
 
+    public CameraProfile createTemporary()
+    {
+        CameraProfile profile = new CameraProfile(AbstractDestination.create("default"));
+
+        profile.temporary = true;
+        ClientProxy.control.addProfile(profile);
+        this.profiles.add(new CameraProfileEntry(profile.getDestination(), profile));
+
+        return profile;
+    }
+
     private void add()
     {
         this.modal.setDelegate(new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.add_modal"), (name) -> this.add(name)));
@@ -234,11 +245,7 @@ public class GuiProfilesManager extends GuiElement
             /* If there are no camera profiles, please */
             if (this.profiles.list.getList().isEmpty())
             {
-                CameraProfile profile = new CameraProfile(AbstractDestination.create("default"));
-
-                ClientProxy.control.addProfile(profile);
-                this.profiles.add(new CameraProfileEntry(profile.getDestination(), profile));
-                this.selectProfile(profile);
+                this.selectProfile(this.createTemporary());
             }
             else
             {
@@ -278,7 +285,7 @@ public class GuiProfilesManager extends GuiElement
     {
         CameraProfile profile = ClientProxy.control.getProfile(serverDestination);
 
-        if (profile != null)
+        if (profile != null && !profile.temporary)
         {
             ClientProxy.control.removeProfile(profile);
         }
