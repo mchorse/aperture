@@ -34,6 +34,7 @@ public class GuiMinemaPanel extends GuiElement
 	public GuiButtonElement setRight;
 	public GuiToggleElement fixture;
 
+	public GuiButtonElement movies;
 	public GuiButtonElement record;
 
 	private boolean recording;
@@ -59,6 +60,7 @@ public class GuiMinemaPanel extends GuiElement
 		this.setRight = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.set_duration"), this::calculateRight);
 		this.fixture = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.fixtures_only"), null);
 		this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.record"), this::startRecording);
+		this.movies = new GuiButtonElement(mc, IKey.lang("minema.gui.movies_folder"), this::openMovies);
 
 		this.fields.flex().relative(this.flex()).w(1F).column(5).vertical().stretch().height(20).padding(10);
 		this.flex().hTo(this.fields.flex(), 1F);
@@ -68,7 +70,7 @@ public class GuiMinemaPanel extends GuiElement
 		this.fields.add(Elements.row(mc, 5, 0, 20, this.left, this.right));
 		this.fields.add(Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight));
 		this.fields.add(this.fixture);
-		this.fields.add(this.record);
+		this.fields.add(Elements.row(mc, 5, 0, 20, this.movies, this.record));
 
 		this.add(this.fields);
 		this.add(new GuiDrawable((context) ->
@@ -127,6 +129,11 @@ public class GuiMinemaPanel extends GuiElement
 	private void calculateRight(GuiButtonElement button)
 	{
 		this.right.setValue(this.editor.timeline.value - this.left.value);
+	}
+
+	private void openMovies(GuiButtonElement button)
+	{
+		MinemaIntegration.openMovies();
 	}
 
 	private void startRecording(GuiButtonElement button)

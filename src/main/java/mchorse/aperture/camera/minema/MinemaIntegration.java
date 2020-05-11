@@ -3,6 +3,7 @@ package mchorse.aperture.camera.minema;
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.MinemaAPI;
 import info.ata4.minecraft.minema.client.modules.video.VideoHandler;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 
@@ -48,6 +49,12 @@ public class MinemaIntegration
 	public static boolean isRecording()
 	{
 		return MinemaAPI.isRecording();
+	}
+
+	@Optional.Method(modid = Minema.MODID)
+	public static void openMovies()
+	{
+		GuiUtils.openWebLink(MinemaAPI.getCapturePath().toURI());
 	}
 
 	@Optional.Method(modid = Minema.MODID)
