@@ -24,6 +24,28 @@ public class Flight
     private int dragging;
     private int lastX;
     private int lastY;
+    private long lastSpeed;
+
+    private float getSpeedFactor(int direction)
+    {
+        float factor = 1000;
+        boolean zoomIn = direction > 0;
+
+        if ((zoomIn && this.speed <= 10) || (!zoomIn && this.speed < 10))
+        {
+            factor = 1;
+        }
+        else if ((zoomIn && this.speed <= 100) || (!zoomIn && this.speed < 100))
+        {
+            factor = 10;
+        }
+        else if ((zoomIn && this.speed <= 1000) || (!zoomIn && this.speed < 1000))
+        {
+            factor = 100;
+        }
+
+        return factor;
+    }
 
     public void mouseClicked(GuiContext context)
     {
@@ -44,23 +66,7 @@ public class Flight
             return;
         }
 
-        float factor = 1000;
-        boolean zoomIn = context.mouseWheel > 0;
-
-        if ((zoomIn && this.speed <= 10) || (!zoomIn && this.speed < 10))
-        {
-            factor = 1;
-        }
-        else if ((zoomIn && this.speed <= 100) || (!zoomIn && this.speed < 100))
-        {
-            factor = 10;
-        }
-        else if ((zoomIn && this.speed <= 1000) || (!zoomIn && this.speed < 1000))
-        {
-            factor = 100;
-        }
-
-        this.speed -= Math.copySign(factor, context.mouseWheel);
+        this.speed -= Math.copySign(this.getSpeedFactor(context.mouseWheel), context.mouseWheel);
         this.speed = MathHelper.clamp(this.speed, 1, 50000);
     }
 
@@ -171,6 +177,21 @@ public class Flight
 
             position.point.set(x, y, z);
             position.angle.set(yaw, pitch, roll, fov);
+        }
+
+        int speedFactor = 0;
+        int speedDelay = (int) (100 * 1 / multiplier);
+
+        if (Keyboard.isKeyDown(Aperture.flightCameraSpeedPlus.get()) || Keyboard.isKeyDown(Aperture.flightCameraSpeedMinus.get()))
+        {
+            speedFactor = Keyboard.isKeyDown(Aperture.flightCameraSpeedPlus.get()) ? 1 : -1;
+        }
+
+        if (speedFactor != 0 && System.currentTimeMillis() > this.lastSpeed + speedDelay)
+        {
+            this.speed -= Math.copySign(this.getSpeedFactor(speedFactor), speedFactor);
+            this.speed = MathHelper.clamp(this.speed, 1, 50000);
+            this.lastSpeed = System.currentTimeMillis();
         }
     }
 

@@ -91,6 +91,8 @@ public class Aperture
     public static ValueInt flightCameraFovPlus;
     public static ValueInt flightCameraRollMinus;
     public static ValueInt flightCameraRollPlus;
+    public static ValueInt flightCameraSpeedMinus;
+    public static ValueInt flightCameraSpeedPlus;
 
     public static ValueBoolean smoothClampPitch;
     public static ValueBoolean smooth;
@@ -157,6 +159,8 @@ public class Aperture
         flightCameraFovPlus = builder.getInt("fov_plus", Keyboard.KEY_RBRACKET).keybind();
         flightCameraRollMinus = builder.getInt("roll_minus", Keyboard.KEY_APOSTROPHE).keybind();
         flightCameraRollPlus = builder.getInt("roll_plus", Keyboard.KEY_BACKSLASH).keybind();
+        flightCameraSpeedMinus = builder.getInt("speed_minus", Keyboard.KEY_O).keybind();
+        flightCameraSpeedPlus = builder.getInt("speed_plus", Keyboard.KEY_P).keybind();
 
         /* Smooth camera */
         smooth = builder.category("smooth").getBoolean("enabled", false);

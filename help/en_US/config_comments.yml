@@ -43,6 +43,8 @@ aperture.config.comments:
         fov_plus: Widen the Field of View
         roll_minus: Roll counter-clockwise
         roll_plus: Roll clockwise
+        speed_minus: Decrease overall speed factor (instead of mouse wheel down)
+        speed_plus: Increase overall speed factor (instead of mouse wheel up)
 
     smooth:
         enabled: Enable smooth camera
