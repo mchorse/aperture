@@ -1105,6 +1105,13 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         AbstractFixture fixture = this.getFixture();
 
+        if (!this.haveScrubbed)
+        {
+            this.mc.player.motionX = 0;
+            this.mc.player.motionY = 0;
+            this.mc.player.motionZ = 0;
+        }
+
         /* Loop fixture */
         if (Aperture.editorLoop.get() && this.runner.isRunning() && fixture != null)
         {
