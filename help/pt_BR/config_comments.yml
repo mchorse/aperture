@@ -42,7 +42,9 @@ aperture.config.comments:
         fov_minus: Diminuir o campo de visão
         fov_plus: Aumentar o campo de visão
         roll_minus: Rolar no sentido anti-horário
-        roll_plus: Rolar no sentido horário        
+        roll_plus: Rolar no sentido horário
+        speed_minus: Diminuir o fator de velocidade geral (em vez de girar o mouse para baixo)
+        speed_plus: Aumentar o fator de velocidade geral (em vez de girar o mouse para cima)
 
     smooth:
         enabled: Ativar câmera suave
