@@ -57,6 +57,8 @@ aperture.config:
         fov_plus: Aumentar FOV
         roll_minus: Rolar para Esquerda
         roll_plus: Rolar para Direita
+        speed_minus: Diminuir Velocidade
+        speed_plus: Aumentar Velocidade
 
     smooth:
         title: Câmera suave
