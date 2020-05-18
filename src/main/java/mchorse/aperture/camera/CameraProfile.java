@@ -52,6 +52,9 @@ public class CameraProfile
      */
     public boolean dirty;
 
+    /**
+     * Whether camera profile wasn't saved before
+     */
     public boolean temporary;
 
     public CameraProfile(AbstractDestination destination)
@@ -460,6 +463,13 @@ public class CameraProfile
         return profile;
     }
 
+    public void copy(CameraProfile profile)
+    {
+        this.temporary = false;
+        this.fixtures = profile.fixtures;
+        this.modifiers = profile.modifiers;
+    }
+
     public void cut(int where)
     {
         AbstractFixture fixture = this.atTick(where);
@@ -483,4 +493,6 @@ public class CameraProfile
             this.add(newFixture, this.fixtures.indexOf(fixture));
         }
     }
+
+
 }

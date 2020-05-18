@@ -50,7 +50,15 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
             }
 
             manager.profiles.filter("", true);
-            manager.selectProfile(ClientProxy.control.currentProfile);
+
+            if (ClientProxy.control.currentProfile != null)
+            {
+                manager.selectProfile(ClientProxy.control.currentProfile);
+            }
+            else
+            {
+                manager.pickEntry(manager.profiles.list.getList().get(0));
+            }
         }
     }
 }

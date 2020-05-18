@@ -324,7 +324,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.minema.flex().relative(this.openMinema).xy(1F, 1F).anchorX(1F).w(200);
 
         /* Adding everything */
-        this.cameraProfileWasChanged(this.profile);
+        this.cameraProfileWasChanged(this.getProfile());
         this.updatePlauseButton();
         this.updateValues();
 
@@ -341,7 +341,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         IKey fixture = IKey.lang("aperture.gui.editor.keys.fixture.title");
         IKey modes = IKey.lang("aperture.gui.editor.keys.modes.title");
         IKey editor = IKey.lang("aperture.gui.editor.keys.editor.title");
-        Supplier<Boolean> active = () -> !(this.flight.enabled || this.profile == null);
+        Supplier<Boolean> active = () -> !this.flight.enabled;
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.toggle"), Keyboard.KEY_F1, () -> this.top.toggleVisible()).category(editor);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.modifiers"), Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(editor);
@@ -385,6 +385,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         return Aperture.editorSync.get();
     }
 
+    public void haveScrubbed()
+    {
+        this.haveScrubbed = true;
+    }
+
     /**
      * Teleport player and setup position, motion and angle based on the value
      * was scrubbed from playback scrubber.
@@ -399,7 +404,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (fromScrub)
         {
-            this.haveScrubbed = true;
+            this.haveScrubbed();
 
             ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Scrubbed(this, this.runner.isRunning(), this.timeline.value));
         }
@@ -447,7 +452,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                     this.timeline.setValue((int) panel.currentOffset());
                 }
 
-                this.timeline.index = this.profile.getAll().indexOf(fixture);
+                this.timeline.index = this.getProfile().getAll().indexOf(fixture);
             }
             else
             {
@@ -468,25 +473,25 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             return;
         }
 
-        if (this.replacing && !this.profile.has(this.timeline.index))
+        if (this.replacing && !this.getProfile().has(this.timeline.index))
         {
             return;
         }
 
         if (this.panel.delegate == null)
         {
-            this.profile.add(fixture);
+            this.getProfile().add(fixture);
         }
         else
         {
             if (this.replacing)
             {
-                this.profile.replace(fixture, this.timeline.index);
+                this.getProfile().replace(fixture, this.timeline.index);
                 this.replacing = false;
             }
             else
             {
-                this.profile.add(fixture, this.timeline.index);
+                this.getProfile().add(fixture, this.timeline.index);
             }
         }
 
@@ -501,11 +506,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         int index = this.timeline.index;
 
-        if (this.profile.has(index))
+        if (this.getProfile().has(index))
         {
-            AbstractFixture fixture = this.profile.get(index).copy();
+            AbstractFixture fixture = this.getProfile().get(index).copy();
 
-            this.profile.add(fixture);
+            this.getProfile().add(fixture);
             this.pickCameraFixture(fixture, 0);
             this.updateValues();
         }
@@ -517,15 +522,16 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     private void removeFixture()
     {
         int index = this.timeline.index;
+        CameraProfile profile = this.getProfile();
 
-        if (this.profile.has(index))
+        if (profile.has(index))
         {
-            this.profile.remove(index);
+            profile.remove(index);
             this.timeline.index--;
 
             if (this.timeline.index >= 0)
             {
-                this.pickCameraFixture(this.profile.get(this.timeline.index), 0);
+                this.pickCameraFixture(profile.get(this.timeline.index), 0);
             }
             else
             {
@@ -547,7 +553,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             Collections.sort(this.markers);
 
-            long duration = this.profile.getDuration();
+            CameraProfile profile = this.getProfile();
+            long duration = this.getProfile().getDuration();
 
             for (Integer tick : this.markers)
             {
@@ -558,7 +565,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 IdleFixture fixture = new IdleFixture(difference);
 
                 fixture.fromPlayer(this.getCamera());
-                this.profile.add(fixture);
+                profile.add(fixture);
 
                 duration += difference;
             }
@@ -588,10 +595,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void cutFixture()
     {
-        if (this.profile != null)
-        {
-            this.profile.cut(this.timeline.value);
-        }
+        this.getProfile().cut(this.timeline.value);
     }
 
     /**
@@ -630,7 +634,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         this.cameraOptions.update();
-        this.haveScrubbed = true;
+
+        if (flight)
+        {
+            this.haveScrubbed();
+        }
     }
 
     /**
@@ -689,15 +697,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
         else if (this.panel.delegate != null)
         {
-            long offset = this.profile.calculateOffset(this.panel.delegate.fixture);
+            long offset = this.getProfile().calculateOffset(this.panel.delegate.fixture);
 
             this.panel.delegate.select(this.panel.delegate.fixture, this.timeline.value - offset);
             this.timeline.index = profile.getAll().indexOf(this.panel.delegate.fixture);
-        }
-
-        if (this.profile == null)
-        {
-            this.profiles.setVisible(true);
         }
     }
 
@@ -738,8 +741,23 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         return this.runner;
     }
 
+    /**
+     * Get current camera profile
+     *
+     * If the camera profile is null, then improvise...
+     */
     public CameraProfile getProfile()
     {
+        if (this.profile == null)
+        {
+            this.profile = ClientProxy.control.currentProfile;
+
+            if (this.profile == null)
+            {
+                /* TODO: pick */
+            }
+        }
+
         return this.profile;
     }
 
@@ -779,12 +797,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updatePlayer(long tick, float ticks)
     {
-        if (this.profile == null)
-        {
-            return;
-        }
-
-        long duration = this.profile.getDuration();
+        long duration = this.getProfile().getDuration();
 
         tick = tick < 0 ? 0 : tick;
         tick = tick > duration ? duration : tick;
@@ -792,7 +805,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         EntityPlayer player = Minecraft.getMinecraft().player;
 
         this.position.set(player);
-        this.profile.applyProfile(tick, ticks, this.lastPartialTick, this.position);
+        this.getProfile().applyProfile(tick, ticks, this.lastPartialTick, this.position);
 
         this.position.apply(this.getCamera());
         ClientProxy.control.setRollAndFOV(this.position.angle.roll, this.position.angle.fov);
@@ -803,16 +816,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updateValues()
     {
-        if (this.profile != null)
-        {
-            this.timeline.max = Math.max((int) this.profile.getDuration(), this.maxScrub);
-            this.timeline.setValue(this.timeline.value);
-        }
-        else
-        {
-            this.timeline.max = this.maxScrub;
-            this.timeline.setValue(0);
-        }
+        this.timeline.max = Math.max((int) this.getProfile().getDuration(), this.maxScrub);
+        this.timeline.setValue(this.timeline.value);
     }
 
     /**
@@ -820,10 +825,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updateProfile()
     {
-        if (this.profile != null)
-        {
-            this.profile.dirty();
-        }
+        this.getProfile().dirty();
 
         if (this.panel.delegate != null)
         {
@@ -836,11 +838,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void saveProfile()
     {
-        if (this.profile != null)
-        {
-            this.profile.save();
-            this.profiles.init();
-        }
+        this.getProfile().save();
+        this.profiles.init();
     }
 
     /**
@@ -854,10 +853,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         if (fixture != null && !fixture.getModifiers().isEmpty())
         {
             Position withModifiers = new Position();
-            this.profile.applyProfile(this.timeline.value, 0, withModifiers);
+            this.getProfile().applyProfile(this.timeline.value, 0, withModifiers);
 
             Position noModifiers = new Position();
-            this.profile.applyProfile(this.timeline.value, 0, noModifiers, false);
+            this.getProfile().applyProfile(this.timeline.value, 0, noModifiers, false);
 
             /* Get difference between modified and unmodified position */
             withModifiers.point.x -= noModifiers.point.x;
@@ -940,7 +939,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.panel.delegate.editFixture(this.getPosition());
         }
 
-        this.haveScrubbed = true;
+        this.haveScrubbed();
     }
 
     /**
@@ -954,8 +953,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         /* Move duration to the timeline location */
-        AbstractFixture fixture = this.profile.get(this.timeline.index);
-        long offset = this.profile.calculateOffset(fixture);
+        CameraProfile profile = getProfile();
+        AbstractFixture fixture = profile.get(this.timeline.index);
+        long offset = profile.calculateOffset(fixture);
 
         if (this.timeline.value > offset && fixture != null)
         {
@@ -972,7 +972,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void jumpToNextFixture()
     {
-        this.timeline.setValueFromScrub((int) this.profile.calculateOffset(this.timeline.value, true));
+        this.timeline.setValueFromScrub((int) this.getProfile().calculateOffset(this.timeline.value, true));
     }
 
     /**
@@ -980,7 +980,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void jumpToPrevFixture()
     {
-        this.timeline.setValueFromScrub((int) this.profile.calculateOffset(this.timeline.value - 1, false));
+        this.timeline.setValueFromScrub((int) this.getProfile().calculateOffset(this.timeline.value - 1, false));
     }
 
     /**
@@ -988,7 +988,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void moveTo(int direction)
     {
-        CameraProfile profile = this.profile;
+        CameraProfile profile = this.getProfile();
         int index = this.timeline.index;
         int to = index + direction;
 
@@ -1003,7 +1003,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public void togglePlayback()
     {
         this.setFlight(false);
-        this.runner.toggle(this.profile, this.timeline.value);
+        this.runner.toggle(this.getProfile(), this.timeline.value);
         this.updatePlauseButton();
 
         this.playing = this.runner.isRunning();
@@ -1115,7 +1115,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Loop fixture */
         if (Aperture.editorLoop.get() && this.runner.isRunning() && fixture != null)
         {
-            long target = this.profile.calculateOffset(fixture) + fixture.getDuration();
+            long target = this.getProfile().calculateOffset(fixture) + fixture.getDuration();
 
             if (this.runner.ticks >= target - 1)
             {

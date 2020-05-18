@@ -120,7 +120,9 @@ public class CameraControl
 
         if (screen instanceof GuiCameraEditor)
         {
-            ((GuiCameraEditor) screen).selectProfile(profile);
+            GuiCameraEditor editor = (GuiCameraEditor) screen;
+
+            editor.selectProfile(profile);
         }
     }
 

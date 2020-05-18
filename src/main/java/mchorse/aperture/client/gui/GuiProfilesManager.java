@@ -51,8 +51,6 @@ public class GuiProfilesManager extends GuiElement
     public GuiIconElement remove;
     public GuiDelegateElement<GuiModal> modal;
 
-    private String title = I18n.format("aperture.gui.profiles.title");
-
     public GuiProfilesManager(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc);
@@ -112,10 +110,9 @@ public class GuiProfilesManager extends GuiElement
         }
 
         CameraProfile profile = new CameraProfile(AbstractDestination.create(name));
-        CameraProfileEntry entry = new CameraProfileEntry(profile.getDestination(), profile);
+        CameraProfileEntry entry = new CameraProfileEntry(profile);
         ClientProxy.control.addProfile(profile);
 
-        this.editor.selectProfile(profile);
         this.profiles.add(entry);
         this.profiles.filter("", true);
         this.profiles.list.setCurrent(entry);
@@ -157,8 +154,7 @@ public class GuiProfilesManager extends GuiElement
             CameraProfileEntry newEntry = new CameraProfileEntry(profile.getDestination(), profile);
 
             ClientProxy.control.addProfile(profile);
-
-            this.editor.selectProfile(profile);
+            
             this.profiles.add(newEntry);
             this.profiles.filter("", true);
             this.profiles.list.setCurrent(newEntry);
@@ -359,6 +355,12 @@ public class GuiProfilesManager extends GuiElement
             this.profile = profile;
         }
 
+        public CameraProfileEntry(CameraProfile profile)
+        {
+            this.destination = profile.getDestination();
+            this.profile = profile;
+        }
+
         @Override
         public String toString()
         {
@@ -470,7 +472,7 @@ public class GuiProfilesManager extends GuiElement
 
             (element.destination instanceof ClientDestination ? Icons.FOLDER : Icons.SERVER).render(x + 2, y + 2);
 
-            this.font.drawStringWithShadow(element.destination.getFilename(), x + 4 + 16, y + 6, hasProfile ? (hover ? 16777120 : 0xffffff) : 0x888888);
+            this.font.drawStringWithShadow(element.toString(), x + 4 + 16, y + 6, hasProfile ? (hover ? 16777120 : 0xffffff) : 0x888888);
         }
     }
 }
