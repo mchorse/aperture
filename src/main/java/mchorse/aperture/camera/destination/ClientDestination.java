@@ -68,7 +68,7 @@ public class ClientDestination extends AbstractDestination
             newProfile.setDestination(this);
             newProfile.dirty = false;
 
-            ClientProxy.control.addProfile(newProfile);
+            ClientProxy.getCameraEditor().profiles.addProfile(newProfile);
 
             L10n.success(Minecraft.getMinecraft().player, "profile.client_load", this.filename);
         }

@@ -55,7 +55,7 @@ public class CameraProfile
     /**
      * Whether camera profile wasn't saved before
      */
-    public boolean temporary;
+    public boolean exists = true;
 
     public CameraProfile(AbstractDestination destination)
     {
@@ -415,7 +415,7 @@ public class CameraProfile
      */
     public void save()
     {
-        this.temporary = false;
+        this.exists = true;
 
         if (this.destination != null)
         {
@@ -463,9 +463,9 @@ public class CameraProfile
         return profile;
     }
 
-    public void copy(CameraProfile profile)
+    public void copyFrom(CameraProfile profile)
     {
-        this.temporary = false;
+        this.exists = true;
         this.fixtures = profile.fixtures;
         this.modifiers = profile.modifiers;
     }
@@ -493,6 +493,4 @@ public class CameraProfile
             this.add(newFixture, this.fixtures.indexOf(fixture));
         }
     }
-
-
 }

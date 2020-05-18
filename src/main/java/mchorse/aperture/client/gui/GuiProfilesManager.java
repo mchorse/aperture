@@ -57,7 +57,7 @@ public class GuiProfilesManager extends GuiElement
 
         this.editor = editor;
 
-        this.profiles = new GuiCameraProfilesSearchList(mc, (entry) -> this.pickEntry(entry.get(0)));
+        this.profiles = new GuiCameraProfilesSearchList(mc, (entry) -> this.pickProfile(entry.get(0)));
         this.profiles.label(IKey.lang("aperture.gui.search"));
         this.rename = new GuiIconElement(mc, Icons.EDIT, (b) -> this.rename());
         this.rename.tooltip(IKey.lang("aperture.gui.profiles.rename_tooltip"));
@@ -86,20 +86,29 @@ public class GuiProfilesManager extends GuiElement
         this.add(label, this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert, this.modal);
     }
 
+    public void pickProfile(CameraProfile profile)
+    {
+        if (!profile.exists)
+        {
+            profile.getDestination().load();
+        }
+
+        this.editor.setProfile(profile);
+    }
+
     public CameraProfile createTemporary()
     {
         CameraProfile profile = new CameraProfile(AbstractDestination.create("default"));
 
-        profile.temporary = true;
-        ClientProxy.control.addProfile(profile);
-        this.profiles.add(new CameraProfileEntry(profile.getDestination(), profile));
+        this.profiles.list.add(profile);
+        this.editor.setProfile(profile);
 
         return profile;
     }
 
     private void add()
     {
-        this.modal.setDelegate(new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.add_modal"), (name) -> this.add(name)));
+        this.modal.setDelegate(new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.add_modal"), this::add));
     }
 
     private void add(String name)
@@ -110,24 +119,22 @@ public class GuiProfilesManager extends GuiElement
         }
 
         CameraProfile profile = new CameraProfile(AbstractDestination.create(name));
-        CameraProfileEntry entry = new CameraProfileEntry(profile);
-        ClientProxy.control.addProfile(profile);
 
-        this.profiles.add(entry);
         this.profiles.filter("", true);
-        this.profiles.list.setCurrent(entry);
+        this.profiles.list.add(profile);
+        this.editor.setProfile(profile);
     }
 
     private void dupe()
     {
-        CameraProfileEntry entry = this.profiles.list.getCurrentFirst();
+        CameraProfile entry = this.profiles.list.getCurrentFirst();
 
         if (entry == null)
         {
             return;
         }
 
-        String filename = entry.destination.getFilename();
+        String filename = entry.getDestination().getFilename();
         GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.dupe_modal"), (name) ->
         {
             if (!name.equals(filename))
@@ -142,69 +149,77 @@ public class GuiProfilesManager extends GuiElement
 
     private void dupe(String name)
     {
-        CameraProfileEntry entry = this.profiles.list.getCurrentFirst();
+        CameraProfile entry = this.profiles.list.getCurrentFirst();
 
         if (entry != null)
         {
-            CameraProfile profile = entry.profile.copy();
+            CameraProfile profile = entry.copy();
 
             profile.getDestination().setFilename(name);
             profile.dirty();
 
-            CameraProfileEntry newEntry = new CameraProfileEntry(profile.getDestination(), profile);
-
-            ClientProxy.control.addProfile(profile);
-            
-            this.profiles.add(newEntry);
             this.profiles.filter("", true);
-            this.profiles.list.setCurrent(newEntry);
+            this.profiles.list.add(profile);
+            this.editor.setProfile(profile);
         }
     }
 
     private void rename()
     {
-        CameraProfileEntry entry = this.profiles.list.getCurrentFirst();
+        CameraProfile entry = this.profiles.list.getCurrentFirst();
 
         if (entry == null)
         {
             return;
         }
 
-        GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.rename_modal"), (name) -> this.rename(name));
-        modal.setValue(entry.destination.getFilename());
+        GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.rename_modal"), this::rename);
+        modal.setValue(entry.getDestination().getFilename());
 
         this.modal.setDelegate(modal);
     }
 
     private void rename(String name)
     {
-        CameraProfileEntry entry = this.profiles.list.getCurrentFirst();
-        AbstractDestination dest = entry.profile.getDestination();
+        CameraProfile entry = this.profiles.list.getCurrentFirst();
+        AbstractDestination dest = entry.getDestination();
 
         dest.rename(name);
-        this.rename(dest, name);
     }
 
     private void convert()
     {
-        CameraProfileEntry entry = this.profiles.list.getCurrentFirst();
+        CameraProfile entry = this.profiles.list.getCurrentFirst();
 
-        if (entry != null)
+        if (entry == null)
         {
             return;
         }
 
-        AbstractDestination dest = entry.profile.getDestination();
+        AbstractDestination dest = entry.getDestination();
         String filename = dest.getFilename();
         AbstractDestination newDest = dest instanceof ClientDestination ? new ServerDestination(filename) : new ClientDestination(filename);
 
-        if (!ClientProxy.control.hasSimilar(newDest))
+        if (!this.hasSimilar(newDest))
         {
-            entry.profile.setDestination(newDest);
-            entry.destination = newDest;
+            entry.setDestination(newDest);
+            entry.dirty();
         }
 
         this.init();
+    }
+
+    private boolean hasSimilar(AbstractDestination dest)
+    {
+        for (CameraProfile profile : this.profiles.list.getList())
+        {
+            if (profile.getDestination().equals(dest))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void remove()
@@ -216,49 +231,47 @@ public class GuiProfilesManager extends GuiElement
     {
         if (confirmed)
         {
-            CameraProfileEntry entry = this.profiles.list.getCurrentFirst();
+            CameraProfile entry = this.profiles.list.getCurrentFirst();
 
             if (entry == null)
             {
                 return;
             }
 
-            ClientProxy.control.profiles.remove(entry.profile);
-
-            /* Reset current camera profile only removed one is was current profile */
-            if (this.editor.getProfile() == entry.profile)
-            {
-                ClientProxy.control.currentProfile = null;
-                this.editor.selectProfile(null);
-            }
-
             int index = this.profiles.list.getIndex();
 
             this.profiles.list.remove(entry);
             this.profiles.filter("", true);
-            entry.destination.remove();
+            entry.getDestination().remove();
 
-            /* If there are no camera profiles, please */
-            if (this.profiles.list.getList().isEmpty())
+            if (this.editor.getProfile() == entry)
             {
-                this.selectProfile(this.createTemporary());
+                this.selectFirstAvailable(index);
             }
-            else
-            {
-                if (!this.profiles.list.exists(index))
-                {
-                    index = MathHelper.clamp(index, 0, this.profiles.list.getList().size() - 1);
-                }
+        }
+    }
 
-                this.profiles.list.setIndex(index);
-                this.pickEntry(this.profiles.list.getCurrentFirst());
+    public void selectFirstAvailable(int lastIndex)
+    {
+        if (this.profiles.list.getList().isEmpty())
+        {
+            this.createTemporary();
+        }
+        else
+        {
+            if (!this.profiles.list.exists(lastIndex))
+            {
+                lastIndex = MathHelper.clamp(lastIndex, 0, this.profiles.list.getList().size() - 1);
             }
+
+            this.profiles.list.setIndex(lastIndex);
+            this.pickProfile(this.profiles.list.getCurrentFirst());
         }
     }
 
     public void selectProfile(CameraProfile profile)
     {
-        ((GuiCameraProfilesList) this.profiles.list).setCurrent(profile);
+        this.profiles.list.setCurrent(profile);
     }
 
     /**
@@ -266,7 +279,7 @@ public class GuiProfilesManager extends GuiElement
      */
     public void rename(AbstractDestination from, String to)
     {
-        CameraProfile profile = ClientProxy.control.getProfile(from);
+        CameraProfile profile = this.profiles.getBy(from);
 
         if (profile != null)
         {
@@ -279,35 +292,19 @@ public class GuiProfilesManager extends GuiElement
      */
     public void remove(ServerDestination serverDestination)
     {
-        CameraProfile profile = ClientProxy.control.getProfile(serverDestination);
+        int index = this.profiles.list.getIndex();
 
-        if (profile != null && !profile.temporary)
-        {
-            ClientProxy.control.removeProfile(profile);
-        }
-    }
+        CameraProfile profile = this.profiles.getBy(serverDestination);
 
-    private void pickEntry(CameraProfileEntry entry)
-    {
-        if (entry.profile == null)
+        if (profile != null && profile.exists)
         {
-            entry.destination.load();
-        }
-        else
-        {
-            this.editor.selectProfile(entry.profile);
+            this.profiles.list.remove(profile);
+            this.selectFirstAvailable(index);
         }
     }
 
     public void init()
     {
-        this.profiles.list.clear();
-
-        for (CameraProfile profile : ClientProxy.control.profiles)
-        {
-            this.profiles.add(this.createEntry(profile.getDestination()));
-        }
-
         if (ClientProxy.server)
         {
             Dispatcher.sendToServer(new PacketRequestCameraProfiles());
@@ -316,7 +313,7 @@ public class GuiProfilesManager extends GuiElement
         {
             for (String filename : CameraAPI.getClientProfiles())
             {
-                this.profiles.add(this.createEntry(new ClientDestination(filename)));
+                this.addProfile(new ClientDestination(filename));
             }
 
             this.profiles.filter("", true);
@@ -324,11 +321,37 @@ public class GuiProfilesManager extends GuiElement
         }
     }
 
-    public CameraProfileEntry createEntry(AbstractDestination dest)
+    public void addProfile(AbstractDestination destination)
     {
-        CameraProfile profile = ClientProxy.control.getProfile(dest);
+        for (CameraProfile profile : this.profiles.list.getList())
+        {
+            if (profile.getDestination().equals(destination))
+            {
+                return;
+            }
+        }
 
-        return new CameraProfileEntry(profile == null ? dest : profile.getDestination(), profile);
+        CameraProfile profile = new CameraProfile(destination);
+
+        profile.exists = false;
+        this.profiles.list.add(profile);
+    }
+
+    public void addProfile(CameraProfile newProfile)
+    {
+        for (CameraProfile profile : this.profiles.list.getList())
+        {
+            if (profile.getDestination().equals(newProfile.getDestination()))
+            {
+                profile.copyFrom(newProfile);
+                this.editor.setProfile(newProfile);
+
+                return;
+            }
+        }
+
+        this.profiles.list.add(newProfile);
+        this.editor.setProfile(newProfile);
     }
 
     @Override
@@ -340,83 +363,41 @@ public class GuiProfilesManager extends GuiElement
     }
 
     /**
-     * Camera profile entry
-     * 
-     * Stores the destination, but beside that also 
-     */
-    public static class CameraProfileEntry
-    {
-        public AbstractDestination destination;
-        public CameraProfile profile;
-
-        public CameraProfileEntry(AbstractDestination destination, CameraProfile profile)
-        {
-            this.destination = destination;
-            this.profile = profile;
-        }
-
-        public CameraProfileEntry(CameraProfile profile)
-        {
-            this.destination = profile.getDestination();
-            this.profile = profile;
-        }
-
-        @Override
-        public String toString()
-        {
-            return this.destination.getFilename();
-        }
-
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (obj instanceof CameraProfileEntry)
-            {
-                CameraProfileEntry entry = (CameraProfileEntry) obj;
-
-                return this.profile == entry.profile && Objects.equals(entry.destination, this.destination);
-            }
-
-            return super.equals(obj);
-        }
-    }
-
-    /**
      * Search list of camera profiles 
      */
-    public static class GuiCameraProfilesSearchList extends GuiSearchListElement<CameraProfileEntry>
+    public static class GuiCameraProfilesSearchList extends GuiSearchListElement<CameraProfile>
     {
-        public GuiCameraProfilesSearchList(Minecraft mc, Consumer<List<CameraProfileEntry>> callback)
+        public GuiCameraProfilesSearchList(Minecraft mc, Consumer<List<CameraProfile>> callback)
         {
             super(mc, callback);
         }
 
         @Override
-        protected GuiListElement<CameraProfileEntry> createList(Minecraft mc, Consumer<List<CameraProfileEntry>> callback)
+        protected GuiListElement<CameraProfile> createList(Minecraft mc, Consumer<List<CameraProfile>> callback)
         {
             return new GuiCameraProfilesList(mc, callback);
         }
 
-        public void add(CameraProfileEntry element)
+        public CameraProfile getBy(AbstractDestination from)
         {
-            if (element != null && !this.list.getList().contains(element))
+            for (CameraProfile profile : this.list.getList())
             {
-                if (element.profile != null)
+                if (profile.getDestination().equals(from))
                 {
-                    element.destination = element.profile.getDestination();
+                    return profile;
                 }
-
-                this.list.add(element);
             }
+
+            return null;
         }
     }
 
     /**
      * Camera profile list, all in one 
      */
-    public static class GuiCameraProfilesList extends GuiListElement<CameraProfileEntry>
+    public static class GuiCameraProfilesList extends GuiListElement<CameraProfile>
     {
-        public GuiCameraProfilesList(Minecraft mc, Consumer<List<CameraProfileEntry>> callback)
+        public GuiCameraProfilesList(Minecraft mc, Consumer<List<CameraProfile>> callback)
         {
             super(mc, callback);
         }
@@ -424,42 +405,15 @@ public class GuiProfilesManager extends GuiElement
         @Override
         protected boolean sortElements()
         {
-            Collections.sort(this.list, (o1, o2) -> o1.destination.getFilename().compareToIgnoreCase(o2.destination.getFilename()));
+            Collections.sort(this.list, (o1, o2) -> o1.getDestination().getFilename().compareToIgnoreCase(o2.getDestination().getFilename()));
 
             return true;
         }
 
-        public boolean setCurrent(CameraProfile profile)
-        {
-            if (profile == null)
-            {
-                return false;
-            }
-
-            for (CameraProfileEntry entry : this.list)
-            {
-                if (entry.destination.equals(profile.getDestination()) && entry.profile == null)
-                {
-                    entry.profile = profile;
-                }
-
-                if (entry.profile == profile)
-                {
-                    this.setCurrent(entry);
-
-                    return true;
-                }
-            }
-
-            this.current.clear();
-
-            return false;
-        }
-
         @Override
-        protected void drawElementPart(CameraProfileEntry element, int i, int x, int y, boolean hover, boolean selected)
+        protected void drawElementPart(CameraProfile element, int i, int x, int y, boolean hover, boolean selected)
         {
-            boolean hasProfile = element.profile != null;
+            boolean hasProfile = element.exists;
 
             if (hasProfile)
             {
@@ -470,9 +424,9 @@ public class GuiProfilesManager extends GuiElement
                 GlStateManager.color(0.5F, 0.5F, 0.5F, 1);
             }
 
-            (element.destination instanceof ClientDestination ? Icons.FOLDER : Icons.SERVER).render(x + 2, y + 2);
+            (element.getDestination() instanceof ClientDestination ? Icons.FOLDER : Icons.SERVER).render(x + 2, y + 2);
 
-            this.font.drawStringWithShadow(element.toString(), x + 4 + 16, y + 6, hasProfile ? (hover ? 16777120 : 0xffffff) : 0x888888);
+            this.font.drawStringWithShadow(element.getDestination().getFilename(), x + 4 + 16, y + 6, hasProfile ? (hover ? 16777120 : 0xffffff) : 0x888888);
         }
     }
 }

@@ -2,17 +2,12 @@ package mchorse.aperture.camera;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.GuiProfilesManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Camera control class
@@ -24,11 +19,6 @@ import java.util.List;
 public class CameraControl
 {
     /**
-     * Currently stored camera profiles 
-     */
-    public List<CameraProfile> profiles = new ArrayList<CameraProfile>();
-
-    /**
      * Currently rendered/editing camera profile
      */
     public CameraProfile currentProfile;
@@ -37,12 +27,6 @@ public class CameraControl
      * Roll of the camera
      */
     public float roll = 0;
-
-    /**
-     * Was player logged in. Used to add a default camera profile in a 
-     * new world.
-     */
-    public boolean logged;
 
     public int lastCounter;
     public Float lastRoll;
@@ -89,117 +73,31 @@ public class CameraControl
         /* Saving dirty camera profiles */
         if (Aperture.profileAutoSave.get())
         {
-            for (CameraProfile profile : this.profiles)
+            GuiCameraEditor cameraEditor = ClientProxy.cameraEditor;
+
+            if (cameraEditor != null)
             {
-                if (profile.dirty)
-                {
-                    profile.save();
-                }
+                this.saveCameraProfiles(cameraEditor);
             }
         }
 
-        this.profiles.clear();
         this.currentProfile = null;
-        this.logged = false;
         this.lastCounter = 0;
         this.lastRoll = this.lastFov = null;
         this.lastGameMode = null;
     }
 
-    /**
-     * Add a camera profile to the list of loaded camera profiles and also set 
-     * it current. 
-     */
-    public void addProfile(CameraProfile profile)
+    private void saveCameraProfiles(GuiCameraEditor editor)
     {
-        profile.initiate();
-        this.insertProfile(profile);
-        this.currentProfile = profile;
+        GuiProfilesManager manager = editor.profiles;
 
-        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-
-        if (screen instanceof GuiCameraEditor)
+        for (CameraProfile profile : manager.profiles.list.getList())
         {
-            GuiCameraEditor editor = (GuiCameraEditor) screen;
-
-            editor.selectProfile(profile);
-        }
-    }
-
-    /**
-     * Remove camera profile 
-     */
-    public void removeProfile(CameraProfile profile)
-    {
-        this.profiles.remove(profile);
-
-        if (profile == this.currentProfile)
-        {
-            this.currentProfile = null;
-
-            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-
-            if (screen instanceof GuiCameraEditor)
+            if (profile.dirty)
             {
-                ((GuiCameraEditor) screen).selectProfile(null);
+                profile.save();
             }
         }
-    }
-
-    /**
-     * Insert camera profile (just add it to the list of camera profiles) 
-     */
-    public void insertProfile(CameraProfile newProfile)
-    {
-        Iterator<CameraProfile> it = this.profiles.iterator();
-
-        while (it.hasNext())
-        {
-            CameraProfile profile = it.next();
-
-            if (profile.getDestination().equals(newProfile.getDestination()))
-            {
-                it.remove();
-            }
-        }
-
-        this.profiles.add(newProfile);
-    }
-
-    /**
-     * Is there a camera profile which has same destination 
-     */
-    public boolean hasSimilar(AbstractDestination destination)
-    {
-        Iterator<CameraProfile> it = this.profiles.iterator();
-
-        while (it.hasNext())
-        {
-            CameraProfile profile = it.next();
-
-            if (profile.getDestination().equals(destination))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get camera profile by given filename 
-     */
-    public CameraProfile getProfile(AbstractDestination dest)
-    {
-        for (CameraProfile profile : this.profiles)
-        {
-            if (profile.getDestination().equals(dest))
-            {
-                return profile;
-            }
-        }
-
-        return null;
     }
 
     /**

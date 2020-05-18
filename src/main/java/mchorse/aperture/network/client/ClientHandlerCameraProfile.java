@@ -31,7 +31,7 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
         profile.setDestination(new ServerDestination(message.filename));
         profile.dirty = false;
 
-        ClientProxy.control.addProfile(profile);
+        ClientProxy.getCameraEditor().profiles.addProfile(profile);
 
         if (message.play)
         {

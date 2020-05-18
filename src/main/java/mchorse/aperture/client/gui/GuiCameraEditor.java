@@ -72,11 +72,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     private String stringFov = I18n.format("aperture.gui.panels.fov");
 
     /**
-     * Currently editing camera profile
-     */
-    private CameraProfile profile;
-
-    /**
      * Profile runner
      */
     private CameraRunner runner;
@@ -324,10 +319,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.minema.flex().relative(this.openMinema).xy(1F, 1F).anchorX(1F).w(200);
 
         /* Adding everything */
-        this.cameraProfileWasChanged(this.getProfile());
-        this.updatePlauseButton();
-        this.updateValues();
-
         this.hidePopups(this.profiles);
         this.top.add(this.leftBar, this.middleBar, this.rightBar, this.creationBar);
         this.top.add(this.panel, this.timeline, this.fixtures, this.profiles, this.config, this.modifiers, this.minema);
@@ -599,31 +590,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     }
 
     /**
-     * Camera profile was selected from the profile manager 
-     */
-    public void selectProfile(CameraProfile profile)
-    {
-        boolean same = profile == this.profile;
-        ClientProxy.control.currentProfile = profile;
-
-        this.setProfile(profile);
-        this.cameraProfileWasChanged(profile);
-
-        if (!same)
-        {
-            this.pickCameraFixture(null, 0);
-        }
-    }
-
-    public void cameraProfileWasChanged(CameraProfile profile)
-    {
-        if (this.save != null)
-        {
-            this.save.both(profile != null && profile.dirty ? Icons.SAVE : Icons.SAVED);
-        }
-    }
-
-    /**
      * Set flight mode
      */
     public void setFlight(boolean flight)
@@ -683,24 +649,34 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     /**
      * Set camera profile
      */
-    public void setProfile(CameraProfile profile)
+    public boolean setProfile(CameraProfile profile)
     {
-        boolean isOldSame = this.profile == profile;
+        boolean isSame = this.getCurrentProfile() == profile;
 
-        this.profile = profile;
+        this.setCurrentProfile(profile);
         this.profiles.selectProfile(profile);
         this.timeline.setProfile(profile);
+        this.updateSaveButton(profile);
 
-        if (!isOldSame)
+        if (!isSame)
         {
-            this.panel.setDelegate(null);
+            this.pickCameraFixture(null, 0);
         }
         else if (this.panel.delegate != null)
         {
-            long offset = this.getProfile().calculateOffset(this.panel.delegate.fixture);
+            AbstractFixture fixture = this.panel.delegate.fixture;
 
-            this.panel.delegate.select(this.panel.delegate.fixture, this.timeline.value - offset);
-            this.timeline.index = profile.getAll().indexOf(this.panel.delegate.fixture);
+            this.pickCameraFixture(fixture, this.getProfile().calculateOffset(fixture));
+        }
+
+        return isSame;
+    }
+
+    public void updateSaveButton(CameraProfile profile)
+    {
+        if (this.save != null)
+        {
+            this.save.both(profile != null && profile.dirty ? Icons.SAVE : Icons.SAVED);
         }
     }
 
@@ -712,7 +688,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     {
         this.updateOverlay();
         this.position.set(player);
-        this.selectProfile(ClientProxy.control.currentProfile);
+        this.setProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
 
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
@@ -748,17 +724,22 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public CameraProfile getProfile()
     {
-        if (this.profile == null)
+        if (this.getCurrentProfile() == null)
         {
-            this.profile = ClientProxy.control.currentProfile;
-
-            if (this.profile == null)
-            {
-                /* TODO: pick */
-            }
+            this.profiles.selectFirstAvailable(-1);
         }
 
-        return this.profile;
+        return this.getCurrentProfile();
+    }
+
+    private CameraProfile getCurrentProfile()
+    {
+        return ClientProxy.control.currentProfile;
+    }
+
+    private void setCurrentProfile(CameraProfile profile)
+    {
+        ClientProxy.control.currentProfile = profile;
     }
 
     public AbstractFixture getFixture()

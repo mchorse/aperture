@@ -381,7 +381,7 @@ public class KeyboardHandler
 
         if (screen instanceof GuiCameraEditor)
         {
-            ((GuiCameraEditor) screen).cameraProfileWasChanged(event.profile);
+            ((GuiCameraEditor) screen).updateSaveButton(event.profile);
         }
     }
 }
