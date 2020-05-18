@@ -8,6 +8,7 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiInterpolationList;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
@@ -194,7 +195,7 @@ public class GuiEnvelope extends GuiElement
 
 		if (envelope.startDuration > 0)
 		{
-			this.drawFades(context, buffer, envelope.interpolation, startX, startD, sy, ey);
+			this.drawFades(context, buffer, envelope.interpolation, this.startD.area, startX, startD, sy, ey);
 		}
 
 		this.color.set(this.startD.area.isInside(context) ? selected : regular, true);
@@ -206,7 +207,7 @@ public class GuiEnvelope extends GuiElement
 
 		if (envelope.endDuration > 0)
 		{
-			this.drawFades(context, buffer, envelope.interpolation, startX, startD, ey, sy);
+			this.drawFades(context, buffer, envelope.interpolation, this.endX.area, endD, endX, ey, sy);
 		}
 
 		this.color.set(this.endX.area.isInside(context) ? selected : regular, true);
@@ -221,7 +222,7 @@ public class GuiEnvelope extends GuiElement
 	/**
 	 * Draw fading lines for the graph
 	 */
-	private void drawFades(GuiContext context, BufferBuilder buffer, Interpolation interp, int startX, int startD, int a, int b)
+	private void drawFades(GuiContext context, BufferBuilder buffer, Interpolation interp, Area area, int startX, int startD, int a, int b)
 	{
 		for (int i = 1; i < 10; i ++)
 		{
@@ -230,7 +231,7 @@ public class GuiEnvelope extends GuiElement
 
 			if (i == 6)
 			{
-				this.color.set(this.startD.area.isInside(context) ? selected : regular, true);
+				this.color.set(area.isInside(context) ? selected : regular, true);
 			}
 
 			buffer.pos(x, y,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
