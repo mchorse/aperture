@@ -55,3 +55,6 @@ aperture.config.comments:
         roll_friction: Roll acceleration friction (how fast it slows down)
         fov_speed: FOV acceleration speed
         fov_friction: FOV acceleration friction (how fast it slows down)
+
+    minema:
+        default_profile_name: Whether the name of the output file should be the name of the camera profile, rather than current date

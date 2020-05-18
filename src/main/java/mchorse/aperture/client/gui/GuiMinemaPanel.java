@@ -20,6 +20,8 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.function.Consumer;
 
 public class GuiMinemaPanel extends GuiElement
@@ -41,6 +43,10 @@ public class GuiMinemaPanel extends GuiElement
 	private boolean waiting;
 	private int start;
 	private int end;
+
+	private long lastUpdate;
+	private String lastName;
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
 	public GuiMinemaPanel(Minecraft mc, GuiCameraEditor editor)
 	{
@@ -77,7 +83,17 @@ public class GuiMinemaPanel extends GuiElement
 		{
 			if (this.fields.isVisible() && !this.name.isFocused() && this.name.field.getText().isEmpty())
 			{
-				this.font.drawStringWithShadow(this.getFilename(), this.name.area.x + 5, this.name.area.my() - 4, 0x888888);
+				long current = System.currentTimeMillis();
+
+				if (current > this.lastUpdate + 1000)
+				{
+					this.lastUpdate = current;
+					this.lastName = this.format.format(new Date());
+				}
+
+				String filename = Aperture.minemaDefaultProfileName.get() ? this.getFilename() : this.lastName;
+
+				this.font.drawStringWithShadow(filename, this.name.area.x + 5, this.name.area.my() - 4, 0x888888);
 			}
 		}));
 

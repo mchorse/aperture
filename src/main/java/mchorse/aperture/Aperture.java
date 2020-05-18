@@ -103,6 +103,8 @@ public class Aperture
     public static ValueFloat fovFriction;
     public static ValueFloat fovFactor;
 
+    public static ValueBoolean minemaDefaultProfileName;
+
     @SubscribeEvent
     public void onConfigRegister(RegisterConfigEvent event)
     {
@@ -132,7 +134,7 @@ public class Aperture
         outsideHidePlayer = builder.getBoolean("hide_player", false);
         outsideSky = builder.getBoolean("sky", true);
 
-        /* Camera editor overlay */
+        /* Camera editor */
         editorSync = builder.category("editor").getBoolean("sync", false);
         editorLoop = builder.getBoolean("loop", false);
         editorOverlay = builder.getBoolean("overlay", false);
@@ -171,6 +173,9 @@ public class Aperture
         rollFactor = builder.getFloat("roll_speed", 0.01F, 0.0F, 10.0F);
         fovFriction = builder.getFloat("fov_friction", 0.985F, 0.0F, 0.99999F);
         fovFactor = builder.getFloat("fov_speed", 0.075F, 0.0F, 10.0F);
+
+        /* Minema integration */
+        minemaDefaultProfileName = builder.category("minema").getBoolean("default_profile_name", false);
 
         event.modules.add(builder.build());
     }
