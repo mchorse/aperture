@@ -67,8 +67,6 @@ public class MinemaIntegration
 	@Optional.Method(modid = Minema.MODID)
 	public static void setName(String filename)
 	{
-		filename = Aperture.minemaDefaultProfileName.get() ? filename : "";
-
 		VideoHandler.customName = filename;
 	}
 

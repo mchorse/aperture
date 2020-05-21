@@ -119,6 +119,11 @@ public class GuiMinemaPanel extends GuiElement
 			return text;
 		}
 
+		if (!Aperture.minemaDefaultProfileName.get())
+		{
+			return "";
+		}
+
 		text = this.editor.getProfile().getDestination().getFilename();
 
 		if (this.fixture.isToggled())
