@@ -428,5 +428,11 @@ public class GuiProfilesManager extends GuiElement
 
             this.font.drawStringWithShadow(element.getDestination().getFilename(), x + 4 + 16, y + 6, hasProfile ? (hover ? 16777120 : 0xffffff) : 0x888888);
         }
+
+        @Override
+        protected String elementToString(CameraProfile element)
+        {
+            return element.getDestination().getFilename();
+        }
     }
 }
