@@ -168,6 +168,23 @@ public class GuiEnvelope extends GuiElement
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GL11.glLineWidth(1);
 
+		/* Draw cursor */
+		int x = this.panel.modifiers.editor.timeline.value;
+
+		if (this.panel.modifiers.fixture != null)
+		{
+			x -= this.panel.modifiers.editor.getProfile().calculateOffset(this.panel.modifiers.fixture);
+		}
+
+		float factor = this.get().factor(this.getDuration(), x);
+
+		x = this.getX(x);
+
+		if (x >= this.area.x && x < this.area.ex())
+		{
+			Gui.drawRect(x, this.area.ey() - 3 - (int) (9 * factor), x + 2, this.area.ey(), 0xff57f52a);
+		}
+
 		super.draw(context);
 	}
 
@@ -191,7 +208,10 @@ public class GuiEnvelope extends GuiElement
 			buffer.pos(this.area.x, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
 		}
 
-		buffer.pos(startX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
+		if (startX != startD)
+		{
+			buffer.pos(startX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
+		}
 
 		if (envelope.startDuration > 0)
 		{
@@ -210,8 +230,11 @@ public class GuiEnvelope extends GuiElement
 			this.drawFades(context, buffer, envelope.interpolation, this.endX.area, endD, endX, ey, sy);
 		}
 
-		this.color.set(this.endX.area.isInside(context) ? selected : regular, true);
-		buffer.pos(endX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
+		if (endD != endX)
+		{
+			this.color.set(this.endX.area.isInside(context) ? selected : regular, true);
+			buffer.pos(endX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
+		}
 
 		if (endX < this.area.ex())
 		{
