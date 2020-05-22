@@ -60,7 +60,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
         /* Add all elements */
         this.add(this.graph, this.frameButtons);
-        this.frameButtons.add(this.interp, this.easing, this.tick, this.value, this.interpolations);
+        this.frameButtons.add(this.tick, this.value, this.interp, this.easing, this.interpolations);
     }
 
     protected abstract T createElement(Minecraft mc);
