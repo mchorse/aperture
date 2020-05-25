@@ -71,7 +71,9 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         {
             this.overlayPicker.refresh();
             this.overlayPicker.fill(this.editor.overlayLocation);
-            this.overlayPicker.setVisible(true);
+            this.overlayPicker.resize();
+
+            this.editor.top.add(this.overlayPicker);
         });
 
         this.overlayPicker = new GuiTexturePicker(mc, (rl) ->
@@ -79,7 +81,6 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             Aperture.editorOverlayRL.set(rl);
             this.editor.updateOverlay();
         });
-        this.overlayPicker.setVisible(false);
         this.overlayPicker.flex().relative(this.editor.viewport).wh(1F, 1F);
 
         this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.crosshair, this.letterBox, this.aspectRatio, this.loop, this.overlay, this.pickOverlay);

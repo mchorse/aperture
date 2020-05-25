@@ -322,7 +322,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.hidePopups(this.profiles);
         this.top.add(this.leftBar, this.middleBar, this.rightBar, this.creationBar);
         this.top.add(this.panel, this.timeline, this.fixtures, this.profiles, this.config, this.modifiers, this.minema);
-        this.top.add(this.cameraOptions.overlayPicker);
         this.root.add(this.top);
 
         /* Let other classes have fun with camera editor's position and such */
