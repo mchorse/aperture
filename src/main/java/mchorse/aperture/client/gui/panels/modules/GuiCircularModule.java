@@ -29,28 +29,28 @@ public class GuiCircularModule extends GuiAbstractModule
 
         this.offset = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.offset = value;
+            this.fixture.offset = value.floatValue();
             this.editor.updateProfile();
         });
         this.offset.tooltip(IKey.lang("aperture.gui.panels.offset"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.pitch = value;
+            this.fixture.pitch = value.floatValue();
             this.editor.updateProfile();
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.circles = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.circles = value;
+            this.fixture.circles = value.floatValue();
             this.editor.updateProfile();
         });
         this.circles.tooltip(IKey.lang("aperture.gui.panels.circles"));
 
         this.distance = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.distance = value;
+            this.fixture.distance = value.floatValue();
             this.editor.updateProfile();
         });
         this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));

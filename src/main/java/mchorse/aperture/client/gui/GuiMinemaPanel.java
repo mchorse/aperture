@@ -56,10 +56,10 @@ public class GuiMinemaPanel extends GuiElement
 
 		this.fields = new GuiElement(mc);
 		this.name = new GuiTextElement(mc, (Consumer<String>) null);
-		this.left = new GuiTrackpadElement(mc, (Consumer<Float>) null);
+		this.left = new GuiTrackpadElement(mc, (Consumer<Double>) null);
 		this.left.limit(0).integer();
 		this.left.setValue(0);
-		this.right = new GuiTrackpadElement(mc, (Consumer<Float>) null);
+		this.right = new GuiTrackpadElement(mc, (Consumer<Double>) null);
 		this.right.limit(0).integer();
 		this.right.setValue(0);
 		this.setLeft = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.set_start"), this::calculateLeft);

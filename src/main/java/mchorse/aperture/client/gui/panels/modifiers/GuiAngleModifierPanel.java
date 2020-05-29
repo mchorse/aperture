@@ -20,28 +20,28 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
 
         this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.yaw = value;
+            this.modifier.angle.yaw = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.pitch = value;
+            this.modifier.angle.pitch = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.roll = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.roll = value;
+            this.modifier.angle.roll = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.roll.tooltip(IKey.lang("aperture.gui.panels.roll"));
 
         this.fov = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.fov = value;
+            this.modifier.angle.fov = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.fov.tooltip(IKey.lang("aperture.gui.panels.fov"));

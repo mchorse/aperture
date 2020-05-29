@@ -58,22 +58,22 @@ public class GuiEnvelope extends GuiElement
 
 		this.startX = new GuiTrackpadElement(mc, (value) ->
 		{
-			this.get().startX = value;
+			this.get().startX = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
 		this.startD = new GuiTrackpadElement(mc, (value) ->
 		{
-			this.get().startDuration = value;
+			this.get().startDuration = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
 		this.endX = new GuiTrackpadElement(mc, (value) ->
 		{
-			this.get().endX = value;
+			this.get().endX = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
 		this.endD = new GuiTrackpadElement(mc, (value) ->
 		{
-			this.get().endDuration = value;
+			this.get().endDuration = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
 		this.interps = new GuiInterpolationList(mc, (l) ->

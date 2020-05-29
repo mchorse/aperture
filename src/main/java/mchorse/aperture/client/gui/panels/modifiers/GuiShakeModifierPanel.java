@@ -21,14 +21,14 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
 
         this.shake = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.shake = value;
+            this.modifier.shake = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.shake.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake"), Direction.BOTTOM);
 
         this.shakeAmount = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.shakeAmount = value;
+            this.modifier.shakeAmount = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.shakeAmount.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake_amount"), Direction.BOTTOM);

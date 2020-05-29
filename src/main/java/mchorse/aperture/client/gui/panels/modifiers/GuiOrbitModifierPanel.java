@@ -25,21 +25,21 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
 
         this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.yaw = value;
+            this.modifier.yaw = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.pitch = value;
+            this.modifier.pitch = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.distance = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.distance = value;
+            this.modifier.distance = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
