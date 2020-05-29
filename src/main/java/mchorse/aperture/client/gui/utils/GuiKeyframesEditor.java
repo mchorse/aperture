@@ -17,7 +17,7 @@ import net.minecraft.client.resources.I18n;
 
 public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends GuiElement
 {
-    public GuiElements<GuiElement> frameButtons;
+    public GuiElement frameButtons;
     public GuiTrackpadElement tick;
     public GuiTrackpadElement value;
     public GuiButtonElement interp;
@@ -33,12 +33,12 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
     {
         super(mc);
 
-        this.frameButtons = new GuiElements<GuiElement>(this);
+        this.frameButtons = new GuiElement(mc);
         this.frameButtons.setVisible(false);
         this.tick = new GuiTrackpadElement(mc, (value) -> this.setTick(value.longValue()));
-        this.tick.limit(Integer.MIN_VALUE, Integer.MAX_VALUE, true).tooltip(IKey.lang("aperture.gui.panels.tick"), Direction.BOTTOM);
+        this.tick.limit(Integer.MIN_VALUE, Integer.MAX_VALUE, true).tooltip(IKey.lang("aperture.gui.panels.tick"));
         this.value = new GuiTrackpadElement(mc, (value) -> this.setValue(value));
-        this.value.tooltip(IKey.lang("aperture.gui.panels.value"), Direction.BOTTOM);
+        this.value.tooltip(IKey.lang("aperture.gui.panels.value"));
         this.interp = new GuiButtonElement(mc, IKey.lang(""), (b) -> this.interpolations.toggleVisible());
         this.interpolations = new GuiKeyframeInterpolationsList(mc, (interp) -> this.pickInterpolation(interp.get(0)));
 
