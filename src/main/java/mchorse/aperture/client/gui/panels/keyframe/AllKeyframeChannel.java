@@ -9,7 +9,7 @@ public class AllKeyframeChannel extends KeyframeChannel
     public KeyframeFixture fixture;
 
     @Override
-    protected Keyframe create(long tick, float value)
+    protected Keyframe create(long tick, double value)
     {
         return new AllKeyframe(tick);
     }

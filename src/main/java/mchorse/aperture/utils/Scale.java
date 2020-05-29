@@ -7,8 +7,8 @@ import net.minecraft.util.math.MathHelper;
  */
 public class Scale
 {
-    public float shift = 0;
-    public float zoom = 1;
+    public double shift = 0;
+    public double zoom = 1;
     public int mult = 1;
     public boolean inverse;
 
@@ -17,28 +17,28 @@ public class Scale
         this.inverse = inverse;
     }
 
-    public void set(float shift, float zoom)
+    public void set(double shift, double zoom)
     {
         this.shift = shift;
         this.zoom = zoom;
     }
 
-    public float to(float x)
+    public double to(double x)
     {
         return (!this.inverse ? x - this.shift : -x + this.shift) * this.zoom;
     }
 
-    public float from(float x)
+    public double from(double x)
     {
         return this.inverse ? -(x / this.zoom - this.shift) : x / this.zoom + this.shift;
     }
 
-    public void view(float min, float max, float width)
+    public void view(double min, double max, double width)
     {
         this.view(min, max, width, 0);
     }
 
-    public void view(float min, float max, float length, float offset)
+    public void view(double min, double max, double length, double offset)
     {
         this.zoom = 1 / ((max - min) / length);
 
@@ -52,7 +52,7 @@ public class Scale
         this.shift = (max + min) / 2F;
     }
 
-    public void zoom(float amount, float min, float max)
+    public void zoom(double amount, double min, double max)
     {
         this.zoom += amount;
         this.zoom = MathHelper.clamp(this.zoom, min, max);

@@ -39,7 +39,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
     private boolean scrolling = false;
     public int which = 0;
     private int lastX;
-    private float lastT;
+    private double lastT;
 
     public GuiDopeSheet(Minecraft mc, Consumer<Keyframe> callback)
     {
@@ -48,12 +48,12 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
     /* Graphing code */
 
-    public int toGraph(float tick)
+    public int toGraph(double tick)
     {
         return (int) (this.scale.to(tick)) + this.area.mx();
     }
 
-    public float fromGraph(int mouseX)
+    public double fromGraph(int mouseX)
     {
         return this.scale.from(mouseX - this.area.mx());
     }
@@ -160,7 +160,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
                 AllKeyframe key = (AllKeyframe) frame;
                 Position pos = new Position(Minecraft.getMinecraft().player);
 
-                float value = 0;
+                double value = 0;
 
                 if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
                 {
@@ -169,9 +169,9 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
                 for (KeyframeChannel channel : all.fixture.channels)
                 {
-                    if (channel == all.fixture.x) value = (float) pos.point.x;
-                    if (channel == all.fixture.y) value = (float) pos.point.y;
-                    if (channel == all.fixture.z) value = (float) pos.point.z;
+                    if (channel == all.fixture.x) value = pos.point.x;
+                    if (channel == all.fixture.y) value = pos.point.y;
+                    if (channel == all.fixture.z) value = pos.point.z;
                     if (channel == all.fixture.yaw) value = pos.angle.yaw;
                     if (channel == all.fixture.pitch) value = pos.angle.pitch;
                     if (channel == all.fixture.roll) value = pos.angle.roll;
@@ -287,7 +287,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
         return false;
     }
 
-    private boolean isInside(float x, float y, int mouseX, int mouseY)
+    private boolean isInside(double x, double y, int mouseX, int mouseY)
     {
         double d = Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2);
 
@@ -374,7 +374,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
         else if (this.moving)
         {
             Keyframe frame = this.getCurrent();
-            float x = this.fromGraph(mouseX);
+            double x = this.fromGraph(mouseX);
 
             if (this.which == 0)
             {

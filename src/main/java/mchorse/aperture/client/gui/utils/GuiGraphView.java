@@ -33,8 +33,8 @@ public class GuiGraphView extends GuiKeyframeElement
     public int which = 0;
     private int lastX;
     private int lastY;
-    private float lastT;
-    private float lastV;
+    private double lastT;
+    private double lastV;
 
     private Scale scaleX = new Scale(false);
     private Scale scaleY = new Scale(true);
@@ -87,7 +87,7 @@ public class GuiGraphView extends GuiKeyframeElement
         }
     }
 
-    public void addCurrent(long tick, float value)
+    public void addCurrent(long tick, double value)
     {
         Easing easing = Easing.IN;
         KeyframeInterpolation interp = KeyframeInterpolation.LINEAR;
@@ -127,22 +127,22 @@ public class GuiGraphView extends GuiKeyframeElement
 
     /* Graphing code */
 
-    public int toGraphX(float tick)
+    public int toGraphX(double tick)
     {
         return (int) (this.scaleX.to(tick)) + this.area.mx();
     }
 
-    public int toGraphY(float value)
+    public int toGraphY(double value)
     {
         return (int) (this.scaleY.to(value)) + this.area.my();
     }
 
-    public float fromGraphX(int mouseX)
+    public double fromGraphX(int mouseX)
     {
         return this.scaleX.from(mouseX - this.area.mx());
     }
 
-    public float fromGraphY(int mouseY)
+    public double fromGraphY(int mouseY)
     {
         return this.scaleY.from(mouseY - this.area.my());
     }
@@ -157,10 +157,10 @@ public class GuiGraphView extends GuiKeyframeElement
 
         int c = this.channel.getKeyframes().size();
 
-        float minX = Float.POSITIVE_INFINITY;
-        float maxX = Float.NEGATIVE_INFINITY;
-        float minY = Float.POSITIVE_INFINITY;
-        float maxY = Float.NEGATIVE_INFINITY;
+        double minX = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
 
         if (c > 1)
         {
@@ -328,7 +328,7 @@ public class GuiGraphView extends GuiKeyframeElement
         return false;
     }
 
-    private boolean isInside(float tick, float value, int mouseX, int mouseY)
+    private boolean isInside(double tick, double value, int mouseX, int mouseY)
     {
         int x = this.toGraphX(tick);
         int y = this.toGraphY(value);
@@ -455,8 +455,8 @@ public class GuiGraphView extends GuiKeyframeElement
         else if (this.moving)
         {
             Keyframe frame = this.channel.get(this.selected);
-            float x = this.fromGraphX(mouseX);
-            float y = this.fromGraphY(mouseY);
+            double x = this.fromGraphX(mouseX);
+            double y = this.fromGraphY(mouseY);
 
             if (GuiScreen.isShiftKeyDown()) x = this.lastT;
             if (GuiScreen.isCtrlKeyDown()) y = this.lastV;
@@ -468,8 +468,8 @@ public class GuiGraphView extends GuiKeyframeElement
             }
             else if (this.which == 1)
             {
-                frame.lx = -(x - frame.tick);
-                frame.ly = y - frame.value;
+                frame.lx = (float) -(x - frame.tick);
+                frame.ly = (float) (y - frame.value);
 
                 if (!GuiScreen.isAltKeyDown())
                 {
@@ -479,8 +479,8 @@ public class GuiGraphView extends GuiKeyframeElement
             }
             else if (this.which == 2)
             {
-                frame.rx = x - frame.tick;
-                frame.ry = y - frame.value;
+                frame.rx = (float) x - frame.tick;
+                frame.ry = (float) (y - frame.value);
 
                 if (!GuiScreen.isAltKeyDown())
                 {

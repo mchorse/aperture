@@ -123,7 +123,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         this.graph.setSliding();
     }
 
-    public void setValue(float value)
+    public void setValue(double value)
     {
         this.graph.getCurrent().setValue(value);
     }

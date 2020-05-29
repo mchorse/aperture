@@ -59,7 +59,7 @@ public abstract class GuiKeyframeElement extends GuiElement
 
     /* Offsets/multipliers */
 
-    protected int recalcMultiplier(float zoom)
+    protected int recalcMultiplier(double zoom)
     {
         int factor = (int) (60F / zoom);
 
@@ -82,9 +82,9 @@ public abstract class GuiKeyframeElement extends GuiElement
     /**
      * Get zoom factor based by current zoom value 
      */
-    protected float getZoomFactor(float zoom)
+    protected double getZoomFactor(double zoom)
     {
-        float factor = 0;
+        double factor = 0;
 
         if (zoom < 0.2F) factor = 0.005F;
         else if (zoom < 1.0F) factor = 0.025F;

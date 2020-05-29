@@ -36,7 +36,7 @@ public abstract class GuiFixtureKeyframesEditor<E extends GuiKeyframeElement, T 
     }
 
     @Override
-    public void setValue(float value)
+    public void setValue(double value)
     {
         super.setValue(value);
         this.parent.editor.updateProfile();

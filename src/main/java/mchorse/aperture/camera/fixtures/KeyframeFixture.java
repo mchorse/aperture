@@ -90,9 +90,9 @@ public class KeyframeFixture extends AbstractFixture
     {
         Position pos = new Position(player);
 
-        this.x.insert(0, (float) pos.point.x);
-        this.y.insert(0, (float) pos.point.y);
-        this.z.insert(0, (float) pos.point.z);
+        this.x.insert(0, pos.point.x);
+        this.y.insert(0, pos.point.y);
+        this.z.insert(0, pos.point.z);
         this.yaw.insert(0, pos.angle.yaw);
         this.pitch.insert(0, pos.angle.pitch);
         this.roll.insert(0, pos.angle.roll);
@@ -107,10 +107,10 @@ public class KeyframeFixture extends AbstractFixture
         if (!this.x.isEmpty()) pos.point.x = this.x.interpolate(t);
         if (!this.y.isEmpty()) pos.point.y = this.y.interpolate(t);
         if (!this.z.isEmpty()) pos.point.z = this.z.interpolate(t);
-        if (!this.yaw.isEmpty()) pos.angle.yaw = this.yaw.interpolate(t);
-        if (!this.pitch.isEmpty()) pos.angle.pitch = this.pitch.interpolate(t);
-        if (!this.roll.isEmpty()) pos.angle.roll = this.roll.interpolate(t);
-        if (!this.fov.isEmpty()) pos.angle.fov = this.fov.interpolate(t);
+        if (!this.yaw.isEmpty()) pos.angle.yaw = (float) this.yaw.interpolate(t);
+        if (!this.pitch.isEmpty()) pos.angle.pitch = (float) this.pitch.interpolate(t);
+        if (!this.roll.isEmpty()) pos.angle.roll = (float) this.roll.interpolate(t);
+        if (!this.fov.isEmpty()) pos.angle.fov = (float) this.fov.interpolate(t);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class KeyframeFixture extends AbstractFixture
         @Expose
         protected final List<Keyframe> keyframes = new ArrayList<Keyframe>();
 
-        protected Keyframe create(long tick, float value)
+        protected Keyframe create(long tick, double value)
         {
             return new Keyframe(tick, value);
         }
@@ -223,7 +223,7 @@ public class KeyframeFixture extends AbstractFixture
         /**
          * Calculate the value at given tick 
          */
-        public float interpolate(float ticks)
+        public double interpolate(float ticks)
         {
             if (this.keyframes.isEmpty())
             {
@@ -261,7 +261,7 @@ public class KeyframeFixture extends AbstractFixture
          * 
          * Also it returns index at which it was inserted.
          */
-        public int insert(long tick, float value)
+        public int insert(long tick, double value)
         {
             Keyframe prev = null;
 
@@ -313,7 +313,7 @@ public class KeyframeFixture extends AbstractFixture
         /**
          * Sorts keyframes based on their ticks. This method should be used 
          * when you modify individual tick values of keyframes. 
-         * {@link #interpolate(float)} and other methods assume the order of 
+         * {@link #interpolate(float)} and other methods assume the order of
          * the keyframes to be chronologically correct.
          */
         public void sort()
@@ -361,7 +361,7 @@ public class KeyframeFixture extends AbstractFixture
 
             for (int i = 0, c = buffer.readInt(); i < c; i++)
             {
-                Keyframe frame = new Keyframe(buffer.readLong(), buffer.readFloat());
+                Keyframe frame = new Keyframe(buffer.readLong(), buffer.readDouble());
 
                 frame.fromByteBuf(buffer);
                 this.keyframes.add(frame);
@@ -396,7 +396,7 @@ public class KeyframeFixture extends AbstractFixture
         public long tick;
 
         @Expose
-        public float value;
+        public double value;
 
         @Expose
         public KeyframeInterpolation interp = KeyframeInterpolation.LINEAR;
@@ -416,7 +416,7 @@ public class KeyframeFixture extends AbstractFixture
         @Expose
         public float ly;
 
-        public Keyframe(long tick, float value)
+        public Keyframe(long tick, double value)
         {
             this.tick = tick;
             this.value = value;
@@ -430,7 +430,7 @@ public class KeyframeFixture extends AbstractFixture
             this.tick = tick;
         }
 
-        public void setValue(float value)
+        public void setValue(double value)
         {
             this.value = value;
         }
@@ -451,7 +451,7 @@ public class KeyframeFixture extends AbstractFixture
             this.easing = easing;
         }
 
-        public float interpolate(Keyframe frame, float x)
+        public double interpolate(Keyframe frame, float x)
         {
             return this.interp.interpolate(this, frame, x);
         }
@@ -490,7 +490,7 @@ public class KeyframeFixture extends AbstractFixture
         public void toByteBuf(ByteBuf buffer)
         {
             buffer.writeLong(this.tick);
-            buffer.writeFloat(this.value);
+            buffer.writeDouble(this.value);
             buffer.writeInt(this.interp.ordinal());
             buffer.writeInt(this.easing.ordinal());
             buffer.writeFloat(this.rx);
@@ -505,7 +505,7 @@ public class KeyframeFixture extends AbstractFixture
         CONST("const")
         {
             @Override
-            public float interpolate(Keyframe a, Keyframe b, float x)
+            public double interpolate(Keyframe a, Keyframe b, float x)
             {
                 return a.value;
             }
@@ -513,7 +513,7 @@ public class KeyframeFixture extends AbstractFixture
         LINEAR("linear")
         {
             @Override
-            public float interpolate(Keyframe a, Keyframe b, float x)
+            public double interpolate(Keyframe a, Keyframe b, float x)
             {
                 return Interpolations.lerp(a.value, b.value, x);
             }
@@ -521,14 +521,14 @@ public class KeyframeFixture extends AbstractFixture
         QUAD("quad")
         {
             @Override
-            public float interpolate(Keyframe a, Keyframe b, float x)
+            public double interpolate(Keyframe a, Keyframe b, float x)
             {
                 if (a.easing == Easing.IN) return a.value + (b.value - a.value) * x * x;
                 if (a.easing == Easing.OUT) return a.value - (b.value - a.value) * x * (x - 2);
 
                 x *= 2;
 
-                if (x < 1F) return a.value + (b.value - a.value) / 2 * x * x;
+                if (x < 1D) return a.value + (b.value - a.value) / 2 * x * x;
 
                 x -= 1;
 
@@ -538,7 +538,7 @@ public class KeyframeFixture extends AbstractFixture
         CUBIC("cubic")
         {
             @Override
-            public float interpolate(Keyframe a, Keyframe b, float x)
+            public double interpolate(Keyframe a, Keyframe b, float x)
             {
                 if (a.easing == Easing.IN) return a.value + (b.value - a.value) * x * x * x;
                 if (a.easing == Easing.OUT)
@@ -549,7 +549,7 @@ public class KeyframeFixture extends AbstractFixture
 
                 x *= 2;
 
-                if (x < 1F) return a.value + (b.value - a.value) / 2 * x * x * x;
+                if (x < 1D) return a.value + (b.value - a.value) / 2 * x * x * x;
 
                 x -= 2;
 
@@ -559,58 +559,58 @@ public class KeyframeFixture extends AbstractFixture
         HERMITE("hermite")
         {
             @Override
-            public float interpolate(Keyframe a, Keyframe b, float x)
+            public double interpolate(Keyframe a, Keyframe b, float x)
             {
                 double v0 = a.prev.value;
                 double v1 = a.value;
                 double v2 = b.value;
                 double v3 = b.next.value;
 
-                return (float) Interpolations.cubicHermite(v0, v1, v2, v3, x);
+                return Interpolations.cubicHermite(v0, v1, v2, v3, x);
             }
         },
         EXP("exp")
         {
             @Override
-            public float interpolate(Keyframe a, Keyframe b, float x)
+            public double interpolate(Keyframe a, Keyframe b, float x)
             {
-                if (a.easing == Easing.IN) return a.value + (b.value - a.value) * (float) Math.pow(2, 10 * (x - 1));
-                if (a.easing == Easing.OUT) return a.value + (b.value - a.value) * (float) (-Math.pow(2, -10 * x) + 1);
+                if (a.easing == Easing.IN) return a.value + (b.value - a.value) * Math.pow(2, 10 * (x - 1));
+                if (a.easing == Easing.OUT) return a.value + (b.value - a.value) * (-Math.pow(2, -10 * x) + 1);
 
                 if (x == 0) return a.value;
                 if (x == 1) return b.value;
 
                 x *= 2;
 
-                if (x < 1F) return a.value + (b.value - a.value) / 2 * (float) Math.pow(2, 10 * (x - 1));
+                if (x < 1D) return a.value + (b.value - a.value) / 2 * Math.pow(2, 10 * (x - 1));
 
                 x -= 1;
 
-                return a.value + (b.value - a.value) / 2 * (float) (-Math.pow(2, -10 * x) + 2);
+                return a.value + (b.value - a.value) / 2 * (-Math.pow(2, -10 * x) + 2);
             }
         },
         BEZIER("bezier")
         {
             @Override
-            public float interpolate(Keyframe a, Keyframe b, float x)
+            public double interpolate(Keyframe a, Keyframe b, float x)
             {
                 if (x <= 0) return a.value;
                 if (x >= 1) return b.value;
 
                 /* Transform input to 0..1 */
-                float w = b.tick - a.tick;
-                float h = b.value - a.value;
+                double w = b.tick - a.tick;
+                double h = b.value - a.value;
 
                 /* In case if there is no slope whatsoever */
-                if (h == 0) h = 0.00001F;
+                if (h == 0) h = 0.00001;
 
-                float x1 = a.rx / w;
-                float y1 = a.ry / h;
-                float x2 = (w - b.lx) / w;
-                float y2 = (h + b.ly) / h;
-                float e = 0.0005F;
+                double x1 = a.rx / w;
+                double y1 = a.ry / h;
+                double x2 = (w - b.lx) / w;
+                double y2 = (h + b.ly) / h;
+                double e = 0.0005;
 
-                e = h == 0 ? e : Math.max(Math.min(e, 1 / h * e), 0.00001F);
+                e = h == 0 ? e : Math.max(Math.min(e, 1 / h * e), 0.00001);
                 x1 = MathHelper.clamp(x1, 0, 1);
                 x2 = MathHelper.clamp(x2, 0, 1);
 
@@ -625,7 +625,7 @@ public class KeyframeFixture extends AbstractFixture
             this.key = key;
         }
 
-        public abstract float interpolate(Keyframe a, Keyframe b, float x);
+        public abstract double interpolate(Keyframe a, Keyframe b, float x);
 
 	    public String getKey()
         {

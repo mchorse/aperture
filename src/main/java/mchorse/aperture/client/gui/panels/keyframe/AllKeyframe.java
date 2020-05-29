@@ -35,7 +35,7 @@ public class AllKeyframe extends Keyframe
 
     /* Nope */
     @Override
-    public void setValue(float value)
+    public void setValue(double value)
     {}
 
     @Override
