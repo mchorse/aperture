@@ -344,7 +344,7 @@ public class GuiProfilesManager extends GuiElement
             if (profile.getDestination().equals(newProfile.getDestination()))
             {
                 profile.copyFrom(newProfile);
-                this.editor.setProfile(newProfile);
+                this.editor.setProfile(profile);
 
                 return;
             }
