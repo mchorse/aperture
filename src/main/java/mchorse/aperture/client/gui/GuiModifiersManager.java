@@ -115,8 +115,7 @@ public class GuiModifiersManager extends GuiElement
                 this.buttons.setVisible(false);
             });
 
-            button.color(color).flex().relative(this).h(20);
-            this.buttons.add(button);
+            this.buttons.add(button.color(color));
         }
 
         this.panels = new GuiScrollElement(mc);

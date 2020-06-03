@@ -54,7 +54,6 @@ public class GuiEnvelope extends GuiElement
 		});
 		this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.relative"), (b) -> this.toggleRelative(b.isToggled()));
 		this.pickInterp = new GuiIconElement(mc, Icons.GEAR, (b) -> this.interps.toggleVisible());
-		this.pickInterp.flex().wh(20, 20);
 
 		this.startX = new GuiTrackpadElement(mc, (value) ->
 		{
@@ -88,14 +87,17 @@ public class GuiEnvelope extends GuiElement
 		this.endX.limit(0);
 		this.endD.limit(0);
 
+		this.enabled.flex().reset();
+		this.relative.flex().reset();
+
 		GuiElement row = Elements.row(mc, 5, 0, 20, this.enabled, this.relative, this.pickInterp);
 
 		row.flex().relative(this).xy(5, 5).w(1F, -10);
 
-		this.startX.flex().relative(this.enabled).xy(0, 20).w(1F).h(20);
-		this.startD.flex().relative(this.startX).xy(0, 25).w(1F).h(20);
-		this.endX.flex().relative(this.relative).xy(0, 20).w(1F).h(20);
-		this.endD.flex().relative(this.endX).xy(0, 25).w(1F).h(20);
+		this.startX.flex().relative(this.enabled).xy(0, 20).w(1F);
+		this.startD.flex().relative(this.startX).xy(0, 25).w(1F);
+		this.endX.flex().relative(this.relative).xy(0, 20).w(1F);
+		this.endD.flex().relative(this.endX).xy(0, 25).w(1F);
 		this.interps.flex().relative(this.pickInterp).xy(1F, 1F).w(110).hTo(this.area, 1F).anchor(1F, 0F);
 
 		this.add(row, this.startX, this.startD, this.endX, this.endD, this.interps);
