@@ -2,11 +2,14 @@ package mchorse.aperture.client.gui;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
+import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
@@ -30,15 +33,18 @@ public class GuiMinemaPanel extends GuiElement
 
 	public GuiElement fields;
 	public GuiTextElement name;
+	public GuiCirculateElement mode;
 	public GuiTrackpadElement left;
 	public GuiTrackpadElement right;
 	public GuiButtonElement setLeft;
 	public GuiButtonElement setRight;
-	public GuiToggleElement fixture;
-
 	public GuiButtonElement movies;
 	public GuiButtonElement record;
 
+	private GuiElement leftRight;
+	private GuiElement setLeftRight;
+
+	private RecordingMode recordingMode = RecordingMode.FULL;
 	private boolean recording;
 	private boolean waiting;
 	private int start;
@@ -56,6 +62,15 @@ public class GuiMinemaPanel extends GuiElement
 
 		this.fields = new GuiElement(mc);
 		this.name = new GuiTextElement(mc, (Consumer<String>) null);
+		this.mode = new GuiCirculateElement(mc, this::switchMode);
+
+		for (RecordingMode mode : RecordingMode.values())
+		{
+			this.mode.addLabel(IKey.lang("aperture.gui.minema.modes." + mode.id));
+		}
+
+		this.mode.tooltip(IKey.lang("aperture.gui.minema.modes.tooltip"));
+
 		this.left = new GuiTrackpadElement(mc, (Consumer<Double>) null);
 		this.left.limit(0).integer();
 		this.left.setValue(0);
@@ -63,8 +78,9 @@ public class GuiMinemaPanel extends GuiElement
 		this.right.limit(0).integer();
 		this.right.setValue(0);
 		this.setLeft = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.set_start"), this::calculateLeft);
+		this.setLeft.tooltip(IKey.lang("aperture.gui.minema.set_start_tooltip"));
 		this.setRight = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.set_duration"), this::calculateRight);
-		this.fixture = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.fixtures_only"), null);
+		this.setRight.tooltip(IKey.lang("aperture.gui.minema.set_duration_tooltip"));
 		this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.record"), this::startRecording);
 		this.movies = new GuiButtonElement(mc, IKey.lang("minema.gui.movies_folder"), this::openMovies);
 
@@ -72,10 +88,9 @@ public class GuiMinemaPanel extends GuiElement
 		this.flex().hTo(this.fields.flex(), 1F);
 
 		this.fields.add(Elements.label(IKey.lang("aperture.gui.minema.title"), 12).background(0x88000000));
-		this.fields.add(this.name);
-		this.fields.add(Elements.row(mc, 5, 0, 20, this.left, this.right));
-		this.fields.add(Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight));
-		this.fields.add(this.fixture);
+		this.fields.add(this.name, this.mode);
+		this.fields.add(this.leftRight = Elements.row(mc, 5, 0, 20, this.left, this.right));
+		this.fields.add(this.setLeftRight = Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight));
 		this.fields.add(Elements.row(mc, 5, 0, 20, this.movies, this.record));
 
 		this.add(this.fields);
@@ -98,6 +113,21 @@ public class GuiMinemaPanel extends GuiElement
 		}));
 
 		this.fields.setVisible(MinemaIntegration.isLoaded() && MinemaIntegration.isAvailable());
+		this.switchMode(this.mode);
+	}
+
+	public void setProfile(CameraProfile profile)
+	{
+		this.left.setValue(0);
+		this.right.setValue(profile.getDuration());
+	}
+
+	private void switchMode(GuiButtonElement element)
+	{
+		this.recordingMode = RecordingMode.values()[this.mode.getValue()];
+
+		this.leftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
+		this.setLeftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
 	}
 
 	public boolean isRecording()
@@ -126,7 +156,7 @@ public class GuiMinemaPanel extends GuiElement
 
 		text = this.editor.getProfile().getDestination().getFilename();
 
-		if (this.fixture.isToggled())
+		if (this.recordingMode == RecordingMode.FIXTURE)
 		{
 			AbstractFixture fixture = this.editor.getFixture();
 
@@ -168,12 +198,17 @@ public class GuiMinemaPanel extends GuiElement
 		this.start = (int) this.left.value;
 		this.end = this.start + (int) this.right.value;
 
-		if (this.fixture.isToggled() && this.editor.panel.delegate != null)
+		if (this.recordingMode == RecordingMode.FIXTURE && this.editor.panel.delegate != null)
 		{
 			AbstractFixture fixture = this.editor.panel.delegate.fixture;
 
 			this.start = (int) this.editor.getProfile().calculateOffset(fixture);
 			this.end = (int) (this.start + fixture.getDuration());
+		}
+		else if (this.recordingMode == RecordingMode.FULL)
+		{
+			this.start = 0;
+			this.end = (int) this.editor.getProfile().getDuration();
 		}
 
 		if (this.end - this.start <= 0)
@@ -286,5 +321,17 @@ public class GuiMinemaPanel extends GuiElement
 		}
 
 		super.draw(context);
+	}
+
+	public static enum RecordingMode
+	{
+		FULL("full"), FIXTURE("fixture"), CUSTOM("custom");
+
+		public final String id;
+
+		private RecordingMode(String id)
+		{
+			this.id = id;
+		}
 	}
 }

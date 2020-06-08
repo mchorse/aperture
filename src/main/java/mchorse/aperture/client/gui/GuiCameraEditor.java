@@ -656,6 +656,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.profiles.selectProfile(profile);
         this.timeline.setProfile(profile);
         this.updateSaveButton(profile);
+        this.minema.setProfile(profile);
 
         if (!isSame)
         {
