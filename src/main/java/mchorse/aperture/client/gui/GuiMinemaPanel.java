@@ -119,7 +119,7 @@ public class GuiMinemaPanel extends GuiElement
 	public void setProfile(CameraProfile profile)
 	{
 		this.left.setValue(0);
-		this.right.setValue(profile.getDuration());
+		this.right.setValue(profile == null ? 30 : profile.getDuration());
 	}
 
 	private void switchMode(GuiButtonElement element)
