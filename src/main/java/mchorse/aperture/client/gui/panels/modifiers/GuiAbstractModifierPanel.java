@@ -55,14 +55,14 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.envelope = new GuiIconElement(mc, APIcons.ENVELOPE, (b) -> this.toggleEnvelopes());
 
         this.header = new GuiElement(mc);
-        this.header.flex().h(20);
+        this.header.flex().h(15);
 
-        this.remove.flex().relative(this.header).set(0, 2, 16, 16).x(1, -18);
-        this.enable.flex().relative(this.remove).set(-20, 0, 16, 16);
-        this.moveUp.flex().relative(this.enable).set(-20, 0, 16, 8);
-        this.moveDown.flex().relative(this.enable).set(-20, 8, 16, 8);
-        this.copy.flex().relative(this.moveUp).set(-20, 0, 16, 16);
-        this.envelope.flex().relative(this.copy).set(-20, 0, 16, 16);
+        this.remove.flex().relative(this.header).set(-20, 5, 20, 20).x(1, -30);
+        this.enable.flex().relative(this.remove).set(-20, 0, 20, 20);
+        this.moveUp.flex().relative(this.enable).set(-20, 2, 20, 8);
+        this.moveDown.flex().relative(this.enable).set(-20, 10, 20, 8);
+        this.copy.flex().relative(this.moveUp).set(-20, -2, 20, 20);
+        this.envelope.flex().relative(this.copy).set(-20, 0, 20, 20);
 
         this.header.add(this.remove, this.enable, this.moveUp, this.moveDown, this.copy, this.envelope);
 
@@ -106,7 +106,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     public void draw(GuiContext context)
     {
         this.area.draw(0x88000000 + this.color);
-        this.font.drawStringWithShadow(this.title.get(), this.header.area.x + 5, this.header.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
+        this.font.drawStringWithShadow(this.title.get(), this.header.area.x + 10, this.header.area.y + 15 - this.font.FONT_HEIGHT / 2, 0xffffff);
 
         this.header.setVisible(this.area.isInside(context.mouseX, context.mouseY));
 

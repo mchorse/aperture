@@ -59,13 +59,18 @@ public class Envelope
 		return this.relative ? duration - this.endX - this.endDuration : this.endX - this.endDuration;
 	}
 
-	public float factor(long duration, float tick)
+	public float factorEnabled(long duration, float tick)
 	{
 		if (!this.enabled)
 		{
 			return 1;
 		}
+		
+		return this.factor(duration, tick);
+	}
 
+	public float factor(long duration, float tick)
+	{
 		float envelope = Interpolations.envelope(tick, this.startX, this.startX + this.startDuration, this.getEndDuration(duration), this.getEndX(duration));
 
 		return this.interpolation.interpolate(0, 1, envelope);

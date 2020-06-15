@@ -92,7 +92,7 @@ public class GuiEnvelope extends GuiElement
 
 		GuiElement row = Elements.row(mc, 5, 0, 20, this.enabled, this.relative, this.pickInterp);
 
-		row.flex().relative(this).xy(5, 5).w(1F, -10);
+		row.flex().relative(this).xy(10, 10).w(1F, -20);
 
 		this.startX.flex().relative(this.enabled).xy(0, 20).w(1F);
 		this.startD.flex().relative(this.startX).xy(0, 25).w(1F);
@@ -102,7 +102,7 @@ public class GuiEnvelope extends GuiElement
 
 		this.add(row, this.startX, this.startD, this.endX, this.endD, this.interps);
 
-		this.flex().h(90);
+		this.flex().h(95);
 	}
 
 	private void toggleRelative(boolean toggled)
@@ -205,7 +205,7 @@ public class GuiEnvelope extends GuiElement
 
 		this.color.set(this.startX.area.isInside(context) ? selected : regular, true);
 
-		if (startX > this.area.x)
+		if (startX >= this.area.x)
 		{
 			buffer.pos(this.area.x, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
 		}

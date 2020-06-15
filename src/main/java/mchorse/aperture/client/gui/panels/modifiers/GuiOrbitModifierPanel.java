@@ -49,6 +49,7 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
             this.modifier.copy = b.isToggled();
             this.modifiers.editor.updateProfile();
         });
+        this.copy.flex().h(20);
 
         this.selector = new GuiTextElement(mc, 500, (str) ->
         {

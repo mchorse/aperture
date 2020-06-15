@@ -48,7 +48,7 @@ public abstract class AbstractModifier
                 continue;
             }
 
-            float factor = modifier.envelope.factor(duration, offset + previewPartialTick);
+            float factor = modifier.envelope.factorEnabled(duration, offset + previewPartialTick);
 
             temporary.copy(pos);
             modifier.modify(ticks, offset, fixture, partialTick, previewPartialTick, profile, temporary);
