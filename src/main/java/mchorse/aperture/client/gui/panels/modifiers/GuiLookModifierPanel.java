@@ -2,6 +2,7 @@ package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
+import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
@@ -13,7 +14,9 @@ import net.minecraft.client.resources.I18n;
 
 public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 {
-    public GuiTextElement selector;
+    public static final String TARGET_SELECTOR_HELP = "https://minecraft.gamepedia.com/Commands#Target_selector_arguments";
+
+    public GuiTextHelpElement selector;
 
     public GuiTrackpadElement x;
     public GuiTrackpadElement y;
@@ -29,13 +32,13 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     {
         super(mc, modifier, modifiers);
 
-        this.selector = new GuiTextElement(mc, 500, (str) ->
+        this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
             this.modifier.selector = str;
             this.modifier.tryFindingEntity();
             this.modifiers.editor.updateProfile();
         });
-        this.selector.tooltip(IKey.lang("aperture.gui.panels.selector"));
+        this.selector.link(TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.panels.selector"));
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
@@ -63,6 +66,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
             this.modifier.relative = b.isToggled();
             this.modifiers.editor.updateProfile();
         });
+        this.relative.tooltip(IKey.lang("aperture.gui.modifiers.panels.relative_tooltip"));
 
         this.atBlock = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.at_block"), false, (b) ->
         {
@@ -76,6 +80,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
             this.modifier.forward = b.isToggled();
             this.modifiers.editor.updateProfile();
         });
+        this.forward.tooltip(IKey.lang("aperture.gui.modifiers.panels.forward_tooltip"));
 
         this.row = Elements.row(mc, 5, 0, 20, this.x, this.y, this.z);
         this.updateVisibility(false);

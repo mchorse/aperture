@@ -78,7 +78,7 @@ public class GuiModifiersManager extends GuiElement
 
         this.editor = editor;
         this.add = new GuiIconElement(mc, Icons.ADD, (b) -> this.buttons.setVisible(!this.buttons.isVisible()));
-
+        this.add.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.add"));
         this.paste = new GuiIconElement(mc, Icons.PASTE, (b) ->
         {
             if (this.clipboard != null)
@@ -90,6 +90,8 @@ public class GuiModifiersManager extends GuiElement
                 this.editor.updateProfile();
             }
         });
+        this.paste.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.paste"));
+
 
         this.buttons = new GuiElement(mc)
         {

@@ -2,6 +2,7 @@ package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
+import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
 import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
@@ -14,7 +15,7 @@ import net.minecraft.client.resources.I18n;
 
 public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModifier>
 {
-    public GuiTextElement selector;
+    public GuiTextHelpElement selector;
     public GuiTrackpadElement x;
     public GuiTrackpadElement y;
     public GuiTrackpadElement z;
@@ -24,13 +25,13 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
     {
         super(mc, modifier, modifiers);
 
-        this.selector = new GuiTextElement(mc, 500, (str) ->
+        this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
             this.modifier.selector = str;
             this.modifier.tryFindingEntity();
             this.modifiers.editor.updateProfile();
         });
-        this.selector.tooltip(IKey.lang("aperture.gui.panels.selector"));
+        this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.panels.selector"));
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
@@ -58,6 +59,7 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
             this.modifier.relative = b.isToggled();
             this.modifiers.editor.updateProfile();
         });
+        this.relative.tooltip(IKey.lang("aperture.gui.modifiers.panels.relative_tooltip"));
 
         this.fields.add(this.selector, Elements.row(mc, 5, 0, 20, this.x, this.y, this.z), this.relative);
     }

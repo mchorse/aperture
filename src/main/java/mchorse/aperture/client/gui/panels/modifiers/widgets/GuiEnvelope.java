@@ -13,6 +13,7 @@ import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Color;
+import mchorse.mclib.utils.Direction;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
@@ -52,29 +53,34 @@ public class GuiEnvelope extends GuiElement
 			this.get().enabled = b.isToggled();
 			this.panel.modifiers.editor.updateProfile();
 		});
-		this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.relative"), (b) -> this.toggleRelative(b.isToggled()));
+		this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.relative"), (b) -> this.toggleRelative(b.isToggled()));
 		this.pickInterp = new GuiIconElement(mc, Icons.GEAR, (b) -> this.interps.toggleVisible());
+		this.pickInterp.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.interp"));
 
 		this.startX = new GuiTrackpadElement(mc, (value) ->
 		{
 			this.get().startX = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
+		this.startX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_x"), Direction.TOP);
 		this.startD = new GuiTrackpadElement(mc, (value) ->
 		{
 			this.get().startDuration = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
+		this.startD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_d"), Direction.TOP);
 		this.endX = new GuiTrackpadElement(mc, (value) ->
 		{
 			this.get().endX = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
+		this.endX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_x"), Direction.TOP);
 		this.endD = new GuiTrackpadElement(mc, (value) ->
 		{
 			this.get().endDuration = value.floatValue();
 			this.panel.modifiers.editor.updateProfile();
 		});
+		this.endD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_d"), Direction.TOP);
 		this.interps = new GuiInterpolationList(mc, (l) ->
 		{
 			this.get().interpolation = l.get(0);
@@ -203,20 +209,11 @@ public class GuiEnvelope extends GuiElement
 		int sy = this.area.ey() - 1;
 		int ey = sy - 10;
 
-		this.color.set(this.startX.area.isInside(context) ? selected : regular, true);
-
-		if (startX >= this.area.x)
+		if (startD > this.area.x)
 		{
+			this.color.set(this.startX.area.isInside(context) ? selected : regular, true);
 			buffer.pos(this.area.x, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
-		}
-
-		if (startX != startD)
-		{
 			buffer.pos(startX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
-		}
-
-		if (envelope.startDuration > 0)
-		{
 			this.drawFades(context, buffer, envelope.interpolation, this.startD.area, startX, startD, sy, ey);
 		}
 
@@ -227,19 +224,11 @@ public class GuiEnvelope extends GuiElement
 		this.color.set(this.endD.area.isInside(context) ? selected : regular, true);
 		buffer.pos(endD, ey,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
 
-		if (envelope.endDuration > 0)
+		if (endD < this.area.ex())
 		{
 			this.drawFades(context, buffer, envelope.interpolation, this.endX.area, endD, endX, ey, sy);
-		}
-
-		if (endD != endX)
-		{
 			this.color.set(this.endX.area.isInside(context) ? selected : regular, true);
 			buffer.pos(endX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
-		}
-
-		if (endX < this.area.ex())
-		{
 			buffer.pos(this.area.ex(), sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
 		}
 	}

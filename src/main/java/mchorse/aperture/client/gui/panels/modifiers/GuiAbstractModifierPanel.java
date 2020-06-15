@@ -10,6 +10,7 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 
 public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> extends GuiElement
@@ -48,11 +49,17 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
             this.updateEnable();
             this.modifiers.editor.updateProfile();
         });
-        this.remove = new GuiIconElement(mc, Icons.CLOSE, (b) -> this.modifiers.removeModifier(this));
+        this.enable.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.lock"));
+        this.remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.modifiers.removeModifier(this));
+        this.remove.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.remove"));
         this.moveUp = new GuiIconElement(mc, Icons.MOVE_UP, (b) -> this.modifiers.moveModifier(this, -1));
+        this.moveUp.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.move_up"));
         this.moveDown = new GuiIconElement(mc, Icons.MOVE_DOWN, (b) -> this.modifiers.moveModifier(this, 1));
+        this.moveDown.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.move_down"));
         this.copy = new GuiIconElement(mc, Icons.COPY, (b) -> this.modifiers.setClipboard(this.modifier));
+        this.copy.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.copy"));
         this.envelope = new GuiIconElement(mc, APIcons.ENVELOPE, (b) -> this.toggleEnvelopes());
+        this.envelope.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.envelope"));
 
         this.header = new GuiElement(mc);
         this.header.flex().h(15);
@@ -105,7 +112,16 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     @Override
     public void draw(GuiContext context)
     {
-        this.area.draw(0x88000000 + this.color);
+        if (this.modifier.enabled)
+        {
+            this.area.draw(0x88000000 + this.color);
+        }
+        else
+        {
+            ColorUtils.bindColor(0x88000000 + this.color);
+            APIcons.DISABLED.renderArea(this.area.x, this.area.y, this.area.w, this.area.h);
+        }
+
         this.font.drawStringWithShadow(this.title.get(), this.header.area.x + 10, this.header.area.y + 15 - this.font.FONT_HEIGHT / 2, 0xffffff);
 
         this.header.setVisible(this.area.isInside(context.mouseX, context.mouseY));

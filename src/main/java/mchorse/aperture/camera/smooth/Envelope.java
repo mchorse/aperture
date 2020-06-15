@@ -65,7 +65,7 @@ public class Envelope
 		{
 			return 1;
 		}
-		
+
 		return this.factor(duration, tick);
 	}
 

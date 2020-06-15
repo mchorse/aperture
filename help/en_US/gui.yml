@@ -119,19 +119,42 @@ aperture.gui:
         drag: Drag
 
         enabled: Enabled
-        relative: Relative
+
+        tooltips:
+            add: Add a modifier...
+            paste: Paste a modifier...
+
+            remove: Remove this modifier
+            lock: Enable/disable this modifier
+            move_up: Move modifier up (apply this modifier first)
+            move_down: Move modifier down (apply this modifier after)
+            copy: Copy this modifier
+            envelope: Toggle envelopes panel
+            active: Click on any section of this element to toggle the work of this modifier on the given camera property.
 
         panels:
             copy_entity: Copy entity
+            copy_entity_tooltip: Copy entity's head orientation, exactly like GoPros
 
             shake: Shake
             shake_amount: Amount
 
             relative: Relative
+            relative_tooltip: Apply relative animation of the fixture or camera profile\n\nI.e. if you have a path that has yaw animation from 90 to 100, 10 degree animation will be applied relatively to this modifier
             at_block: Look at block
             forward: Look forward
+            forward_tooltip: This option orients the camera toward the vector of motion, exactly like a roller coaster
             
             factor: Factor
+
+            math: Math expression\n\nClick "?" button for more information about variables and functions...
+
+        envelopes:
+            start_x: Starting point
+            start_d: Fade in
+            end_x: Ending point (relative to the end of duration, if relative is enabled, otherwise from beginning)
+            end_d: Fade out
+            interp: Pick interpolation of the envelope
 
     profiles:
         title: Profiles
@@ -188,7 +211,7 @@ aperture.gui:
         position: Position
         angle: Angle
         circle: Circle
-        selector: Selector
+        selector: Entity target selector (you can also enter the name tag of the entity instead of target selector)\n\nClick "?" button for more information about syntax...
         per_point: Per point duration
         to_keyframe: Generate keyframe
         use_speed: Velocity control

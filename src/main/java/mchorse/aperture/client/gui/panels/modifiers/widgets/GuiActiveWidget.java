@@ -32,6 +32,7 @@ public class GuiActiveWidget extends GuiElement
         this.labels.add(IKey.lang("aperture.gui.panels.fov"));
 
         this.callback = callback;
+        this.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.active"));
     }
 
     @Override
