@@ -95,8 +95,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         }
         else
         {
-            this.left.flex().h(1F);
-            this.right.flex().h(1F);
+            this.left.flex().hTo(this.area, 1F);
+            this.right.flex().hTo(this.area, 1F);
         }
 
         this.resize();

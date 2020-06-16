@@ -312,7 +312,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         /* Setup areas of widgets */
         this.timeline.flex().relative(this.top).set(10, 0, 0, 20).y(1, -20).w(1, -20);
-        this.panel.flex().relative(this.top).set(0, 20, 0, 0).w(1F).hTo(this.timeline.flex(), -10);
+        this.panel.flex().relative(this.top).set(0, 20, 0, 0).w(1F).hTo(this.timeline.area);
         this.config.flex().relative(this.openConfig).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
         this.profiles.flex().relative(this.openProfiles).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
         this.modifiers.flex().relative(this.openModifiers).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
@@ -321,7 +321,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Adding everything */
         this.hidePopups(this.profiles);
         this.top.add(this.leftBar, this.middleBar, this.rightBar, this.creationBar);
-        this.top.add(this.panel, this.timeline, this.fixtures, this.profiles, this.config, this.modifiers, this.minema);
+        this.top.add(this.timeline, this.panel, this.fixtures, this.profiles, this.config, this.modifiers, this.minema);
         this.root.add(this.top);
 
         /* Let other classes have fun with camera editor's position and such */
