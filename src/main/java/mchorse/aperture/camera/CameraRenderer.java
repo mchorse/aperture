@@ -26,6 +26,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -168,25 +169,33 @@ public class CameraRenderer
         SmoothCamera camera = ClientProxy.renderer.smooth;
         EntityPlayer player = this.mc.player;
 
-        if (event.side == Side.CLIENT && event.player == player && camera.enabled.get())
+        if (event.side == Side.CLIENT && event.player == player)
         {
-            /* Copied from EntityRenderer */
-            float sensetivity = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-            float finalSensetivity = sensetivity * sensetivity * sensetivity * 8.0F;
-            float dx = this.mc.mouseHelper.deltaX * finalSensetivity * 0.15F;
-            float dy = this.mc.mouseHelper.deltaY * finalSensetivity * 0.15F;
+            if (camera.enabled.get())
+            {
+                /* Copied from EntityRenderer */
+                float sensetivity = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+                float finalSensetivity = sensetivity * sensetivity * sensetivity * 8.0F;
+                float dx = this.mc.mouseHelper.deltaX * finalSensetivity * 0.15F;
+                float dy = this.mc.mouseHelper.deltaY * finalSensetivity * 0.15F;
 
-            /* Updating smooth camera */
-            camera.update(this.mc.player, dx, dy);
+                /* Updating smooth camera */
+                camera.update(this.mc.player, dx, dy);
 
-            /* Roll and FOV acceleration */
-            KeyboardHandler keys = ClientProxy.keys;
+                /* Roll and FOV acceleration */
+                KeyboardHandler keys = ClientProxy.keys;
 
-            float roll = keys.addRoll.isKeyDown() ? 1 : (keys.reduceRoll.isKeyDown() ? -1 : 0F);
-            float fov = keys.addFov.isKeyDown() ? 1 : (keys.reduceFov.isKeyDown() ? -1 : 0F);
+                float roll = keys.addRoll.isKeyDown() ? 1 : (keys.reduceRoll.isKeyDown() ? -1 : 0F);
+                float fov = keys.addFov.isKeyDown() ? 1 : (keys.reduceFov.isKeyDown() ? -1 : 0F);
 
-            this.roll.accelerate(roll * this.roll.factor.get());
-            this.fov.accelerate(fov * this.fov.factor.get());
+                this.roll.accelerate(roll * this.roll.factor.get());
+                this.fov.accelerate(fov * this.fov.factor.get());
+            }
+
+            if (event.phase == TickEvent.Phase.START)
+            {
+                GuiManualFixturePanel.update();
+            }
         }
     }
 

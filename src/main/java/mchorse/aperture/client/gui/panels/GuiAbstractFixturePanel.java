@@ -43,11 +43,11 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
 
         this.left = new GuiScrollElement(mc);
         this.left.scroll.opposite = true;
-        this.left.flex().relative(this).y(20).w(120).hTo(this.area, 1F)
+        this.left.flex().relative(this).y(20).w(130).hTo(this.area, 1F)
             .column(5).vertical().stretch().scroll().height(20).padding(10);
 
         this.right = new GuiScrollElement(mc);
-        this.right.flex().relative(this).x(1F).y(20).w(120).hTo(this.area, 1F).anchorX(1F)
+        this.right.flex().relative(this).x(1F).y(20).w(130).hTo(this.area, 1F).anchorX(1F)
             .column(5).vertical().stretch().scroll().height(20).padding(10);
 
         this.name = new GuiTextElement(mc, 80, (str) ->
@@ -79,6 +79,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     }
 
     public void profileWasUpdated()
+    {}
+
+    public void cameraEditorOpened()
     {}
 
     @Override

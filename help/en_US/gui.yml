@@ -233,8 +233,6 @@ aperture.gui:
         previous: Previous
 
         manual: With this button, you can record manual movement of your camera!
-        constant_framerate: This feature doesn't support unlimited frame rate!
-        vsync: This feature doesn't support V-Sync!
 
         interps:
             const: Constant

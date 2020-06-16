@@ -12,12 +12,29 @@ import net.minecraft.client.entity.EntityPlayerSP;
 public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture>
 {
 	private static final String ENABLED = "aperture.gui.panels.manual";
-	private static final String DISABLED = "aperture.gui.panels.constant_framerate";
-	private static final String VSYNC = "aperture.gui.panels.vsync";
 
 	public static boolean recording;
+	public static int duration;
+	public static int tick;
 
 	public GuiButtonElement record;
+
+	public static void update()
+	{
+		if (!recording)
+		{
+			return;
+		}
+
+		if (tick >= duration)
+		{
+			ClientProxy.openCameraEditor();
+		}
+		else
+		{
+			tick ++;
+		}
+	}
 
 	public GuiManualFixturePanel(Minecraft mc, GuiCameraEditor editor)
 	{
@@ -29,33 +46,27 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 		this.left.add(this.record);
 	}
 
-	@Override
-	public void select(ManualFixture fixture, long duration)
-	{
-		super.select(fixture, duration);
-
-		if (recording)
-		{
-			recording = false;
-		}
-
-		int frameRate = this.mc.gameSettings.limitFramerate;
-		boolean vsync = this.mc.gameSettings.enableVsync;
-		boolean constant = frameRate > 0 && frameRate <= 200 && !vsync;
-
-		this.record.setEnabled(constant);
-		this.record.tooltip.label.set(constant ? ENABLED : (vsync ? VSYNC : DISABLED));
-	}
-
 	private void startRecording(GuiButtonElement buttonElement)
 	{
-		this.fixture.framerate = this.mc.gameSettings.limitFramerate;
 		this.fixture.list.clear();
 
 		recording = true;
+		duration = (int) this.fixture.getDuration();
+		tick = 0;
 
 		ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this.editor, true, (int) this.editor.getProfile().calculateOffset(this.fixture)));
 		this.editor.exit();
+	}
+
+	@Override
+	public void cameraEditorOpened()
+	{
+		if (recording)
+		{
+			recording = false;
+			this.fixture.setupRecorded();
+			this.editor.updateProfile();
+		}
 	}
 
 	public void recordFrame(EntityPlayerSP player, float partialTicks)
@@ -63,6 +74,6 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 		ManualFixture.RenderFrame frame = new ManualFixture.RenderFrame();
 
 		frame.fromPlayer(player, partialTicks);
-		this.fixture.list.add(frame);
+		this.fixture.recorded.add(frame);
 	}
 }

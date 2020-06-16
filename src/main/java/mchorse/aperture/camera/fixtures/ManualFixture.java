@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,10 +18,9 @@ import java.util.List;
 public class ManualFixture extends AbstractFixture
 {
 	@Expose
-	public int framerate;
+	public List<List<RenderFrame>> list = new ArrayList<List<RenderFrame>>();
 
-	@Expose
-	public List<RenderFrame> list = new ArrayList<RenderFrame>();
+	public List<RenderFrame> recorded = new ArrayList<RenderFrame>();
 
 	public ManualFixture(long duration)
 	{
@@ -32,17 +32,92 @@ public class ManualFixture extends AbstractFixture
 	{
 		int size = this.list.size();
 
-		if (size > 0)
+		if (size <= 0)
 		{
-			int index = (int) ((ticks + previewPartialTick) / 20F * this.framerate);
+			return;
+		}
 
-			if (index >= size)
+		int index = (int) ticks;
+
+		if (index >= size)
+		{
+			List<RenderFrame> lastTick = this.list.get(size - 1);
+
+			lastTick.get(lastTick.size() - 1).apply(pos);
+
+			return;
+		}
+
+		List<RenderFrame> lastTick = index - 1 >= 0 ? this.list.get(index - 1) : null;
+		RenderFrame last = lastTick == null || lastTick.isEmpty() ? null : lastTick.get(lastTick.size() - 1);
+		float lastPt = last == null ? 0 : last.pt - 1;
+
+		for (RenderFrame frame : this.list.get(index))
+		{
+			if (frame.pt > previewPartialTick && previewPartialTick >= lastPt)
 			{
-				index = size - 1;
+				frame.apply(pos);
+
+				return;
 			}
 
-			this.list.get(index).apply(pos);
+			last = frame;
+			lastPt = frame.pt;
 		}
+
+		if (last != null)
+		{
+			last.apply(pos);
+		}
+	}
+
+	/**
+	 * Reorganize the recorded data in a much efficient structure
+	 */
+	public void setupRecorded()
+	{
+		if (this.recorded.isEmpty())
+		{
+			return;
+		}
+
+		this.list.clear();
+
+		List<RenderFrame> tick = new ArrayList<RenderFrame>();
+		RenderFrame last = this.recorded.get(0);
+		int lastTick = last.tick;
+
+		for (RenderFrame frame : this.recorded)
+		{
+			if (frame.tick > lastTick)
+			{
+				this.list.add(tick);
+				last.pt = 0;
+
+				/* Fill missing ticks */
+				while (lastTick + 1 < frame.tick)
+				{
+					tick = new ArrayList<RenderFrame>();
+					tick.add(last.copy());
+					lastTick += 1;
+
+					this.list.add(tick);
+				}
+
+				lastTick = frame.tick;
+				tick = new ArrayList<RenderFrame>();
+			}
+
+			tick.add(frame);
+			last = frame;
+		}
+
+		if (!tick.isEmpty())
+		{
+			this.list.add(tick);
+		}
+
+		this.recorded.clear();
 	}
 
 	@Override
@@ -52,11 +127,17 @@ public class ManualFixture extends AbstractFixture
 
 		AbstractFixture.copyModifiers(this, fixture);
 		fixture.name = this.name;
-		fixture.framerate = this.framerate;
 
-		for (RenderFrame frame : this.list)
+		for (List<RenderFrame> tick : this.list)
 		{
-			fixture.list.add(frame.copy());
+			List<RenderFrame> list = new ArrayList<RenderFrame>();
+
+			for (RenderFrame frame : tick)
+			{
+				list.add(frame.copy());
+			}
+
+			fixture.list.add(list);
 		}
 
 		return fixture;
@@ -69,17 +150,24 @@ public class ManualFixture extends AbstractFixture
 	{
 		super.fromByteBuf(buffer);
 
-		this.framerate = buffer.readInt();
 		this.list.clear();
 
 		for (int i = 0, c = buffer.readInt(); i < c; i ++)
 		{
-			RenderFrame frame = new RenderFrame();
+			List<RenderFrame> tick = new ArrayList<RenderFrame>();
 
-			frame.position(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-			frame.angle(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+			for (int j = 0, d = buffer.readInt(); j < d; j ++)
+			{
+				RenderFrame frame = new RenderFrame();
 
-			this.list.add(frame);
+				frame.position(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+				frame.angle(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+				frame.pt = buffer.readFloat();
+
+				tick.add(frame);
+			}
+
+			this.list.add(tick);
 		}
 	}
 
@@ -88,18 +176,23 @@ public class ManualFixture extends AbstractFixture
 	{
 		super.toByteBuf(buffer);
 
-		buffer.writeInt(this.framerate);
 		buffer.writeInt(this.list.size());
 
-		for (RenderFrame frame : this.list)
+		for (List<RenderFrame> tick : this.list)
 		{
-			buffer.writeDouble(frame.x);
-			buffer.writeDouble(frame.y);
-			buffer.writeDouble(frame.z);
-			buffer.writeFloat(frame.yaw);
-			buffer.writeFloat(frame.pitch);
-			buffer.writeFloat(frame.roll);
-			buffer.writeFloat(frame.fov);
+			buffer.writeInt(tick.size());
+
+			for (RenderFrame frame : tick)
+			{
+				buffer.writeDouble(frame.x);
+				buffer.writeDouble(frame.y);
+				buffer.writeDouble(frame.z);
+				buffer.writeFloat(frame.yaw);
+				buffer.writeFloat(frame.pitch);
+				buffer.writeFloat(frame.roll);
+				buffer.writeFloat(frame.fov);
+				buffer.writeFloat(frame.pt);
+			}
 		}
 	}
 
@@ -125,6 +218,11 @@ public class ManualFixture extends AbstractFixture
 
 		@Expose
 		public float fov;
+
+		@Expose
+		public float pt;
+
+		public int tick;
 
 		public void position(double x, double y, double z)
 		{
@@ -157,6 +255,8 @@ public class ManualFixture extends AbstractFixture
 			this.pitch = player.rotationPitch;
 			this.roll = ClientProxy.control.roll;
 			this.fov = Minecraft.getMinecraft().gameSettings.fovSetting;
+			this.pt = partialTicks;
+			this.tick = GuiManualFixturePanel.tick;
 		}
 
 		public RenderFrame copy()
@@ -165,6 +265,7 @@ public class ManualFixture extends AbstractFixture
 
 			frame.position(this.x, this.y, this.z);
 			frame.angle(this.yaw, this.pitch, this.roll, this.fov);
+			frame.pt = this.pt;
 
 			return frame;
 		}

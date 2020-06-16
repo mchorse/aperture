@@ -662,6 +662,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.pickCameraFixture(null, 0);
         }
+        else if (this.panel.delegate != null)
+        {
+            this.timeline.index = profile.getAll().indexOf(this.getFixture());
+        }
 
         return isSame;
     }
@@ -684,6 +688,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.position.set(player);
         this.setProfile(ClientProxy.control.currentProfile);
         this.profiles.init();
+
+        if (this.panel.delegate != null)
+        {
+            this.panel.delegate.cameraEditorOpened();
+        }
 
         Minecraft.getMinecraft().gameSettings.hideGUI = true;
         GuiIngameForge.renderHotbar = false;
@@ -806,6 +815,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.panel.delegate.profileWasUpdated();
         }
+
+        this.updateSaveButton(this.getProfile());
     }
 
     /**

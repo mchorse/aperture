@@ -109,6 +109,21 @@ public class ClientProxy extends CommonProxy
     }
 
     /**
+     * Open the camera editor
+     */
+    public static GuiCameraEditor openCameraEditor()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        GuiCameraEditor editor = ClientProxy.getCameraEditor();
+
+        editor.updateCameraEditor(mc.player);
+        mc.player.setVelocity(0, 0, 0);
+        mc.displayGuiScreen(editor);
+
+        return editor;
+    }
+
+    /**
      * Get client cameras storage location
      * 
      * This method returns File pointer to a folder where client side camera 
