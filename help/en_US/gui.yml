@@ -232,7 +232,11 @@ aperture.gui:
         
         previous: Previous
 
-        manual: With this button, you can record manual movement of your camera!
+        manual:
+            title: Manual
+            shift: Playback shift, this property delays the playback of the data if positive, if negative, it cuts the duration of recorded data
+            speed: Playback speed, since the playback uses raw recorded data, consider using drag modifier to smooth out the movement
+            record: With this button, you can record manual movement of your camera!
 
         interps:
             const: Constant

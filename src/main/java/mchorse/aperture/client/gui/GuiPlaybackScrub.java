@@ -3,19 +3,13 @@ package mchorse.aperture.client.gui;
 import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
-import mchorse.mclib.utils.ColorUtils;
-import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.Sys;
-import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.client.gui.utils.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
@@ -434,7 +428,7 @@ public class GuiPlaybackScrub extends GuiElement
                 if (fixture instanceof ManualFixture)
                 {
                     ManualFixture manual = (ManualFixture) fixture;
-                    int end = leftMargin + (int) (manual.list.size() / (float) fixture.getDuration() * (rightMargin - leftMargin));
+                    int end = leftMargin + (int) (manual.getSize() / (float) fixture.getDuration() * (rightMargin - leftMargin));
 
                     if (end > leftMargin && end < rightMargin)
                     {
@@ -443,7 +437,7 @@ public class GuiPlaybackScrub extends GuiElement
                     }
                     else
                     {
-                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + (manual.list.isEmpty() ? 0 : color));
+                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + (manual.frames.isEmpty() ? 0 : color));
                     }
                 }
                 else

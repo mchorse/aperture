@@ -1,5 +1,6 @@
 package mchorse.aperture.camera.fixtures;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.ClientProxy;
@@ -18,7 +19,13 @@ import java.util.List;
 public class ManualFixture extends AbstractFixture
 {
 	@Expose
-	public List<List<RenderFrame>> list = new ArrayList<List<RenderFrame>>();
+	public float speed = 1;
+
+	@Expose
+	public int shift = 1;
+
+	@Expose
+	public List<List<RenderFrame>> frames = new ArrayList<List<RenderFrame>>();
 
 	public List<RenderFrame> recorded = new ArrayList<RenderFrame>();
 
@@ -27,32 +34,45 @@ public class ManualFixture extends AbstractFixture
 		super(duration);
 	}
 
+	public int getSize()
+	{
+		return (int) (this.frames.size() / this.speed + this.shift);
+	}
+
 	@Override
 	public void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
 	{
-		int size = this.list.size();
+		int size = this.frames.size();
 
 		if (size <= 0)
 		{
 			return;
 		}
 
-		int index = (int) ticks;
+		float tick = ticks + previewPartialTick;
+		int index = (int) ((int) tick * this.speed) - this.shift;
+		previewPartialTick = tick % 1;
 
-		if (index >= size)
+		if (index < 0)
 		{
-			List<RenderFrame> lastTick = this.list.get(size - 1);
+			this.frames.get(0).get(0).apply(pos);
+
+			return;
+		}
+		else if (index >= size)
+		{
+			List<RenderFrame> lastTick = this.frames.get(size - 1);
 
 			lastTick.get(lastTick.size() - 1).apply(pos);
 
 			return;
 		}
 
-		List<RenderFrame> lastTick = index - 1 >= 0 ? this.list.get(index - 1) : null;
+		List<RenderFrame> lastTick = index - 1 >= 0 ? this.frames.get(index - 1) : null;
 		RenderFrame last = lastTick == null || lastTick.isEmpty() ? null : lastTick.get(lastTick.size() - 1);
 		float lastPt = last == null ? 0 : last.pt - 1;
 
-		for (RenderFrame frame : this.list.get(index))
+		for (RenderFrame frame : this.frames.get(index))
 		{
 			if (frame.pt > previewPartialTick && previewPartialTick >= lastPt)
 			{
@@ -81,7 +101,7 @@ public class ManualFixture extends AbstractFixture
 			return;
 		}
 
-		this.list.clear();
+		this.frames.clear();
 
 		List<RenderFrame> tick = new ArrayList<RenderFrame>();
 		RenderFrame last = this.recorded.get(0);
@@ -91,7 +111,7 @@ public class ManualFixture extends AbstractFixture
 		{
 			if (frame.tick > lastTick)
 			{
-				this.list.add(tick);
+				this.frames.add(tick);
 				last.pt = 0;
 
 				/* Fill missing ticks */
@@ -101,7 +121,7 @@ public class ManualFixture extends AbstractFixture
 					tick.add(last.copy());
 					lastTick += 1;
 
-					this.list.add(tick);
+					this.frames.add(tick);
 				}
 
 				lastTick = frame.tick;
@@ -114,7 +134,7 @@ public class ManualFixture extends AbstractFixture
 
 		if (!tick.isEmpty())
 		{
-			this.list.add(tick);
+			this.frames.add(tick);
 		}
 
 		this.recorded.clear();
@@ -127,8 +147,10 @@ public class ManualFixture extends AbstractFixture
 
 		AbstractFixture.copyModifiers(this, fixture);
 		fixture.name = this.name;
+		fixture.shift = this.shift;
+		fixture.speed = this.speed;
 
-		for (List<RenderFrame> tick : this.list)
+		for (List<RenderFrame> tick : this.frames)
 		{
 			List<RenderFrame> list = new ArrayList<RenderFrame>();
 
@@ -137,7 +159,7 @@ public class ManualFixture extends AbstractFixture
 				list.add(frame.copy());
 			}
 
-			fixture.list.add(list);
+			fixture.frames.add(list);
 		}
 
 		return fixture;
@@ -146,11 +168,24 @@ public class ManualFixture extends AbstractFixture
 	/* Save/load methods */
 
 	@Override
+	public void fromJSON(JsonObject object)
+	{
+		super.fromJSON(object);
+
+		if (this.frames == null)
+		{
+			this.frames = new ArrayList<List<RenderFrame>>();
+		}
+	}
+
+	@Override
 	public void fromByteBuf(ByteBuf buffer)
 	{
 		super.fromByteBuf(buffer);
 
-		this.list.clear();
+		this.frames.clear();
+		this.shift = buffer.readInt();
+		this.speed = buffer.readFloat();
 
 		for (int i = 0, c = buffer.readInt(); i < c; i ++)
 		{
@@ -167,7 +202,7 @@ public class ManualFixture extends AbstractFixture
 				tick.add(frame);
 			}
 
-			this.list.add(tick);
+			this.frames.add(tick);
 		}
 	}
 
@@ -176,9 +211,11 @@ public class ManualFixture extends AbstractFixture
 	{
 		super.toByteBuf(buffer);
 
-		buffer.writeInt(this.list.size());
+		buffer.writeInt(this.shift);
+		buffer.writeFloat(this.speed);
+		buffer.writeInt(this.frames.size());
 
-		for (List<RenderFrame> tick : this.list)
+		for (List<RenderFrame> tick : this.frames)
 		{
 			buffer.writeInt(tick.size());
 

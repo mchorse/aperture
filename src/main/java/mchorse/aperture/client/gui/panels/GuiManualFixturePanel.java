@@ -5,6 +5,8 @@ import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Timer;
 import net.minecraft.client.Minecraft;
@@ -14,14 +16,14 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture>
 {
-	private static final String ENABLED = "aperture.gui.panels.manual";
-
 	public static boolean recording;
 	public static int duration;
 	public static int tick;
 	public static int offset;
 	public static Timer timer = new Timer(3000);
 
+	public GuiTrackpadElement shift;
+	public GuiTrackpadElement speed;
 	public GuiButtonElement record;
 
 	public static void update()
@@ -82,10 +84,25 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 	{
 		super(mc, editor);
 
-		this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.record"), this::startRecording);
-		this.record.tooltip(IKey.lang(ENABLED));
+		this.shift = new GuiTrackpadElement(mc, (v) -> this.fixture.shift = v.intValue());
+		this.shift.integer().tooltip(IKey.lang("aperture.gui.panels.manual.shift"));
 
-		this.left.add(this.record);
+		this.speed = new GuiTrackpadElement(mc, (v) -> this.fixture.speed = v.floatValue());
+		this.speed.limit(0).tooltip(IKey.lang("aperture.gui.panels.manual.speed"));
+
+		this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.record"), this::startRecording);
+		this.record.tooltip(IKey.lang("aperture.gui.panels.manual.record"));
+
+		this.left.add(Elements.label(IKey.lang("aperture.gui.panels.manual.title")).background(0x88000000), this.shift, this.speed, this.record);
+	}
+
+	@Override
+	public void select(ManualFixture fixture, long duration)
+	{
+		super.select(fixture, duration);
+
+		this.shift.setValue(fixture.shift);
+		this.speed.setValue(fixture.speed);
 	}
 
 	private void startRecording(GuiButtonElement buttonElement)
