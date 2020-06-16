@@ -41,6 +41,10 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 		}
 	}
 
+	/**
+	 * Draw manual fixture related HUD elements, like countdown and
+	 * recording overlays
+	 */
 	public static void drawHUD(int w, int h)
 	{
 		FontRenderer font = Minecraft.getMinecraft().fontRenderer;
@@ -108,13 +112,14 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 				this.editor.updateProfile();
 			}
 		}
+		else
+		{
+			timer.reset();
+		}
 	}
 
 	public void recordFrame(EntityPlayerSP player, float partialTicks)
 	{
-		ManualFixture.RenderFrame frame = new ManualFixture.RenderFrame();
-
-		frame.fromPlayer(player, partialTicks);
-		this.fixture.recorded.add(frame);
+		this.fixture.recorded.add(new ManualFixture.RenderFrame(player, partialTicks));
 	}
 }

@@ -1,7 +1,9 @@
 package mchorse.aperture.client.gui;
 
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
@@ -429,7 +431,26 @@ public class GuiPlaybackScrub extends GuiElement
                 }
 
                 /* Draw fixture's background and the hinge */
-                Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
+                if (fixture instanceof ManualFixture)
+                {
+                    ManualFixture manual = (ManualFixture) fixture;
+                    int end = leftMargin + (int) (manual.list.size() / (float) fixture.getDuration() * (rightMargin - leftMargin));
+
+                    if (end > leftMargin && end < rightMargin)
+                    {
+                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), end, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
+                        Gui.drawRect(end, y + (selected ? 12 : 15), rightMargin, y + h - 1, selected ? 0xaa000000 : 0x66000000);
+                    }
+                    else
+                    {
+                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + (manual.list.isEmpty() ? 0 : color));
+                    }
+                }
+                else
+                {
+                    Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
+                }
+
                 Gui.drawRect(rightMargin, y + 1, rightMargin + 1, y + h - 1, 0xff000000 + color);
 
                 if (selected)

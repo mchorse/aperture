@@ -224,6 +224,15 @@ public class ManualFixture extends AbstractFixture
 
 		public int tick;
 
+		public RenderFrame()
+		{}
+
+		@SideOnly(Side.CLIENT)
+		public RenderFrame(EntityPlayer player, float partialTicks)
+		{
+			this.fromPlayer(player, partialTicks);
+		}
+
 		public void position(double x, double y, double z)
 		{
 			this.x = x;
