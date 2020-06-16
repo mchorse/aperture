@@ -8,6 +8,8 @@ import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.ColorUtils;
@@ -18,7 +20,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     public T modifier;
     public GuiModifiersManager modifiers;
 
-    public IKey title;
+    public GuiLabel title;
     public int color;
 
     public GuiIconElement enable;
@@ -29,6 +31,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     public GuiIconElement envelope;
 
     public GuiElement header;
+    public GuiElement buttons;
     public GuiElement fields;
     public GuiEnvelope envelopes;
 
@@ -64,6 +67,9 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.header = new GuiElement(mc);
         this.header.flex().h(15);
 
+        this.buttons = new GuiElement(mc);
+        this.buttons.flex().relative(this.header).wh(1F, 1F);
+
         this.remove.flex().relative(this.header).set(-20, 5, 20, 20).x(1, -30);
         this.enable.flex().relative(this.remove).set(-20, 0, 20, 20);
         this.moveUp.flex().relative(this.enable).set(-20, 2, 20, 8);
@@ -71,13 +77,19 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.copy.flex().relative(this.moveUp).set(-20, -2, 20, 20);
         this.envelope.flex().relative(this.copy).set(-20, 0, 20, 20);
 
-        this.header.add(this.remove, this.enable, this.moveUp, this.moveDown, this.copy, this.envelope);
+        this.buttons.add(this.remove, this.enable, this.moveUp, this.moveDown, this.copy, this.envelope);
 
         this.flex().column(0).vertical().stretch();
         this.add(this.header, this.fields);
 
-        this.title = IKey.lang(ModifierRegistry.CLIENT.get(modifier.getClass()).title);
+        String key = ModifierRegistry.CLIENT.get(modifier.getClass()).title;
+
+        this.title = Elements.label(IKey.lang(key));
+        this.title.anchor(0, 0.5F).flex().relative(this.header).x(10).y(5).w(0.5F, -10).h(20);
+        this.title.tooltip(IKey.lang(key + "_description"));
         this.color = ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getRGBColor();
+
+        this.header.add(this.title, this.buttons);
     }
 
     private void toggleEnvelopes()
@@ -122,9 +134,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
             APIcons.DISABLED.renderArea(this.area.x, this.area.y, this.area.w, this.area.h);
         }
 
-        this.font.drawStringWithShadow(this.title.get(), this.header.area.x + 10, this.header.area.y + 15 - this.font.FONT_HEIGHT / 2, 0xffffff);
-
-        this.header.setVisible(this.area.isInside(context.mouseX, context.mouseY));
+        this.buttons.setVisible(this.area.isInside(context.mouseX, context.mouseY));
 
         super.draw(context);
     }

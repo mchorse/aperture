@@ -110,13 +110,21 @@ aperture.gui:
         global: Global modifiers
 
         shake: Shake
+        shake_description: Adds a simple shake (based on sine and cosine functions) to enabled camera properties
         math: Math
+        math_description: Allows to process given camera properties using math expressions
         look: Look
+        look_description: Orients the camera toward an entity or entities, block position or motion (forward)
         follow: Follow
+        follow_description: Attaches the camera to an entity or entities
         translate: Translate
+        translate_description: Shifts the camera position by specific amount
         angle: Angle
+        angle_description: Rotates the camera angles by specific amount
         orbit: Orbit
+        orbit_description: Attaches the camera to an entity or entities, but using orbit-like controls
         drag: Drag
+        drag_description: Smooths out enabled camera properties using linear interpoaltion between current and previous value
 
         enabled: Enabled
 
@@ -137,7 +145,7 @@ aperture.gui:
             copy_entity_tooltip: Copy entity's head orientation, exactly like GoPros
 
             shake: Shake
-            shake_amount: Amount
+            shake_amount: Shake amount
 
             relative: Relative
             relative_tooltip: Apply relative animation of the fixture or camera profile\n\nI.e. if you have a path that has yaw animation from 90 to 100, 10 degree animation will be applied relatively to this modifier
