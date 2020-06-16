@@ -75,6 +75,7 @@ aperture.gui:
                 shift: Shift duration to cursor
                 copy: Apply current camera position
                 cut: Cut fixture
+                add: "Add %s fixture"
 
             modes:
                 title: Modes

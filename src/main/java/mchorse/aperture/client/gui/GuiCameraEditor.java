@@ -4,6 +4,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRunner;
+import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
@@ -240,7 +241,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             fixture.fromPlayer(this.getCamera());
             this.createFixture(fixture);
-            this.fixtures.toggleVisible();
+            this.fixtures.setVisible(false);
         });
 
         this.profiles = new GuiProfilesManager(mc, this);
@@ -346,6 +347,17 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.shift"), Keyboard.KEY_M, this::shiftDurationToCursor).active(active).category(fixture);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.copy"), Keyboard.KEY_B, this::editFixture).active(active).category(fixture);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.cut"), Keyboard.KEY_C, () -> this.cut.clickItself(this.context)).active(active).category(fixture);
+
+        for (byte i = 0; i < FixtureRegistry.getNextId(); i ++)
+        {
+            FixtureRegistry.FixtureInfo info = FixtureRegistry.getInfo(i);
+            IKey label = IKey.format("aperture.gui.editor.keys.fixture.add", IKey.lang(info.title));
+            byte type = i;
+
+            this.root.keys()
+                .register(label, Keyboard.KEY_1 + i, () -> this.fixtures.createFixture(type))
+                .held(Keyboard.KEY_LCONTROL).active(active).category(fixture);
+        }
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.flight"), Keyboard.KEY_F, () -> this.cameraOptions.flight.clickItself(this.context)).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.vertical"), Keyboard.KEY_V, () -> this.flight.vertical = !this.flight.vertical).category(modes);

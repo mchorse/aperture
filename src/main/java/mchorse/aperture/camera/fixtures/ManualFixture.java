@@ -34,7 +34,10 @@ public class ManualFixture extends AbstractFixture
 		super(duration);
 	}
 
-	public int getSize()
+	/**
+	 * Get total duration of recorded data
+	 */
+	public int getEndTick()
 	{
 		return (int) (this.frames.size() / this.speed + this.shift);
 	}
@@ -259,6 +262,9 @@ public class ManualFixture extends AbstractFixture
 		@Expose
 		public float pt;
 
+		/**
+		 * Used only during recording
+		 */
 		public int tick;
 
 		public RenderFrame()

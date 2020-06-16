@@ -50,6 +50,12 @@ public class FixtureRegistry
         return NEXT_ID;
     }
 
+    @SideOnly(Side.CLIENT)
+    public static FixtureInfo getInfo(byte type)
+    {
+        return FixtureRegistry.CLIENT.get(FixtureRegistry.CLASS_TO_ID.inverse().get(type));
+    }
+
     /**
      * Create camera from type
      */

@@ -31,18 +31,18 @@ public class GuiFixtures extends GuiElement
 
         for (byte i = 0; i < FixtureRegistry.getNextId(); i ++)
         {
-            FixtureInfo info = FixtureRegistry.CLIENT.get(FixtureRegistry.CLASS_TO_ID.inverse().get(i));
+            FixtureInfo info = FixtureRegistry.getInfo(i);
             byte type = info.type;
             int color = info.color.getRGBAColor();
 
-            this.add(new GuiButtonElement(mc, IKey.lang(info.title), (b) -> this.actionPerformed(type)).color(color));
+            this.add(new GuiButtonElement(mc, IKey.lang(info.title), (b) -> this.createFixture(type)).color(color));
         }
     }
 
     /**
      * Select a fixture
      */
-    private void actionPerformed(byte type)
+    public void createFixture(byte type)
     {
         long duration = Aperture.duration.get();
         AbstractFixture fixture = null;

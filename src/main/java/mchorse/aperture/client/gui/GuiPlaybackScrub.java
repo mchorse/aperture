@@ -428,7 +428,8 @@ public class GuiPlaybackScrub extends GuiElement
                 if (fixture instanceof ManualFixture)
                 {
                     ManualFixture manual = (ManualFixture) fixture;
-                    int end = leftMargin + (int) (manual.getSize() / (float) fixture.getDuration() * (rightMargin - leftMargin));
+                    int endTick = manual.getEndTick();
+                    int end = leftMargin + (int) (endTick / (float) fixture.getDuration() * (rightMargin - leftMargin));
 
                     if (end > leftMargin && end < rightMargin)
                     {
@@ -437,7 +438,7 @@ public class GuiPlaybackScrub extends GuiElement
                     }
                     else
                     {
-                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + (manual.frames.isEmpty() ? 0 : color));
+                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xaa000000 : 0x66000000) + (end <= leftMargin ? 0 : color));
                     }
                 }
                 else
