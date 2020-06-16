@@ -22,6 +22,13 @@ public abstract class GuiFixtureKeyframesEditor<E extends GuiKeyframeElement, T 
     }
 
     @Override
+    protected void toggleInterpolation()
+    {
+        super.toggleInterpolation();
+        this.parent.editor.updateProfile();
+    }
+
+    @Override
     protected void doubleClick(int mouseX, int mouseY)
     {
         super.doubleClick(mouseX, mouseY);

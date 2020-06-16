@@ -3,6 +3,9 @@ package mchorse.aperture.client.gui.utils;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
+import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElements;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -14,6 +17,7 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import org.lwjgl.input.Keyboard;
 
 public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends GuiElement
 {
@@ -61,6 +65,37 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         /* Add all elements */
         this.add(this.graph, this.frameButtons);
         this.frameButtons.add(this.tick, this.value, this.interp, this.easing, this.interpolations);
+
+        this.interp.keys().register(IKey.lang("aperture.gui.panels.keys.graph_interp"), Keyboard.KEY_LBRACKET, this::toggleInterpolation).held(Keyboard.KEY_LCONTROL).category(GuiAbstractFixturePanel.CATEGORY);
+        this.easing.keys().register(IKey.lang("aperture.gui.panels.keys.graph_easing"), Keyboard.KEY_RBRACKET, this::toggleEasing).held(Keyboard.KEY_LCONTROL).category(GuiAbstractFixturePanel.CATEGORY);
+    }
+
+    protected void toggleInterpolation()
+    {
+        Keyframe keyframe = this.graph.getCurrent();
+
+        if (keyframe == null)
+        {
+            return;
+        }
+
+        KeyframeInterpolation interp = keyframe.interp;
+        int index = interp.ordinal() + 1;
+
+        if (index >= KeyframeInterpolation.values().length)
+        {
+            index = 0;
+        }
+
+        interp = KeyframeInterpolation.values()[index];
+        this.graph.getCurrent().setInterpolation(interp);
+        this.interp.label.set(interp.getKey());
+        this.interpolations.setCurrent(interp);
+    }
+
+    protected void toggleEasing()
+    {
+        this.easing.clickItself(GuiBase.getCurrent());
     }
 
     protected abstract T createElement(Minecraft mc);

@@ -14,12 +14,14 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
 import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
+import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import org.lwjgl.input.Keyboard;
 
 /**
  * Path fixture panel
@@ -84,6 +86,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.prepend(this.speed);
         this.add(this.points);
+
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.per_point"), Keyboard.KEY_D, () -> this.perPointDuration.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).category(CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).category(CATEGORY);
     }
 
     private void updateSpeedPanel()

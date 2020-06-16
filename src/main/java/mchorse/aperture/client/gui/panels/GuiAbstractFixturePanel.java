@@ -23,6 +23,8 @@ import net.minecraft.client.resources.I18n;
  */
 public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends GuiElement implements IFixturePanel<T>
 {
+    public static final IKey CATEGORY = IKey.lang("aperture.gui.panels.keys.title");
+
     /**
      * Currently editing camera fixture
      */
@@ -56,6 +58,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
             this.editor.updateValues();
             this.editor.updateProfile();
         });
+        this.name.tooltip(IKey.lang("aperture.gui.panels.name_tooltip"));
 
         this.duration = new GuiTrackpadElement(mc, (value) ->
         {

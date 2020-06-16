@@ -4,6 +4,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.utils.APIcons;
+import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
@@ -13,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.input.Keyboard;
 
 public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture>
 {
@@ -94,6 +96,8 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 		this.record.tooltip(IKey.lang("aperture.gui.panels.manual.record"));
 
 		this.left.add(Elements.label(IKey.lang("aperture.gui.panels.manual.title")).background(0x88000000), this.shift, this.speed, this.record);
+
+		this.keys().register(IKey.lang("aperture.gui.panels.keys.record_manual"), Keyboard.KEY_R, () -> this.record.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).category(CATEGORY);
 	}
 
 	@Override

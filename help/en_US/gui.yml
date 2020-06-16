@@ -203,6 +203,7 @@ aperture.gui:
 
     panels:
         name: Name
+        name_tooltip: Display name which will be displayed in the timeline
         duration: Fixture's duration (measured in ticks, 20 ticks equal to about 1 second)
 
         x: X
@@ -237,7 +238,7 @@ aperture.gui:
             title: Manual
             shift: Playback shift, this property delays the playback of the data if positive, if negative, it cuts the duration of recorded data
             speed: Playback speed, since the playback uses raw recorded data, consider using drag modifier to smooth out the movement
-            record: With this button, you can record manual movement of your camera!
+            record: With this button, you can start recording of manual movement of the camera!
 
         interps:
             const: Constant
@@ -262,3 +263,17 @@ aperture.gui:
             in: Ease in
             out: Ease out
             inout: Ease in/out
+
+        keys:
+            title: Current fixture panel
+
+            path_position: Cycle position interpolation
+            path_angle: Cycle angle interpolation
+            per_point: Toggle per-point option
+            velocity: Toggle velocity control option
+
+            graph_interp: Cycle point interpolation
+            graph_easing: Cycle point easing
+
+            previous: Toggle previous option
+            record_manual: Start recording manual movement
