@@ -55,6 +55,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         {
             this.editor.setFlight(b.isToggled());
         });
+        this.flight.tooltip(IKey.lang("aperture.gui.config.flight_tooltip"));
 
         this.displayPosition = new GuiToggleElement(mc, Aperture.editorDisplayPosition);
         this.essentialsTeleport = new GuiToggleElement(mc, Aperture.essentialsTeleport);

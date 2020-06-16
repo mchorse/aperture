@@ -28,6 +28,7 @@ aperture.gui:
         show_path: Show path
         sync: Sync
         flight: Flight mode
+        flight_tooltip: Enables flight mode, which allows to control the camera within camera editor with WASD and mouse dragging (see Aperture's flight mode configuration for keybinds)
         display_info: Display position
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
@@ -153,7 +154,7 @@ aperture.gui:
             forward: Look forward
             forward_tooltip: This option orients the camera toward the vector of motion, exactly like a roller coaster
             
-            factor: Factor
+            factor: Linear factor (between 0 and 1), the smaller the value, the more it will smooth out
 
             math: Math expression\n\nClick "?" button for more information about variables and functions...
 
