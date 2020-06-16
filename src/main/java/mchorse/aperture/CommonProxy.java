@@ -48,19 +48,19 @@ public class CommonProxy
         /* Register camera fixtures and modifiers */
         FixtureRegistry.register("idle", IdleFixture.class);
         FixtureRegistry.register("circular", CircularFixture.class);
+        FixtureRegistry.register("path", PathFixture.class);
         FixtureRegistry.register("keyframe", KeyframeFixture.class);
         FixtureRegistry.register("null", NullFixture.class);
-        FixtureRegistry.register("path", PathFixture.class);
         FixtureRegistry.register("manual", ManualFixture.class);
 
+        ModifierRegistry.register("angle", AngleModifier.class);
+        ModifierRegistry.register("translate", TranslateModifier.class);
         ModifierRegistry.register("shake", ShakeModifier.class);
-        ModifierRegistry.register("math", MathModifier.class);
+        ModifierRegistry.register("drag", DragModifier.class);
         ModifierRegistry.register("look", LookModifier.class);
         ModifierRegistry.register("follow", FollowModifier.class);
-        ModifierRegistry.register("translate", TranslateModifier.class);
-        ModifierRegistry.register("angle", AngleModifier.class);
         ModifierRegistry.register("orbit", OrbitModifier.class);
-        ModifierRegistry.register("drag", DragModifier.class);
+        ModifierRegistry.register("math", MathModifier.class);
     }
 
     /**

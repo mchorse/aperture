@@ -62,6 +62,7 @@ public class GuiMinemaPanel extends GuiElement
 
 		this.fields = new GuiElement(mc);
 		this.name = new GuiTextElement(mc, (Consumer<String>) null);
+		this.name.tooltip(IKey.lang("aperture.gui.minema.output"));
 		this.mode = new GuiCirculateElement(mc, this::switchMode);
 
 		for (RecordingMode mode : RecordingMode.values())

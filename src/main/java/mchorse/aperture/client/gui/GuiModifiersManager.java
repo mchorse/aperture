@@ -106,8 +106,9 @@ public class GuiModifiersManager extends GuiElement
         this.buttons.setVisible(false);
         this.buttons.flex().relative(this).x(1, -10).y(24).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch().padding(2);
 
-        for (ModifierInfo info : ModifierRegistry.CLIENT.values())
+        for (byte i = 0; i < ModifierRegistry.getNextId(); i ++)
         {
+            ModifierInfo info = ModifierRegistry.CLIENT.get(ModifierRegistry.CLASS_TO_ID.inverse().get(i));
             byte type = info.type;
             int color = info.color.getRGBAColor();
 

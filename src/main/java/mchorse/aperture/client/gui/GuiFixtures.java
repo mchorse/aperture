@@ -29,8 +29,9 @@ public class GuiFixtures extends GuiElement
 
         this.flex().column(0).vertical().stretch().height(20).padding(2);
 
-        for (FixtureInfo info : FixtureRegistry.CLIENT.values())
+        for (byte i = 0; i < FixtureRegistry.getNextId(); i ++)
         {
+            FixtureInfo info = FixtureRegistry.CLIENT.get(FixtureRegistry.CLASS_TO_ID.inverse().get(i));
             byte type = info.type;
             int color = info.color.getRGBAColor();
 

@@ -40,6 +40,11 @@ public class ModifierRegistry
      */
     private static byte NEXT_ID = 0;
 
+    public static byte getNextId()
+    {
+        return NEXT_ID;
+    }
+
     /**
      * Get type from abstract modifier
      */

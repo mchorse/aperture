@@ -181,6 +181,7 @@ aperture.gui:
 
     minema:
         title: Minema
+        output: Output name (which will be used instead of random generated date)
         set_start: Set start
         set_start_tooltip: Move cursor in timeline, and click this button to set the starting tick of Minema clip
         set_duration: Set duration

@@ -45,6 +45,11 @@ public class FixtureRegistry
      */
     private static byte NEXT_ID = 0;
 
+    public static byte getNextId()
+    {
+        return NEXT_ID;
+    }
+
     /**
      * Create camera from type
      */
