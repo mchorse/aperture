@@ -202,7 +202,7 @@ aperture.gui:
 
     panels:
         name: Name
-        duration: Duration
+        duration: Fixture's duration (measured in ticks, 20 ticks equal to about 1 second)
 
         x: X
         y: "Y"

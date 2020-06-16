@@ -60,6 +60,8 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
     public void resetView()
     {
+        int c = 0;
+
         this.scale.set(0, 2);
 
         int min = Integer.MAX_VALUE;
@@ -73,6 +75,18 @@ public class GuiDopeSheet extends GuiKeyframeElement
                 min = Integer.min((int) frame.tick, min);
                 max = Integer.max((int) frame.tick, max);
             }
+
+            c = Math.max(c, sheet.channel.getKeyframes().size());
+        }
+
+        if (c <= 1)
+        {
+            if (c == 0)
+            {
+                min = 0;
+            }
+
+            max = this.duration;
         }
 
         if (Math.abs(max - min) > 0.01F)
