@@ -4,7 +4,10 @@ import java.util.List;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -17,6 +20,20 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RenderingHandler
 {
     private Minecraft mc = Minecraft.getMinecraft();
+
+    /**
+     * Renders recording overlay during HUD rendering
+     */
+    @SubscribeEvent
+    public void onHUDRender(RenderGameOverlayEvent.Post event)
+    {
+        ScaledResolution resolution = event.getResolution();
+
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
+        {
+            GuiManualFixturePanel.drawHUD(resolution.getScaledWidth(), resolution.getScaledHeight());
+        }
+    }
 
     /**
      * On in game chat rendering

@@ -37,9 +37,11 @@ public class CameraControl
     {
         if (this.lastCounter == 0)
         {
+            Minecraft mc = Minecraft.getMinecraft();
+
             this.lastGameMode = ClientProxy.getGameMode();
             this.lastRoll = roll;
-            this.lastFov = Minecraft.getMinecraft().gameSettings.fovSetting;
+            this.lastFov = mc.gameSettings.fovSetting;
         }
 
         this.lastCounter ++;

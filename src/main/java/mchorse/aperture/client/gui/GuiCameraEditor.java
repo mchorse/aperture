@@ -263,7 +263,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.save = new GuiIconElement(mc, Icons.SAVED, (b) -> this.saveProfile());
         this.save.tooltip(IKey.lang("aperture.gui.tooltips.save"));
-        this.openMinema = new GuiIconElement(mc, APIcons.RECORD, (b) -> this.hidePopups(this.minema));
+        this.openMinema = new GuiIconElement(mc, APIcons.MINEMA, (b) -> this.hidePopups(this.minema));
         this.openMinema.tooltip(IKey.lang("aperture.gui.tooltips.minema"));
         this.openModifiers = new GuiIconElement(mc, Icons.FILTER, (b) -> this.hidePopups(this.modifiers));
         this.openModifiers.tooltip(IKey.lang("aperture.gui.tooltips.modifiers"));
@@ -360,6 +360,21 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.closeScreen();
     }
 
+    public void postRewind(int tick)
+    {
+        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this, tick));
+    }
+
+    public void postPlayback(int tick)
+    {
+        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, tick));
+    }
+
+    public void postScrub(int tick)
+    {
+        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Scrubbed(this, this.runner.isRunning(), tick));
+    }
+
     /**
      * This GUI shouldn't pause the game, because camera runs on the world's
      * update loop.
@@ -396,7 +411,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         {
             this.haveScrubbed();
 
-            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Scrubbed(this, this.runner.isRunning(), this.timeline.value));
+            this.postScrub(value);
         }
     }
 
@@ -1000,7 +1015,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.updatePlayerCurrently();
         }
 
-        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, this.timeline.value));
+        this.postPlayback(this.timeline.value);
     }
 
     @Override
@@ -1137,7 +1152,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             this.runner.attachOutside();
             this.timeline.setValueFromScrub(0);
 
-            ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this, this.timeline.value));
+            this.postRewind(this.timeline.value);
             this.playing = false;
         }
 
