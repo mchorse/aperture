@@ -18,7 +18,7 @@ import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.aperture.utils.APIcons;
-import mchorse.mclib.client.MouseRenderer;
+import mchorse.mclib.client.InputRenderer;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -1085,7 +1085,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (!this.top.canBeSeen())
         {
-            MouseRenderer.disable();
+            InputRenderer.disable();
 
             /* Little tip for users who don't know what they did */
             if (this.canRenderF1Tooltip())
