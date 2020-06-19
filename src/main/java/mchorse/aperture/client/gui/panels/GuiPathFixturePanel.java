@@ -88,7 +88,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.add(this.points);
 
         this.keys().register(IKey.lang("aperture.gui.panels.keys.per_point"), Keyboard.KEY_D, () -> this.perPointDuration.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).category(CATEGORY);
-        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).category(CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LSHIFT).category(CATEGORY);
     }
 
     private void updateSpeedPanel()

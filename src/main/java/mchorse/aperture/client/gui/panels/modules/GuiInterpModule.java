@@ -4,13 +4,13 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
-import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -106,17 +106,14 @@ public class GuiInterpModule extends GuiAbstractModule
 
     private PathFixture.InterpolationType next(PathFixture.InterpolationType interp, GuiButtonElement button)
     {
-        int index = interp.ordinal() + 1;
-
-        if (index >= PathFixture.InterpolationType.values().length)
-        {
-            index = 0;
-        }
+        int factor = GuiScreen.isShiftKeyDown() ? -1 : 1;
+        int index = MathUtils.cycler(interp.ordinal() + factor, 0, PathFixture.InterpolationType.values().length - 1);
 
         interp = PathFixture.InterpolationType.values()[index];
         button.label.set(interp.getKey());
         this.interps.setCurrent(interp);
         this.editor.updateProfile();
+        GuiUtils.playClick();
 
         return interp;
     }

@@ -13,9 +13,12 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
+import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
 
@@ -80,22 +83,19 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         }
 
         KeyframeInterpolation interp = keyframe.interp;
-        int index = interp.ordinal() + 1;
-
-        if (index >= KeyframeInterpolation.values().length)
-        {
-            index = 0;
-        }
+        int factor = GuiScreen.isShiftKeyDown() ? -1 : 1;
+        int index = MathUtils.cycler(interp.ordinal() + factor, 0, KeyframeInterpolation.values().length);
 
         interp = KeyframeInterpolation.values()[index];
         this.graph.getCurrent().setInterpolation(interp);
         this.interp.label.set(interp.getKey());
         this.interpolations.setCurrent(interp);
+        GuiUtils.playClick();
     }
 
     protected void toggleEasing()
     {
-        this.easing.clickItself(GuiBase.getCurrent());
+        this.easing.clickItself(GuiBase.getCurrent(), GuiScreen.isShiftKeyDown() ? 1 : 0);
     }
 
     protected abstract T createElement(Minecraft mc);
