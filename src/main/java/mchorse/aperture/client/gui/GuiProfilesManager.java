@@ -49,7 +49,6 @@ public class GuiProfilesManager extends GuiElement
     public GuiIconElement add;
     public GuiIconElement dupe;
     public GuiIconElement remove;
-    public GuiDelegateElement<GuiModal> modal;
 
     public GuiProfilesManager(Minecraft mc, GuiCameraEditor editor)
     {
@@ -69,7 +68,6 @@ public class GuiProfilesManager extends GuiElement
         this.dupe.tooltip(IKey.lang("aperture.gui.profiles.dupe_tooltip"));
         this.remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.remove());
         this.remove.tooltip(IKey.lang("aperture.gui.profiles.remove_tooltip"));
-        this.modal = new GuiDelegateElement<GuiModal>(mc, null);
 
         this.profiles.flex().relative(this).set(10, 28, 0, 0).w(1, -20).h(1, -38);
         this.remove.flex().relative(this).set(0, 4, 20, 20).x(1, -30);
@@ -77,13 +75,12 @@ public class GuiProfilesManager extends GuiElement
         this.add.flex().relative(this.dupe).set(-20, 0, 20, 20);
         this.rename.flex().relative(this.add).set(-20, 0, 20, 20);
         this.convert.flex().relative(this.rename).set(-20, 0, 20, 20);
-        this.modal.flex().relative(this).set(0, 0, 0, 0).w(1, 0).h(1, 0);
 
         GuiLabel label = Elements.label(IKey.lang("aperture.gui.profiles.title")).background(0x88000000);
 
         label.flex().relative(this).set(10, 10, 0, 20);
 
-        this.add(label, this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert, this.modal);
+        this.add(label, this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert);
     }
 
     public void pickProfile(CameraProfile profile)
@@ -108,7 +105,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void add()
     {
-        this.modal.setDelegate(new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.add_modal"), this::add));
+        GuiModal.addFullModal(this, () -> new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.add_modal"), this::add).filename());
     }
 
     private void add(String name)
@@ -134,17 +131,19 @@ public class GuiProfilesManager extends GuiElement
             return;
         }
 
-        String filename = entry.getDestination().getFilename();
-        GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.dupe_modal"), (name) ->
+        GuiModal.addFullModal(this, () ->
         {
-            if (!name.equals(filename))
+            String filename = entry.getDestination().getFilename();
+            GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.dupe_modal"), (name) ->
             {
-                this.dupe(name);
-            }
-        });
-        modal.setValue(filename);
+                if (!name.equals(filename))
+                {
+                    this.dupe(name);
+                }
+            });
 
-        this.modal.setDelegate(modal);
+            return modal.filename().setValue(filename);
+        });
     }
 
     private void dupe(String name)
@@ -173,10 +172,7 @@ public class GuiProfilesManager extends GuiElement
             return;
         }
 
-        GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.rename_modal"), this::rename);
-        modal.setValue(entry.getDestination().getFilename());
-
-        this.modal.setDelegate(modal);
+        GuiModal.addFullModal(this, () -> new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.rename_modal"), this::rename).filename().setValue(entry.getDestination().getFilename()));
     }
 
     private void rename(String name)
@@ -224,7 +220,7 @@ public class GuiProfilesManager extends GuiElement
 
     private void remove()
     {
-        this.modal.setDelegate(new GuiConfirmModal(this.mc, IKey.lang("aperture.gui.profiles.remove_modal"), (confirmed) -> this.remove(confirmed)));
+        GuiModal.addFullModal(this, () -> new GuiConfirmModal(this.mc, IKey.lang("aperture.gui.profiles.remove_modal"), this::remove));
     }
 
     private void remove(boolean confirmed)

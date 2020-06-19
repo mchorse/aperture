@@ -16,6 +16,7 @@ import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketCameraState;
 import mchorse.aperture.utils.L10n;
+import mchorse.mclib.utils.JsonUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
 
@@ -197,16 +198,7 @@ public class CameraUtils
      */
     public static String toJSON(CameraProfile profile)
     {
-        Gson gson = cameraJSONBuilder(true);
-
-        StringWriter writer = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(writer);
-
-        /* Set 4 space indentation instead of shitty 2 space indentation */
-        jsonWriter.setIndent("    ");
-        gson.toJson(profile, CameraProfile.class, jsonWriter);
-
-        return writer.toString();
+        return JsonUtils.jsonToPretty(cameraJSONBuilder(true).toJsonTree(profile, CameraProfile.class));
     }
 
     /**
