@@ -7,6 +7,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
+import mchorse.aperture.utils.OptifineHelper;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -309,6 +310,11 @@ public class ManualFixture extends AbstractFixture
 			this.fov = Minecraft.getMinecraft().gameSettings.fovSetting;
 			this.pt = partialTicks;
 			this.tick = GuiManualFixturePanel.tick;
+
+			if (OptifineHelper.isZooming())
+			{
+				this.fov *= 0.25F;
+			}
 		}
 
 		public RenderFrame copy()
