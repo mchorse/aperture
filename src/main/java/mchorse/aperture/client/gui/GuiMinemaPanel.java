@@ -26,6 +26,7 @@ import net.minecraft.client.resources.I18n;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class GuiMinemaPanel extends GuiElement
 {
@@ -61,7 +62,7 @@ public class GuiMinemaPanel extends GuiElement
 		this.editor = editor;
 
 		this.fields = new GuiElement(mc);
-		this.name = new GuiTextElement(mc, (Consumer<String>) null);
+		this.name = new GuiTextElement(mc, (Consumer<String>) null).filename();
 		this.name.tooltip(IKey.lang("aperture.gui.minema.output"));
 		this.mode = new GuiCirculateElement(mc, this::switchMode);
 
