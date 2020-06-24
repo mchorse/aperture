@@ -24,11 +24,11 @@ aperture.gui:
         title: Opções de Câmera
 
         outside: Modo externo
-        minema: Minema
         spectator: Espectador
         show_path: Mostrar caminho
         sync: Sincronizar
         flight: Modo de Voo
+        flight_tooltip: Ativa o modo de vôo, que permite controlar a câmera no editor de câmera com WASD e arrastar o mouse (consulte a configuração do modo de voo do Aperture para teclas de atalho)
         display_info: Mostrar posição
         minecrafttp_teleport: Usar /minecraft:tp
         tp_teleport: Usar /tp
@@ -75,6 +75,7 @@ aperture.gui:
                 shift: Mudar a duração para o cursor
                 copy: Aplique a posição atual da câmera
                 cut: Tirar suporte
+                add: "Adiciona %s suporte"
             
             models:
                 title: Modos
@@ -98,7 +99,6 @@ aperture.gui:
                 next: Ir para o próximo frame
                 prev: Ir para o frame anterior
 
-
     fixtures:
         idle: Parado
         path: Caminho
@@ -112,28 +112,59 @@ aperture.gui:
         global: Modificadores globais
 
         shake: Balançar
+        shake_description: Adiciona uma trepidação simples (baseada nas funções seno e cosseno) às propriedades da câmera ativadas
         math: Matemática
+        math_description: Permite processar determinadas propriedades da câmera usando expressões matemáticas
         look: Olhar
+        look_description: Orienta a câmera em direção a uma entidade ou entidades, bloqueia a posição ou movimento (para frente)
         follow: Seguir
+        follow_description: Anexa a câmera a uma entidade ou entidades
         translate: Transformar
+        translate_description: Muda a posição da câmera por quantidade específica
         angle: Ângulo
+        angle_description: Gira os ângulos da câmera por uma quantidade específica
         orbit: Orbitar
+        orbit_description: Conecta a câmera a uma entidade ou entidades, mas usando controles semelhantes à órbita
         drag: Levar
+        drag_description: Suaviza as propriedades da câmera ativada usando interpolação linear entre o valor atual e o anterior
         
         enabled: Habilitado
-        relative: Relativo
 
+        tooltips:
+            add: Adicionar um modificador...
+            paste: Colar um modificador...
+            
+            remove: Remover este modificador
+            lock: Habilitar/Desabilitar este modificador
+            move_up: Mover o modificador para cima (aplique este modificador primeiro)
+            move_down: Mover o modificador para baixo (aplique este modificador depois)
+            copy: Copiar esse modificador
+            envelope: Alternar painel de envelopes
+            active: Clique em qualquer seção deste elemento para alternar o trabalho desse modificador na propriedade da câmera especificada.
+            
         panels:
             copy_entity: Copiar entidade
+            copy_entity_tooltip: Copie a orientação da cabeça da entidade, exatamente como os GoPros
 
             shake: Balançar
             shake_amount: Quantidade
 
             relative: Relativo
+            relative_tooltip: Aplique animação relativa do suporte ou do perfil da câmera\n\nExemplo: se você tiver um caminho com animação de rotação de 90 a 100, a animação de 10 graus será aplicada relativamente a este modificador
             at_block: Olhar para o bloco
             forward: Olhar para frente
+            forward_tooltip: Esta opção orienta a câmera para o vetor de movimento, exatamente como uma montanha-russa
             
-            factor: Fator
+            factor: Fator linear (entre 0 e 1), quanto menor o valor, mais suavizará
+            
+            marth: Expressão matemática\n\nClique em "?" para obter mais informações sobre variáveis e funções...
+            
+        envelopes:
+            start_x: Ponto de partida
+            start_d: Fade In
+            end_x: Ponto final (relativo ao final da duração, se o relativo estiver ativado, caso contrário, do início)
+            end_d: Fade Out
+            interp: Escolha interpolação do envelope
 
     profiles:
         title: Perfis
@@ -152,18 +183,28 @@ aperture.gui:
 
     minema:
         title: Minema
+        output: Nome da saída (que será usada em vez da data gerada aleatoriamente)
         set_start: Definir início
+        set_start_tooltip: Mova o cursor na linha do tempo e clique neste botão para definir o tick inicial do clipe do Minema
         set_duration: Definir duração
-        fixtures_only: Apenas suporte selecionado
+        set_duration:tooltip: Mova o cursor na linha do tempo e clique neste botão para definir a duração (em ticks) do clipe do Minema
         record: Gravar
         premature_stop: "Minema parou de gravar mais cedo!\n\nSaia do editor de câmera e verifique o Chat para mais informação..."
         
         minema_not_installed: Mod Minema não está instalado. Instale o Minema 3.5 ou superior...
         minema_wrong_version: Mod Minema está desatualizado! Este recurso requer o Minema 3.5 ou superior...
-        
+
+        modes:
+            tooltip: O modo de gravação define em que início e término a gravação do tick
+            
+            full: Perfil completo da câmera
+            fixture: Selecione apenas o suporte
+            custom: Seleção customizada
+            
     panels:
         name: Nome
-        duration: Duração
+        name_tooltip: Nome de exibição que será exibido na linha do tempo
+        duration: Duração do suporte (medido em ticks, 20 ticks iguais a cerca de 1 segundo)
 
         x: X
         y: "Y"
@@ -193,30 +234,45 @@ aperture.gui:
         
         previous: Anterior
         
-        manual: Com este botão, você pode gravar o movimento manual da sua câmera!
-        constant_framerate: Esse recurso não suporta taxa de quadro ilimitada!
-        vsync: Esse recurso não suporta Sincronização-Vertical!
+        manual:
+            title: Manual
+            shift: Mudança de reprodução, se positiva, essa propriedade atrasa a reprodução dos dados; se negativa, reduz a duração dos dados gravados.
+            speed: A velocidade de reprodução, como a reprodução usa dados gravados brutos, considere usar o modificador de arrasto para suavizar o movimento
+            record: Com este botão, você pode iniciar a gravação do movimento manual da câmera!
 
         interps:
             const: Constante
             linear: Linear
-            quad: Quadratico
-            cubic: Cúbico
+            quad: Quadratic
+            cubic: Cubico
             hermite: Hermite
             exp: Exponencial
             bezier: Bezier
-
-            quad_in: Quadratico In
-            quad_out: Quadratico Out
-            quad_inout: Quadratico In/out
-            cubic_in: Cúbico In
-            cubic_out: Cúbico Out
-            cubic_inout: Cúbico In/out
+            
+            quad_in: Quadratic In
+            quad_out: Quadratic Out
+            quad_inout: Quadratic In/Out
+            cubic_in: Cubico In
+            cubic_out: Cubico Out
+            cubic_inout: Cubico In/Out
             exp_in: Exponencial In
             exp_out: Exponencial Out
-            exp_inout: Exponencial In/out
-
+            exp_inout: Exponencial In/Out
+            
         easing:
             in: Ease in
-            out: Ease out
             inout: Ease in/out
+            
+        keys:
+            title: Painel do suporte atual
+            
+            path_position: Interpolação da posição do ciclo
+            path_angle: Interpolação do ângulo do ciclo
+            per_point: Alternar opção por ponto
+            velocity: Alternar opção de controle de velocidade
+            
+            graph_interp: Interpolação do ponto de ciclo
+            graph_easing: Facilitação do ponto de ciclo
+            
+            previous: Alternar opção anterior
+            record_manual: Iniciar a gravação do movimento manual
