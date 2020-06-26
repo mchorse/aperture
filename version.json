@@ -1,6 +1,7 @@
 {
     "homepage":"https://www.curseforge.com/minecraft/mc-mods/aperture",
-    "1.10.2":{
+    "1.12.2": {
+        "1.4": "This big update features lots of new quality of life features which should help increase productivity of camera creation, and two features that extend camera capabilities.",
         "1.3.6": "This tiny patch offers a couple of bugs and crashes fixes as well as some of my stupidity fixes.",
         "1.3.5": "This tiny patch offers a couple of important bugs, crashes and optimizes performance of path preview when used with velocity control.",
         "1.3.4": "This small patch improves UX experience and also adds Brazilian Portuguese localization, camera profile modifiers, copy-paste modifiers, and improves and simplifies look and follow modifiers.",
@@ -14,7 +15,7 @@
         "1.0.1": "This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.",
         "1.0": "First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
     },
-    "1.11.2":{
+    "1.11.2": {
         "1.3.6": "This tiny patch offers a couple of bugs and crashes fixes as well as some of my stupidity fixes.",
         "1.3.5": "This tiny patch offers a couple of important bugs, crashes and optimizes performance of path preview when used with velocity control.",
         "1.3.4": "This small patch improves UX experience and also adds Brazilian Portuguese localization, camera profile modifiers, copy-paste modifiers, and improves and simplifies look and follow modifiers.",
@@ -28,7 +29,7 @@
         "1.0.1": "This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.",
         "1.0": "First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
     },
-    "1.12.2":{
+    "1.10.2": {
         "1.3.6": "This tiny patch offers a couple of bugs and crashes fixes as well as some of my stupidity fixes.",
         "1.3.5": "This tiny patch offers a couple of important bugs, crashes and optimizes performance of path preview when used with velocity control.",
         "1.3.4": "This small patch improves UX experience and also adds Brazilian Portuguese localization, camera profile modifiers, copy-paste modifiers, and improves and simplifies look and follow modifiers.",
@@ -42,12 +43,12 @@
         "1.0.1": "This is a small patch update that aims to improve capabilities of the camera editor by adding some new features and fixing some bugs.",
         "1.0": "First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
     },
-    "promos":{
-        "1.10.2-latest": "1.3.6",
-        "1.10.2-recommended": "1.3.6",
+    "promos": {
+        "1.12.2-latest": "1.4",
+        "1.12.2-recommended": "1.4",
         "1.11.2-latest": "1.3.6",
         "1.11.2-recommended": "1.3.6",
-        "1.12.2-latest": "1.3.6",
-        "1.12.2-recommended": "1.3.6"
+        "1.10.2-latest": "1.3.6",
+        "1.10.2-recommended": "1.3.6"
     }
 }

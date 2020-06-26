@@ -2,6 +2,38 @@
 
 Aperture's change log.
 
+## Aperture 1.4
+
+This big update features lots of new quality of life features which should help increase productivity of camera creation, and two features that extend camera capabilities. 
+
+**Compatible** with McLib `2.0` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+<a href="https://youtu.be/2ToSwrFiVOo"><img src="https://img.youtube.com/vi/2ToSwrFiVOo/0.jpg"></a> 
+
+* Added camera modifier envelopes which allow to smoothly enable camera modifier based on two points in time and their fades
+* Added `manual` fixture (suggested by Dyl_Art and Lucatim)
+* Added Minema recording panel
+* Added crosshair option to camera editor (suggested by terbin)
+* Added many tooltips explaining what different option do
+* Changed timeline cursor to stay within the view when camera plays or jump between fixtures
+* Changed start camera profile playback's behavior into toggle playback
+* Changed position of add, dupe, change and remove fixture icon buttons when there is too few space (suggested by Andruxioid)
+* Changed camera editor profile management to never allow `null` camera profile
+* Changed to fully support `double` precision for camera position (XYZ)
+* Improved flight mode:
+    * Added mouse control to flight mode (left click drag changes yaw and pitch, horizontal right click drag changes roll, and vertical middle click drag changes FOV)
+    * Added keybinds config category to flight mode (suggested by Lucatim)
+    * Added keybinds in flight mode to change the overall speed of flight mode (suggested by Mr Wolf)
+* Improved `follow` modifier:
+    * Added relative option to `follow` modifier
+    * Added XYZ offset options to `follow` modifier (suggested by Ethobot)
+* Fixed dope sheet and graph editor points not rendering when GUI scale: Auto (reported by Lucatim)
+* Fixed restoration of roll and FOV to be much stable when entering the camera editor and exiting when camera plays
+* Fixed camera slightly falling when opening camera editor with spectator mode
+* Removed all configuration options from Mod Options (they were moved into McLib's configuration system)
+* Removed render mouse pointer option (moved to McLib)
+* Removed stop camera profile playback keybind
+
 ## Aperture 1.3.6
 
 This tiny patch offers a couple of bugs and crashes fixes as well as some of my stupidity fixes.
