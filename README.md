@@ -27,11 +27,11 @@
 
 This playlist is a **tutorial series**. It should teach you how to use Aperture mod from scratch. It bases of Aperture `1.3.4`. Once you watch these videos and learn how to use it, feel free to watch the change log videos for more information about new features.
 
-<a href="https://youtu.be/2ToSwrFiVOo?list=PLLnllO8nnzE8MGDb6QzE2kt4-KVC1dRRl"><img src="https://img.youtube.com/vi/2ToSwrFiVOo/0.jpg"></a> 
+<a href="https://youtu.be/_KLU8VnMiCQ?list=PLLnllO8nnzE8MGDb6QzE2kt4-KVC1dRRl"><img src="https://img.youtube.com/vi/_KLU8VnMiCQ/0.jpg"></a> 
 
 Meanwhile, this playlist contains a list of videos about **Aperture's updates**. These are so-called **change log** videos, which showcase new changes added to Aperture mod.
 
-<a href="https://youtu.be/goooUv_OWIs?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/goooUv_OWIs/0.jpg"></a> 
+<a href="https://youtu.be/2ToSwrFiVOo?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/2ToSwrFiVOo/0.jpg"></a> 
 
 ## Install
 
