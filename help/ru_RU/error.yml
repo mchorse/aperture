@@ -1,30 +1,30 @@
 aperture.error:
     # General command errors
     commands:
-        load_chunks: Couldn't load all generated chunks in render distance! See logs for detailed error.
+        load_chunks: Невозможно прогрузить все чанки в соответствии с дальностью прорисовки! Для более детального описания просмотрите логи.
     
     # Camera fixtures errors
     fixture:
-        few_args: "{f}You passed not enough arguments for this command!"
-        wrong_type: "{f}Camera fixture by type %s{f} doesn't exist!"
-        no_entity: "{f}You should look at any entity to add this fixture!"
+        few_args: "{f}Вы ввели недостаточное количество аргументов для этой команды!"
+        wrong_type: "{f}Клип камеры типа %s{f} не существует!"
+        no_entity: "{f}Вы должны смотреть на сущность чтобы добавить этот клип!"
         
-        empty: "{f}This camera profile is empty!"
+        empty: "{f}Этот профиль камеры пуст!"
     
     # Camera profile errors
     profile:
-        empty_filename: "{f}This camera profile has empty filename! In current situation, specify the {7}[filename]{f} argument, please."
-        cant_save: "{f}Can't save camera profile by file name %s{f}."
-        cant_load: "{f}Can't load camera profile by file name %s{f}."
-        cant_move: "{f}Can't move fixture at %s{f} to %s{f}, because one of the indices is out of range!"
+        empty_filename: "{f}У этого профиля камеры отсутствует имя! Пожалуйста, укажите аргумент названия{7}[filename]{f}."
+        cant_save: "{f}Невозможно сохранить профиль камеры с именем %s{f}."
+        cant_load: "{f}Невозможно загрузить профиль камеры с именем %s{f}."
+        cant_move: "{f}Невозможно передвинуть клип с %s{f} на %s{f}, потому, что один из индексов находится вне диапазона!"
         
-        not_path: "{f}Fixture at index %s{f} isn't a path fixture!"
-        not_exists: "{f}There's no camera fixture at %s{f} index in current camera profile!"
-        no_current: "{f}There's no current camera profile selected!"
-        no_path_point: "{f}Path fixture at index %s{f}, has no point at index %s{f}!"
-        move_no_path_point: "{f}Path fixture at index %s{f} has no point at index %s{f} or at index %s{f}!"
+        not_path: "{f}Клип с индексом %s{f} не является клипом пути!"
+        not_exists: "{f}Не существует клипов камеры %s{f} с индексом в текущем профиле камеры!"
+        no_current: "{f}Текущий профиль камеры не выбран!"
+        no_path_point: "{f}Клип пути с индексом %s{f} не имеет точки в индексе %s{f}!"
+        move_no_path_point: "{f}Клип пути с индексом %s{f} не имеет точки в индексе %s{f} или в индексе %s{f}!"
         
-        client_cant_save: "{f}Can't save client camera profile by file name %s{f}."
-        client_cant_load: "{f}Can't load client camera profile by file name %s{f}."
-        
-        wrong_filename: "{f}Camera profile can't be saved, because filename \"{7}%s{f}\" contains illegal characters. Only letters, digits, underscores, dashes, periods and spaces are allowed!"
+        client_cant_save: "{f}Невозможно сохранить профиль камеры с именем %s{f}."
+        client_cant_load: "{f}Невозможно загрузить профиль камеры с именем %s{f}."
+
+        wrong_filename: "{f}Профиль камеры не был сохранён потому, что файл \"{7}%s{f}\" содержит неправильные символы. Разрешены только буквы, цифры, нижние подчеркивания, тире, точки и пробелы!"
