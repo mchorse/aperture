@@ -1,61 +1,80 @@
 # Config strings
 aperture.config:
-    camera:
-        title: 相机
-        tooltip: 通用相机配置
+    title: Aperture
 
-        camera_duration: 默认关键点时长
-        camera_duration_step: 时长步骤
-        camera_interpolate_target: 插入以目标为基础的帧
-        camera_interpolate_target_value: 插入以目标为基础的值
-        camera_spectator: 切换到旁观模式
-        camera_step_factor: 相机路径参数
-        camera_rotate_factor: 相机倾斜参数
-        camera_minema: Minema
-        camera_path_default_interp: 默认插入路径类型
-        camera_command_name: 相机命令名称
-        camera_simulate_velocity: 模拟速率
-        camera_first_tick_zero: 第一帧为 0
-        camera_debug_ticks: Debug ticks
-        camera_profile_render: 渲染相机配置
-        camera_auto_save: 自动保存配置
+    general:
+        title: 通用
+        tooltip: 通用相机选项
 
-        gui_render_mouse: 在 GUI 中渲染出鼠标指针
-
-        minecrafttp_teleport: 使用 /minecraft:tp
-        tp_teleport: 使用 /tp
-        aspect_ratio: 纵横比
+        duration: 关键点持续时间
+        spectator: 切换至旁观者模式
+        step_factor: 相机位移系数
+        rotate_factor: 相机旋转系数
+        command_name: 相机命令名称
+        debug_ticks: 调试 Ticks
+        profile_render: 渲染相机配置
+        auto_save: 自动保存配置
+        essentials_tp: 使用 /minecraft:tp
 
     outside:
-        title: 分离摄像机模式
-        tooltip: 属于分离摄像机的设置项
+        title: 分离像机模式
+        tooltip: 与分离相机模式相关的选项
 
-        camera_outside: 分离摄像机模式
-        camera_outside_hide_player: 隐藏玩家
-        camera_outside_sky: 修复天空
-        camera_outside_hide_guis: 隐藏 GUI
-        camera_outside_hide_overlays: 隐藏附加层
+        enabled: 分离相机模式
+        hide_player: 隐藏玩家
+        sky: 修复天空
 
-    overlay:
-        title: 相机编辑器附加层
-        tooltip: 可以在相机编辑器放置一个图片作为附加层
+    editor:
+        title: 相机编辑器
+        tooltip: 应用于相机编辑器的选项
 
-        camera_editor_overlay: 启用附加层
-        camera_editor_overlay_rl: 附加层的资源路径
-        camera_editor_f1_tooltip: F1 隐藏提示
+        sync: 同步模式
+        loop: 循环播放关键点
+        overlay: 启用附加层
+        overlay_rl: 附加层路径
+        f1_tooltip: 隐藏 F1 提示
+        position: 显示位置信息
+        rule_of_thirds: 三分法构图
+        crosshair: 十字准心
+        letter_box: 画面黑边
+        aspect_ratio: 纵横比
+
+    flight:
+        title: 飞行模式
+        tooltip: 该分类允许你为相机编辑器中的飞行模式设置快捷键
+
+        forward: 向前移动
+        backward: 向后移动
+        left: 向左移动
+        right: 向右移动
+        up: 向上移动
+        down: 向下移动
+        camera_up: 上摇
+        camera_down: 下摇
+        camera_left: 左摇
+        camera_right: 右摇
+        fov_minus: 缩减 FOV
+        fov_plus: 增大 FOV
+        roll_minus: 左旋
+        roll_plus: 右旋
+        speed_minus: 缩减速度
+        speed_plus: 增大速度
 
     smooth:
         title: 平滑相机
-        tooltip: 平滑相机配置
+        tooltip: 平滑相机选项
 
-        camera_smooth_clamp: 限制幅度
-
+        enabled: 启用平滑相机
+        x_friction: 鼠标 X 轴摩擦力
+        y_friction: 鼠标 Y 轴摩擦力
+        clamp: 限制俯仰
         roll_speed: 倾斜速度
         roll_friction: 倾斜摩擦力
-
         fov_speed: FOV 速度
         fov_friction: FOV 摩擦力
 
-        smooth_enabled: 开启平滑相机
-        mouse_x_friction: 鼠标 X 轴摩擦力
-        mouse_y_friction: 鼠标 Y 轴摩擦力
+    minema:
+        title: Minema
+        tooltip: 与 Minema 相关的集成工作选项
+
+        default_profile_name: 相机配置名称
