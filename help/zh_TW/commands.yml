@@ -5,17 +5,17 @@ aperture.commands:
         |
             {l}{6}/{r}load_chunks
 
-            本命令會載入渲染範圍的所有區塊。可能要等會。
+            該命令會加載渲染範圍內的所有區塊。這需要壹些時間。
 
     # Aperture command
     aperture:
         help:
             |
-                {r}{o}Aperture 伺服器命令{r}。本命令可以用來給選定的玩家（通過實體選取器）播放相機配置。
+                {r}{o}Aperture 服務器命令{r}。該命令可用於讓指定的玩家 (通過實體選擇器) 播放相機配置。
 
                 {l}{6}/{r}aperture {8}play{r} {7}<target|camera_profile> [camera_profile]{r}
 
-                {r}如果你只指定 {7}<target|camera_profile>{r}，那麽選定的相機配置會在你身上播放。如果你在 {8}play{r} 後面指定了兩個參數，你便可以指定玩家（使用用戶名或者目標選取器）和相機配置。
+                {r}如果您只指定了 {7}<target|camera_profile>{r}, 那麽被指定的相機配置會在您身上播放。如果您在。如果您在 {8}play{r} 後面指定了兩個參數，您便可以指定玩家（使用用戶名或者目標選擇器）和相機配置。
 
     # Camera's commands
     camera:
@@ -25,124 +25,43 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}start{r} {7}[tick]{r}
 
-                {r}開始播放相機配置。自行決定從 {7}[tick]{r} 後開始。
+                {r}開始播放相機配置。(可選) 從給定的 {7}[tick]{r} 後開始播放。
         stop:
             |
                 {l}{6}/{r}camera {8}stop{r}
 
-                {r}停止目前的相機配置。
-        new:
-            |
-                {l}{6}/{r}camera {8}new{r} {7}<client|server> <filename>{r}
-
-                {r}新建檔案名為 {7}<filename>{r} 的相機配置檔案到 {7}client（客戶端）{r} 或 {7}server（伺服器）{r}。
-        load:
-            |
-                {l}{6}/{r}camera {8}load{r} {7}<client|server> <filename>{r}
-
-                {r}從 {7}client（客戶端） {r} 或者 {7}server（伺服器）{r} 載入檔案名為 {7}<filename>{r} 的相機配置檔案。
-        save:
-            |
-                {l}{6}/{r}camera {8}save{r} {7}[filename]{r}
-
-                {r}儲存相機配置到檔案。如果未指定檔案名，這個相機配置將會儲存到上次儲存或載入的檔案。
-        clear:
-            |
-                {l}{6}/{r}camera {8}clear{r}
-
-                {r}清除相機配置檔案 （會移除所有相機關鍵點）
-        goto:
-            |
-                {l}{6}/{r}camera {8}goto{r} {7}<index> [progress]{r}
-
-                {r}傳送你到索引 {7}<index>{r} 的相機關鍵點。你可以選取指定 {7}[progress]{r}（路程） （從 {7}0.0{r} 到 {7}1.0{r}） 這會允許你傳送到相機路程的中間或者環繞點。
+                {r}停止當前播放的相機配置。
 
         default:
             |
                 {l}{6}/{r}camera {8}default{r}
 
-                {r}恢復相機的 {7}FOV{r} 和 {7}翻滾角度{r} 到預設設置（{7}FOV 70.0{r} 和 {7}0.0{r} 度）.
+                {r}重置相機的 {7}FOV{r} 和 {7}翻滾角度{r} 到默認值 ({7}70.0{r} 和 {7}0.0{r} 度)。
         fov:
             |
                 {l}{6}/{r}camera {8}fov{r} {7}[fov]{r}
 
-                設定客戶端相機的 {l}FOV{r}。
+                {r}設定或獲取客戶端相機的 {l}角視場{r} ({8}FOV{r})。
         roll:
             |
                 {l}{6}/{r}camera {8}roll{r} {7}[roll]{r}
 
-                {r}設定客戶端相機的 {7}[roll]{r} （{7}Z軸{r}翻滾程度）。
+                {r}設定或獲取客戶端相機的 {7}[roll]{r} ({7}Z 軸{r}翻滾程度)。
 
         rotate:
             |
                 {l}{6}/{r}camera {8}rotate{r} {7}[yaw] [pitch]{r}
 
-                {r}設定攝影機的角度，可以只增加或減少參數。你可以通過指定數字設定絕對的攝影機角度 {6}/camera {8}rotate {7}90 90{r}。或者你可以通過{7}+{r} 或 {7}-{r} 標誌來增加或減少幅度 {6}/camera {8}rotate {7}+0.5 -0.5{r}。
+                {r}根據絕對或相對值設定相機角度。您可以通過指定數字來設定絕對的攝像機角度 {6}/camera {8}rotate {7}90 90{r}。或者您可以通過 {7}+{r} 或 {7}-{r} 符號來增加或減少幅度 {6}/camera {8}rotate {7}+0.5 -0.5{r}。
 
         step:
             |
                 {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
+                
+                {r}根據絕對或相對值設定相機位置。您可以通過指定普通浮點數 {6}/camera {8}step {7}0 4 0{r} 來設定絕對的攝像機位置。或者您可以通過 {7}+{r} 或 {7}-{r} 符號來增加或減少位置的值 {6}/camera {8}step {7}+0 +0.1 +0{r}。類似於 {6}/tp{r} 命令。
+                
+        reload:
+            |
+                {l}{6}/{r}camera {8}reload{r}
 
-                {r}根據絕對的數值或增減幅度設定攝影機位置。你可以通過指定數字設定絕對的攝影機位置 {6}/camera {8}step {7}0 4 0{r}. 或者你可以通過{7}+{r} 或 {7}-{r} 標誌來增加或減少位置數值 {6}/camera {8}step {7}+0 +0.1 +0{r}。很像 {6}/tp{r} 命令。
-
-        fixture:
-            add:
-                |
-                    {l}{6}/{r}camera {8}add{r} {7}<idle|path|follow|look|circular> <duration>{r}
-
-                    {r}在相機配置的最後加入一個指定的類型和 {7}<duration>{r}（時長）的相機關鍵點。
-            edit:
-                |
-                    {l}{6}/{r}camera {8}edit{r} {7}<index> <values...>{r}
-
-                    {r}在目前的相機配置裡設定索引號 {7}<index>{r} 關鍵點的參數。
-            remove:
-                |
-                    {l}{6}/{r}camera {8}remove{r} {7}<index>{r}
-
-                    {r}移除索引號 {7}<index>{r} 的相機關鍵點。
-
-            duration:
-                |
-                    {l}{6}/{r}camera {8}duration{r} {7}[index] [duration]{r}
-
-                    {r}可以用來設置，或者獲取整個相機配置或一個相機關鍵點的時長。如果所有的參數按照預設，命令會設置 {7}[duration]{r}（tick單位）時長到索引號 {7}[index]{r} 的相機關鍵點。增減符號可以用在 {7}[duration]{r} 參數。
-
-            move:
-                |
-                    {l}{6}/{r}camera {8}move{r} {7}<from> <to>{r}
-
-                    {r}在相機配置裡，將關鍵點索引號 {7}<from>{r} 移動到索引號 {7}<to>{r}。
-
-        path:
-            help: "{r}{o}相機路徑次級命令{r}。提供管理相機路徑和關鍵點的次級命令。"
-
-            add:
-                |
-                    {l}{6}/{r}camera path {8}add{r} {7}<index> [before_point]{r}
-
-                    {r}在索引號 {7}<index>{r} 的後面加入一個路徑點，或者在指定 {7}[before_point]{r} 編號的前面（如果指定了）。
-
-            edit:
-                |
-                    {l}{6}/{r}camera path {8}edit{r} {7}<index> <point_index>{r}
-
-                    {r}在路徑索引號 {7}<index>{r} 的路徑裡編輯路徑點索引號 {7}<point_index>{r} 的位置。
-
-            goto:
-                |
-                    {l}{6}/{r}camera path {8}goto{r} {7}<index> <point_index>{r}
-
-                    {r}在路徑索引號 {7}<index>{r} 的路徑裡前往路徑點索引號 {7}<point_index>{r} 的位置。
-
-            move:
-                |
-                    {l}{6}/{r}camera path {8}move{r} {7}<index> <from> <to>{r}
-
-                    {r}在路徑索引號 {7}<index>{r} 的路徑裡將路徑點索引號 {7}<from>{r} 移動到路徑點索引號 {7}<to>{r}。
-
-            remove:
-                |
-                    {l}{6}/{r}camera path {8}remove{r} {7}<index> <point_index>{r}
-
-                    {r}在路徑索引號 {7}<index>{r} 的路徑裡移除路徑點索引號 {7}<point_index>{r}。
+                {r}重載相機編輯器。
