@@ -80,18 +80,18 @@ aperture.gui:
             modes:
                 title: 模式
 
-                flight: 切换飞行模式
-                vertical: 切换垂直飞行模式
-                sync: 切换同步模式
-                ouside: 切换分离相机模式
-                looping: 切换循环播放关键点
-                interactive: 切换交互添加关键点模式
+                flight: 开关飞行模式
+                vertical: 开关垂直飞行模式
+                sync: 开关同步模式
+                ouside: 开关分离相机模式
+                looping: 开关循环播放关键点
+                interactive: 开关交互添加关键点模式
                 
             editor:
                 title: 相机编辑器
 
-                toggle: 切换相机编辑器的可见性
-                modifiers: 切换调整器的弹出
+                toggle: 开关相机编辑器的可见性
+                modifiers: 开关调整器的弹出
                 save: 保存相机配置
                 plause: 播放/暂停
                 next_fixture: 跳至下一关键点
@@ -139,7 +139,7 @@ aperture.gui:
             move_up: 向上移动调整器 (优先应用该调整器)
             move_down: 向下移动调整器 (之后应用该调整器)
             copy: 复制该调整器
-            envelope: 切换包络面板
+            envelope: 开关包络面板
             active: 单击此控件中的任意选项, 以选择该调整器将作用于哪些相机属性
 
         panels:
@@ -269,11 +269,11 @@ aperture.gui:
 
             path_position: 循环选择位置的插值
             path_angle: 循环选择角度的插值
-            per_point: 切换各点的持续长度
-            velocity: 切换速率控制选项
+            per_point: 开关各点的持续长度
+            velocity: 开关速率控制选项
             
             graph_interp: 循环选择关键帧的插值
             graph_easing: 循环选择关键帧的缓入缓出
             
-            previous: 切换上一关键点选项
+            previous: 开关上一关键点选项
             record_manual: 开始录制手动动作
