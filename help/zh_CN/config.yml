@@ -53,12 +53,12 @@ aperture.config:
         camera_down: 下摇
         camera_left: 左摇
         camera_right: 右摇
-        fov_minus: 缩减 FOV
+        fov_minus: 缩小 FOV
         fov_plus: 增大 FOV
         roll_minus: 左旋
         roll_plus: 右旋
-        speed_minus: 缩减速度
-        speed_plus: 增大速度
+        speed_minus: 降低速度
+        speed_plus: 提升速度
 
     smooth:
         title: 平滑相机
