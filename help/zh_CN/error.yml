@@ -1,30 +1,30 @@
 aperture.error:
     # General command errors
     commands:
-        load_chunks: 无法加载渲染范围里所有已创建的区块！详情错误记录在日志里。
+        load_chunks: 无法加载渲染范围内所有已创建的区块! 有关错误详情请参阅日志。
     
     # Camera fixtures errors
     fixture:
-        few_args: "{f}这个命令的参数给少了！"
-        wrong_type: "{f}相机关键点类型 %s{f} 不存在！"
-        no_entity: "{f}你应该看着某个实体来创建这个相机关键点！"
+        few_args: "{f}您输入的命令缺少必要的参数!"
+        wrong_type: "{f}相机关键点类型 %s{f} 不存在!"
+        no_entity: "{f}您需要看着某个实体才能创建该相机关键点!"
         
-        empty: "{f}这个摄像机配置文件是空的！"
+        empty: "{f}该相机配置文件为空!"
     
     # Camera profile errors
     profile:
-        empty_filename: "{f}这个相机配置文件没有名字！要解决此问题，请指定参数 {7}[filename]{f} 。"
-        cant_save: "{f}无法以文件名 %s{f} 保存摄像机配置。"
-        cant_load: "{f}无法以文件名 %s{f} 加载摄像机配置。"
-        cant_move: "{f}无法将关键点从 %s{f} 移动到 %s{f}，因为其中之一的指数超出了范围！"
+        empty_filename: "{f}该相机配置文件没有名称! 要解决此问题, 请指定参数 {7}[filename]{f} 。"
+        cant_save: "{f}无法以 %s{f} 的文件名保存相机配置。"
+        cant_load: "{f}无法以 %s{f} 的文件名加载相机配置。"
+        cant_move: "{f}无法将关键点从 %s{f} 移动到 %s{f}, 因为其中的某一指数超出了范围!"
         
-        not_path: "{f}在索引号 %s{f} 的关键点不是路径关键点！"
-        not_exists: "{f}在当前的相机配置文件里没有相机关键点在 %s{f} 索引号里！"
-        no_current: "{f}没有选择当前的相机配置文件！"
-        no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 里没有路径定点！"
-        move_no_path_point: "{f}路径索引号 %s{f} 里在索引号 %s{f} 或 %s{f} 里没有定点！"
+        not_path: "{f}索引为 %s{f} 的关键点不是路径关键点!"
+        not_exists: "{f}当前相机配置文件中的 %s{f} 索引处没有相机关键点!"
+        no_current: "{f}当前未选中任何的相机配置文件!"
+        no_path_point: "{f}路径在索引 %s{f} 处时, 索引 %s{f}没有路径点!"
+        move_no_path_point: "{f}索引 %s{f} 处的路径关键点在索引 %s 或索引 %s 处没有指向!"
         
-        client_cant_save: "{f}无法以文件名 %s{f} 保存客户端相机配置。"
-        client_cant_load: "{f}无法以文件名 %s{f} 加载客户端相机配置。"
+        client_cant_save: "{f}无法以 %s{f} 的文件名保存客户端相机配置。"
+        client_cant_load: "{f}无法以 %s{f} 的文件名加载客户端相机配置。"
         
-        wrong_filename: "{f}相机配置不能保存，因为文件名 \"{7}%s{f}\" 包含非法字符。只能使用字母，数字，下划线，破折号，句号和空格！"
+        wrong_filename: "{f}相机配置无法保存, 因为文件名 \"{7}%s{f}\" 包含非法字符。只能使用字母, 数字, 下划线, 破折号, 句号和空格!"
