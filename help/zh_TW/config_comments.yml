@@ -1,47 +1,60 @@
 # Config strings
 aperture.config.comments:
-    camera:
-        camera_duration_step: 當使用快捷鍵改變關鍵點時長時，一次會增加/減少多少？（tick）
-        camera_duration: 相機關鍵點的預設時長有多久？（tick）
-        camera_interpolate_target: 插入目標為基礎（follow 和 look）的相機關鍵點的結果
-        camera_interpolate_target_value: 插入目標為基礎相機關鍵點的值
-        camera_spectator: 當開始播放相機回放時切換到旁觀模式？
-        camera_step_factor: 為路徑幀提供的相機路徑參數
-        camera_rotate_factor: 按鍵相機一次傾斜的大小
-        camera_minema: 為傾斜幀提供的相機傾斜參數
-        camera_path_default_interp: 插入路徑時，路徑的預設類型
-        camera_command_name: 允許你重新綁定相機命令的名字（需要重啟遊戲來生效）
-        camera_simulate_velocity: 在回放時模擬玩家走動搖擺（從腿的角度）
-        camera_debug_ticks: 將當前播放的 tick 時間寫入日誌檔案
-        camera_first_tick_zero: 當相機播放時將當前幀歸零
-        camera_profile_render: 在世界中渲染出相機配置？
-        gui_render_mouse: 在開啟 GUI 的時候渲染出游標的材質
-        camera_auto_save: 在退出世界時儲存所有相機配置
-        minecrafttp_teleport: 當在多人遊戲時開始相機回放，使用 /minecraft:tp 來瞬移（針對於安裝了 Essentials 插件的伺服器）
-        tp_teleport: 當在多人遊戲時開始相機回放，使用 /tp 來瞬移（針對於原版和 Forge 等伺服器）
-        aspect_ratio: 用來設置畫面黑框的縱橫比例
+    general:
+        duration: 關鍵點的默認時長有多長 (單位為 tick)
+        spectator: 當開始播放相機回放時切換至旁觀模式
+        step_factor: 位移按鍵的相機位移系數
+        rotate_factor: 旋轉按鍵的相機旋轉系數
+        command_name: 允許妳重新綁定相機命令的名稱 (重啟遊戲生效)
+        debug_ticks: 將當前相機播放的 tick 寫入日誌
+        profile_render: 是否在世界中渲染相機配置?
+        auto_save: 在退出世界時保存所有相機配置
+        essentials_tp: 在多人遊戲中啟動相機回放時, 使用 /minecraft:tp 進行傳送 (適用於裝有 Essentials 的服務器)
 
-        outside:
-            camera_outside: 攝影機是否應該與玩家分離開來播放（允許玩家作為一個真實演員）？
-            camera_outside_hide_player: 在開啟分離攝影機模式時，播放器是否應該在播放的時候隱藏？
-            camera_outside_sky: 如果開啟，會修復天空，但會關閉區塊選區（因為有一個 bug）
-            camera_outside_hide_guis: 防止在分離攝影機模式中渲染 GUI
-            camera_outside_hide_overlays: 防止在分離攝影機模式中渲染屏幕附加層（比如南瓜燈的光，正在燃燒的火，水等等）
+    outside:
+       enabled: 相機是否會使用相機分離開來播放 (會讓玩家成為壹個真實的演員)
+       hide_player: 在啟用分離相機模式並播放相機回放時, 玩家是否是否會被隱藏
+       sky: 若啟用, 則會修復天空, 但這會禁用方塊選區 (因為存在 BUG)
 
-    overlay:
-        camera_editor_overlay: 啟用相機編輯器附加層
-        camera_editor_overlay_rl: 作為附加層圖像使用的材質資源路徑
-        camera_editor_f1_tooltip: 在左下角提示如何再次啟用 GUI 的方法
+    editor:
+        sync: 啟用相機編輯器中的相機位置同步, 用於預覽當前的相機配置
+        loop: 循環播放當前被選中的相機關鍵點
+        overlay: 啟用相機編輯器附加層
+        overlay_rl: 應用於附加層的材質的文件路徑
+        f1_tooltip: 在左下角顯示如何返回 GUI 的提示
+        position: 啟用同步模式時顯示相機位置信息
+        rule_of_thirds: 顯示三分法構圖輔助線
+        crosshair: 在相機編輯器的中央顯示十字準心
+        letter_box: 顯示畫面黑邊 (硬黑邊), 用於縮小或或擴大相機的取景範圍作為參考
+        aspect_ratio: 相機編輯器畫面黑邊功能的縱橫比
+
+    flight:
+        forward: 向前移動相機
+        backward: 向後移動相機
+        left: 向左移動相機
+        right: 向右移動相機
+        up: 向上擡升相機
+        down: 向下下降相機
+        camera_up: 令相機向上方的天空傾斜
+        camera_down: 令相機向下方的地面傾斜
+        camera_left: 令相機搖向左側
+        camera_right: 令相機搖向右側
+        fov_minus: 縮小角視場 (FOV)
+        fov_plus: 增大角視場 (FOV)
+        roll_minus: 逆時針方向翻滾
+        roll_plus: 順時針方向翻滾
+        speed_minus: 降低全局速度系數 (區別於向下滾動鼠標滾輪)
+        speed_plus: 提升全局速度系數 (區別於向上滾動鼠標滾輪)
 
     smooth:
-        camera_smooth_clamp: 在 －90 和 90 度之間，修剪平滑相機的俯仰程度？嗡!嗡!嗡!
+        enabled: 啟用平滑相機
+        x_friction: 平滑鼠標在 X 軸上的摩擦力
+        y_friction: 平滑鼠標在 Y 軸上的摩擦力
+        clamp: 解除平滑相機在 -90 與 90 度俯仰的範圍限制
+        roll_speed: 翻滾的加速度
+        roll_friction: 翻滾加速的摩擦力 (慢下來有多快)
+        fov_speed: FOV 的加速度
+        fov_friction: FOV 加速度的摩擦力 (慢下來有多快)
 
-        roll_speed: 傾斜加速速度
-        roll_friction: 傾斜加速摩擦力（慢下來有多快）
-
-        fov_speed: FOV 加速速度
-        fov_friction: FOV 加速摩擦力（慢下來有多快）
-
-        smooth_enabled: 開啟平滑相機。嗡!嗡!嗡!
-        mouse_x_friction: 滑鼠平滑 X 軸摩擦力
-        mouse_y_friction: 滑鼠平滑 Y 軸摩擦力
+    minema:
+        default_profile_name: 輸出文件是否為相機配置的名稱, 否則為當前日誌
