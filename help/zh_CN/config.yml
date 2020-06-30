@@ -55,8 +55,8 @@ aperture.config:
         camera_right: 右摇
         fov_minus: 缩小 FOV
         fov_plus: 增大 FOV
-        roll_minus: 左旋
-        roll_plus: 右旋
+        roll_minus: 左向翻滚
+        roll_plus: 向右翻滚
         speed_minus: 降低速度
         speed_plus: 提升速度
 
