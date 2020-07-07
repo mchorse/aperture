@@ -3,8 +3,8 @@ aperture.config:
     title: Aperture
 
     general:
-        title: 通用
-        tooltip: 通用相機選項
+        title: 常規
+        tooltip: 常規相機選項
 
         duration: 關鍵點持續時間
         spectator: 切換至旁觀者模式

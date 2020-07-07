@@ -1,8 +1,8 @@
 aperture.success:
     profile:
-        clear: "{f}目前的摄像机配置已清除。"
-        save: "{f}目前的摄像机配置已经保存在 %s{f}。"
-        load: "{f}目前的摄像机配置已经从 %s{f} 加载。"
+        clear: "{f}当前的摄像机配置已清除。"
+        save: "{f}当前的摄像机配置已经保存在 %s{f}。"
+        load: "{f}当前的摄像机配置已经从 %s{f} 加载。"
 
         client_save: "{f}客户端上的相机配置已保存到 %s{f}。"
         client_load: "{f}客户端上的相机配置已读取为 %s{f}。"
