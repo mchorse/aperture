@@ -41,7 +41,7 @@ aperture.config:
 
     flight:
         title: 飞行模式
-        tooltip: 该分类允许你为相机编辑器中的飞行模式设置快捷键
+        tooltip: 该分类允许您为相机编辑器中的飞行模式设置快捷键
 
         forward: 向前移动
         backward: 向后移动

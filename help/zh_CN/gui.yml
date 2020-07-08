@@ -13,7 +13,7 @@ aperture.gui:
     detach: 分离
     record: 录制
     pick: 选择伪装...
-    duplicate: 重复
+    duplicate: 复制
     search: 搜索...
     cancel: 取消
     break: 破坏
@@ -48,7 +48,7 @@ aperture.gui:
 
         move_up: 前移关键点
         move_duration: 持续时间移至光标
-        copy_position: 复制玩家位置
+        copy_position: 拷贝玩家位置
         move_down: 后移关键点
 
         save: 保存相机配置
@@ -59,7 +59,7 @@ aperture.gui:
         cut: 切割关键点
         creation: 交互添加关键点
         add: 添加关键点
-        dupe: 重复关键点
+        dupe: 复制关键点
         replace: 替换选中的关键点
         remove: 移除选中的关键点
 
@@ -138,13 +138,13 @@ aperture.gui:
             lock: 启用/禁用该调整器
             move_up: 向上移动调整器 (优先应用该调整器)
             move_down: 向下移动调整器 (之后应用该调整器)
-            copy: 复制该调整器
+            copy: 拷贝该调整器
             envelope: 开关包络面板
             active: 单击此控件中的任意选项, 以选择该调整器将作用于哪些相机属性
 
         panels:
-            copy_entity: 复制实体
-            copy_entity_tooltip: 复制实体头部的方向, 与使用 GoPros 的效果类似
+            copy_entity: 拷贝实体
+            copy_entity_tooltip: 拷贝实体头部的方向, 与使用 GoPros 的效果类似
 
             shake: 摇晃
             shake_amount: 数量值
@@ -172,13 +172,13 @@ aperture.gui:
 
         rename_modal: 输入当前新相机配置的名称。
         add_modal: 输入新相机配置的名称。
-        dupe_modal: 输入重复后的相机配置名称。
-        remove_modal: 你确定要移除这该机配置吗 (无法恢复)?
+        dupe_modal: 输入复制后的相机配置名称。
+        remove_modal: 您确定要移除这该机配置吗 (无法恢复)?
 
         convert_tooltip: 转换配置
         rename_tooltip: 重命名配置
         add_tooltip: 添加一个配置
-        dupe_tooltip: 重复配置
+        dupe_tooltip: 复制配置
         remove_tooltip: 移除配置
         
     minema:
@@ -236,9 +236,9 @@ aperture.gui:
         
         manual:
             title: 手动
-            shift: 回放位移, 该属性如果为正，则延迟播放数据； 如果为负，则削减录制数据的持续时间
+            shift: 回放位移, 该属性如果为正, 则延迟播放数据； 如果为负, 则削减录制数据的持续时间
             speed: 回放速度, 由于回放使用的是原始录制的数据, 因此可以考虑使用拖动调整器来平滑运动
-            record: 通过此按钮, 你就可以录制相机的手动运动了!
+            record: 通过此按钮, 您就可以录制相机的手动运动了!
 
         interps:
             const: 连续的

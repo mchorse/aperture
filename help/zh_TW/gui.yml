@@ -173,7 +173,7 @@ aperture.gui:
         rename_modal: 輸入當前新相機配置的名稱。
         add_modal: 輸入新相機配置的名稱。
         dupe_modal: 輸入復制後的相機配置名稱。
-        remove_modal: 妳確定要移除這該機配置嗎 (無法恢復)?
+        remove_modal: 您確定要移除這該機配置嗎 (無法恢復)?
 
         convert_tooltip: 轉換配置
         rename_tooltip: 重命名配置
@@ -236,9 +236,9 @@ aperture.gui:
         
         manual:
             title: 手動
-            shift: 回放位移, 該屬性如果為正，則延遲播放數據； 如果為負，則削減錄制數據的持續時間
+            shift: 回放位移, 該屬性如果為正, 則延遲播放數據； 如果為負, 則削減錄制數據的持續時間
             speed: 回放速度, 由於回放使用的是原始錄制的數據, 因此可以考慮使用拖動調整器來平滑運動
-            record: 通過此按鈕, 妳就可以錄制相機的手動運動了!
+            record: 通過此按鈕, 您就可以錄制相機的手動運動了!
 
         interps:
             const: 連續的
