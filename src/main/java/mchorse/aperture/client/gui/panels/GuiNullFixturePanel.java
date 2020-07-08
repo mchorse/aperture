@@ -21,7 +21,7 @@ public class GuiNullFixturePanel extends GuiAbstractFixturePanel<NullFixture>
 
         this.left.add(this.previous);
 
-        this.keys().register(IKey.lang("aperture.gui.panels.keys.previous"), Keyboard.KEY_P, () -> this.previous.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).category(CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.previous"), Keyboard.KEY_P, () -> this.previous.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).active(editor::isFlightMode).category(CATEGORY);
     }
 
     @Override

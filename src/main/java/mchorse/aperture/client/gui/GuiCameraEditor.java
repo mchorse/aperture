@@ -332,7 +332,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         IKey fixture = IKey.lang("aperture.gui.editor.keys.fixture.title");
         IKey modes = IKey.lang("aperture.gui.editor.keys.modes.title");
         IKey editor = IKey.lang("aperture.gui.editor.keys.editor.title");
-        Supplier<Boolean> active = () -> !this.flight.enabled;
+        Supplier<Boolean> active = this::isFlightMode;
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.toggle"), Keyboard.KEY_F1, () -> this.top.toggleVisible()).category(editor);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.modifiers"), Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(editor);
@@ -400,6 +400,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public boolean isSyncing()
     {
         return Aperture.editorSync.get();
+    }
+
+    public boolean isFlightMode()
+    {
+        return !this.flight.enabled;
     }
 
     public void haveScrubbed()

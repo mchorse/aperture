@@ -19,6 +19,9 @@ public abstract class GuiFixtureKeyframesEditor<E extends GuiKeyframeElement, T 
 
         this.parent = parent;
         this.graph.setParent(parent);
+
+        this.interp.keys().keybinds.get(0).active(parent.editor::isFlightMode);
+        this.easing.keys().keybinds.get(0).active(parent.editor::isFlightMode);
     }
 
     @Override
