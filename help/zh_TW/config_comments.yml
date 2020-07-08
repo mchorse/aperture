@@ -1,12 +1,12 @@
 # Config strings
 aperture.config.comments:
     general:
-        duration: 關鍵點的默認時長有多長 (單位為 tick)
+        duration: 關鍵點的默認時長有多長 (單位為 Tick)
         spectator: 當開始播放相機回放時切換至旁觀模式
         step_factor: 位移按鍵的相機位移系數
         rotate_factor: 旋轉按鍵的相機旋轉系數
-        command_name: 允許妳重新綁定相機命令的名稱 (重啟遊戲生效)
-        debug_ticks: 將當前相機播放的 tick 寫入日誌
+        command_name: 允許您重新綁定相機命令的名稱 (重啟遊戲生效)
+        debug_ticks: 將當前相機播放的 Tick 寫入日誌
         profile_render: 是否在世界中渲染相機配置?
         auto_save: 在退出世界時保存所有相機配置
         essentials_tp: 在多人遊戲中啟動相機回放時, 使用 /minecraft:tp 進行傳送 (適用於裝有 Essentials 的服務器)

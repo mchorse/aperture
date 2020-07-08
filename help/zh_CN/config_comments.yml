@@ -1,12 +1,12 @@
 # Config strings
 aperture.config.comments:
     general:
-        duration: 关键点的默认时长有多长 (单位为 tick)
+        duration: 关键点的默认时长有多长 (单位为 Tick)
         spectator: 当开始播放相机回放时切换至旁观模式
         step_factor: 位移按键的相机位移系数
         rotate_factor: 旋转按键的相机旋转系数
-        command_name: 允许你重新绑定相机命令的名称 (重启游戏生效)
-        debug_ticks: 将当前相机播放的 tick 写入日志
+        command_name: 允许您重新绑定相机命令的名称 (重启游戏生效)
+        debug_ticks: 将当前相机播放的 Tick 写入日志
         profile_render: 是否在世界中渲染相机配置?
         auto_save: 在退出世界时保存所有相机配置
         essentials_tp: 在多人游戏中启动相机回放时, 使用 /minecraft:tp 进行传送 (适用于装有 Essentials 的服务器)
