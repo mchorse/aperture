@@ -501,22 +501,28 @@ public class GuiGraphView extends GuiKeyframeElement
         int leftBorder = this.toGraphX(0);
         int rightBorder = this.toGraphX(this.duration);
 
-        if (leftBorder > 0) Gui.drawRect(0, this.area.y, leftBorder, this.area.y + this.area.h, 0x88000000);
-        if (rightBorder < w) Gui.drawRect(rightBorder, this.area.y, w, this.area.y + this.area.h, 0x88000000);
+        if (leftBorder > this.area.x) Gui.drawRect(this.area.x, this.area.y, leftBorder, this.area.y + this.area.h, 0x88000000);
+        if (rightBorder < this.area.ex()) Gui.drawRect(rightBorder, this.area.y, this.area.ex() , this.area.y + this.area.h, 0x88000000);
 
         /* Draw scaling grid */
         int hx = this.duration / this.scaleX.mult;
+        int ht = (int) this.fromGraphX(this.area.x);
 
-        for (int j = 0; j <= hx; j++)
+        for (int j = Math.max(ht / this.scaleX.mult, 0); j <= hx; j++)
         {
             int x = this.toGraphX(j * this.scaleX.mult);
 
-            Gui.drawRect(this.area.x + x, this.area.y, this.area.x + x + 1, this.area.ey(), 0x44ffffff);
-            this.font.drawString(String.valueOf(j * this.scaleX.mult), this.area.x + x + 4, this.area.y + 4, 0xffffff);
+            if (x >= this.area.ex())
+            {
+                break;
+            }
+
+            Gui.drawRect(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
+            this.font.drawString(String.valueOf(j * this.scaleX.mult), x + 4, this.area.y + 4, 0xffffff);
         }
 
         int ty = (int) this.fromGraphY(this.area.ey());
-        int by = (int) this.fromGraphY(this.area.y);
+        int by = (int) this.fromGraphY(this.area.y - 12);
 
         int min = Math.min(ty, by) - 1;
         int max = Math.max(ty, by) + 1;
@@ -528,6 +534,11 @@ public class GuiGraphView extends GuiKeyframeElement
         for (int j = 0, c = (max - min) / mult; j < c; j++)
         {
             int y = this.toGraphY(min + j * mult);
+
+            if (y > this.area.ey())
+            {
+                continue;
+            }
 
             Gui.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
             this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
@@ -541,7 +552,10 @@ public class GuiGraphView extends GuiKeyframeElement
 
             cx = this.toGraphX(cx);
 
-            Gui.drawRect(cx - 1, cy, cx + 1, h, 0xff57f52a);
+            if (cy < this.area.ey() && cx >= this.area.x && cx <= this.area.ex())
+            {
+                Gui.drawRect(cx - 1, cy, cx + 1, this.area.ey(), 0xff57f52a);
+            }
         }
 
         if (this.channel.isEmpty())
