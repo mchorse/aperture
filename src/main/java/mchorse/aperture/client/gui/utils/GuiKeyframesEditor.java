@@ -84,7 +84,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
         KeyframeInterpolation interp = keyframe.interp;
         int factor = GuiScreen.isShiftKeyDown() ? -1 : 1;
-        int index = MathUtils.cycler(interp.ordinal() + factor, 0, KeyframeInterpolation.values().length);
+        int index = MathUtils.cycler(interp.ordinal() + factor, 0, KeyframeInterpolation.values().length - 1);
 
         interp = KeyframeInterpolation.values()[index];
         this.graph.getCurrent().setInterpolation(interp);
