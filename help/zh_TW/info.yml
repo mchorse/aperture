@@ -23,3 +23,6 @@ aperture.info:
         loaded: "{f}名稱為 %s{f} 的相機配置文件已被加載!"
         start: "{f}目前的相機配置已經在運行。"
         stop: "{f}目前運行的相機配置已停止。"
+        closed: "{f}相機配置 %s 已從 %s 關閉。"
+    
+    no_loaded_profiles: "{f}未加載任何的相機配置"
