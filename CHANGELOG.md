@@ -2,6 +2,17 @@
 
 Aperture's change log.
 
+## Aperture 1.4.1
+
+This is a small quick patch which fixes a couple of minor issues with camera editor GUI.
+
+**Compatible** with McLib `2.0` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Fixed crash with toggle interpolation keybind
+* Fixed fixture panel's keybinds working through flight mode
+* Optimized keyframe graph
+* Updated Chinese strings for 1.4 (thanks to Chunk7, KuenYo_ and H2SO4GepaoAX)
+
 ## Aperture 1.4
 
 This big update features lots of new quality of life features which should help increase productivity of camera creation, and two features that extend camera capabilities. 
