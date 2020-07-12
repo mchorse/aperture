@@ -224,7 +224,6 @@ aperture.gui:
         angle: Angle
         circle: Circle
         selector: Entity target selector (you can also enter the name tag of the entity instead of target selector)\n\nClick "?" button for more information about syntax...
-        per_point: Per point duration
         to_keyframe: Generate keyframe
         use_speed: Velocity control
 
@@ -240,36 +239,11 @@ aperture.gui:
             speed: Playback speed, since the playback uses raw recorded data, consider using drag modifier to smooth out the movement
             record: With this button, you can start recording of manual movement of the camera!
 
-        interps:
-            const: Constant
-            linear: Linear
-            quad: Quadratic
-            cubic: Cubic
-            hermite: Hermite
-            exp: Exponential
-            bezier: Bezier
-
-            quad_in: Quadratic In
-            quad_out: Quadratic Out
-            quad_inout: Quadratic In/out
-            cubic_in: Cubic In
-            cubic_out: Cubic Out
-            cubic_inout: Cubic In/out
-            exp_in: Exponential In
-            exp_out: Exponential Out
-            exp_inout: Exponential In/out
-
-        easing:
-            in: Ease in
-            out: Ease out
-            inout: Ease in/out
-
         keys:
             title: Current fixture panel
 
             path_position: Cycle position interpolation
             path_angle: Cycle angle interpolation
-            per_point: Toggle per-point option
             velocity: Toggle velocity control option
 
             graph_interp: Cycle point interpolation

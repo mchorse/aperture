@@ -1,8 +1,8 @@
 package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -13,12 +13,14 @@ public class GuiFixtureKeyframesGraphEditor<T extends GuiAbstractFixturePanel<? 
     public GuiFixtureKeyframesGraphEditor(Minecraft mc, T parent)
     {
         super(mc, parent);
+
+        this.graph.panel = parent;
     }
 
     @Override
     protected GuiGraphView createElement(Minecraft mc)
     {
-        return new GuiGraphView(mc, (frame) -> this.fillData(frame));
+        return new GuiGraphView(mc, this::fillData);
     }
 
     public void setChannel(KeyframeChannel channel)

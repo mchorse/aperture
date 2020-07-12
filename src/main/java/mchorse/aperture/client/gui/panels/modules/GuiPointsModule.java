@@ -1,7 +1,6 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.utils.APIcons;
@@ -76,12 +75,12 @@ public class GuiPointsModule extends GuiAbstractModule
     {
         if (this.index + 1 >= this.path.getPoints().size())
         {
-            this.path.addPoint(new DurablePosition(this.editor.getPosition()));
+            this.path.addPoint(this.editor.getPosition());
             this.index = MathHelper.clamp(this.index + 1, 0, this.path.getCount() - 1);
         }
         else
         {
-            this.path.addPoint(new DurablePosition(this.editor.getPosition()), this.index + 1);
+            this.path.addPoint(this.editor.getPosition(), this.index + 1);
             this.index++;
         }
 

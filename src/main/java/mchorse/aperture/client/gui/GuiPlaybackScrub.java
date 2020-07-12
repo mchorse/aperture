@@ -464,31 +464,13 @@ public class GuiPlaybackScrub extends GuiElement
 
                     if (c > 1)
                     {
-                        if (path.perPointDuration)
+                        float fract = (rightMargin - leftMargin) / (float) c;
+
+                        for (int j = 1; j < c; j++)
                         {
-                            long duration = path.getDuration();
-                            long frame = path.getPoint(0).getDuration();
+                            int px = leftMargin + (int) (fract * j);
 
-                            for (int j = 1; j < c; j++)
-                            {
-                                int fract = (int) ((rightMargin - leftMargin) * ((float) frame / duration));
-                                int px = leftMargin + fract;
-
-                                Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
-
-                                frame += path.getPoint(j).getDuration();
-                            }
-                        }
-                        else
-                        {
-                            float fract = (rightMargin - leftMargin) / (float) c;
-
-                            for (int j = 1; j < c; j++)
-                            {
-                                int px = leftMargin + (int) (fract * j);
-
-                                Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
-                            }
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
                         }
                     }
                 }

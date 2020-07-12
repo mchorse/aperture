@@ -37,6 +37,6 @@ public class GuiInterpolationTypeList extends GuiListElement<InterpolationType>
     @Override
     protected String elementToString(InterpolationType element)
     {
-        return I18n.format("aperture.gui.panels.interps." + element.name);
+        return I18n.format(element.getKey());
     }
 }

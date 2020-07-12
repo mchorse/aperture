@@ -1,12 +1,11 @@
 package mchorse.aperture.client.gui.utils;
 
-import java.util.List;
-
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
 import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
-import mchorse.aperture.client.gui.utils.GuiDopeSheet.GuiSheet;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
+
+import java.util.List;
 
 public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEditor<GuiDopeSheet, GuiKeyframeFixturePanel>
 {
@@ -14,6 +13,7 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
     {
         super(mc, parent);
 
+        this.graph.panel = parent;
         this.value.setVisible(false);
         this.interpolations.flex().h(1, -30);
     }
@@ -21,20 +21,20 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
     @Override
     protected GuiDopeSheet createElement(Minecraft mc)
     {
-        return new GuiDopeSheet(mc, (frame) -> this.fillData(frame));
+        return new GuiDopeSheet(mc, this::fillData);
     }
 
     public void setFixture(KeyframeFixture fixture)
     {
-        List<GuiSheet> sheets = this.graph.sheets;
+        List<mchorse.mclib.client.gui.framework.elements.keyframes.GuiDopeSheet.GuiSheet> sheets = this.graph.sheets;
 
         sheets.clear();
 
-        for (int i = 0; i < this.parent.titles.length; i++)
+        for (int i = 0; i < this.panel.titles.length; i++)
         {
-            KeyframeChannel channel = i == 0 ? this.parent.allChannel : fixture.channels[i - 1];
+            KeyframeChannel channel = i == 0 ? this.panel.allChannel : fixture.channels[i - 1];
 
-            sheets.add(new GuiSheet(this.parent.titles[i], this.parent.colors[i], channel));
+            sheets.add(new mchorse.mclib.client.gui.framework.elements.keyframes.GuiDopeSheet.GuiSheet(this.panel.titles[i], this.panel.colors[i], channel));
         }
 
         this.graph.resetView();
