@@ -1,8 +1,10 @@
 package mchorse.aperture.client.gui.utils;
 
+import mchorse.aperture.client.gui.panels.keyframe.AllKeyframe;
 import mchorse.mclib.client.gui.framework.elements.keyframes.GuiDopeSheet.GuiSheet;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
+import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 
@@ -15,7 +17,6 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
         super(mc, parent);
 
         this.graph.panel = parent;
-        this.value.setVisible(false);
         this.interpolations.flex().h(1, -30);
     }
 
@@ -23,6 +24,14 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
     protected GuiDopeSheet createElement(Minecraft mc)
     {
         return new GuiDopeSheet(mc, this::fillData);
+    }
+
+    @Override
+    public void fillData(Keyframe frame)
+    {
+        super.fillData(frame);
+
+        this.value.setVisible(!(frame instanceof AllKeyframe));
     }
 
     public void setFixture(KeyframeFixture fixture)
