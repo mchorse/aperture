@@ -219,5 +219,27 @@ public abstract class AbstractFixture
     /**
      * Clone this fixture
      */
-    public abstract AbstractFixture copy();
+    public final AbstractFixture copy()
+    {
+        AbstractFixture modifier = this.create(this.getDuration());
+
+        modifier.copy(this);
+
+        return modifier;
+    }
+
+    /**
+     * Create new fixture
+     */
+    public abstract AbstractFixture create(long duration);
+
+    /**
+     * Copy data from another fixture
+     */
+    public void copy(AbstractFixture from)
+    {
+        AbstractFixture.copyModifiers(from, this);
+
+        this.name = from.name;
+    }
 }

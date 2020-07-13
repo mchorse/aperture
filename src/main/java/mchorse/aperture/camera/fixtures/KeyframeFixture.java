@@ -107,21 +107,28 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture copy()
+    public AbstractFixture create(long duration)
     {
-        KeyframeFixture fixture = new KeyframeFixture(this.duration);
+        return new KeyframeFixture(duration);
+    }
 
-        AbstractFixture.copyModifiers(this, fixture);
-        fixture.name = this.name;
-        fixture.x.copy(this.x);
-        fixture.y.copy(this.y);
-        fixture.z.copy(this.z);
-        fixture.yaw.copy(this.yaw);
-        fixture.pitch.copy(this.pitch);
-        fixture.roll.copy(this.roll);
-        fixture.fov.copy(this.fov);
+    @Override
+    public void copy(AbstractFixture from)
+    {
+        super.copy(from);
 
-        return fixture;
+        if (from instanceof KeyframeFixture)
+        {
+            KeyframeFixture keyframe = (KeyframeFixture) from;
+
+            this.x.copy(keyframe.x);
+            this.y.copy(keyframe.y);
+            this.z.copy(keyframe.z);
+            this.yaw.copy(keyframe.yaw);
+            this.pitch.copy(keyframe.pitch);
+            this.roll.copy(keyframe.roll);
+            this.fov.copy(keyframe.fov);
+        }
     }
 
     @Override

@@ -43,15 +43,22 @@ public class NullFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture copy()
+    public AbstractFixture create(long duration)
     {
-        NullFixture fixture = new NullFixture(this.duration);
+        return new NullFixture(duration);
+    }
 
-        AbstractFixture.copyModifiers(this, fixture);
-        fixture.name = this.name;
-        fixture.previous = this.previous;
+    @Override
+    public void copy(AbstractFixture from)
+    {
+        super.copy(from);
 
-        return fixture;
+        if (from instanceof NullFixture)
+        {
+            NullFixture nullFixture = (NullFixture) from;
+
+            this.previous = nullFixture.previous;
+        }
     }
 
     @Override

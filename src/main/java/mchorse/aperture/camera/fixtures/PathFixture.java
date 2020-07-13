@@ -559,24 +559,31 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture copy()
+    public AbstractFixture create(long duration)
     {
-        PathFixture fixture = new PathFixture(this.duration);
+        return new PathFixture(duration);
+    }
 
-        AbstractFixture.copyModifiers(this, fixture);
-        for (Position pos : this.points)
+    @Override
+    public void copy(AbstractFixture from)
+    {
+        super.copy(from);
+
+        if (from instanceof PathFixture)
         {
-            fixture.addPoint(pos.copy());
+            PathFixture path = (PathFixture) from;
+
+            for (Position pos : path.points)
+            {
+                this.addPoint(pos.copy());
+            }
+
+            this.interpolationPos = path.interpolationPos;
+            this.interpolationAngle = path.interpolationAngle;
+
+            this.useSpeed = path.useSpeed;
+            this.speed.copy(path.speed);
         }
-
-        fixture.name = this.name;
-        fixture.interpolationPos = this.interpolationPos;
-        fixture.interpolationAngle = this.interpolationAngle;
-
-        fixture.useSpeed = this.useSpeed;
-        fixture.speed.copy(this.speed);
-
-        return fixture;
     }
 
     /* Interpolation */

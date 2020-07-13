@@ -36,15 +36,20 @@ public class IdleFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture copy()
+    public AbstractFixture create(long duration)
     {
-        IdleFixture fixture = new IdleFixture(this.duration);
+        return new IdleFixture(duration);
+    }
 
-        AbstractFixture.copyModifiers(this, fixture);
-        fixture.name = this.name;
-        fixture.position = this.position.copy();
+    @Override
+    public void copy(AbstractFixture from)
+    {
+        super.copy(from);
 
-        return fixture;
+        if (from instanceof IdleFixture)
+        {
+            this.position = ((IdleFixture) from).position.copy();
+        }
     }
 
     /* Save/load methods */

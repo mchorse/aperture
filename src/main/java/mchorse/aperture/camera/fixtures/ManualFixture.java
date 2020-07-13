@@ -23,7 +23,7 @@ public class ManualFixture extends AbstractFixture
 	public float speed = 1;
 
 	@Expose
-	public int shift = 1;
+	public int shift = 0;
 
 	@Expose
 	public List<List<RenderFrame>> frames = new ArrayList<List<RenderFrame>>();
@@ -145,28 +145,36 @@ public class ManualFixture extends AbstractFixture
 	}
 
 	@Override
-	public AbstractFixture copy()
+	public AbstractFixture create(long duration)
 	{
-		ManualFixture fixture = new ManualFixture(this.duration);
+		return new ManualFixture(duration);
+	}
 
-		AbstractFixture.copyModifiers(this, fixture);
-		fixture.name = this.name;
-		fixture.shift = this.shift;
-		fixture.speed = this.speed;
+	@Override
+	public void copy(AbstractFixture from)
+	{
+		super.copy(from);
 
-		for (List<RenderFrame> tick : this.frames)
+		if (from instanceof ManualFixture)
 		{
-			List<RenderFrame> list = new ArrayList<RenderFrame>();
+			ManualFixture manual = (ManualFixture) from;
 
-			for (RenderFrame frame : tick)
+			this.shift = manual.shift;
+			this.speed = manual.speed;
+			this.frames.clear();
+
+			for (List<RenderFrame> tick : manual.frames)
 			{
-				list.add(frame.copy());
+				List<RenderFrame> list = new ArrayList<RenderFrame>();
+
+				for (RenderFrame frame : tick)
+				{
+					list.add(frame.copy());
+				}
+
+				this.frames.add(list);
 			}
-
-			fixture.frames.add(list);
 		}
-
-		return fixture;
 	}
 
 	/* Save/load methods */
