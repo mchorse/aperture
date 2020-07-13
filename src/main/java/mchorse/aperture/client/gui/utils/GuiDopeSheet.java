@@ -41,14 +41,9 @@ public class GuiDopeSheet extends mchorse.mclib.client.gui.framework.elements.ke
         {
             AllKeyframeChannel all = (AllKeyframeChannel) this.current.channel;
             AllKeyframe key = (AllKeyframe) frame;
-            Position pos = new Position(Minecraft.getMinecraft().player);
+            Position pos = new Position(this.panel.editor.getCamera());
 
             double value = 0;
-
-            if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
-            {
-                pos = new Position(((GuiCameraEditor) Minecraft.getMinecraft().currentScreen).getCamera());
-            }
 
             for (KeyframeChannel channel : all.fixture.channels)
             {
