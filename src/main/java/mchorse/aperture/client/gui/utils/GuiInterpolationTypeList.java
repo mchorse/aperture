@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -29,7 +30,7 @@ public class GuiInterpolationTypeList extends GuiListElement<InterpolationType>
     @Override
     protected boolean sortElements()
     {
-        Collections.sort(this.list, (o1, o2) -> o1.name.compareTo(o2.name));
+        Collections.sort(this.list, Comparator.comparing(o -> o.name));
 
         return true;
     }

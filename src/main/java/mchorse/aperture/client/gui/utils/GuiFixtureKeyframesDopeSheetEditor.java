@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.utils;
 
+import mchorse.mclib.client.gui.framework.elements.keyframes.GuiDopeSheet.GuiSheet;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
@@ -26,7 +27,7 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
 
     public void setFixture(KeyframeFixture fixture)
     {
-        List<mchorse.mclib.client.gui.framework.elements.keyframes.GuiDopeSheet.GuiSheet> sheets = this.graph.sheets;
+        List<GuiSheet> sheets = this.graph.sheets;
 
         sheets.clear();
 
@@ -34,7 +35,7 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
         {
             KeyframeChannel channel = i == 0 ? this.panel.allChannel : fixture.channels[i - 1];
 
-            sheets.add(new mchorse.mclib.client.gui.framework.elements.keyframes.GuiDopeSheet.GuiSheet(this.panel.titles[i], this.panel.colors[i], channel));
+            sheets.add(new GuiSheet(this.panel.titles[i], this.panel.colors[i], channel));
         }
 
         this.graph.resetView();

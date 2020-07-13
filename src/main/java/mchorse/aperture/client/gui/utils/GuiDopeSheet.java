@@ -2,7 +2,6 @@ package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframe;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
