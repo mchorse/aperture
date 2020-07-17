@@ -1131,7 +1131,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         /* Loop fixture */
-        if (Aperture.editorLoop.get() && this.runner.isRunning() && fixture != null)
+        if (Aperture.editorLoop.get() && this.runner.isRunning() && !this.minema.isRecording() && fixture != null)
         {
             long target = this.getProfile().calculateOffset(fixture) + fixture.getDuration();
 
