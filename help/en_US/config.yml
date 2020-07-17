@@ -7,7 +7,7 @@ aperture.config:
         tooltip: General camera options
 
         duration: Fixture duration
-        spectator: Switch to specator
+        spectator: Switch to spectator
         step_factor: Camera step factor
         rotate_factor: Camera rotate factor
         command_name: Camera command name
