@@ -183,18 +183,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.top = new GuiElement(mc)
         {
             @Override
-            public boolean mouseClicked(GuiContext context)
-            {
-                if (super.mouseClicked(context))
-                {
-                    return true;
-                }
-
-                flight.mouseClicked(context);
-                return false;
-            }
-
-            @Override
             public boolean mouseScrolled(GuiContext context)
             {
                 if (super.mouseScrolled(context))
@@ -204,13 +192,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
                 flight.mouseScrolled(context);
                 return false;
-            }
-
-            @Override
-            public void mouseReleased(GuiContext context)
-            {
-                super.mouseReleased(context);
-                flight.mouseReleased(context);
             }
 
             @Override

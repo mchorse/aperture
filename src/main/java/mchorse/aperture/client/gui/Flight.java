@@ -11,6 +11,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 @SideOnly(Side.CLIENT)
 public class Flight
@@ -47,18 +48,6 @@ public class Flight
         return factor;
     }
 
-    public void mouseClicked(GuiContext context)
-    {
-        if (!this.enabled || context.mouseButton > 2)
-        {
-            return;
-        }
-
-        this.dragging = context.mouseButton;
-        this.lastX = context.mouseX;
-        this.lastY = context.mouseY;
-    }
-
     public void mouseScrolled(GuiContext context)
     {
         if (!this.enabled)
@@ -70,13 +59,23 @@ public class Flight
         this.speed = MathHelper.clamp(this.speed, 1, 50000);
     }
 
-    public void mouseReleased(GuiContext context)
-    {
-        this.dragging = -1;
-    }
-
     public void animate(GuiContext context, Position position)
     {
+        this.dragging = -1;
+
+        if (Mouse.isButtonDown(0))
+        {
+            this.dragging = 0;
+        }
+        else if (Mouse.isButtonDown(1))
+        {
+            this.dragging = 1;
+        }
+        else if (Mouse.isButtonDown(2))
+        {
+            this.dragging = 2;
+        }
+
         float f = this.speed / 1000F;
         float multiplier = 1F;
 
@@ -193,6 +192,9 @@ public class Flight
             this.speed = MathHelper.clamp(this.speed, 1, 50000);
             this.lastSpeed = System.currentTimeMillis();
         }
+
+        this.lastX = context.mouseX;
+        this.lastY = context.mouseY;
     }
 
 	public void drawSpeed(FontRenderer font, int x, int y)
