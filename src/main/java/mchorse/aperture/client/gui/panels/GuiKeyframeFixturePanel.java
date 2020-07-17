@@ -163,7 +163,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public void draw(GuiContext context)
     {
         /* Draw title of the channel */
-        this.font.drawStringWithShadow(this.title.get(), this.area.ex() - this.font.getStringWidth(this.title.get()), this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
+        this.font.drawStringWithShadow(this.title.get(), this.area.ex() - this.font.getStringWidth(this.title.get()) - 10, this.graph.area.y - this.font.FONT_HEIGHT - 5, 0xffffff);
 
         super.draw(context);
     }
