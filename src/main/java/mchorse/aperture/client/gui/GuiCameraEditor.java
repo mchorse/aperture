@@ -1270,8 +1270,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         for (String label : labels)
         {
             int width = this.fontRenderer.getStringWidth(label);
-            int y = panel.getY() + panel.getH() - 5 - 15 * i;
-            int x = panel.getX();
+            int y = panel.getY() + panel.getH() - 20 - 15 * i;
+            int x = panel.getX() + 10;
 
             Gui.drawRect(x, y - 3, x + width + 4, y + 10, 0xbb000000);
             this.fontRenderer.drawStringWithShadow(label, x + 2, y, 0xffffff);
