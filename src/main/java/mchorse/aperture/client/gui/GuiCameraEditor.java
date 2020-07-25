@@ -1124,10 +1124,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         /* Animate flight mode */
+        this.flight.animate(this.context, this.position);
+
         if (this.flight.enabled)
         {
-            this.flight.animate(this.context, this.position);
-
             this.position.apply(this.getCamera());
             ClientProxy.control.roll = this.position.angle.roll;
             this.mc.gameSettings.fovSetting = this.position.angle.fov;

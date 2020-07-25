@@ -61,6 +61,14 @@ public class Flight
 
     public void animate(GuiContext context, Position position)
     {
+        if (!this.enabled)
+        {
+            this.lastX = context.mouseX;
+            this.lastY = context.mouseY;
+
+            return;
+        }
+
         this.dragging = -1;
 
         if (Mouse.isButtonDown(0))
@@ -111,9 +119,6 @@ public class Flight
             {
                 fov += (context.mouseY - this.lastY) * (multiplier * 0.35F);
             }
-
-            this.lastX = context.mouseX;
-            this.lastY = context.mouseY;
         }
 
         if (Keyboard.isKeyDown(Aperture.flightCameraUp.get()) || Keyboard.isKeyDown(Aperture.flightCameraDown.get()))
