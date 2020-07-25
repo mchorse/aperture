@@ -4,6 +4,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.commands.camera.SubCommandCameraReload;
 import mchorse.aperture.commands.camera.SubCommandCameraStart;
 import mchorse.aperture.commands.camera.SubCommandCameraStop;
+import mchorse.aperture.commands.camera.SubCommandCameraToTP;
 import mchorse.aperture.commands.camera.control.SubCommandCameraDefault;
 import mchorse.aperture.commands.camera.control.SubCommandCameraFOV;
 import mchorse.aperture.commands.camera.control.SubCommandCameraRoll;
@@ -19,9 +20,6 @@ import mchorse.aperture.commands.camera.control.SubCommandCameraStep;
  *
  * This command works on the client side, so there's no way you could use it in
  * command block, yet.
- *
- * @todo Create /cb-camera, which will be able to start/stop camera using
- *       command block, only if being requested.
  */
 public class CommandCamera extends SubCommandBase
 {
@@ -36,6 +34,7 @@ public class CommandCamera extends SubCommandBase
         this.add(new SubCommandCameraStart());
         this.add(new SubCommandCameraStop());
         this.add(new SubCommandCameraReload());
+        this.add(new SubCommandCameraToTP());
 
         /* Camera control */
         this.add(new SubCommandCameraStep());
