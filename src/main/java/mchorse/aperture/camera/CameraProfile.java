@@ -19,6 +19,7 @@ import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -419,6 +420,15 @@ public class CameraProfile
                 this.getModifiers().add(modifier);
             }
         }
+
+        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        {
+            String key = ByteBufUtils.readUTF8String(buffer);
+            KeyframeChannel channel = new KeyframeChannel();
+
+            channel.fromByteBuf(buffer);
+            this.curves.put(key, channel);
+        }
     }
 
     /**
@@ -438,6 +448,14 @@ public class CameraProfile
         for (AbstractModifier modifier : this.getModifiers())
         {
             ModifierRegistry.toByteBuf(modifier, buffer);
+        }
+
+        buffer.writeInt(this.curves.size());
+
+        for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
+        {
+            ByteBufUtils.writeUTF8String(buffer, entry.getKey());
+            entry.getValue().toByteBuf(buffer);
         }
     }
 

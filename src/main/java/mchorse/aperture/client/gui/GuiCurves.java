@@ -40,6 +40,7 @@ public class GuiCurves extends GuiElement
 			return;
 		}
 
+		this.keyframes.graph.duration = (int) this.editor.getProfile().getDuration();
 		this.keyframes.setChannel(channel);
 		this.keyframes.graph.color = 0xff1493;
 	}

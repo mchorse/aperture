@@ -62,6 +62,21 @@ public class CameraProfileAdapter implements JsonDeserializer<CameraProfile>, Js
 			}
 		}
 
+		if (object.has("curves") && object.get("curves").isJsonObject())
+		{
+			JsonObject curves = object.get("curves").getAsJsonObject();
+
+			for (Map.Entry<String, JsonElement> entry : curves.entrySet())
+			{
+				KeyframeChannel channel = context.deserialize(entry.getValue(), KeyframeChannel.class);
+
+				if (channel != null)
+				{
+					profile.getCurves().put(entry.getKey(), channel);
+				}
+			}
+		}
+
 		return profile;
 	}
 
