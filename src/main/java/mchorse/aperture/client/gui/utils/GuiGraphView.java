@@ -1,7 +1,6 @@
 package mchorse.aperture.client.gui.utils;
 
-import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import net.minecraft.client.Minecraft;
@@ -11,47 +10,57 @@ import java.util.function.Consumer;
 
 public class GuiGraphView extends mchorse.mclib.client.gui.framework.elements.keyframes.GuiGraphView
 {
-    public GuiAbstractFixturePanel<? extends AbstractFixture> panel;
+    public GuiCameraEditor editor;
 
     public GuiGraphView(Minecraft mc, Consumer<Keyframe> callback)
     {
         super(mc, callback);
     }
 
-    public int getOffset()
+    public long getFixtureOffset()
     {
-        if (this.panel == null)
+        if (this.editor == null || this.editor.panel.delegate == null)
         {
             return 0;
         }
 
-        return (int) (this.panel.editor.timeline.value - this.panel.editor.getProfile().calculateOffset(this.panel.fixture));
+        return this.editor.getProfile().calculateOffset(this.editor.panel.delegate.fixture);
+    }
+
+    public int getOffset()
+    {
+        if (this.editor == null)
+        {
+            return 0;
+        }
+
+        return (int) (this.editor.timeline.value - this.getFixtureOffset());
     }
 
     @Override
     protected void updateMoved()
     {
-        if (this.panel != null)
+        if (this.editor != null)
         {
-            this.panel.editor.updateProfile();
+            this.editor.updateProfile();
         }
     }
 
     @Override
     protected void moveNoKeyframe(GuiContext context, Keyframe frame, double x, double y)
     {
-        if (this.panel != null)
+        if (this.editor != null)
         {
-            long offset = this.panel.editor.getProfile().calculateOffset(this.panel.fixture);
+            long offset = this.getFixtureOffset();
 
-            this.panel.editor.timeline.setValueFromScrub((int) (x + offset));
+            this.editor.timeline.setValueFromScrub((int) (x + offset));
         }
     }
 
     @Override
     protected void drawCursor(GuiContext context)
     {
-        if (this.panel != null)
+        if (this.editor != null)
         {
             int cx = this.getOffset();
             int cy = this.toGraphY(this.channel.interpolate(cx));

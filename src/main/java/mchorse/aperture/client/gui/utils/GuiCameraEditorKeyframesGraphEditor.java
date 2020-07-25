@@ -1,20 +1,19 @@
 package mchorse.aperture.client.gui.utils;
 
-import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 
 /**
  * Graph editor GUI designed specifically for keyframe fixture panel
  */
-public class GuiFixtureKeyframesGraphEditor<T extends GuiAbstractFixturePanel<? extends AbstractFixture>> extends GuiFixtureKeyframesEditor<GuiGraphView, T>
+public class GuiCameraEditorKeyframesGraphEditor extends GuiCameraEditorKeyframesEditor<GuiGraphView>
 {
-    public GuiFixtureKeyframesGraphEditor(Minecraft mc, T parent)
+    public GuiCameraEditorKeyframesGraphEditor(Minecraft mc, GuiCameraEditor editor)
     {
-        super(mc, parent);
+        super(mc, editor);
 
-        this.graph.panel = parent;
+        this.graph.editor = editor;
     }
 
     @Override

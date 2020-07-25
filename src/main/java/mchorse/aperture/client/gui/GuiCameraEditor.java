@@ -802,6 +802,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         EntityPlayer player = Minecraft.getMinecraft().player;
 
         this.position.set(player);
+        this.getProfile().applyCurves(tick, ticks);
         this.getProfile().applyProfile(tick, ticks, this.lastPartialTick, this.position);
 
         this.position.apply(this.getCamera());

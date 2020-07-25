@@ -8,6 +8,7 @@ import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketRequestCameraProfiles;
+import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
@@ -44,6 +45,9 @@ public class GuiProfilesManager extends GuiElement
     public GuiCameraEditor editor;
 
     public GuiCameraProfilesSearchList profiles;
+    public GuiCurves curves;
+
+    public GuiIconElement keyframes;
     public GuiIconElement rename;
     public GuiIconElement convert;
     public GuiIconElement add;
@@ -58,6 +62,8 @@ public class GuiProfilesManager extends GuiElement
 
         this.profiles = new GuiCameraProfilesSearchList(mc, (entry) -> this.pickProfile(entry.get(0)));
         this.profiles.label(IKey.lang("aperture.gui.search"));
+        this.keyframes = new GuiIconElement(mc, APIcons.KEYFRAMES, (b) -> this.toggleKeyframes());
+        this.keyframes.tooltip(IKey.lang("aperture.gui.profiles.keyframes"));
         this.rename = new GuiIconElement(mc, Icons.EDIT, (b) -> this.rename());
         this.rename.tooltip(IKey.lang("aperture.gui.profiles.rename_tooltip"));
         this.convert = new GuiIconElement(mc, Icons.SERVER, (b) -> this.convert());
@@ -75,12 +81,17 @@ public class GuiProfilesManager extends GuiElement
         this.add.flex().relative(this.dupe).set(-20, 0, 20, 20);
         this.rename.flex().relative(this.add).set(-20, 0, 20, 20);
         this.convert.flex().relative(this.rename).set(-20, 0, 20, 20);
+        this.keyframes.flex().relative(this.convert).set(-20, 0, 20, 20);
+
+        this.curves = new GuiCurves(mc, editor);
+        this.curves.flex().relative(this).set(0, 28, 0, 0).w(1F).h(1, -28);
+        this.curves.setVisible(false);
 
         GuiLabel label = Elements.label(IKey.lang("aperture.gui.profiles.title")).background(0x88000000);
 
         label.flex().relative(this).set(10, 10, 0, 20);
 
-        this.add(label, this.profiles, this.remove, this.dupe, this.add, this.rename, this.convert);
+        this.add(label, this.profiles, this.curves, this.remove, this.dupe, this.add, this.rename, this.convert, this.keyframes);
     }
 
     public void pickProfile(CameraProfile profile)
@@ -181,6 +192,19 @@ public class GuiProfilesManager extends GuiElement
         AbstractDestination dest = entry.getDestination();
 
         dest.rename(name);
+    }
+
+    private void toggleKeyframes()
+    {
+        boolean profiles = this.profiles.isVisible();
+
+        this.profiles.setVisible(!profiles);
+        this.curves.setVisible(!this.profiles.isVisible());
+
+        if (this.curves.isVisible())
+        {
+            this.curves.update();
+        }
     }
 
     private void convert()

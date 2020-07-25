@@ -25,4 +25,5 @@ public class APIcons
 	public static final Icon MINEMA = new Icon(ICONS, 224, 0);
 	public static final Icon DISABLED = new Icon(ICONS, 240, 0);
 	public static final Icon RECORD = new Icon(ICONS, 0, 16);
+	public static final Icon KEYFRAMES = new Icon(ICONS, 16, 16);
 }

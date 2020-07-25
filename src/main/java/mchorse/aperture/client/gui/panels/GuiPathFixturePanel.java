@@ -10,7 +10,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
-import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
+import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
@@ -37,7 +37,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiInterpModule interp;
     public GuiToggleElement useSpeed;
     public GuiButtonElement toKeyframe;
-    public GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel> speed;
+    public GuiCameraEditorKeyframesGraphEditor speed;
 
     public Position position;
 
@@ -64,7 +64,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             }
         });
         this.toKeyframe = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
-        this.speed = new GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel>(mc, this);
+        this.speed = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
         this.speed.graph.setColor(0x0088ff);
 
         this.points.flex().relative(this.left.flex()).x(1F, 40).y(1F, -30).wTo(this.right.flex(), -80).h(20);

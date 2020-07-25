@@ -5,6 +5,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
@@ -223,6 +224,7 @@ public class CameraRunner
             double prevY = this.position.point.y;
             double prevZ = this.position.point.z;
 
+            this.profile.applyCurves(progress, event.renderTickTime);
             this.profile.applyProfile(progress, event.renderTickTime, this.position);
 
             EntityPlayer player = this.mc.player;

@@ -4,8 +4,8 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
-import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesDopeSheetEditor;
-import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
+import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesDopeSheetEditor;
+import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -27,8 +27,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public GuiButtonElement roll;
     public GuiButtonElement fov;
 
-    public GuiFixtureKeyframesGraphEditor<GuiKeyframeFixturePanel> graph;
-    public GuiFixtureKeyframesDopeSheetEditor dope;
+    public GuiCameraEditorKeyframesGraphEditor graph;
+    public GuiCameraEditorKeyframesDopeSheetEditor dope;
 
     public AllKeyframeChannel allChannel = new AllKeyframeChannel();
     public IKey[] titles = new IKey[8];
@@ -41,8 +41,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         super(mc, editor);
 
         this.buttons = new GuiElement(mc);
-        this.graph = new GuiFixtureKeyframesGraphEditor<GuiKeyframeFixturePanel>(mc, this);
-        this.dope = new GuiFixtureKeyframesDopeSheetEditor(mc, this);
+        this.graph = new GuiCameraEditorKeyframesGraphEditor(mc, this.editor);
+        this.dope = new GuiCameraEditorKeyframesDopeSheetEditor(mc, this.editor);
 
         this.all = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
         this.x = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));

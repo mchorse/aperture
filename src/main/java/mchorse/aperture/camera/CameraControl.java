@@ -29,8 +29,9 @@ public class CameraControl
     public float roll = 0;
 
     public int lastCounter;
-    public Float lastRoll;
-    public Float lastFov;
+    public float lastRoll;
+    public float lastFov;
+    public float lastGamma;
     public GameType lastGameMode = GameType.NOT_SET;
 
     public void cache()
@@ -42,6 +43,7 @@ public class CameraControl
             this.lastGameMode = ClientProxy.getGameMode();
             this.lastRoll = roll;
             this.lastFov = mc.gameSettings.fovSetting;
+            this.lastGamma = mc.gameSettings.gammaSetting;
         }
 
         this.lastCounter ++;
@@ -57,13 +59,14 @@ public class CameraControl
 
             this.roll = this.lastRoll;
             mc.gameSettings.fovSetting = this.lastFov;
+            mc.gameSettings.gammaSetting = this.lastGamma;
 
             if (this.lastGameMode != ClientProxy.getGameMode())
             {
                 mc.player.sendChatMessage("/gamemode " + this.lastGameMode.getID());
             }
 
-            this.lastRoll = this.lastFov = null;
+            this.lastRoll = this.lastFov = this.lastGamma = 0F;
         }
     }
 
@@ -85,7 +88,7 @@ public class CameraControl
 
         this.currentProfile = null;
         this.lastCounter = 0;
-        this.lastRoll = this.lastFov = null;
+        this.lastRoll = this.lastFov = 0;
         this.lastGameMode = null;
     }
 

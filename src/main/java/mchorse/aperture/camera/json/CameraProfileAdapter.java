@@ -11,8 +11,10 @@ import com.google.gson.JsonSerializer;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * Camera profile JSON adapter
@@ -69,9 +71,11 @@ public class CameraProfileAdapter implements JsonDeserializer<CameraProfile>, Js
 		JsonObject object = new JsonObject();
 		JsonArray fixtures = new JsonArray();
 		JsonArray modifiers = new JsonArray();
+		JsonObject curves = new JsonObject();
 
 		object.add("fixtures", fixtures);
 		object.add("modifiers", modifiers);
+		object.add("curves", curves);
 
 		for (AbstractFixture fixture : src.getAll())
 		{
@@ -91,6 +95,11 @@ public class CameraProfileAdapter implements JsonDeserializer<CameraProfile>, Js
 			{
 				modifiers.add(element);
 			}
+		}
+
+		for (Map.Entry<String, KeyframeChannel> entry : src.getCurves().entrySet())
+		{
+			curves.add(entry.getKey(), context.serialize(entry.getValue()));
 		}
 
 		return object;

@@ -1,22 +1,23 @@
 package mchorse.aperture.client.gui.utils;
 
+import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
 import mchorse.aperture.client.gui.panels.keyframe.AllKeyframe;
 import mchorse.mclib.client.gui.framework.elements.keyframes.GuiDopeSheet.GuiSheet;
-import mchorse.aperture.camera.fixtures.KeyframeFixture;
-import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 
 import java.util.List;
 
-public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEditor<GuiDopeSheet, GuiKeyframeFixturePanel>
+public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyframesEditor<GuiDopeSheet>
 {
-    public GuiFixtureKeyframesDopeSheetEditor(Minecraft mc, GuiKeyframeFixturePanel parent)
+    public GuiCameraEditorKeyframesDopeSheetEditor(Minecraft mc, GuiCameraEditor editor)
     {
-        super(mc, parent);
+        super(mc, editor);
 
-        this.graph.panel = parent;
+        this.graph.editor = editor;
         this.interpolations.flex().h(1, -30);
     }
 
@@ -40,11 +41,18 @@ public class GuiFixtureKeyframesDopeSheetEditor extends GuiFixtureKeyframesEdito
 
         sheets.clear();
 
-        for (int i = 0; i < this.panel.titles.length; i++)
+        if (this.editor.panel.delegate == null)
         {
-            KeyframeChannel channel = i == 0 ? this.panel.allChannel : fixture.channels[i - 1];
+            return;
+        }
 
-            sheets.add(new GuiSheet(this.panel.titles[i], this.panel.colors[i], channel));
+        GuiKeyframeFixturePanel panel = (GuiKeyframeFixturePanel) this.editor.panel.delegate;
+
+        for (int i = 0; i < panel.titles.length; i++)
+        {
+            KeyframeChannel channel = i == 0 ? panel.allChannel : fixture.channels[i - 1];
+
+            sheets.add(new GuiSheet(panel.titles[i], panel.colors[i], channel));
         }
 
         this.graph.resetView();

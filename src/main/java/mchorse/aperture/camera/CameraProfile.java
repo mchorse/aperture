@@ -1,7 +1,9 @@
 package mchorse.aperture.camera;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,8 +15,12 @@ import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.events.CameraProfileChangedEvent;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Camera profile class
@@ -29,6 +35,12 @@ public class CameraProfile
      * Pattern for finding numbered
      */
     public static final Pattern NUMBERED_SUFFIX = Pattern.compile("_(\\d+)$");
+
+    /**
+     * Curves
+     */
+    @Expose
+    protected Map<String, KeyframeChannel> curves = new HashMap<String, KeyframeChannel>();
 
     /**
      * List of profile's camera fixtures
@@ -60,6 +72,11 @@ public class CameraProfile
     public CameraProfile(AbstractDestination destination)
     {
         this.destination = destination;
+    }
+
+    public Map<String, KeyframeChannel> getCurves()
+    {
+        return this.curves;
     }
 
     public List<AbstractModifier> getModifiers()
@@ -308,6 +325,20 @@ public class CameraProfile
         this.getAll().clear();
         this.getModifiers().clear();
         this.dirty();
+    }
+
+    /**
+     * Apply different curves
+     */
+    @SideOnly(Side.CLIENT)
+    public void applyCurves(long progress, float partialTick)
+    {
+        KeyframeChannel channel = this.curves.get("brightness");
+
+        if (channel != null && !channel.isEmpty())
+        {
+            Minecraft.getMinecraft().gameSettings.gammaSetting = (float) channel.interpolate(progress + partialTick);
+        }
     }
 
     public void applyProfile(long progress, float partialTick, Position position)

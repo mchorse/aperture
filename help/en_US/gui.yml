@@ -169,6 +169,7 @@ aperture.gui:
     profiles:
         title: Profiles
         rename: Rename
+        keyframes: Keyframes
         
         rename_modal: Type in a new name to rename current camera profile.
         add_modal: Type in a name for a new camera profile.
