@@ -13,10 +13,6 @@ aperture.info:
     commands:
         load_chunks: "{f}已加載在渲染範圍裏的已創建區塊。"
 
-        replace_texture: "{f}材質 %s{f} 已被材質 %s{f} 替換。"
-        restore_texture: "{f}材質 %s{f} 已經還原為初始狀態。"
-
-
     # Camera profile
     profile:
         new: "{f}已創建壹個新的相機配置文件, 命名為 %s{f}。"

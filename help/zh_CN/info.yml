@@ -13,9 +13,6 @@ aperture.info:
     commands:
         load_chunks: "{f}已加载在渲染范围里的已创建区块。"
 
-        replace_texture: "{f}材质 %s{f} 已被材质 %s{f} 替换。"
-        restore_texture: "{f}材质 %s{f} 已经还原为初始状态。"
-
 
     # Camera profile
     profile:

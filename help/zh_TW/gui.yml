@@ -224,7 +224,6 @@ aperture.gui:
         angle: 角度
         circle: 圓圈
         selector: 實體目標選擇器 (您也可以輸入實體的名稱標簽來代替目標選擇器)\n\n點擊 "?" 按鈕了解更多關於語法的信息...
-        per_point: 各點的持續長度
         to_keyframe: 生成關鍵幀
         use_speed: 速率控制
 
@@ -240,36 +239,11 @@ aperture.gui:
             speed: 回放速度, 由於回放使用的是原始錄制的數據, 因此可以考慮使用拖動調整器來平滑運動
             record: 通過此按鈕, 您就可以錄制相機的手動運動了!
 
-        interps:
-            const: 連續的
-            linear: 線性
-            quad: 二次方
-            cubic: 三次曲線
-            hermite: 艾米插值
-            exp: 指數
-            bezier: 貝塞爾曲線
-
-            quad_in: 二次方緩入
-            quad_out: 二次方緩出
-            quad_inout: 二次方緩入/緩出
-            cubic_in: 三次曲線緩入
-            cubic_out: 三次曲線緩出
-            cubic_inout: 三次曲線緩入/緩出
-            exp_in: 指數緩入
-            exp_out: 指數緩出
-            exp_inout: 指數緩入/緩出
-
-        easing:
-            in: 緩入
-            out: 緩出
-            inout: 緩入/緩出
-
         keys:
             title: 當前的關鍵點面板
 
             path_position: 循環選擇位置的插值
             path_angle: 循環選擇角度的插值
-            per_point: 開關各點的持續長度
             velocity: 開關速率控制選項
             
             graph_interp: 循環選擇關鍵幀的插值
