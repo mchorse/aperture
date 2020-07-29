@@ -169,6 +169,7 @@ aperture.gui:
     profiles:
         title: 配置
         rename: 重命名
+        keyframes: 關鍵幀
 
         rename_modal: 輸入當前新相機配置的名稱。
         add_modal: 輸入新相機配置的名稱。
