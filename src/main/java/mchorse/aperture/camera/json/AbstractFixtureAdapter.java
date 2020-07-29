@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -14,7 +15,11 @@ import com.google.gson.JsonSerializer;
 
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.mclib.utils.keyframes.Keyframe;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
 /**
  * This class is responsible for serializing and deserializing 
@@ -52,6 +57,8 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         if (object.has("type"))
         {
             String type = object.get("type").getAsString();
+
+            /* Special case for old per-point duration path */
             Class<? extends AbstractFixture> clazz = FixtureRegistry.NAME_TO_CLASS.get(type);
 
             if (clazz != null)
@@ -59,9 +66,63 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
                 fixture = this.gson.fromJson(json, clazz);
                 fixture.fromJSON(object);
             }
+
+            /* Special case for per-point path */
+            if (type.equals("path"))
+            {
+                if (object.has("perPointDuration") && object.get("perPointDuration").getAsBoolean())
+                {
+                    return this.convertToKeyframe((PathFixture) fixture, object.getAsJsonArray("points"));
+                }
+            }
         }
 
         return fixture;
+    }
+
+    /**
+     * Since I removed per-point duration from path fixture, I suppose I should
+     * add a feature to not completely lose that data...
+     */
+    private AbstractFixture convertToKeyframe(PathFixture fixture, JsonArray points)
+    {
+        if (points.size() != fixture.getCount())
+        {
+            return fixture;
+        }
+
+        KeyframeFixture keys = fixture.toKeyframe();
+        int x = 0;
+
+        for (int i = 0, c = fixture.getCount(); i < c; i++)
+        {
+            JsonObject point = points.get(i).getAsJsonObject();
+
+            for (KeyframeChannel channel : keys.channels)
+            {
+                Keyframe frame = channel.get(i);
+
+                frame.tick = x;
+            }
+
+            if (i == c - 1)
+            {
+                continue;
+            }
+
+            if (point.has("duration"))
+            {
+                x += point.get("duration").getAsInt();
+            }
+            else
+            {
+                x += 1;
+            }
+        }
+
+        keys.setDuration(x);
+
+        return keys;
     }
 
     /**

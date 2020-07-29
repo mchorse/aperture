@@ -73,6 +73,53 @@ public class PathFixture extends AbstractFixture
         this.speed.insert(0, 1);
     }
 
+    public KeyframeFixture toKeyframe()
+    {
+        int c = this.getCount();
+
+        if (c <= 1)
+        {
+            return null;
+        }
+
+        long duration = this.getDuration();
+        KeyframeFixture fixture = new KeyframeFixture(duration);
+
+        fixture.copy(this);
+        KeyframeInterpolation pos = this.interpolationPos.interp;
+        KeyframeInterpolation angle = this.interpolationAngle.interp;
+        KeyframeEasing posEasing = this.interpolationPos.easing;
+        KeyframeEasing angleEasing = this.interpolationAngle.easing;
+
+        long x;
+        int i = 0;
+
+        for (Position point : this.getPoints())
+        {
+            x = (int) (i / (c - 1F) * duration);
+
+            int index = fixture.x.insert(x, (float) point.point.x);
+            fixture.y.insert(x, (float) point.point.y);
+            fixture.z.insert(x, (float) point.point.z);
+            fixture.yaw.insert(x, point.angle.yaw);
+            fixture.pitch.insert(x, point.angle.pitch);
+            fixture.roll.insert(x, point.angle.roll);
+            fixture.fov.insert(x, point.angle.fov);
+
+            fixture.x.get(index).setInterpolation(pos, posEasing);
+            fixture.y.get(index).setInterpolation(pos, posEasing);
+            fixture.z.get(index).setInterpolation(pos, posEasing);
+            fixture.yaw.get(index).setInterpolation(angle, angleEasing);
+            fixture.pitch.get(index).setInterpolation(angle, angleEasing);
+            fixture.roll.get(index).setInterpolation(angle, angleEasing);
+            fixture.fov.get(index).setInterpolation(angle, angleEasing);
+
+            i ++;
+        }
+
+        return fixture;
+    }
+
     @Override
     public void initiate()
     {
