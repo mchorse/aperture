@@ -5,7 +5,9 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
+import mchorse.aperture.camera.fixtures.DollyFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
@@ -288,7 +290,7 @@ public class CameraRenderer
      */
     private void drawFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
     {
-        if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture)
+        if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture || fixture instanceof DollyFixture || fixture instanceof ManualFixture)
         {
             this.drawPathFixture(color, fixture, prev, next);
         }
@@ -323,17 +325,24 @@ public class CameraRenderer
         vb.setTranslation(-this.playerX, this.mc.player.eyeHeight - this.playerY, -this.playerZ);
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
-        for (int i = 0; i < size; i++)
+        if (fixture instanceof DollyFixture)
         {
-            for (int j = 0; j < p; j++)
+            vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+            vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+        }
+        else
+        {
+            for (int i = 0; i < size; i++)
             {
-                fixture.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
-                fixture.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
+                for (int j = 0; j < p; j++)
+                {
+                    fixture.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
+                    fixture.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
 
-                vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
-                vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+                    vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+                    vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+                }
             }
-
         }
 
         Tessellator.getInstance().draw();
