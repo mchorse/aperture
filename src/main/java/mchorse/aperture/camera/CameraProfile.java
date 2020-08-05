@@ -507,6 +507,14 @@ public class CameraProfile
             profile.modifiers.add(modifier.copy());
         }
 
+        for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
+        {
+            KeyframeChannel channel = new KeyframeChannel();
+
+            channel.copy(entry.getValue());
+            profile.curves.put(entry.getKey(), channel);
+        }
+
         profile.initiate();
 
         return profile;
