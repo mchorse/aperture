@@ -10,6 +10,8 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.utils.Color;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
@@ -22,10 +24,7 @@ import net.minecraft.util.math.MathHelper;
  */
 public class GuiPlaybackScrub extends GuiElement
 {
-    /**
-     * Vanilla buttons resource location
-     */
-    public static final ResourceLocation VANILLA_BUTTONS = new ResourceLocation("textures/gui/widgets.png");
+    public static final Color COLOR = new Color();
 
     public boolean scrubbing;
     public int value;
@@ -406,7 +405,14 @@ public class GuiPlaybackScrub extends GuiElement
 
             for (AbstractFixture fixture : this.profile.getAll())
             {
-                int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getRGBColor();
+                COLOR.set(fixture.getColor(), false);
+
+                int color = COLOR.getRGBColor();
+
+                if (color == 0)
+                {
+                    color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getRGBColor();
+                }
 
                 boolean selected = i == this.index;
                 int leftMargin = this.calcMouseFromValue(pos) - 1;

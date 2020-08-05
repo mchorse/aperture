@@ -40,6 +40,12 @@ public abstract class AbstractFixture
     protected String name = "";
 
     /**
+     * Custom color tint for fixtures
+     */
+    @Expose
+    protected int color = 0x000000;
+
+    /**
      * List of camera modifiers. 
      */
     @Expose
@@ -72,6 +78,18 @@ public abstract class AbstractFixture
 
     public void initiate()
     {}
+
+    /* Color */
+
+    public void setColor(int color)
+    {
+        this.color = color;
+    }
+
+    public int getColor()
+    {
+        return this.color;
+    }
 
     /* Duration management */
 
@@ -131,6 +149,7 @@ public abstract class AbstractFixture
     public void fromByteBuf(ByteBuf buffer)
     {
         this.name = ByteBufUtils.readUTF8String(buffer);
+        this.color = buffer.readInt();
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
@@ -149,6 +168,7 @@ public abstract class AbstractFixture
     public void toByteBuf(ByteBuf buffer)
     {
         ByteBufUtils.writeUTF8String(buffer, this.name);
+        buffer.writeInt(this.color);
 
         if (this.modifiers == null)
         {
@@ -241,5 +261,6 @@ public abstract class AbstractFixture
         AbstractFixture.copyModifiers(from, this);
 
         this.name = from.name;
+        this.color = from.color;
     }
 }

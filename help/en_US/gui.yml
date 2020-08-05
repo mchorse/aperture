@@ -205,6 +205,7 @@ aperture.gui:
     panels:
         name: Name
         name_tooltip: Display name which will be displayed in the timeline
+        color_tooltip: Custom color tint for the fixture, in case you want to color code it
         duration: Fixture's duration (measured in ticks, 20 ticks equal to about 1 second)
 
         x: X
