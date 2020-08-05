@@ -606,6 +606,11 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void setFlight(boolean flight)
     {
+        if (flight)
+        {
+            this.lastPartialTick = 0;
+        }
+
         if (!this.runner.isRunning() || !flight)
         {
             this.flight.enabled = flight;
