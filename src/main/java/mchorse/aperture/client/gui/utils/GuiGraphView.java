@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 public class GuiGraphView extends mchorse.mclib.client.gui.framework.elements.keyframes.GuiGraphView
 {
     public GuiCameraEditor editor;
+    public boolean global;
 
     public GuiGraphView(Minecraft mc, Consumer<Keyframe> callback)
     {
@@ -19,7 +20,7 @@ public class GuiGraphView extends mchorse.mclib.client.gui.framework.elements.ke
 
     public long getFixtureOffset()
     {
-        if (this.editor == null || this.editor.panel.delegate == null)
+        if (this.editor == null || this.editor.panel.delegate == null || this.global)
         {
             return 0;
         }

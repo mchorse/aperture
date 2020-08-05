@@ -19,6 +19,7 @@ public class GuiCurves extends GuiElement
 
 		this.editor = editor;
 		this.keyframes = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
+		this.keyframes.graph.global = true;
 		this.keyframes.flex().relative(this).wh(1F, 1F);
 
 		this.add(this.keyframes);
