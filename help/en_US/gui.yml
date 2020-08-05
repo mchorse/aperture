@@ -106,6 +106,7 @@ aperture.gui:
         keyframe: Keyframe
         null: "Null"
         manual: Manual
+        dolly: Dolly
 
     modifiers:
         title: Modifiers
@@ -240,6 +241,12 @@ aperture.gui:
             shift: Playback shift, this property delays the playback of the data if positive, if negative, it cuts the duration of recorded data
             speed: Playback speed, since the playback uses raw recorded data, consider using drag modifier to smooth out the movement
             record: With this button, you can start recording of manual movement of the camera!
+
+        dolly:
+            distance: "Distance which determines for how many blocks will dolly travel in given direction during given duration"
+            yaw: "Horizontal direction (yaw, measured in degrees) in which dolly will travel"
+            pitch: "Vertical direction (pitch, measured in degrees) in which dolly will travel"
+            speed: "Linear speed: %s blocks/s."
 
         keys:
             title: Current fixture panel

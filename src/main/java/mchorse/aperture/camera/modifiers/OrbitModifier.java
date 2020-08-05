@@ -113,11 +113,11 @@ public class OrbitModifier extends EntityModifier
         /* Calculate look vector */
         final float degToPi = (float) Math.PI / 180;
 
-        float f = MathHelper.cos(-yaw * degToPi - (float) Math.PI);
-        float f1 = MathHelper.sin(-yaw * degToPi - (float) Math.PI);
-        float f2 = -MathHelper.cos(-pitch * degToPi);
-        float f3 = MathHelper.sin(-pitch * degToPi);
-        Vec3d look = new Vec3d(f1 * f2, f3, f * f2);
+        float cos = MathHelper.cos(-yaw * degToPi - (float) Math.PI);
+        float sin = MathHelper.sin(-yaw * degToPi - (float) Math.PI);
+        float cos2 = -MathHelper.cos(-pitch * degToPi);
+        float sin2 = MathHelper.sin(-pitch * degToPi);
+        Vec3d look = new Vec3d(sin * cos2, sin2, cos * cos2);
 
         pos.point.set(x, y, z);
 

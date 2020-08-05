@@ -3,6 +3,7 @@ package mchorse.aperture;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.fixtures.CircularFixture;
+import mchorse.aperture.camera.fixtures.DollyFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.ManualFixture;
@@ -47,6 +48,7 @@ public class CommonProxy
 
         /* Register camera fixtures and modifiers */
         FixtureRegistry.register("idle", IdleFixture.class);
+        FixtureRegistry.register("dolly", DollyFixture.class);
         FixtureRegistry.register("circular", CircularFixture.class);
         FixtureRegistry.register("path", PathFixture.class);
         FixtureRegistry.register("keyframe", KeyframeFixture.class);

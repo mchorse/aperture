@@ -1,7 +1,6 @@
 package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
@@ -16,12 +15,8 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.utils.keyframes.KeyframeEasing;
-import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
-
-import java.lang.reflect.Field;
 
 /**
  * Path fixture panel
