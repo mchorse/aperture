@@ -30,9 +30,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public GuiCameraEditorKeyframesGraphEditor graph;
     public GuiCameraEditorKeyframesDopeSheetEditor dope;
 
-    public AllKeyframeChannel allChannel = new AllKeyframeChannel();
     public IKey[] titles = new IKey[8];
-    public int[] colors = new int[] {0xff1392, 0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
+    public int[] colors = new int[] {0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
 
     private IKey title = IKey.EMPTY;
 
@@ -44,7 +43,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.graph = new GuiCameraEditorKeyframesGraphEditor(mc, this.editor);
         this.dope = new GuiCameraEditorKeyframesDopeSheetEditor(mc, this.editor);
 
-        this.all = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.all"), (b) -> this.selectChannel(this.allChannel));
+        this.all = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.all"), (b) -> this.selectChannel(null));
         this.x = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
         this.y = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
         this.z = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
@@ -79,12 +78,11 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.graph.interpolations.setVisible(false);
         this.graph.graph.setDuration(fixture.getDuration());
         this.dope.graph.setDuration(fixture.getDuration());
-        this.allChannel.setFixture(fixture);
 
         if (!same)
         {
             this.dope.setFixture(fixture);
-            this.selectChannel(this.allChannel);
+            this.selectChannel(null);
         }
 
         if (duration != -1)
@@ -118,14 +116,10 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.dope.setVisible(id == 0);
         this.graph.setVisible(id != 0);
 
-        if (channel != this.allChannel)
+        if (channel != null)
         {
-            this.graph.graph.color = this.colors[id];
+            this.graph.graph.color = this.colors[id - 1];
             this.graph.setChannel(channel);
-        }
-        else
-        {
-            this.allChannel.setFixture(this.fixture);
         }
     }
 
@@ -141,7 +135,6 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.fixture.pitch.insert(tick, position.angle.pitch);
         this.fixture.roll.insert(tick, position.angle.roll);
         this.fixture.fov.insert(tick, position.angle.fov);
-        this.allChannel.setFixture(this.fixture);
 
         this.editor.updateProfile();
     }

@@ -42,7 +42,7 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
     }
 
     @Override
-    public void setTick(long value)
+    public void setTick(double value)
     {
         super.setTick(value);
         this.editor.updateProfile();
