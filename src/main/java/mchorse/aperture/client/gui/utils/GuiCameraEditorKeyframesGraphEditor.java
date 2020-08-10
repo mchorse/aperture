@@ -24,9 +24,9 @@ public class GuiCameraEditorKeyframesGraphEditor extends GuiCameraEditorKeyframe
 
     public void setChannel(KeyframeChannel channel)
     {
+        this.graph.clearSelection();
         this.graph.setChannel(channel);
         this.interpolations.setVisible(false);
         this.frameButtons.setVisible(false);
-        this.graph.clearSelection();
     }
 }

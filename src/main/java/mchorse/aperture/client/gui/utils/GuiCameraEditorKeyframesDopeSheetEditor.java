@@ -15,7 +15,6 @@ public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyf
         super(mc, editor);
 
         this.graph.editor = editor;
-        this.interpolations.flex().h(1, -30);
     }
 
     @Override
@@ -29,6 +28,7 @@ public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyf
         List<GuiSheet> sheets = this.graph.sheets;
 
         sheets.clear();
+        this.graph.clearSelection();
 
         if (this.editor.panel.delegate == null)
         {
@@ -43,7 +43,6 @@ public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyf
         }
 
         this.graph.resetView();
-        this.value.setVisible(false);
 
         this.interpolations.setVisible(false);
         this.frameButtons.setVisible(false);
