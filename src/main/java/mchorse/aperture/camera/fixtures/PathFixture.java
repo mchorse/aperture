@@ -666,7 +666,13 @@ public class PathFixture extends AbstractFixture
         /* Cubic interpolations */
         CUBIC_IN(Interpolation.CUBIC_IN, KeyframeInterpolation.CUBIC, KeyframeEasing.IN), CUBIC_OUT(Interpolation.CUBIC_OUT, KeyframeInterpolation.CUBIC, KeyframeEasing.OUT), CUBIC_INOUT(Interpolation.CUBIC_INOUT, KeyframeInterpolation.CUBIC, KeyframeEasing.INOUT),
         /* Exponential interpolations */
-        EXP_IN(Interpolation.EXP_IN, KeyframeInterpolation.EXP, KeyframeEasing.IN), EXP_OUT(Interpolation.EXP_OUT, KeyframeInterpolation.EXP, KeyframeEasing.OUT), EXP_INOUT(Interpolation.EXP_INOUT, KeyframeInterpolation.EXP, KeyframeEasing.INOUT);
+        EXP_IN(Interpolation.EXP_IN, KeyframeInterpolation.EXP, KeyframeEasing.IN), EXP_OUT(Interpolation.EXP_OUT, KeyframeInterpolation.EXP, KeyframeEasing.OUT), EXP_INOUT(Interpolation.EXP_INOUT, KeyframeInterpolation.EXP, KeyframeEasing.INOUT),
+        /* Back interpolations */
+        BACK_IN(Interpolation.BACK_IN, KeyframeInterpolation.BACK, KeyframeEasing.IN), BACK_OUT(Interpolation.BACK_OUT, KeyframeInterpolation.BACK, KeyframeEasing.OUT), BACK_INOUT(Interpolation.BACK_INOUT, KeyframeInterpolation.BACK, KeyframeEasing.INOUT),
+        /* Back interpolations */
+        ELASTIC_IN(Interpolation.ELASTIC_IN, KeyframeInterpolation.ELASTIC, KeyframeEasing.IN), ELASTIC_OUT(Interpolation.ELASTIC_OUT, KeyframeInterpolation.ELASTIC, KeyframeEasing.OUT), ELASTIC_INOUT(Interpolation.ELASTIC_INOUT, KeyframeInterpolation.ELASTIC, KeyframeEasing.INOUT),
+        /* Back interpolations */
+        BOUNCE_IN(Interpolation.BOUNCE_IN, KeyframeInterpolation.BOUNCE, KeyframeEasing.IN), BOUNCE_OUT(Interpolation.BOUNCE_OUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.OUT), BOUNCE_INOUT(Interpolation.BOUNCE_INOUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.INOUT);
 
         public final String name;
         public Interpolation function;
