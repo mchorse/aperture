@@ -231,9 +231,6 @@ aperture.gui:
         use_speed: Velocity control
 
         all: All
-        tick: Tick
-        value: Value
-        
         previous: Previous
 
         manual:

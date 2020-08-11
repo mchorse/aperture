@@ -229,9 +229,6 @@ aperture.gui:
         use_speed: 速率控制
 
         all: 全部
-        tick: Tick
-        value: 值
-
         previous: 上一关键点
         
         manual:

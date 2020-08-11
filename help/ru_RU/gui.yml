@@ -229,9 +229,6 @@ aperture.gui:
         use_speed: Контроль скорости
 
         all: Всё
-        tick: Тик
-        value: Значение
-
         previous: Предыдущий
 
         manual:
