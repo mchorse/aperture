@@ -118,8 +118,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         if (channel != null)
         {
-            this.graph.graph.color = this.colors[id - 1];
-            this.graph.setChannel(channel);
+            this.graph.setChannel(channel, this.colors[id - 1]);
         }
     }
 

@@ -22,10 +22,10 @@ public class GuiCameraEditorKeyframesGraphEditor extends GuiCameraEditorKeyframe
         return new GuiGraphView(mc, this::fillData);
     }
 
-    public void setChannel(KeyframeChannel channel)
+    public void setChannel(KeyframeChannel channel, int color)
     {
         this.graph.clearSelection();
-        this.graph.setChannel(channel);
+        this.graph.setChannel(channel, color);
         this.interpolations.setVisible(false);
         this.frameButtons.setVisible(false);
     }

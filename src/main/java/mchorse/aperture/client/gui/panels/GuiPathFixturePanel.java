@@ -62,7 +62,6 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         });
         this.toKeyframe = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
         this.speed = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
-        this.speed.graph.setColor(0x0088ff);
 
         this.points.flex().relative(this.left.flex()).x(1F, 40).y(1F, -30).wTo(this.right.flex(), -80).h(20);
         this.speed.flex().relative(this).y(0.55F, 0).w(1F).h(0.45F);
@@ -157,7 +156,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         if (!same)
         {
             this.speed.graph.setDuration(fixture.getDuration());
-            this.speed.setChannel(fixture.speed);
+            this.speed.setChannel(fixture.speed, 0x0088ff);
             this.speed.setVisible(this.fixture.useSpeed);
         }
 

@@ -64,7 +64,7 @@ public class GuiGraphView extends mchorse.mclib.client.gui.framework.elements.ke
         if (this.editor != null)
         {
             int cx = this.getOffset();
-            int cy = this.toGraphY(this.channel.interpolate(cx));
+            int cy = this.toGraphY(this.sheet.channel.interpolate(cx));
 
             cx = this.toGraphX(cx);
 
