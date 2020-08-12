@@ -106,6 +106,7 @@ aperture.gui:
         keyframe: 關鍵幀
         null: "空"
         manual: 手動
+        dolly: 滑軌
 
     modifiers:
         title: 調整器
@@ -205,6 +206,7 @@ aperture.gui:
     panels:
         name: 名字
         name_tooltip: 顯示將會在時間軸上顯示的名稱
+        color_tooltip: 自定義關鍵點的顏色, 如果妳需要對它加以顏色上的區別的話
         duration: 關鍵點的持續時間 (單位為 Tick, 20 Tick 約等於 1 秒)
 
         x: X
@@ -236,6 +238,12 @@ aperture.gui:
             shift: 回放位移, 該屬性如果為正, 則延遲播放數據； 如果為負, 則削減錄制數據的持續時間
             speed: 回放速度, 由於回放使用的是原始錄制的數據, 因此可以考慮使用拖動調整器來平滑運動
             record: 通過此按鈕, 您就可以錄制相機的手動運動了!
+
+        dolly:
+            distance: "距離決定了在指定的時間內，滑軌沿指定方向移動的方塊距離"
+            yaw: "滑軌在水平方向 (偏航, 以角度來衡量) 上的移動"
+            pitch: "滑軌在垂直方向 (俯仰，以角度來衡量) 上的移動"
+            speed: "線性速度: %s 方塊/s."
 
         keys:
             title: 當前的關鍵點面板
