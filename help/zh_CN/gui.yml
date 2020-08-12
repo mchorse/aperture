@@ -106,6 +106,7 @@ aperture.gui:
         keyframe: 关键帧
         null: "空"
         manual: 手动
+        dolly: 滑轨
 
     modifiers:
         title: 调整器
@@ -205,6 +206,7 @@ aperture.gui:
     panels:
         name: 名字
         name_tooltip: 显示将会在时间轴上显示的名称
+        color_tooltip: 自定义关键点的颜色, 如果你需要对它加以颜色上的区别的话
         duration: 关键点的持续时间 (单位为 Tick, 20 Tick 约等于 1 秒)
 
         x: X
@@ -236,6 +238,12 @@ aperture.gui:
             shift: 回放位移, 该属性如果为正, 则延迟播放数据； 如果为负, 则削减录制数据的持续时间
             speed: 回放速度, 由于回放使用的是原始录制的数据, 因此可以考虑使用拖动调整器来平滑运动
             record: 通过此按钮, 您就可以录制相机的手动运动了!
+
+        dolly:
+            distance: "距离决定了在指定的时间内，滑轨沿指定方向移动的方块距离"
+            yaw: "滑轨在水平方向 (偏航, 以角度来衡量) 上的移动"
+            pitch: "滑轨在垂直方向 (俯仰，以角度来衡量) 上的移动"
+            speed: "线性速度: %s 方块/s."
 
         keys:
             title: 当前的关键点面板
