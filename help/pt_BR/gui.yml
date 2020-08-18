@@ -135,7 +135,6 @@ aperture.gui:
         circle: Círculo
         selector: Seletor
         per_point: Duração por ponto
-        to_keyframe: Gerar keyframe
         use_speed: Controle de velocidade
 
         all: Todos

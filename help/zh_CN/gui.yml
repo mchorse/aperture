@@ -227,7 +227,6 @@ aperture.gui:
         angle: 角度
         circle: 圆圈
         selector: 实体目标选择器 (您也可以输入实体的名称标签来代替目标选择器)\n\n点击 "?" 按钮了解更多关于语法的信息...
-        to_keyframe: 生成关键帧
         use_speed: 速率控制
 
         all: 全部

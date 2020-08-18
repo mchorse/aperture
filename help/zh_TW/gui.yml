@@ -227,7 +227,6 @@ aperture.gui:
         angle: 角度
         circle: 圓圈
         selector: 實體目標選擇器 (您也可以輸入實體的名稱標簽來代替目標選擇器)\n\n點擊 "?" 按鈕了解更多關於語法的信息...
-        to_keyframe: 生成關鍵幀
         use_speed: 速率控制
 
         all: 全部

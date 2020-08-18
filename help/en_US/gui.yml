@@ -227,7 +227,6 @@ aperture.gui:
         angle: Angle
         circle: Circle
         selector: Entity target selector (you can also enter the name tag of the entity instead of target selector)\n\nClick "?" button for more information about syntax...
-        to_keyframe: Generate keyframe
         use_speed: Velocity control
 
         all: All

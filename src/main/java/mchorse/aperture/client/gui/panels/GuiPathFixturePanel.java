@@ -33,7 +33,6 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiPointsModule points;
     public GuiInterpModule interp;
     public GuiToggleElement useSpeed;
-    public GuiButtonElement toKeyframe;
     public GuiCameraEditorKeyframesGraphEditor speed;
 
     public Position position;
@@ -60,14 +59,13 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
                 this.fixture.updateSpeedCache();
             }
         });
-        this.toKeyframe = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
         this.speed = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
 
         this.points.flex().relative(this.left.flex()).x(1F, 40).y(1F, -30).wTo(this.right.flex(), -80).h(20);
         this.speed.flex().relative(this).y(0.55F, 0).w(1F).h(0.45F);
         this.left.flex().w(140);
 
-        this.left.add(this.interp, this.useSpeed, this.toKeyframe);
+        this.left.add(this.interp, this.useSpeed);
         this.left.markContainer();
         this.right.add(this.point, this.angle);
 
@@ -101,16 +99,6 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 			this.update = System.currentTimeMillis() + 100;
 		}
 	}
-
-	private void toKeyframe()
-    {
-        KeyframeFixture fixture = this.fixture.toKeyframe();
-
-        if (fixture != null)
-        {
-            this.editor.createFixture(fixture);
-        }
-    }
 
     @Override
     public void pickPoint(GuiPointsModule module, int index)
