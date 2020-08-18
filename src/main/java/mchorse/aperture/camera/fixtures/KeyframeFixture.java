@@ -132,6 +132,30 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
+    public void copyByReplacing(AbstractFixture from)
+    {
+        if (from instanceof DollyFixture)
+        {
+            PathFixture path = new PathFixture(from.getDuration());
+
+            path.copyByReplacing(from);
+            this.copyByReplacing(path);
+
+            return;
+        }
+
+        super.copyByReplacing(from);
+
+        if (from instanceof PathFixture)
+        {
+            PathFixture path = (PathFixture) from;
+            KeyframeFixture kf = path.toKeyframe();
+
+            this.copy(kf);
+        }
+    }
+
+    @Override
     public void fromJSON(JsonObject object)
     {
         this.x.sort();

@@ -70,6 +70,15 @@ public class Point
         return new Point(this.x, this.y, this.z);
     }
 
+    public double length(Point point)
+    {
+        double dx = point.x - this.x;
+        double dy = point.y - this.y;
+        double dz = point.z - this.z;
+
+        return Math.sqrt(dx * dx  + dy * dy + dz * dz);
+    }
+
     @Override
     public String toString()
     {

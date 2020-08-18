@@ -633,6 +633,25 @@ public class PathFixture extends AbstractFixture
         }
     }
 
+    @Override
+    public void copyByReplacing(AbstractFixture from)
+    {
+        super.copyByReplacing(from);
+
+        if (from instanceof DollyFixture)
+        {
+            DollyFixture dolly = (DollyFixture) from;
+            Position position = new Position();
+
+            from.applyFixture(from.getDuration(), 0, 0, null, position);
+
+            this.points.clear();
+            this.points.add(dolly.position.copy());
+            this.points.add(position);
+            this.interpolationPos = this.interpolationAngle = InterpolationType.fromInterp(dolly.interp);
+        }
+    }
+
     /* Interpolation */
 
     public static InterpolationType interpFromInt(int number)
@@ -715,7 +734,20 @@ public class PathFixture extends AbstractFixture
             this.easing = easing;
         }
 
-	    public String getKey()
+        public static InterpolationType fromInterp(Interpolation interp)
+        {
+            for (InterpolationType type : values())
+            {
+                if (type.function == interp)
+                {
+                    return type;
+                }
+            }
+
+            return LINEAR;
+        }
+
+        public String getKey()
         {
             return "mclib.interpolations." + this.name;
 	    }

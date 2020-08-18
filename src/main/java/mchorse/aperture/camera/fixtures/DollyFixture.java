@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.utils.Interpolation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -84,6 +85,37 @@ public class DollyFixture extends IdleFixture
 			this.pitch = dolly.pitch;
 			this.distance = dolly.distance;
 			this.interp = dolly.interp;
+		}
+	}
+
+	@Override
+	public void copyByReplacing(AbstractFixture from)
+	{
+		super.copyByReplacing(from);
+
+		if (from instanceof PathFixture)
+		{
+			PathFixture path = (PathFixture) from;
+
+			if (path.getCount() != 2)
+			{
+				return;
+			}
+
+			Position a = path.getPoint(0);
+			Position b = path.getPoint(1);
+			Angle angle = Angle.angle(b.point, a.point);
+
+			this.distance = (float) a.point.length(b.point);
+			this.position.copy(a);
+
+			this.yaw = angle.yaw;
+			this.pitch = angle.pitch;
+
+			if (path.interpolationPos.function != null)
+			{
+				this.interp = path.interpolationPos.function;
+			}
 		}
 	}
 

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -102,10 +103,10 @@ public class LookModifier extends EntityModifier
             dZ = pos.point.z - this.position.point.z;
         }
 
-        double horizontalDistance = MathHelper.sqrt(dX * dX + dZ * dZ);
+        Angle angle = Angle.angle(dX, dY, dZ);
 
-        float yaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
-        float pitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));
+        float yaw = angle.yaw;
+        float pitch = angle.pitch;
 
         if (this.relative && !this.forward)
         {

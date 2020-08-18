@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import net.minecraft.entity.Entity;
@@ -130,13 +131,10 @@ public class OrbitModifier extends EntityModifier
         double dX = pos.point.x - x;
         double dY = pos.point.y - y;
         double dZ = pos.point.z - z;
-        double horizontalDistance = MathHelper.sqrt(dX * dX + dZ * dZ);
-
-        yaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
-        pitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));
+        Angle angle = Angle.angle(dX, dY, dZ);
 
         pos.point.set(x, y, z);
-        pos.angle.set(yaw, pitch);
+        pos.angle.set(angle.yaw, angle.pitch);
     }
 
     @Override

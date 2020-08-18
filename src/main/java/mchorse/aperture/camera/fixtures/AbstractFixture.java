@@ -263,4 +263,13 @@ public abstract class AbstractFixture
         this.name = from.name;
         this.color = from.color;
     }
+
+    /**
+     * Copy data from another fixture during replacement
+     */
+	public void copyByReplacing(AbstractFixture from)
+    {
+        this.copy(from);
+        this.setDuration(from.getDuration());
+	}
 }
