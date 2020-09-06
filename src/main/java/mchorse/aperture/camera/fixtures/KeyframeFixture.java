@@ -149,9 +149,13 @@ public class KeyframeFixture extends AbstractFixture
         if (from instanceof PathFixture)
         {
             PathFixture path = (PathFixture) from;
-            KeyframeFixture kf = path.toKeyframe();
 
-            this.copy(kf);
+            if (path.getPoints().size() > 1)
+            {
+                KeyframeFixture kf = path.toKeyframe();
+
+                this.copy(kf);
+            }
         }
     }
 
