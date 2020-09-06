@@ -566,6 +566,8 @@ public class PathFixture extends AbstractFixture
     @Override
     public void toJSON(JsonObject object)
     {
+        super.toJSON(object);
+
         object.addProperty("interpolation", this.interpolationPos.name);
         object.addProperty("interpolationAngle", this.interpolationAngle.name);
     }
@@ -573,6 +575,8 @@ public class PathFixture extends AbstractFixture
     @Override
     public void fromJSON(JsonObject object)
     {
+        super.fromJSON(object);
+
         if (object.has("interpolation"))
         {
             this.interpolationPos = interpFromString(object.get("interpolation").getAsString());

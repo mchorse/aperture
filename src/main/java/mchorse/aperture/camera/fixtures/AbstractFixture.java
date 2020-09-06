@@ -136,7 +136,12 @@ public abstract class AbstractFixture
     /* JSON (de)serialization methods */
 
     public void fromJSON(JsonObject object)
-    {}
+    {
+        if (this.getDuration() <= 0)
+        {
+            this.setDuration(1);
+        }
+    }
 
     public void toJSON(JsonObject object)
     {}

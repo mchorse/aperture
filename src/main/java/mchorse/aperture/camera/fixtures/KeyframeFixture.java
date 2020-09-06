@@ -162,6 +162,8 @@ public class KeyframeFixture extends AbstractFixture
     @Override
     public void fromJSON(JsonObject object)
     {
+        super.fromJSON(object);
+
         this.x.sort();
         this.y.sort();
         this.z.sort();
