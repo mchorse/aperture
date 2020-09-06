@@ -61,7 +61,11 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         });
         this.name.tooltip(IKey.lang("aperture.gui.panels.name_tooltip"));
 
-        this.color = new GuiColorElement(mc, (c) -> this.fixture.setColor(c));
+        this.color = new GuiColorElement(mc, (c) ->
+        {
+            this.fixture.setColor(c);
+            this.editor.updateProfile();
+        });
         this.color.target(this).tooltip(IKey.lang("aperture.gui.panels.color_tooltip"));
         this.color.direction(Direction.RIGHT);
 
