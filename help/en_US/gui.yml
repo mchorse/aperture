@@ -228,6 +228,9 @@ aperture.gui:
         circle: Circle
         selector: Entity target selector (you can also enter the name tag of the entity instead of target selector)\n\nClick "?" button for more information about syntax...
         use_speed: Velocity control
+        use_speed_enable: Enabled
+        use_factor: Use factor
+        use_factor_tooltip: When enabled, it will use speed curve for manual traversal of the path. 0 is the beginning, and 1 is the end.
 
         all: All
         previous: Previous

@@ -14,6 +14,7 @@ import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -33,6 +34,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiPointsModule points;
     public GuiInterpModule interp;
     public GuiToggleElement useSpeed;
+    public GuiToggleElement useFactor;
     public GuiCameraEditorKeyframesGraphEditor speed;
 
     public Position position;
@@ -47,7 +49,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle = new GuiAngleModule(mc, editor);
         this.points = new GuiPointsModule(mc, editor, this);
         this.interp = new GuiInterpModule(mc, editor);
-        this.useSpeed = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_speed"), false, (b) ->
+        this.useSpeed = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_speed_enable"), false, (b) ->
         {
             this.fixture.useSpeed = b.isToggled();
             this.speed.setVisible(this.fixture.useSpeed);
@@ -59,13 +61,20 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
                 this.fixture.updateSpeedCache();
             }
         });
+        this.useFactor = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_factor"), false, (b) ->
+        {
+            this.fixture.useFactor = b.isToggled();
+            this.editor.updateProfile();
+        });
+        this.useFactor.tooltip(IKey.lang("aperture.gui.panels.use_factor_tooltip"));
         this.speed = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
 
         this.points.flex().relative(this.left.flex()).x(1F, 40).y(1F, -30).wTo(this.right.flex(), -80).h(20);
         this.speed.flex().relative(this).y(0.55F, 0).w(1F).h(0.45F);
         this.left.flex().w(140);
 
-        this.left.add(this.interp, this.useSpeed);
+        this.left.add(this.interp);
+        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.use_speed")).background(0x88000000), this.useSpeed, this.useFactor);
         this.left.markContainer();
         this.right.add(this.point, this.angle);
 
@@ -139,6 +148,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.points.fill(fixture);
         this.interp.fill(fixture);
         this.useSpeed.toggled(fixture.useSpeed);
+        this.useFactor.toggled(fixture.useFactor);
         this.updateSpeedPanel();
 
         if (!same)
