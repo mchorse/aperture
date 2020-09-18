@@ -50,9 +50,9 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
     }
 
     @Override
-    public void resize()
+    public void fillData()
     {
-        super.resize();
+        super.fillData();
 
         this.yaw.setValue(this.modifier.angle.yaw);
         this.pitch.setValue(this.modifier.angle.pitch);

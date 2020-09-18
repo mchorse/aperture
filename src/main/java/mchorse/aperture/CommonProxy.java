@@ -15,6 +15,7 @@ import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.OrbitModifier;
+import mchorse.aperture.camera.modifiers.RemapperModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.camera.modifiers.TranslateModifier;
 import mchorse.aperture.capabilities.CapabilityHandler;
@@ -63,6 +64,7 @@ public class CommonProxy
         ModifierRegistry.register("follow", FollowModifier.class);
         ModifierRegistry.register("orbit", OrbitModifier.class);
         ModifierRegistry.register("math", MathModifier.class);
+        ModifierRegistry.register("remapper", RemapperModifier.class);
     }
 
     /**

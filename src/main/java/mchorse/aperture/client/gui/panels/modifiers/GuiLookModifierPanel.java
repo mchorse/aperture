@@ -88,10 +88,8 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     }
 
     @Override
-    public void resize()
+    public void fillData()
     {
-        super.resize();
-
         this.selector.setText(this.modifier.selector);
         this.x.setValue((float) this.modifier.block.x);
         this.y.setValue((float) this.modifier.block.y);

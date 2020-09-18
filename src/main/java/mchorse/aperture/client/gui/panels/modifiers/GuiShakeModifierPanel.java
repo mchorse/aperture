@@ -43,9 +43,9 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     }
 
     @Override
-    public void resize()
+    public void fillData()
     {
-        super.resize();
+        super.fillData();
 
         this.shake.setValue(this.modifier.shake);
         this.shakeAmount.setValue(this.modifier.shakeAmount);

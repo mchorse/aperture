@@ -65,9 +65,9 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
     }
 
     @Override
-    public void resize()
+    public void fillData()
     {
-        super.resize();
+        super.fillData();
 
         this.yaw.setValue(this.modifier.yaw);
         this.pitch.setValue(this.modifier.pitch);
@@ -75,11 +75,5 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
 
         this.copy.toggled(this.modifier.copy);
         this.selector.setText(this.modifier.selector);
-    }
-
-    @Override
-    public void draw(GuiContext context)
-    {
-        super.draw(context);
     }
 }

@@ -1,7 +1,6 @@
 package mchorse.aperture.camera.modifiers;
 
 import com.google.gson.JsonObject;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
@@ -31,7 +30,7 @@ public class MathModifier extends ComponentModifier
     public Variable ticks;
     public Variable offset;
     public Variable partial;
-    public Variable fixtureDuration;
+    public Variable duration;
     public Variable progress;
     public Variable value;
 
@@ -49,7 +48,7 @@ public class MathModifier extends ComponentModifier
         this.ticks = new Variable("t", 0);
         this.offset = new Variable("o", 0);
         this.partial = new Variable("pt", 0);
-        this.fixtureDuration = new Variable("d", 0);
+        this.duration = new Variable("d", 0);
         this.progress = new Variable("p", 0);
         this.value = new Variable("value", 0);
 
@@ -65,7 +64,7 @@ public class MathModifier extends ComponentModifier
         this.builder.register(this.ticks);
         this.builder.register(this.offset);
         this.builder.register(this.partial);
-        this.builder.register(this.fixtureDuration);
+        this.builder.register(this.duration);
         this.builder.register(this.progress);
         this.builder.register(this.value);
 
@@ -77,12 +76,6 @@ public class MathModifier extends ComponentModifier
         this.builder.register(this.pitch);
         this.builder.register(this.roll);
         this.builder.register(this.fov);
-    }
-
-    public MathModifier(String expression)
-    {
-        this();
-        this.rebuildExpression(expression);
     }
 
     public boolean rebuildExpression(String expression)
@@ -107,7 +100,7 @@ public class MathModifier extends ComponentModifier
             this.ticks.set(ticks);
             this.offset.set(offset);
             this.partial.set(previewPartialTick);
-            this.fixtureDuration.set(fixture == null ? profile.getDuration() : fixture.getDuration());
+            this.duration.set(fixture == null ? profile.getDuration() : fixture.getDuration());
             this.progress.set(ticks + previewPartialTick);
 
             this.x.set(pos.point.x);

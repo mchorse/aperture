@@ -92,6 +92,11 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.header.add(this.title, this.buttons);
     }
 
+    public void fillData()
+    {
+        this.updateEnable();
+    }
+
     private void toggleEnvelopes()
     {
         if (this.envelopes.hasParent())
@@ -108,15 +113,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.parent.resize();
     }
 
-    @Override
-    public void resize()
-    {
-        super.resize();
-
-        this.updateEnable();
-    }
-
-    protected void updateEnable()
+    private void updateEnable()
     {
         this.enable.both(this.modifier.enabled ? Icons.UNLOCKED : Icons.LOCKED);
     }

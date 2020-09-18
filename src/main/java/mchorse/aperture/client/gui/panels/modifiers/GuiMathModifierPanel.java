@@ -4,18 +4,13 @@ import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
-import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
-import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
-import mchorse.mclib.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 
 public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 {
-    public GuiTextHelpElement math;
+    public GuiTextHelpElement expression;
     public GuiActiveWidget active;
     public GuiIconElement help;
 
@@ -23,12 +18,12 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
     {
         super(mc, modifier, modifiers);
 
-        this.math = new GuiTextHelpElement(mc, 500, (str) ->
+        this.expression = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.math.field.setTextColor(this.modifier.rebuildExpression(str) ? 0xffffff : 0xff2244);
+            this.expression.field.setTextColor(this.modifier.rebuildExpression(str) ? 0xffffff : 0xff2244);
             this.modifiers.editor.updateProfile();
         });
-        this.math.link("https://github.com/mchorse/aperture/wiki/Math-Expressions").tooltip(IKey.lang("aperture.gui.modifiers.panels.math"));
+        this.expression.link("https://github.com/mchorse/aperture/wiki/Math-Expressions").tooltip(IKey.lang("aperture.gui.modifiers.panels.math"));
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {
@@ -36,21 +31,16 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
             this.modifiers.editor.updateProfile();
         });
 
-        this.fields.add(this.math, this.active);
+        this.fields.add(this.expression, this.active);
     }
 
     @Override
-    public void resize()
+    public void fillData()
     {
-        super.resize();
+        super.fillData();
 
-        this.math.setText(this.modifier.expression == null ? "" : this.modifier.expression.toString());
+        this.expression.setText(this.modifier.expression == null ? "" : this.modifier.expression.toString());
+        this.expression.field.setTextColor(0xffffff);
         this.active.value = this.modifier.active;
-    }
-
-    @Override
-    public void draw(GuiContext context)
-    {
-        super.draw(context);
     }
 }

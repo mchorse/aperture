@@ -128,6 +128,8 @@ aperture.gui:
         orbit_description: Attaches the camera to an entity or entities, but using orbit-like controls
         drag: Drag
         drag_description: Smooths out enabled camera properties using linear interpoaltion between current and previous value
+        remapper: Remapper
+        remapper_description: Remaps fixture's progression based on given expression or keyframes
 
         enabled: Enabled
 
@@ -159,6 +161,8 @@ aperture.gui:
             factor: Linear factor (between 0 and 1), the smaller the value, the more it will smooth out
 
             math: Math expression\n\nClick "?" button for more information about variables and functions...
+
+            keyframes: Enable keyframes
 
         envelopes:
             start_x: Starting point

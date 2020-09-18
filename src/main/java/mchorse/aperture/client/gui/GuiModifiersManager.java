@@ -188,6 +188,7 @@ public class GuiModifiersManager extends GuiElement
             {
                 GuiAbstractModifierPanel<AbstractModifier> panel = (GuiAbstractModifierPanel<AbstractModifier>) clazz.getConstructor(Minecraft.class, modifier.getClass(), GuiModifiersManager.class).newInstance(this.mc, modifier, this);
 
+                panel.fillData();
                 this.panels.add(panel);
                 this.panels.resize();
             }

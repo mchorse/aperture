@@ -61,9 +61,9 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
     }
 
     @Override
-    public void resize()
+    public void fillData()
     {
-        super.resize();
+        super.fillData();
 
         this.selector.setText(this.modifier.selector);
         this.x.setValue((float) this.modifier.offset.x);

@@ -33,9 +33,9 @@ public class GuiDragModifierPanel extends GuiAbstractModifierPanel<DragModifier>
     }
 
     @Override
-    public void resize()
+    public void fillData()
     {
-        super.resize();
+        super.fillData();
 
         this.factor.setValue(this.modifier.factor);
         this.active.value = this.modifier.active;

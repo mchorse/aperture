@@ -22,6 +22,7 @@ import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.camera.modifiers.OrbitModifier;
+import mchorse.aperture.camera.modifiers.RemapperModifier;
 import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.camera.modifiers.TranslateModifier;
 import mchorse.aperture.client.KeyboardHandler;
@@ -41,6 +42,7 @@ import mchorse.aperture.client.gui.panels.modifiers.GuiFollowModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiMathModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiOrbitModifierPanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiRemapperModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiTranslateModifierPanel;
 import mchorse.aperture.commands.CommandCamera;
@@ -223,15 +225,17 @@ public class ClientProxy extends CommonProxy
         GuiModifiersManager.PANELS.put(AngleModifier.class, GuiAngleModifierPanel.class);
         GuiModifiersManager.PANELS.put(OrbitModifier.class, GuiOrbitModifierPanel.class);
         GuiModifiersManager.PANELS.put(DragModifier.class, GuiDragModifierPanel.class);
+        GuiModifiersManager.PANELS.put(RemapperModifier.class, GuiRemapperModifierPanel.class);
 
         ModifierRegistry.registerClient(ShakeModifier.class, "aperture.gui.modifiers.shake", new Color(0.085F, 0.62F, 0.395F));
         ModifierRegistry.registerClient(MathModifier.class, "aperture.gui.modifiers.math", new Color(0.408F, 0.128F, 0.681F));
-        ModifierRegistry.registerClient(LookModifier.class, "aperture.gui.modifiers.look", new Color(0.298F, 0.690F, 0.972F));
+        ModifierRegistry.registerClient(LookModifier.class, "aperture.gui.modifiers.look", new Color(0.1F, 0.5F, 1F));
         ModifierRegistry.registerClient(FollowModifier.class, "aperture.gui.modifiers.follow", new Color(0.85F, 0.137F, 0.329F));
         ModifierRegistry.registerClient(TranslateModifier.class, "aperture.gui.modifiers.translate", new Color(0.298F, 0.631F, 0.247F));
         ModifierRegistry.registerClient(AngleModifier.class, "aperture.gui.modifiers.angle", new Color(0.847F, 0.482F, 0.043F));
         ModifierRegistry.registerClient(OrbitModifier.class, "aperture.gui.modifiers.orbit", new Color(0.874F, 0.184F, 0.625F));
-        ModifierRegistry.registerClient(DragModifier.class, "aperture.gui.modifiers.drag", new Color(0.1F, 0.5F, 1F));
+        ModifierRegistry.registerClient(DragModifier.class, "aperture.gui.modifiers.drag", new Color(0.298F, 0.690F, 0.972F));
+        ModifierRegistry.registerClient(RemapperModifier.class, "aperture.gui.modifiers.remapper", new Color().set(0x111111));
 
         super.load(event);
 
