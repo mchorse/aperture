@@ -77,7 +77,7 @@ aperture.gui:
                 cut: Tirar suporte
                 add: "Adiciona %s suporte"
             
-            models:
+            modes:
                 title: Modos
                 
                 flight: Alternar para modo de Voo
@@ -106,6 +106,7 @@ aperture.gui:
         keyframe: Keyframe
         null: "Nulo"
         manual: Manual
+        dolly: Dolly
 
     modifiers:
         title: Modificadores
@@ -169,6 +170,7 @@ aperture.gui:
     profiles:
         title: Perfis
         rename: Renomear
+        keyframes: Keyframes
         
         rename_modal: Digite um novo nome para renomear o perfil atual da câmera.
         add_modal: Digite um nome para um novo perfil de câmera.
@@ -204,6 +206,7 @@ aperture.gui:
     panels:
         name: Nome
         name_tooltip: Nome de exibição que será exibido na linha do tempo
+        color_tooltip: Tonalidade de cor personalizada para o acessório, caso você queira codificá-lo por cores
         duration: Duração do suporte (medido em ticks, 20 ticks iguais a cerca de 1 segundo)
 
         x: X
@@ -223,15 +226,13 @@ aperture.gui:
         position: Posição
         angle: Ângulo
         circle: Círculo
-        selector: Seletor
-        per_point: Duração por ponto
-        to_keyframe: Gerar keyframe
+        selector: Seletor de destino da entidade (você também pode inserir a tag de nome da entidade em vez do seletor de destino)\n\nClique no botão "?" para obter mais informações sobre a sintaxe...
         use_speed: Controle de velocidade
+        use_speed_enable: Habilitado
+        use_factor: Uso do Fator
+        use_factor_tooltip: Quando habilitado, ele usará a curva de velocidade para o percurso manual do caminho. 0 é o início e 1 é o fim.
 
         all: Todos
-        tick: Tick
-        value: Valor
-        
         previous: Anterior
         
         manual:
@@ -240,39 +241,21 @@ aperture.gui:
             speed: A velocidade de reprodução, como a reprodução usa dados gravados brutos, considere usar o modificador de arrasto para suavizar o movimento
             record: Com este botão, você pode iniciar a gravação do movimento manual da câmera!
 
-        interps:
-            const: Constante
-            linear: Linear
-            quad: Quadratic
-            cubic: Cubico
-            hermite: Hermite
-            exp: Exponencial
-            bezier: Bezier
-            
-            quad_in: Quadratic In
-            quad_out: Quadratic Out
-            quad_inout: Quadratic In/Out
-            cubic_in: Cubico In
-            cubic_out: Cubico Out
-            cubic_inout: Cubico In/Out
-            exp_in: Exponencial In
-            exp_out: Exponencial Out
-            exp_inout: Exponencial In/Out
-            
-        easing:
-            in: Ease in
-            inout: Ease in/out
-            
+        dolly:
+            distance: "Distância que determina quantos blocos irão viajar em determinada direção durante determinada duração"
+            yaw: "Direção horizontal (rotação, medida em graus) na qual o dolly vai viajar"
+            pitch: "Direção vertical (inclinação, medida em graus) na qual o dolly vai viajar"
+            speed: "Velocidade linear: %s blocos/s."
+        
         keys:
-            title: Painel do suporte atual
+            title: Painel de acessório atual
             
             path_position: Interpolação da posição do ciclo
             path_angle: Interpolação do ângulo do ciclo
-            per_point: Alternar opção por ponto
             velocity: Alternar opção de controle de velocidade
             
             graph_interp: Interpolação do ponto de ciclo
-            graph_easing: Facilitação do ponto de ciclo
+            graph_easing: Ponto de ciclo de easing
             
             previous: Alternar opção anterior
-            record_manual: Iniciar a gravação do movimento manual
+            record_manual: Comece a registrar o movimento manual
