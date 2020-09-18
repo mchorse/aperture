@@ -665,7 +665,7 @@ public class PathFixture extends AbstractFixture
             DollyFixture dolly = (DollyFixture) from;
             Position position = new Position();
 
-            from.applyFixture(from.getDuration(), 0, 0, null, position);
+            from.applyLast(null, position);
 
             this.points.clear();
             this.points.add(dolly.position.copy());

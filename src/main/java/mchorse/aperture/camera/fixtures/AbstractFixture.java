@@ -228,6 +228,14 @@ public abstract class AbstractFixture
     }
 
     /**
+     * Apply this fixture onto position using a double between 0 and 1
+     */
+    public void applyLast(CameraProfile profile, Position pos)
+    {
+        this.applyFixture(this.getDuration(), 0, profile, pos);
+    }
+
+    /**
      * Before applying this fixture
      */
     public void preApplyFixture(long ticks, Position pos)

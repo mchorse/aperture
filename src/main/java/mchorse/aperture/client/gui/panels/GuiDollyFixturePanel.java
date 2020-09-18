@@ -6,14 +6,18 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiInterpolationList;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+
+import java.util.function.Consumer;
 
 public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
 {
@@ -21,6 +25,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
     public GuiAngleModule angle;
 
     public GuiTrackpadElement distance;
+    public GuiIconElement reverse;
     public GuiButtonElement pickInterp;
     public GuiInterpolationList interps;
 
@@ -35,6 +40,8 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         this.angle = new GuiAngleModule(mc, editor);
         this.distance = new GuiTrackpadElement(mc, (value) -> this.fixture.distance = value.floatValue());
         this.distance.tooltip(IKey.lang("aperture.gui.panels.dolly.distance"));
+        this.reverse = new GuiIconElement(mc, Icons.REVERSE, (b) -> this.reverse());
+        this.reverse.tooltip(IKey.lang("aperture.gui.panels.dolly.reverse"));
         this.yaw = new GuiTrackpadElement(mc, (value) -> this.fixture.yaw = value.floatValue());
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.dolly.yaw"));
         this.pitch = new GuiTrackpadElement(mc, (value) -> this.fixture.pitch = value.floatValue());
@@ -66,7 +73,18 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         this.interps.markIgnored().flex().y(1F).w(1F).h(96);
 
         this.right.add(this.point, this.angle);
-        this.left.add(Elements.label(IKey.lang("aperture.gui.fixtures.dolly")).background(0x88000000), this.distance, this.yaw, this.pitch, this.pickInterp);
+        this.left.add(Elements.label(IKey.lang("aperture.gui.fixtures.dolly")).background(0x88000000), Elements.row(mc, 0, 0, 20, this.distance, this.reverse), this.yaw, this.pitch, this.pickInterp);
+    }
+
+    private void reverse()
+    {
+        Position position = new Position();
+
+        this.fixture.applyLast(this.editor.getProfile(), position);
+        this.fixture.position.copy(position);
+        this.fixture.distance = -this.fixture.distance;
+
+        this.select(this.fixture, 0);
     }
 
     @Override
