@@ -109,7 +109,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     /**
      * Flight mode 
      */
-    public Flight flight = new Flight();
+    public Flight flight;
 
     /**
      * Position 
@@ -179,21 +179,10 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
     public GuiCameraEditor(Minecraft mc, CameraRunner runner)
     {
         this.runner = runner;
+        this.flight = new Flight(this);
 
         this.top = new GuiElement(mc)
         {
-            @Override
-            public boolean mouseScrolled(GuiContext context)
-            {
-                if (super.mouseScrolled(context))
-                {
-                    return true;
-                }
-
-                flight.mouseScrolled(context);
-                return false;
-            }
-
             @Override
             public void draw(GuiContext context)
             {
@@ -203,7 +192,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
                 GuiCameraEditor editor = GuiCameraEditor.this;
                 IResizer panel = editor.panel.resizer();
 
-                if (editor.flight.enabled)
+                if (editor.flight.isFlightEnabled())
                 {
                     editor.flight.drawSpeed(this.font, panel.getX() + panel.getW() - 10, panel.getY() + panel.getH() - 5);
                 }
@@ -304,7 +293,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.hidePopups(this.profiles);
         this.top.add(this.leftBar, this.middleBar, this.rightBar, this.creationBar);
         this.top.add(this.timeline, this.panel, this.fixtures, this.profiles, this.config, this.modifiers, this.minema);
-        this.root.add(this.top);
+        this.root.add(this.flight, this.top);
 
         /* Let other classes have fun with camera editor's position and such */
         ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Init(this));
@@ -341,7 +330,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.flight"), Keyboard.KEY_F, () -> this.cameraOptions.flight.clickItself(this.context)).category(modes);
-        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.vertical"), Keyboard.KEY_V, () -> this.flight.vertical = !this.flight.vertical).category(modes);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.vertical"), Keyboard.KEY_V, () -> this.flight.toggleMovementType()).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.sync"), Keyboard.KEY_S, () -> this.cameraOptions.sync.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.ouside"), Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.looping"), Keyboard.KEY_L, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(modes);
@@ -385,7 +374,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
     public boolean isFlightMode()
     {
-        return !this.flight.enabled;
+        return !this.flight.isFlightEnabled();
     }
 
     public void haveScrubbed()
@@ -613,7 +602,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         if (!this.runner.isRunning() || !flight)
         {
-            this.flight.enabled = flight;
+            this.flight.setFlightEnabled(flight);
         }
 
         this.cameraOptions.update();
@@ -718,7 +707,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
         this.maxScrub = 0;
         this.haveScrubbed = false;
-        this.flight.enabled = false;
+        this.flight.setFlightEnabled(false);
         ClientProxy.control.cache();
         this.setAspectRatio(Aperture.editorLetterboxAspect.get());
 
@@ -1131,7 +1120,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         /* Animate flight mode */
         this.flight.animate(this.context, this.position);
 
-        if (this.flight.enabled)
+        if (this.flight.isFlightEnabled())
         {
             this.position.apply(this.getCamera());
             ClientProxy.control.roll = this.position.angle.roll;
@@ -1161,7 +1150,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         /* Sync the player on current tick */
-        if (!this.flight.enabled && (this.runner.outside.active || (this.isSyncing() && this.haveScrubbed)))
+        if (!this.flight.isFlightEnabled() && (this.runner.outside.active || (this.isSyncing() && this.haveScrubbed)))
         {
             this.updatePlayerCurrently(partialTicks);
         }
@@ -1219,7 +1208,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void drawIcons()
     {
-        if (!this.isSyncing() && !this.flight.enabled)
+        if (!this.isSyncing() && !this.flight.isFlightEnabled())
         {
             return;
         }
@@ -1227,7 +1216,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         int x = this.width - 18;
         int y = 22;
 
-        Gui.drawRect(this.width - (this.isSyncing() ? 20 : 0) - (this.flight.enabled ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
+        Gui.drawRect(this.width - (this.isSyncing() ? 20 : 0) - (this.flight.isFlightEnabled() ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
         GlStateManager.color(1, 1, 1, 1);
 
         if (this.isSyncing())
@@ -1236,9 +1225,9 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
             x -= 20;
         }
 
-        if (this.flight.enabled)
+        if (this.flight.isFlightEnabled())
         {
-            (this.flight.vertical ? APIcons.HELICOPTER : APIcons.PLANE).render(x, y);
+            this.flight.getMovementType().icon.render(x, y);
         }
     }
 

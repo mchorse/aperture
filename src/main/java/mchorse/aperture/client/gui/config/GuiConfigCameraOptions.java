@@ -51,7 +51,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.renderPath = new GuiToggleElement(mc, Aperture.profileRender);
         this.sync = new GuiToggleElement(mc, Aperture.editorSync);
 
-        this.flight = new GuiToggleElement(mc, IKey.lang("aperture.gui.config.flight"), this.editor.flight.enabled, (b) ->
+        this.flight = new GuiToggleElement(mc, IKey.lang("aperture.gui.config.flight"), this.editor.flight.isFlightEnabled(), (b) ->
         {
             this.editor.setFlight(b.isToggled());
         });
@@ -108,7 +108,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.renderPath.toggled(Aperture.profileRender.get());
         this.sync.toggled(Aperture.editorSync.get());
         this.loop.toggled(Aperture.editorLoop.get());
-        this.flight.toggled(this.editor.flight.enabled);
+        this.flight.toggled(this.editor.flight.isFlightEnabled());
         this.displayPosition.toggled(Aperture.editorDisplayPosition.get());
         this.essentialsTeleport.toggled(Aperture.essentialsTeleport.get());
         this.ruleOfThirds.toggled(Aperture.editorRuleOfThirds.get());

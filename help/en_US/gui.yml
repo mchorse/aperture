@@ -66,6 +66,7 @@ aperture.gui:
     editor:
         f1: Press F1 to show GUI again...
         speed: Speed
+        distance: Distance
 
         keys:
             fixture:
@@ -81,7 +82,7 @@ aperture.gui:
                 title: Modes
 
                 flight: Toggle flight mode
-                vertical: Toggle vertical flight mode
+                vertical: Switch flight type
                 sync: Toggle sync mode
                 ouside: Toggle outside mode
                 looping: Toggle fixture looping
