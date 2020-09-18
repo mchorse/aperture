@@ -72,3 +72,9 @@ aperture.config:
         roll_friction: Deslizamento de rolagem
         fov_speed: Velocidade do FOV
         fov_friction: Deslizamento do FOV
+
+    minema:
+        title: Minema
+        tooltip: Opções relacionadas à integração do Minema
+        
+        default_profile_name: Nome do perfil da Câmera
