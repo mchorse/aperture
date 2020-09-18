@@ -3,8 +3,9 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 /**
  * Circular GUI module
@@ -28,38 +29,34 @@ public class GuiCircularModule extends GuiAbstractModule
 
         this.offset = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.offset = value;
+            this.fixture.offset = value.floatValue();
             this.editor.updateProfile();
         });
-        this.offset.tooltip(I18n.format("aperture.gui.panels.offset"));
+        this.offset.tooltip(IKey.lang("aperture.gui.panels.offset"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.pitch = value;
+            this.fixture.pitch = value.floatValue();
             this.editor.updateProfile();
         });
-        this.pitch.tooltip(I18n.format("aperture.gui.panels.pitch"));
+        this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.circles = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.circles = value;
+            this.fixture.circles = value.floatValue();
             this.editor.updateProfile();
         });
-        this.circles.tooltip(I18n.format("aperture.gui.panels.circles"));
+        this.circles.tooltip(IKey.lang("aperture.gui.panels.circles"));
 
         this.distance = new GuiTrackpadElement(mc, (value) ->
         {
-            this.fixture.distance = value;
+            this.fixture.distance = value.floatValue();
             this.editor.updateProfile();
         });
-        this.distance.tooltip(I18n.format("aperture.gui.panels.distance"));
+        this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
 
-        this.offset.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.pitch.flex().relative(this.area).set(0, 20, 0, 20).w(1, 0);
-        this.circles.flex().relative(this.area).set(0, 40, 0, 20).w(1, 0);
-        this.distance.flex().relative(this.area).set(0, 60, 0, 20).w(1, 0);
-
-        this.add(this.offset, this.pitch, this.circles, this.distance);
+        this.flex().column(5).vertical().stretch().height(20);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.circle")).background(0x88000000), this.offset, this.pitch, this.circles, this.distance);
     }
 
     public void fill(CircularFixture fixture)

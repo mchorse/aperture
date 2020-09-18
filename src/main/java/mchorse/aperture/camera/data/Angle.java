@@ -35,6 +35,20 @@ public class Angle
         return new Angle(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
     }
 
+    public static Angle angle(Point a, Point b)
+    {
+        return angle(a.x - b.x, a.y - b.y, a.z - b.z);
+    }
+
+    public static Angle angle(double dx, double dy, double dz)
+    {
+        double horizontalDistance = MathHelper.sqrt(dx * dx + dz * dz);
+        double yaw = MathHelper.atan2(dz, dx) * 180D / Math.PI - 90;
+        double pitch = -(MathHelper.atan2(dy, horizontalDistance) * 180D / Math.PI);
+
+        return new Angle((float) yaw, (float) pitch);
+    }
+
     public Angle(float yaw, float pitch, float roll, float fov)
     {
         this.set(yaw, pitch, roll, fov);

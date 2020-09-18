@@ -1,16 +1,15 @@
 package mchorse.aperture.camera;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.utils.Color;
+import mchorse.mclib.utils.Color;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Fixture registry
@@ -45,6 +44,17 @@ public class FixtureRegistry
      * Next available id 
      */
     private static byte NEXT_ID = 0;
+
+    public static byte getNextId()
+    {
+        return NEXT_ID;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static FixtureInfo getInfo(byte type)
+    {
+        return FixtureRegistry.CLIENT.get(FixtureRegistry.CLASS_TO_ID.inverse().get(type));
+    }
 
     /**
      * Create camera from type

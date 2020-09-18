@@ -3,28 +3,32 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.MathModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
-import mchorse.aperture.client.gui.utils.GuiUtils;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
+import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.GuiUtils;
+import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 {
-    public GuiTextElement math;
+    public GuiTextHelpElement math;
     public GuiActiveWidget active;
+    public GuiIconElement help;
 
     public GuiMathModifierPanel(Minecraft mc, MathModifier modifier, GuiModifiersManager modifiers)
     {
         super(mc, modifier, modifiers);
 
-        this.math = new GuiTextElement(mc, 500, (str) ->
+        this.math = new GuiTextHelpElement(mc, 500, (str) ->
         {
             this.math.field.setTextColor(this.modifier.rebuildExpression(str) ? 0xffffff : 0xff2244);
             this.modifiers.editor.updateProfile();
         });
-        this.math.tooltip(I18n.format("aperture.gui.modifiers.math"));
+        this.math.link("https://github.com/mchorse/aperture/wiki/Math-Expressions").tooltip(IKey.lang("aperture.gui.modifiers.panels.math"));
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {

@@ -27,19 +27,18 @@ key.aperture:
     roll:
         add: 順時針翻滾
         reduce: 逆時針翻滾
-        reset: 重設翻滾
+        reset: 重置翻滾
 
     # Roll controlling keys
     fov:
         add: 增大 FOV
-        reduce: 減小 FOV
-        reset: 重設 FOV
+        reduce: 縮小 FOV
+        reset: 重置 FOV
+        
     # Profile management keys
     profile:
         title: Aperture 相機
 
-        toggle: 相機配置顯示渲染開關
-
-        start: 開始相機配置
-        stop: 停止相機配置
-        point: 加入路徑點
+        toggle: 開關相機配置渲染
+        playback: 開關相機回放
+        point: 添加路徑點

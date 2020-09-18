@@ -1,24 +1,23 @@
 package mchorse.aperture.camera.fixtures;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
+import mchorse.mclib.utils.MathUtils;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
+import mchorse.mclib.utils.keyframes.KeyframeEasing;
+import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Path camera fixture
@@ -28,22 +27,22 @@ import net.minecraft.util.math.MathHelper;
 public class PathFixture extends AbstractFixture
 {
     /**
-     * Whether per point duration is active 
-     */
-    @Expose
-    public boolean perPointDuration;
-
-    /**
      * List of points in this fixture 
      */
     @Expose
-    protected List<DurablePosition> points = new ArrayList<DurablePosition>();
+    protected List<Position> points = new ArrayList<Position>();
 
     /**
      * Whether keyframe-able speed should be used for this
      */
     @Expose
     public boolean useSpeed;
+
+    /**
+     * Whether use speed's curve should be used as input factor
+     */
+    @Expose
+    public boolean useFactor;
 
     /**
      * Keyframe-able speed
@@ -81,6 +80,53 @@ public class PathFixture extends AbstractFixture
         this.speed.insert(0, 1);
     }
 
+    public KeyframeFixture toKeyframe()
+    {
+        int c = this.getCount();
+
+        if (c <= 1)
+        {
+            return null;
+        }
+
+        long duration = this.getDuration();
+        KeyframeFixture fixture = new KeyframeFixture(duration);
+
+        fixture.copy(this);
+        KeyframeInterpolation pos = this.interpolationPos.interp;
+        KeyframeInterpolation angle = this.interpolationAngle.interp;
+        KeyframeEasing posEasing = this.interpolationPos.easing;
+        KeyframeEasing angleEasing = this.interpolationAngle.easing;
+
+        long x;
+        int i = 0;
+
+        for (Position point : this.getPoints())
+        {
+            x = (int) (i / (c - 1F) * duration);
+
+            int index = fixture.x.insert(x, (float) point.point.x);
+            fixture.y.insert(x, (float) point.point.y);
+            fixture.z.insert(x, (float) point.point.z);
+            fixture.yaw.insert(x, point.angle.yaw);
+            fixture.pitch.insert(x, point.angle.pitch);
+            fixture.roll.insert(x, point.angle.roll);
+            fixture.fov.insert(x, point.angle.fov);
+
+            fixture.x.get(index).setInterpolation(pos, posEasing);
+            fixture.y.get(index).setInterpolation(pos, posEasing);
+            fixture.z.get(index).setInterpolation(pos, posEasing);
+            fixture.yaw.get(index).setInterpolation(angle, angleEasing);
+            fixture.pitch.get(index).setInterpolation(angle, angleEasing);
+            fixture.roll.get(index).setInterpolation(angle, angleEasing);
+            fixture.fov.get(index).setInterpolation(angle, angleEasing);
+
+            i ++;
+        }
+
+        return fixture;
+    }
+
     @Override
     public void initiate()
     {
@@ -113,11 +159,11 @@ public class PathFixture extends AbstractFixture
         this.disableSpeed = false;
     }
 
-    public DurablePosition getPoint(int index)
+    public Position getPoint(int index)
     {
         if (this.points.size() == 0)
         {
-            return new DurablePosition(0, 0, 0, 0, 0);
+            return new Position(0, 0, 0, 0, 0);
         }
 
         if (index >= this.points.size())
@@ -138,7 +184,7 @@ public class PathFixture extends AbstractFixture
         return !this.points.isEmpty() && index >= 0 && index < this.points.size();
     }
 
-    public List<DurablePosition> getPoints()
+    public List<Position> getPoints()
     {
         return this.points;
     }
@@ -148,12 +194,12 @@ public class PathFixture extends AbstractFixture
         return this.points.size();
     }
 
-    public void addPoint(DurablePosition point)
+    public void addPoint(Position point)
     {
         this.points.add(point);
     }
 
-    public void addPoint(DurablePosition point, int before)
+    public void addPoint(Position point, int before)
     {
         this.points.add(before, point);
     }
@@ -163,7 +209,7 @@ public class PathFixture extends AbstractFixture
         this.points.add(to, this.points.remove(from));
     }
 
-    public void editPoint(DurablePosition point, int index)
+    public void editPoint(Position point, int index)
     {
         this.points.set(index, point);
     }
@@ -173,53 +219,15 @@ public class PathFixture extends AbstractFixture
         this.points.remove(index);
     }
 
-    @Override
-    public long getDuration()
-    {
-        if (this.perPointDuration && !this.useSpeed)
-        {
-            long duration = 0;
-
-            for (DurablePosition pos : this.points)
-            {
-                duration += pos.duration;
-            }
-
-            return duration;
-        }
-
-        return super.getDuration();
-    }
-
     /**
      * Return index of a point at given frame (relative to that path fixture, i.e. 0)  
      */
     public int getIndexForPoint(int frame)
     {
-        if (!this.perPointDuration)
-        {
-            float range = (float) frame / this.duration;
-            int index = (int) Math.floor(range * (this.points.size() - 1));
+        float range = (float) frame / this.duration;
+        int index = (int) Math.floor(range * (this.points.size() - 1));
 
-            return MathHelper.clamp(index, 0, (int) this.duration);
-        }
-
-        int index = 0;
-        long point = 0;
-
-        while (point < frame)
-        {
-            point += this.points.get(index).getDuration();
-
-            if (point >= frame)
-            {
-                break;
-            }
-
-            index++;
-        }
-
-        return MathHelper.clamp(index, 0, this.getCount() - 1);
+        return MathHelper.clamp(index, 0, (int) this.duration);
     }
 
     /**
@@ -227,32 +235,13 @@ public class PathFixture extends AbstractFixture
      */
     public long getTickForPoint(int index)
     {
-        if (!this.perPointDuration)
-        {
-            return (long) ((index / (float) (this.points.size() - 1)) * this.duration);
-        }
-
-        long duration = 0;
-
-        for (DurablePosition pos : this.points)
-        {
-            index--;
-
-            if (index < 0)
-            {
-                break;
-            }
-
-            duration += pos.getDuration();
-        }
-
-        return duration;
+        return (long) ((index / (float) (this.points.size() - 1)) * this.duration);
     }
 
     @Override
     public void fromPlayer(EntityPlayer player)
     {
-        this.addPoint(new DurablePosition(player));
+        this.addPoint(new Position(player));
     }
 
     @Override
@@ -271,7 +260,15 @@ public class PathFixture extends AbstractFixture
             float tick = ticks + previewPartialTick;
 
             /* Just calculate enough for the speed for the difference */
-            if (tick != this.lastTick || tick == 0)
+            if (this.useFactor)
+            {
+                double factor = this.speed.interpolate(tick);
+                double index = factor * (this.points.size() - 1);
+
+                this.applyPoint(this.lastPoint, (int) index, (float) (index % 1));
+                this.applyAngle(pos.angle, (int) index, (float) (index % 1));
+            }
+            else if (tick != this.lastTick || tick == 0)
             {
                 this.applyPoint(this.lastPoint, 0, 0);
                 this.recalculate(tick, pos.angle);
@@ -283,55 +280,13 @@ public class PathFixture extends AbstractFixture
         else
         {
             int length = this.points.size() - 1;
-            int index = 0;
-            float x = 0;
+            int index;
+            float x;
 
-            if (this.perPointDuration)
-            {
-                int points = this.points.size();
-
-                long point = 0;
-                long prevPoint = 0;
-
-                while (point - 1 < ticks)
-                {
-                    if (index >= points)
-                    {
-                        break;
-                    }
-
-                    prevPoint = point;
-                    point += this.points.get(index).getDuration();
-
-                    if (point - 1 >= ticks)
-                    {
-                        break;
-                    }
-
-                    index++;
-                }
-
-                if (index < points - 1)
-                {
-                    float diff = point - prevPoint;
-
-                    x = ((ticks + previewPartialTick) - prevPoint) / (diff == 0 ? 1.0F : diff);
-                }
-                else
-                {
-                    index = points - 1;
-                    x = 0;
-                }
-
-                index = MathHelper.clamp(index, 0, points - 1);
-            }
-            else
-            {
-                x = (ticks / (float) this.duration) + (1.0F / duration) * previewPartialTick;
-                x = MathHelper.clamp    (x * length, 0, length);
-                index = (int) Math.floor(x);
-                x = x - index;
-            }
+            x = (ticks / (float) this.duration) + (1.0F / duration) * previewPartialTick;
+            x = MathHelper.clamp    (x * length, 0, length);
+            index = (int) Math.floor(x);
+            x = x - index;
 
             this.applyAngle(pos.angle, index, x);
             this.applyPoint(pos.point, index, x);
@@ -611,6 +566,8 @@ public class PathFixture extends AbstractFixture
     @Override
     public void toJSON(JsonObject object)
     {
+        super.toJSON(object);
+
         object.addProperty("interpolation", this.interpolationPos.name);
         object.addProperty("interpolationAngle", this.interpolationAngle.name);
     }
@@ -618,6 +575,8 @@ public class PathFixture extends AbstractFixture
     @Override
     public void fromJSON(JsonObject object)
     {
+        super.fromJSON(object);
+
         if (object.has("interpolation"))
         {
             this.interpolationPos = interpFromString(object.get("interpolation").getAsString());
@@ -634,16 +593,16 @@ public class PathFixture extends AbstractFixture
     {
         super.fromByteBuf(buffer);
 
-        this.perPointDuration = buffer.readBoolean();
         this.interpolationPos = interpFromInt(buffer.readByte());
         this.interpolationAngle = interpFromInt(buffer.readByte());
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            this.addPoint(DurablePosition.fromByteBuf(buffer));
+            this.addPoint(Position.fromByteBuf(buffer));
         }
 
         this.useSpeed = buffer.readBoolean();
+        this.useFactor = buffer.readBoolean();
         this.speed.fromByteBuf(buffer);
     }
 
@@ -652,41 +611,67 @@ public class PathFixture extends AbstractFixture
     {
         super.toByteBuf(buffer);
 
-        buffer.writeBoolean(this.perPointDuration);
         buffer.writeByte(this.interpolationPos.ordinal());
         buffer.writeByte(this.interpolationAngle.ordinal());
 
         buffer.writeInt(this.points.size());
 
-        for (DurablePosition pos : this.points)
+        for (Position pos : this.points)
         {
             pos.toByteBuf(buffer);
         }
 
         buffer.writeBoolean(this.useSpeed);
+        buffer.writeBoolean(this.useFactor);
         this.speed.toByteBuf(buffer);
     }
 
     @Override
-    public AbstractFixture copy()
+    public AbstractFixture create(long duration)
     {
-        PathFixture fixture = new PathFixture(this.duration);
+        return new PathFixture(duration);
+    }
 
-        AbstractFixture.copyModifiers(this, fixture);
-        for (DurablePosition pos : this.points)
+    @Override
+    public void copy(AbstractFixture from)
+    {
+        super.copy(from);
+
+        if (from instanceof PathFixture)
         {
-            fixture.addPoint((DurablePosition) pos.copy());
+            PathFixture path = (PathFixture) from;
+
+            for (Position pos : path.points)
+            {
+                this.addPoint(pos.copy());
+            }
+
+            this.interpolationPos = path.interpolationPos;
+            this.interpolationAngle = path.interpolationAngle;
+
+            this.useSpeed = path.useSpeed;
+            this.useFactor = path.useFactor;
+            this.speed.copy(path.speed);
         }
+    }
 
-        fixture.name = this.name;
-        fixture.perPointDuration = this.perPointDuration;
-        fixture.interpolationPos = this.interpolationPos;
-        fixture.interpolationAngle = this.interpolationAngle;
+    @Override
+    public void copyByReplacing(AbstractFixture from)
+    {
+        super.copyByReplacing(from);
 
-        fixture.useSpeed = this.useSpeed;
-        fixture.speed.copy(this.speed);
+        if (from instanceof DollyFixture)
+        {
+            DollyFixture dolly = (DollyFixture) from;
+            Position position = new Position();
 
-        return fixture;
+            from.applyFixture(from.getDuration(), 0, 0, null, position);
+
+            this.points.clear();
+            this.points.add(dolly.position.copy());
+            this.points.add(position);
+            this.interpolationPos = this.interpolationAngle = InterpolationType.fromInterp(dolly.interp);
+        }
     }
 
     /* Interpolation */
@@ -718,16 +703,22 @@ public class PathFixture extends AbstractFixture
     {
         LINEAR(Interpolation.LINEAR, KeyframeInterpolation.LINEAR), CUBIC("cubic", KeyframeInterpolation.CUBIC), HERMITE("hermite", KeyframeInterpolation.HERMITE),
         /* Quadratic interpolations */
-        QUAD_IN(Interpolation.QUAD_IN, KeyframeInterpolation.QUAD, Easing.IN), QUAD_OUT(Interpolation.QUAD_OUT, KeyframeInterpolation.QUAD, Easing.OUT), QUAD_INOUT(Interpolation.QUAD_INOUT, KeyframeInterpolation.QUAD, Easing.INOUT),
+        QUAD_IN(Interpolation.QUAD_IN, KeyframeInterpolation.QUAD, KeyframeEasing.IN), QUAD_OUT(Interpolation.QUAD_OUT, KeyframeInterpolation.QUAD, KeyframeEasing.OUT), QUAD_INOUT(Interpolation.QUAD_INOUT, KeyframeInterpolation.QUAD, KeyframeEasing.INOUT),
         /* Cubic interpolations */
-        CUBIC_IN(Interpolation.CUBIC_IN, KeyframeInterpolation.CUBIC, Easing.IN), CUBIC_OUT(Interpolation.CUBIC_OUT, KeyframeInterpolation.CUBIC, Easing.OUT), CUBIC_INOUT(Interpolation.CUBIC_INOUT, KeyframeInterpolation.CUBIC, Easing.INOUT),
+        CUBIC_IN(Interpolation.CUBIC_IN, KeyframeInterpolation.CUBIC, KeyframeEasing.IN), CUBIC_OUT(Interpolation.CUBIC_OUT, KeyframeInterpolation.CUBIC, KeyframeEasing.OUT), CUBIC_INOUT(Interpolation.CUBIC_INOUT, KeyframeInterpolation.CUBIC, KeyframeEasing.INOUT),
         /* Exponential interpolations */
-        EXP_IN(Interpolation.EXP_IN, KeyframeInterpolation.EXP, Easing.IN), EXP_OUT(Interpolation.EXP_OUT, KeyframeInterpolation.EXP, Easing.OUT), EXP_INOUT(Interpolation.EXP_INOUT, KeyframeInterpolation.EXP, Easing.INOUT);
+        EXP_IN(Interpolation.EXP_IN, KeyframeInterpolation.EXP, KeyframeEasing.IN), EXP_OUT(Interpolation.EXP_OUT, KeyframeInterpolation.EXP, KeyframeEasing.OUT), EXP_INOUT(Interpolation.EXP_INOUT, KeyframeInterpolation.EXP, KeyframeEasing.INOUT),
+        /* Back interpolations */
+        BACK_IN(Interpolation.BACK_IN, KeyframeInterpolation.BACK, KeyframeEasing.IN), BACK_OUT(Interpolation.BACK_OUT, KeyframeInterpolation.BACK, KeyframeEasing.OUT), BACK_INOUT(Interpolation.BACK_INOUT, KeyframeInterpolation.BACK, KeyframeEasing.INOUT),
+        /* Back interpolations */
+        ELASTIC_IN(Interpolation.ELASTIC_IN, KeyframeInterpolation.ELASTIC, KeyframeEasing.IN), ELASTIC_OUT(Interpolation.ELASTIC_OUT, KeyframeInterpolation.ELASTIC, KeyframeEasing.OUT), ELASTIC_INOUT(Interpolation.ELASTIC_INOUT, KeyframeInterpolation.ELASTIC, KeyframeEasing.INOUT),
+        /* Back interpolations */
+        BOUNCE_IN(Interpolation.BOUNCE_IN, KeyframeInterpolation.BOUNCE, KeyframeEasing.IN), BOUNCE_OUT(Interpolation.BOUNCE_OUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.OUT), BOUNCE_INOUT(Interpolation.BOUNCE_INOUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.INOUT);
 
         public final String name;
         public Interpolation function;
         public KeyframeInterpolation interp;
-        public Easing easing = Easing.IN;
+        public KeyframeEasing easing = KeyframeEasing.IN;
 
         private InterpolationType(String name)
         {
@@ -736,10 +727,10 @@ public class PathFixture extends AbstractFixture
 
         private InterpolationType(String name, KeyframeInterpolation interp)
         {
-            this(name, interp, Easing.IN);
+            this(name, interp, KeyframeEasing.IN);
         }
 
-        private InterpolationType(String name, KeyframeInterpolation interp, Easing easing)
+        private InterpolationType(String name, KeyframeInterpolation interp, KeyframeEasing easing)
         {
             this.name = name;
             this.interp = interp;
@@ -754,83 +745,34 @@ public class PathFixture extends AbstractFixture
 
         private InterpolationType(Interpolation function, KeyframeInterpolation interp)
         {
-            this(function, interp, Easing.IN);
+            this(function, interp, KeyframeEasing.IN);
         }
 
-        private InterpolationType(Interpolation function, KeyframeInterpolation interp, Easing easing)
+        private InterpolationType(Interpolation function, KeyframeInterpolation interp, KeyframeEasing easing)
         {
             this.name = function.key;
             this.function = function;
             this.interp = interp;
             this.easing = easing;
         }
-    }
 
-    /**
-     * Durable position
-     * 
-     * Just like a position, but with a duration
-     */
-    public static class DurablePosition extends Position
-    {
-        @Expose
-        protected long duration = 1L;
-
-        public static DurablePosition fromByteBuf(ByteBuf buffer)
+        public static InterpolationType fromInterp(Interpolation interp)
         {
-            return new DurablePosition(buffer.readLong(), Point.fromByteBuf(buffer), Angle.fromByteBuf(buffer));
+            for (InterpolationType type : values())
+            {
+                if (type.function == interp)
+                {
+                    return type;
+                }
+            }
+
+            return LINEAR;
         }
 
-        public DurablePosition(EntityPlayer player)
+        public String getKey()
         {
-            super(player);
-        }
-
-        public DurablePosition(Position pos)
-        {
-            this(pos.point, pos.angle);
-        }
-
-        public DurablePosition(Point point, Angle angle)
-        {
-            super(point, angle);
-        }
-
-        public DurablePosition(long duration, Point point, Angle angle)
-        {
-            super(point, angle);
-
-            this.setDuration(duration);
-        }
-
-        public DurablePosition(float x, float y, float z, float yaw, float pitch)
-        {
-            super(x, y, z, yaw, pitch);
-        }
-
-        public long getDuration()
-        {
-            return this.duration;
-        }
-
-        public void setDuration(long duration)
-        {
-            this.duration = duration < 0 ? 0 : duration;
-        }
-
-        @Override
-        public Position copy()
-        {
-            return new DurablePosition(this.duration, this.point.copy(), this.angle.copy());
-        }
-
-        @Override
-        public void toByteBuf(ByteBuf buffer)
-        {
-            buffer.writeLong(this.duration);
-
-            super.toByteBuf(buffer);
-        }
+            return "mclib.interpolations." + this.name;
+	    }
     }
 
     public static class CachedPosition

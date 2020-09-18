@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -14,22 +16,23 @@ import net.minecraft.client.resources.I18n;
 public class GuiActiveWidget extends GuiElement
 {
     public byte value;
-    public List<String> labels = new ArrayList<String>();
+    public List<IKey> labels = new ArrayList<IKey>();
     public Consumer<Byte> callback;
 
     public GuiActiveWidget(Minecraft mc, Consumer<Byte> callback)
     {
         super(mc);
 
-        this.labels.add(I18n.format("aperture.gui.panels.x"));
-        this.labels.add(I18n.format("aperture.gui.panels.y"));
-        this.labels.add(I18n.format("aperture.gui.panels.z"));
-        this.labels.add(I18n.format("aperture.gui.panels.yaw"));
-        this.labels.add(I18n.format("aperture.gui.panels.pitch"));
-        this.labels.add(I18n.format("aperture.gui.panels.roll"));
-        this.labels.add(I18n.format("aperture.gui.panels.fov"));
+        this.labels.add(IKey.lang("aperture.gui.panels.x"));
+        this.labels.add(IKey.lang("aperture.gui.panels.y"));
+        this.labels.add(IKey.lang("aperture.gui.panels.z"));
+        this.labels.add(IKey.lang("aperture.gui.panels.yaw"));
+        this.labels.add(IKey.lang("aperture.gui.panels.pitch"));
+        this.labels.add(IKey.lang("aperture.gui.panels.roll"));
+        this.labels.add(IKey.lang("aperture.gui.panels.fov"));
 
         this.callback = callback;
+        this.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.active"));
     }
 
     @Override
@@ -74,7 +77,7 @@ public class GuiActiveWidget extends GuiElement
 
             if (isSelected)
             {
-                int color = 0xcc0088ff;
+                int color = 0xcc000000 + McLib.primaryColor.get();
 
                 Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, color);
 
@@ -85,10 +88,10 @@ public class GuiActiveWidget extends GuiElement
             }
             else if (isHover)
             {
-                Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, 0x880088ff);
+                Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, 0x88000000 + McLib.primaryColor.get());
             }
 
-            this.drawCenteredString(this.font, this.labels.get(i), x + w / 2, this.area.my() - this.font.FONT_HEIGHT / 2, 0xffffff);
+            this.drawCenteredString(this.font, this.labels.get(i).get(), x + w / 2, this.area.my() - this.font.FONT_HEIGHT / 2, 0xffffff);
         }
     }
 }

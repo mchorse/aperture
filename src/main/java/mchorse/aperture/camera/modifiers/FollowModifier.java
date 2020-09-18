@@ -1,9 +1,14 @@
 package mchorse.aperture.camera.modifiers;
 
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
  * Follow modifier
@@ -14,6 +19,12 @@ import net.minecraft.entity.Entity;
  */
 public class FollowModifier extends EntityModifier
 {
+    @Expose
+    public boolean relative;
+
+    @Expose
+    public Point offset = new Point(0, 0, 0);
+
     public FollowModifier()
     {}
 
@@ -30,7 +41,7 @@ public class FollowModifier extends EntityModifier
             return;
         }
 
-        if (fixture != null)
+        if (fixture != null && this.relative)
         {
             fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
         }
@@ -55,17 +66,41 @@ public class FollowModifier extends EntityModifier
         y = y / size + pos.point.y - this.position.point.y;
         z = z / size + pos.point.z - this.position.point.z;
 
-        pos.point.set(x, y, z);
+        pos.point.set(x + this.offset.x, y + this.offset.y, z + this.offset.z);
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        FollowModifier modifier = new FollowModifier();
+        return new FollowModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.selector = this.selector;
+    @Override
+    public void fromJSON(JsonObject object)
+    {
+        super.fromJSON(object);
 
-        return modifier;
+        if (this.offset == null)
+        {
+            this.offset = new Point(0, 0, 0);
+        }
+    }
+
+    @Override
+    public void fromByteBuf(ByteBuf buffer)
+    {
+        super.fromByteBuf(buffer);
+
+        this.relative = buffer.readBoolean();
+        this.offset = Point.fromByteBuf(buffer);
+    }
+
+    @Override
+    public void toByteBuf(ByteBuf buffer)
+    {
+        super.toByteBuf(buffer);
+
+        buffer.writeBoolean(this.relative);
+        this.offset.toByteBuf(buffer);
     }
 }

@@ -1,7 +1,6 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.utils.APIcons;
@@ -14,6 +13,7 @@ import mchorse.mclib.client.gui.utils.ScrollArea.ScrollDirection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Points GUI module
@@ -62,10 +62,10 @@ public class GuiPointsModule extends GuiAbstractModule
             this.editor.updateProfile();
         });
 
-        back.flex().relative(this.area).set(-38, 2, 16, 16);
-        remove.flex().relative(this.area).set(-18, 2, 16, 16);
-        add.flex().relative(this.area).set(0, 2, 16, 16).x(1, 2);
-        forward.flex().relative(this.area).set(0, 2, 16, 16).x(1, 22);
+        back.flex().relative(this).x(-40);
+        remove.flex().relative(this).x(-20);
+        add.flex().relative(this).x(1F);
+        forward.flex().relative(this).x(1F, 20);
 
         this.add(back, add, remove, forward);
         this.scroll.direction = ScrollDirection.HORIZONTAL;
@@ -73,16 +73,17 @@ public class GuiPointsModule extends GuiAbstractModule
 
     public void addPoint()
     {
-        if (this.index + 1 == this.path.getPoints().size())
+        if (this.index + 1 >= this.path.getPoints().size())
         {
-            this.path.addPoint(new DurablePosition(this.editor.getPosition()));
+            this.path.addPoint(this.editor.getPosition());
+            this.index = MathHelper.clamp(this.index + 1, 0, this.path.getCount() - 1);
         }
         else
         {
-            this.path.addPoint(new DurablePosition(this.editor.getPosition()), this.index + 1);
+            this.path.addPoint(this.editor.getPosition(), this.index + 1);
+            this.index++;
         }
 
-        this.index++;
         this.scroll.setSize(this.path.getCount());
         this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
 
@@ -96,7 +97,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
     public void removePoint()
     {
-        if (this.path.getPoints().size() == 1)
+        if (this.path.getPoints().size() == 1 && this.index >= 0)
         {
             return;
         }
@@ -197,7 +198,7 @@ public class GuiPointsModule extends GuiAbstractModule
      * Mouse button was released
      *
      * If scrolling was initiated on click, this method will be responsible for
-     * selecting a point in the path or shifting the playback scrub to the
+     * selecting a point in the path or shifting the playback timeline to the
      * location of the of current path point.
      */
     @Override

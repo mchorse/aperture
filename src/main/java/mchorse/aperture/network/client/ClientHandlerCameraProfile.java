@@ -31,14 +31,14 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
         profile.setDestination(new ServerDestination(message.filename));
         profile.dirty = false;
 
-        ClientProxy.control.addProfile(profile);
+        ClientProxy.getCameraEditor().profiles.addProfile(profile);
 
         if (message.play)
         {
             ClientProxy.runner.start(ClientProxy.control.currentProfile);
         }
 
-        if (ClientProxy.runner.getGameMode(player) != GameType.ADVENTURE)
+        if (ClientProxy.getGameMode() != GameType.ADVENTURE)
         {
             L10n.success(player, "profile.load", message.filename);
         }

@@ -3,67 +3,101 @@
 aperture.gui:
     # General strings
     done: 完成
-    next: 下個
-    previous: 上個
-    restore: 恢復預設
-    reset: 重設
-    add: 加入
+    next: 下壹個
+    previous: 上壹個
+    restore: 恢復默認
+    reset: 重置
+    add: 添加
     edit: 編輯
     remove: 移除
     detach: 分離
     record: 錄制
-    pick: 選取偽裝…
-    duplicate: 拷貝
-    search: "搜尋:"
+    pick: 選擇偽裝...
+    duplicate: 復制
+    search: 搜索...
     cancel: 取消
     break: 破壞
-    select: 選取
-    ok: 好
+    select: 選擇
+    ok: 確定
 
     config:
         title: 相機選項
 
-        outside: 分離攝影機模式（O）
-        minema: Minema
-        spectator: 觀看者
+        outside: 分離相機模式
+        spectator: 觀察者
         show_path: 顯示路徑
-        sync: 同步（S）
-        flight: 飛行模式（F）
+        sync: 同步
+        flight: 飛行模式
+        flight_tooltip: 啟用飛行模式, 可以在相機編輯器中使用 WASD 與鼠標拖拽來控制相機 (請參見 Aperture 的飛行模式選項中的快捷鍵)
         display_info: 顯示位置
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
-        rule_of_thirds: 三分法治
-        letter_box: 畫面黑框
-        repeat: 重複關鍵點（R）
+        rule_of_thirds: 三分法構圖
+        crosshair: 十字準心
+        letter_box: 畫面黑邊
+        repeat: 循環播放關鍵點
         overlay: 啟用附加層
-        pick_overlay: 選取附加層
+        pick_overlay: 選擇附加層
 
     tooltips:
-        jump_next_fixture: 跳到下一個關鍵點（Shift + 右）
-        jump_next_frame: 跳到下一幀（右）
-        plause: 播放/暫停（空格）
-        jump_prev_frame: 跳到上一幀（左）
-        jump_prev_fixture: 跳到上一個關鍵點（Shift + 左）
+        jump_next_fixture: 跳至下壹關鍵點
+        jump_next_frame: 跳至下壹幀
+        plause: 播放/暫停
+        jump_prev_frame: 跳至上壹幀
+        jump_prev_fixture: 跳至上壹關鍵點
 
-        move_up: 將關鍵點向前移動
-        move_duration: 將持續時間移動到光標（M）
-        copy_position: 拷貝玩家的位置（B）
-        move_down: 將關鍵點向後移動
+        move_up: 前移關鍵點
+        move_duration: 持續時間移至光標
+        copy_position: 拷貝玩家位置
+        move_down: 後移關鍵點
 
-        save: 儲存相機配置（Ctrl+S）
+        save: 保存相機配置
         profiles: 顯示相機配置
         config: 顯示相機編輯器選項
-        modifiers: 開啟調整器面板 (N)
-        cut: 切割關鍵點（C）
-        creation: 交互加入關鍵點（I）
-        add: 加入關鍵點
-        dupe: 拷貝關鍵點
-        replace: 替換選取的關鍵點
-        remove: 移除選取的關鍵點
+        modifiers: 打開調整器面板
+        minema: Minema
+        cut: 切割關鍵點
+        creation: 交互添加關鍵點
+        add: 添加關鍵點
+        dupe: 復制關鍵點
+        replace: 替換選中的關鍵點
+        remove: 移除選中的關鍵點
 
     editor:
-        f1: 請按F1來再次展示界面…
+        f1: 請按 F1 來再次顯示界面...
         speed: 速度
+
+        keys:
+            fixture:
+                title: 關鍵點
+
+                deselect: 取消選中當前關鍵點
+                shift: 持續時間移至光標
+                copy: 應用當前的相機位置
+                cut: 切割關鍵點
+                add: "添加 %s 關鍵點"
+
+            modes:
+                title: 模式
+
+                flight: 開關飛行模式
+                vertical: 開關垂直飛行模式
+                sync: 開關同步模式
+                ouside: 開關分離相機模式
+                looping: 開關循環播放關鍵點
+                interactive: 開關交互添加關鍵點模式
+                
+            editor:
+                title: 相機編輯器
+
+                toggle: 開關相機編輯器的可見性
+                modifiers: 開關調整器的彈出
+                save: 保存相機配置
+                plause: 播放/暫停
+                next_fixture: 跳至下壹關鍵點
+                prev_fixture: 跳至上壹關鍵點
+                next: 跳至下壹幀
+                prev: 跳至上壹幀
 
     fixtures:
         idle: 靜止
@@ -71,50 +105,109 @@ aperture.gui:
         circular: 環形
         keyframe: 關鍵幀
         null: "空"
+        manual: 手動
+        dolly: 滑軌
 
     modifiers:
         title: 調整器
         global: 全局調整器
 
         shake: 搖晃
+        shake_description: 為已啟用的相機屬性中添加簡單的搖晃效果 (基於正弦和余弦函數)
         math: 數學
+        math_description: 允許使用數學表達式處理指定的相機屬性
         look: 看
+        look_description: 將相機朝向壹個或多個實體、方塊位置或 (向前) 運動
         follow: 跟蹤
+        follow_description: 將相機綁定於壹個或多個實體之上
         translate: 平移
+        translate_description: 以特定的數值移動相機位置
         angle: 角度
+        angle_description: 以特定的數值旋轉相機角度
         orbit: 軌道
+        orbit_description: 將相機綁定於壹個或多個實體, 但使用的是類似於軌道的控件
         drag: 拖拽
+        drag_description: 使用當前值與先前值之間的線性交錯, 將已啟用的相機屬性進行平滑處理
+        
+        enabled: 啟用
+
+        tooltips:
+            add: 添加調整器...
+            paste: 粘貼調整器...
+
+            remove: 移除該調整器
+            lock: 啟用/禁用該調整器
+            move_up: 向上移動調整器 (優先應用該調整器)
+            move_down: 向下移動調整器 (之後應用該調整器)
+            copy: 拷貝該調整器
+            envelope: 開關包絡面板
+            active: 單擊此控件中的任意選項, 以選擇該調整器將作用於哪些相機屬性
 
         panels:
-            copy_entity: 復制實體
+            copy_entity: 拷貝實體
+            copy_entity_tooltip: 拷貝實體頭部的方向, 與使用 GoPros 的效果類似
 
             shake: 搖晃
             shake_amount: 數量值
 
-            relative: 是絕對的？
-            at_block: 看著方塊？
-            forward: 向前看？
+            relative: 相對值
+            relative_tooltip: 應用於關鍵點或相機配置的相對動畫\n\n例如, 那麽將會有 10 度的動畫應用於該調整器
+            at_block: 看向方塊
+            forward: 向前看
+            forward_tooltip: 該選項能使相機朝向運動矢量的方向, 類似於過山車的效果
 
-            factor: 因素
+            factor: 線性系數 (介於 0 到 1), 數值越小, 平滑程度越高
+            
+            math: 數學表達式\n\n點擊 "?" 按鈕了解更多關於變量和函數的信息...
+
+        envelopes:
+            start_x: 起始點
+            start_d: 緩入點
+            end_x: 結束點 (如果啟用了“相對值”, 那麽此處為持續時間的終點, 否則從起點開始計算)
+            end_d: 緩出點
+            interp: 選擇包絡的插值
 
     profiles:
         title: 配置
         rename: 重命名
+        keyframes: 關鍵幀
 
-        rename_modal: 爲當前的相機配置鍵入一個新的名字。
-        add_modal: 爲新的相機配置鍵入一個名字。
-        dupe_modal: 為新拷貝的相機配置鍵入一個名字。
-        remove_modal: 你確定要移除這個相機配置檔案嗎（將不可恢復）？
+        rename_modal: 輸入當前新相機配置的名稱。
+        add_modal: 輸入新相機配置的名稱。
+        dupe_modal: 輸入復制後的相機配置名稱。
+        remove_modal: 您確定要移除這該機配置嗎 (無法恢復)?
 
         convert_tooltip: 轉換配置
         rename_tooltip: 重命名配置
-        add_tooltip: 加入一個配置
-        dupe_tooltip: 拷貝配置
+        add_tooltip: 添加壹個配置
+        dupe_tooltip: 復制配置
         remove_tooltip: 移除配置
+        
+    minema:
+        title: Minema
+        output: 輸出名稱 (用於代替隨機生成的日期)
+        set_start: 設定開始時間
+        set_start_tooltip: 移動時間軸上的光標, 隨後點擊該按鈕來設定 Minema 片段的開始 Tick
+        set_duration: 設定持續時間
+        set_duration_tooltip: 移動時間軸上的光標,  隨後點擊該按鈕來設定 Minema 片段的持續時間 (單位為 Tick)
+        record: 錄制
+        premature_stop: "Minema 提前終止了錄制!\n\n請退出相機編輯器並查看聊天欄以獲取更多信息..."
+
+        minema_not_installed: Minema mod 未安裝。請安裝 Minema 3.5 或更高的版本...
+        minema_wrong_version: Minema mod 已安裝, 但版本已過時! 該功能需要 Minema 3.5 或更高的版本...
+
+        modes:
+            tooltip: 錄制模式定義了開始和結束的 Tick
+
+            full: 完整相機配置
+            fixture: 僅選中的關鍵點
+            custom: 自定義
 
     panels:
         name: 名字
-        duration: 持續長度
+        name_tooltip: 顯示將會在時間軸上顯示的名稱
+        color_tooltip: 自定義關鍵點的顏色, 如果妳需要對它加以顏色上的區別的話
+        duration: 關鍵點的持續時間 (單位為 Tick, 20 Tick 約等於 1 秒)
 
         x: X
         y: "Y"
@@ -125,7 +218,7 @@ aperture.gui:
         roll: 翻滾
         fov: FOV
 
-        offset: 延遲
+        offset: 偏移
         circles: 圓圈
         distance: 長度
 
@@ -133,37 +226,33 @@ aperture.gui:
         position: 位置
         angle: 角度
         circle: 圓圈
-        selector: 選取器
-        per_point: 持續長度/節點
-        to_keyframe: 生成關鍵幀
+        selector: 實體目標選擇器 (您也可以輸入實體的名稱標簽來代替目標選擇器)\n\n點擊 "?" 按鈕了解更多關於語法的信息...
         use_speed: 速率控制
 
         all: 全部
-        tick: Tick
-        value: 值
+        previous: 上壹關鍵點
+        
+        manual:
+            title: 手動
+            shift: 回放位移, 該屬性如果為正, 則延遲播放數據； 如果為負, 則削減錄制數據的持續時間
+            speed: 回放速度, 由於回放使用的是原始錄制的數據, 因此可以考慮使用拖動調整器來平滑運動
+            record: 通過此按鈕, 您就可以錄制相機的手動運動了!
 
-        previous: 上一個
+        dolly:
+            distance: "距離決定了在指定的時間內，滑軌沿指定方向移動的方塊距離"
+            yaw: "滑軌在水平方向 (偏航, 以角度來衡量) 上的移動"
+            pitch: "滑軌在垂直方向 (俯仰，以角度來衡量) 上的移動"
+            speed: "線性速度: %s 方塊/s."
 
-        interps:
-            const: 連續的
-            linear: 線性
-            quad: 二次方
-            cubic: 三次曲線
-            hermite: 艾米插值
-            exp: 指數
-            bezier: 貝茲曲線
+        keys:
+            title: 當前的關鍵點面板
 
-            quad_in: 二次方緩入
-            quad_out: 二次方緩出
-            quad_inout: 二次方緩入/緩出
-            cubic_in: 三次曲線緩入
-            cubic_out: 三次曲線緩出
-            cubic_inout: 三次曲線緩入/緩出
-            exp_in: 指數緩入
-            exp_out: 指數緩出
-            exp_inout: 指數緩入/緩出
-
-        easing:
-            in: 緩入
-            out: 緩出
-            inout: 緩入/緩出
+            path_position: 循環選擇位置的插值
+            path_angle: 循環選擇角度的插值
+            velocity: 開關速率控制選項
+            
+            graph_interp: 循環選擇關鍵幀的插值
+            graph_easing: 循環選擇關鍵幀的緩入緩出
+            
+            previous: 開關上壹關鍵點選項
+            record_manual: 開始錄制手動動作

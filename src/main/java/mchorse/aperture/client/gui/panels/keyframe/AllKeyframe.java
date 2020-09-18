@@ -1,11 +1,11 @@
 package mchorse.aperture.client.gui.panels.keyframe;
 
+import mchorse.mclib.utils.keyframes.Keyframe;
+import mchorse.mclib.utils.keyframes.KeyframeEasing;
+import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
 
 /**
  * All channel keyframe
@@ -35,11 +35,11 @@ public class AllKeyframe extends Keyframe
 
     /* Nope */
     @Override
-    public void setValue(float value)
+    public void setValue(double value)
     {}
 
     @Override
-    public void setEasing(Easing easing)
+    public void setEasing(KeyframeEasing easing)
     {
         super.setEasing(easing);
 

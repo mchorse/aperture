@@ -6,64 +6,98 @@ aperture.gui:
     next: 下一个
     previous: 上一个
     restore: 恢复默认
-    reset: 重设
+    reset: 重置
     add: 添加
     edit: 编辑
     remove: 移除
     detach: 分离
     record: 录制
-    pick: 选择伪装…
-    duplicate: 拷贝
-    search: "搜索:"
+    pick: 选择伪装...
+    duplicate: 复制
+    search: 搜索...
     cancel: 取消
     break: 破坏
     select: 选择
-    ok: 好
+    ok: 确定
 
     config:
         title: 相机选项
 
-        outside: 分离摄像机模式（O）
-        minema: Minema
-        spectator: 观看者
+        outside: 分离相机模式
+        spectator: 观察者
         show_path: 显示路径
-        sync: 同步（S）
-        flight: 飞行模式（F）
+        sync: 同步
+        flight: 飞行模式
+        flight_tooltip: 启用飞行模式, 可以在相机编辑器中使用 WASD 与鼠标拖拽来控制相机 (请参见 Aperture 的飞行模式选项中的快捷键)
         display_info: 显示位置
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
-        rule_of_thirds: 三分法治
+        rule_of_thirds: 三分法构图
+        crosshair: 十字准心
         letter_box: 画面黑边
-        repeat: 重复关键点（R）
+        repeat: 循环播放关键点
         overlay: 启用附加层
         pick_overlay: 选择附加层
 
     tooltips:
-        jump_next_fixture: 跳到下一个关键点（Shift + 右）
-        jump_next_frame: 跳到下一帧（右）
-        plause: 播放/暂停（空格）
-        jump_prev_frame: 跳到上一帧（左）
-        jump_prev_fixture: 跳到上一个关键点（Shift + 左）
+        jump_next_fixture: 跳至下一关键点
+        jump_next_frame: 跳至下一帧
+        plause: 播放/暂停
+        jump_prev_frame: 跳至上一帧
+        jump_prev_fixture: 跳至上一关键点
 
-        move_up: 将关键点向前移动
-        move_duration: 将持续时间移动到光标（M）
-        copy_position: 拷贝玩家的位置（B）
-        move_down: 将关键点向后移动
+        move_up: 前移关键点
+        move_duration: 持续时间移至光标
+        copy_position: 拷贝玩家位置
+        move_down: 后移关键点
 
-        save: 保存相机配置（Ctrl+S）
+        save: 保存相机配置
         profiles: 显示相机配置
         config: 显示相机编辑器选项
-        modifiers: 打开调整器面板 (N)
-        cut: 切割关键点（C）
-        creation: 交互添加关键点（I）
+        modifiers: 打开调整器面板
+        minema: Minema
+        cut: 切割关键点
+        creation: 交互添加关键点
         add: 添加关键点
-        dupe: 拷贝关键点
+        dupe: 复制关键点
         replace: 替换选中的关键点
         remove: 移除选中的关键点
 
     editor:
-        f1: 请按F1来再次展示界面…
+        f1: 请按 F1 来再次显示界面...
         speed: 速度
+
+        keys:
+            fixture:
+                title: 关键点
+
+                deselect: 取消选中当前关键点
+                shift: 持续时间移至光标
+                copy: 应用当前的相机位置
+                cut: 切割关键点
+                add: "添加 %s 关键点"
+
+            modes:
+                title: 模式
+
+                flight: 开关飞行模式
+                vertical: 开关垂直飞行模式
+                sync: 开关同步模式
+                ouside: 开关分离相机模式
+                looping: 开关循环播放关键点
+                interactive: 开关交互添加关键点模式
+                
+            editor:
+                title: 相机编辑器
+
+                toggle: 开关相机编辑器的可见性
+                modifiers: 开关调整器的弹出
+                save: 保存相机配置
+                plause: 播放/暂停
+                next_fixture: 跳至下一关键点
+                prev_fixture: 跳至上一关键点
+                next: 跳至下一帧
+                prev: 跳至上一帧
 
     fixtures:
         idle: 静止
@@ -71,50 +105,109 @@ aperture.gui:
         circular: 环形
         keyframe: 关键帧
         null: "空"
+        manual: 手动
+        dolly: 滑轨
 
     modifiers:
         title: 调整器
         global: 全局调整器
 
         shake: 摇晃
+        shake_description: 为已启用的相机属性中添加简单的摇晃效果 (基于正弦和余弦函数)
         math: 数学
+        math_description: 允许使用数学表达式处理指定的相机属性
         look: 看
+        look_description: 将相机朝向一个或多个实体、方块位置或 (向前) 运动
         follow: 跟踪
+        follow_description: 将相机绑定于一个或多个实体之上
         translate: 平移
+        translate_description: 以特定的数值移动相机位置
         angle: 角度
+        angle_description: 以特定的数值旋转相机角度
         orbit: 轨道
+        orbit_description: 将相机绑定于一个或多个实体, 但使用的是类似于轨道的控件
         drag: 拖拽
+        drag_description: 使用当前值与先前值之间的线性交错, 将已启用的相机属性进行平滑处理
+        
+        enabled: 启用
+
+        tooltips:
+            add: 添加调整器...
+            paste: 粘贴调整器...
+
+            remove: 移除该调整器
+            lock: 启用/禁用该调整器
+            move_up: 向上移动调整器 (优先应用该调整器)
+            move_down: 向下移动调整器 (之后应用该调整器)
+            copy: 拷贝该调整器
+            envelope: 开关包络面板
+            active: 单击此控件中的任意选项, 以选择该调整器将作用于哪些相机属性
 
         panels:
-            copy_entity: 复制实体
+            copy_entity: 拷贝实体
+            copy_entity_tooltip: 拷贝实体头部的方向, 与使用 GoPros 的效果类似
 
             shake: 摇晃
             shake_amount: 数量值
 
-            relative: 是绝对的？
-            at_block: 看着方块？
-            forward: 向前看？
+            relative: 相对值
+            relative_tooltip: 应用于关键点或相机配置的相对动画\n\n例如, 那么将会有 10 度的动画应用于该调整器
+            at_block: 看向方块
+            forward: 向前看
+            forward_tooltip: 该选项能使相机朝向运动矢量的方向, 类似于过山车的效果
 
-            factor: 因素
+            factor: 线性系数 (介于 0 到 1), 数值越小, 平滑程度越高
+            
+            math: 数学表达式\n\n点击 "?" 按钮了解更多关于变量和函数的信息...
+
+        envelopes:
+            start_x: 起始点
+            start_d: 缓入点
+            end_x: 结束点 (如果启用了“相对值”, 那么此处为持续时间的终点, 否则从起点开始计算)
+            end_d: 缓出点
+            interp: 选择包络的插值
 
     profiles:
         title: 配置
         rename: 重命名
+        keyframes: 关键帧
 
-        rename_modal: 为当前的相机配置输入一个新的名字。
-        add_modal: 为新的相机配置输入一个名字。
-        dupe_modal: 为新拷贝的相机配置输入一个名字。
-        remove_modal: 你确定要移除这个相机配置吗（将不能恢复）？
+        rename_modal: 输入当前新相机配置的名称。
+        add_modal: 输入新相机配置的名称。
+        dupe_modal: 输入复制后的相机配置名称。
+        remove_modal: 您确定要移除这该机配置吗 (无法恢复)?
 
         convert_tooltip: 转换配置
         rename_tooltip: 重命名配置
         add_tooltip: 添加一个配置
-        dupe_tooltip: 拷贝配置
+        dupe_tooltip: 复制配置
         remove_tooltip: 移除配置
+        
+    minema:
+        title: Minema
+        output: 输出名称 (用于代替随机生成的日期)
+        set_start: 设定开始时间
+        set_start_tooltip: 移动时间轴上的光标, 随后点击该按钮来设定 Minema 片段的开始 Tick
+        set_duration: 设定持续时间
+        set_duration_tooltip: 移动时间轴上的光标,  随后点击该按钮来设定 Minema 片段的持续时间 (单位为 Tick)
+        record: 录制
+        premature_stop: "Minema 提前终止了录制!\n\n请退出相机编辑器并查看聊天栏以获取更多信息..."
+
+        minema_not_installed: Minema mod 未安装。请安装 Minema 3.5 或更高的版本...
+        minema_wrong_version: Minema mod 已安装, 但版本已过时! 该功能需要 Minema 3.5 或更高的版本...
+
+        modes:
+            tooltip: 录制模式定义了开始和结束的 Tick
+
+            full: 完整相机配置
+            fixture: 仅选中的关键点
+            custom: 自定义
 
     panels:
         name: 名字
-        duration: 持续长度
+        name_tooltip: 显示将会在时间轴上显示的名称
+        color_tooltip: 自定义关键点的颜色, 如果你需要对它加以颜色上的区别的话
+        duration: 关键点的持续时间 (单位为 Tick, 20 Tick 约等于 1 秒)
 
         x: X
         y: "Y"
@@ -125,7 +218,7 @@ aperture.gui:
         roll: 翻滚
         fov: FOV
 
-        offset: 延迟
+        offset: 偏移
         circles: 圆圈
         distance: 长度
 
@@ -133,37 +226,33 @@ aperture.gui:
         position: 位置
         angle: 角度
         circle: 圆圈
-        selector: 选择器
-        per_point: 持续长度/节点
-        to_keyframe: 生成关键帧
+        selector: 实体目标选择器 (您也可以输入实体的名称标签来代替目标选择器)\n\n点击 "?" 按钮了解更多关于语法的信息...
         use_speed: 速率控制
 
         all: 全部
-        tick: Tick
-        value: 值
+        previous: 上一关键点
+        
+        manual:
+            title: 手动
+            shift: 回放位移, 该属性如果为正, 则延迟播放数据； 如果为负, 则削减录制数据的持续时间
+            speed: 回放速度, 由于回放使用的是原始录制的数据, 因此可以考虑使用拖动调整器来平滑运动
+            record: 通过此按钮, 您就可以录制相机的手动运动了!
 
-        previous: 上一个
+        dolly:
+            distance: "距离决定了在指定的时间内，滑轨沿指定方向移动的方块距离"
+            yaw: "滑轨在水平方向 (偏航, 以角度来衡量) 上的移动"
+            pitch: "滑轨在垂直方向 (俯仰，以角度来衡量) 上的移动"
+            speed: "线性速度: %s 方块/s."
 
-        interps:
-            const: 连续的
-            linear: 线性
-            quad: 二次方
-            cubic: 三次曲线
-            hermite: 艾米插值
-            exp: 指数
-            bezier: 贝塞尔曲线
+        keys:
+            title: 当前的关键点面板
 
-            quad_in: 二次方缓入
-            quad_out: 二次方缓出
-            quad_inout: 二次方缓入/缓出
-            cubic_in: 三次曲线缓入
-            cubic_out: 三次曲线缓出
-            cubic_inout: 三次曲线缓入/缓出
-            exp_in: 指数缓入
-            exp_out: 指数缓出
-            exp_inout: 指数缓入/缓出
-
-        easing:
-            in: 缓入
-            out: 缓出
-            inout: 缓入/缓出
+            path_position: 循环选择位置的插值
+            path_angle: 循环选择角度的插值
+            velocity: 开关速率控制选项
+            
+            graph_interp: 循环选择关键帧的插值
+            graph_easing: 循环选择关键帧的缓入缓出
+            
+            previous: 开关上一关键点选项
+            record_manual: 开始录制手动动作

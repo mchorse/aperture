@@ -1,7 +1,9 @@
 package mchorse.aperture.camera;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,8 +15,13 @@ import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.events.CameraProfileChangedEvent;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Camera profile class
@@ -29,6 +36,12 @@ public class CameraProfile
      * Pattern for finding numbered
      */
     public static final Pattern NUMBERED_SUFFIX = Pattern.compile("_(\\d+)$");
+
+    /**
+     * Curves
+     */
+    @Expose
+    protected Map<String, KeyframeChannel> curves = new HashMap<String, KeyframeChannel>();
 
     /**
      * List of profile's camera fixtures
@@ -52,9 +65,19 @@ public class CameraProfile
      */
     public boolean dirty;
 
+    /**
+     * Whether camera profile wasn't saved before
+     */
+    public boolean exists = true;
+
     public CameraProfile(AbstractDestination destination)
     {
         this.destination = destination;
+    }
+
+    public Map<String, KeyframeChannel> getCurves()
+    {
+        return this.curves;
     }
 
     public List<AbstractModifier> getModifiers()
@@ -287,10 +310,8 @@ public class CameraProfile
         if (this.has(index))
         {
             AbstractFixture present = this.get(index);
-            AbstractFixture.copyModifiers(present, fixture);
 
-            fixture.setName(present.getName());
-            fixture.setDuration(present.getDuration());
+            fixture.copyByReplacing(present);
             this.fixtures.set(index, fixture);
         }
     }
@@ -303,6 +324,20 @@ public class CameraProfile
         this.getAll().clear();
         this.getModifiers().clear();
         this.dirty();
+    }
+
+    /**
+     * Apply different curves
+     */
+    @SideOnly(Side.CLIENT)
+    public void applyCurves(long progress, float partialTick)
+    {
+        KeyframeChannel channel = this.curves.get("brightness");
+
+        if (channel != null && !channel.isEmpty())
+        {
+            Minecraft.getMinecraft().gameSettings.gammaSetting = (float) channel.interpolate(progress + partialTick);
+        }
     }
 
     public void applyProfile(long progress, float partialTick, Position position)
@@ -354,22 +389,8 @@ public class CameraProfile
 
         if (modifiers)
         {
-            fixture.applyModifiers(originalProgress, progress, partialTick, previewPartialTick, this, position);
-            this.applyModifiers(originalProgress, originalProgress, partialTick, previewPartialTick, this, position);
-        }
-    }
-
-    /**
-     * Apply global modifiers
-     */
-    public void applyModifiers(long ticks, long offset, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
-    {
-        for (AbstractModifier modifier : this.getModifiers())
-        {
-            if (modifier.enabled)
-            {
-                modifier.modify(ticks, offset, null, partialTick, previewPartialTick, profile, pos);
-            }
+            AbstractModifier.applyModifiers(this, fixture, originalProgress, progress, partialTick, previewPartialTick, position);
+            AbstractModifier.applyModifiers(this, null, originalProgress, originalProgress, partialTick, previewPartialTick, position);
         }
     }
 
@@ -397,6 +418,15 @@ public class CameraProfile
                 this.getModifiers().add(modifier);
             }
         }
+
+        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        {
+            String key = ByteBufUtils.readUTF8String(buffer);
+            KeyframeChannel channel = new KeyframeChannel();
+
+            channel.fromByteBuf(buffer);
+            this.curves.put(key, channel);
+        }
     }
 
     /**
@@ -417,6 +447,14 @@ public class CameraProfile
         {
             ModifierRegistry.toByteBuf(modifier, buffer);
         }
+
+        buffer.writeInt(this.curves.size());
+
+        for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
+        {
+            ByteBufUtils.writeUTF8String(buffer, entry.getKey());
+            entry.getValue().toByteBuf(buffer);
+        }
     }
 
     /**
@@ -424,6 +462,8 @@ public class CameraProfile
      */
     public void save()
     {
+        this.exists = true;
+
         if (this.destination != null)
         {
             this.destination.save(this);
@@ -465,9 +505,24 @@ public class CameraProfile
             profile.modifiers.add(modifier.copy());
         }
 
+        for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
+        {
+            KeyframeChannel channel = new KeyframeChannel();
+
+            channel.copy(entry.getValue());
+            profile.curves.put(entry.getKey(), channel);
+        }
+
         profile.initiate();
 
         return profile;
+    }
+
+    public void copyFrom(CameraProfile profile)
+    {
+        this.exists = true;
+        this.fixtures = profile.fixtures;
+        this.modifiers = profile.modifiers;
     }
 
     public void cut(int where)

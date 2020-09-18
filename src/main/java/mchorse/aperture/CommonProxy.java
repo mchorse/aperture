@@ -3,8 +3,10 @@ package mchorse.aperture;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.fixtures.CircularFixture;
+import mchorse.aperture.camera.fixtures.DollyFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.NullFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AngleModifier;
@@ -46,19 +48,21 @@ public class CommonProxy
 
         /* Register camera fixtures and modifiers */
         FixtureRegistry.register("idle", IdleFixture.class);
+        FixtureRegistry.register("dolly", DollyFixture.class);
         FixtureRegistry.register("circular", CircularFixture.class);
+        FixtureRegistry.register("path", PathFixture.class);
         FixtureRegistry.register("keyframe", KeyframeFixture.class);
         FixtureRegistry.register("null", NullFixture.class);
-        FixtureRegistry.register("path", PathFixture.class);
+        FixtureRegistry.register("manual", ManualFixture.class);
 
+        ModifierRegistry.register("angle", AngleModifier.class);
+        ModifierRegistry.register("translate", TranslateModifier.class);
         ModifierRegistry.register("shake", ShakeModifier.class);
-        ModifierRegistry.register("math", MathModifier.class);
+        ModifierRegistry.register("drag", DragModifier.class);
         ModifierRegistry.register("look", LookModifier.class);
         ModifierRegistry.register("follow", FollowModifier.class);
-        ModifierRegistry.register("translate", TranslateModifier.class);
-        ModifierRegistry.register("angle", AngleModifier.class);
         ModifierRegistry.register("orbit", OrbitModifier.class);
-        ModifierRegistry.register("drag", DragModifier.class);
+        ModifierRegistry.register("math", MathModifier.class);
     }
 
     /**

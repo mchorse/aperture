@@ -2,13 +2,10 @@ package mchorse.aperture.network.client;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraAPI;
-import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
-import mchorse.aperture.client.gui.GuiProfilesManager.CameraProfileEntry;
 import mchorse.aperture.network.common.PacketCameraProfileList;
 import mchorse.mclib.network.ClientMessageHandler;
 import net.minecraft.client.Minecraft;
@@ -31,29 +28,20 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
 
             for (String filename : CameraAPI.getClientProfiles())
             {
-                manager.profiles.add(manager.createEntry(new ClientDestination(filename)));
+                manager.addProfile(new ClientDestination(filename));
             }
 
             for (String profile : message.cameras)
             {
-                manager.profiles.add(manager.createEntry(new ServerDestination(profile)));
-            }
-
-            if (!ClientProxy.control.logged)
-            {
-                if (manager.profiles.elements.isEmpty())
-                {
-                    CameraProfile profile = new CameraProfile(AbstractDestination.create("default"));
-
-                    ClientProxy.control.addProfile(profile);
-                    manager.profiles.add(new CameraProfileEntry(profile.getDestination(), profile));
-                }
-
-                ClientProxy.control.logged = true;
+                manager.addProfile(new ServerDestination(profile));
             }
 
             manager.profiles.filter("", true);
-            manager.selectProfile(ClientProxy.control.currentProfile);
+
+            if (ClientProxy.control.currentProfile == null)
+            {
+                manager.selectFirstAvailable(manager.profiles.list.getIndex());
+            }
         }
     }
 }

@@ -1,61 +1,80 @@
 # Config strings
 aperture.config:
-    camera:
-        title: Камера
+    title: Аперчер
+
+    general:
+        title: Общие
         tooltip: Общие настройки камеры
 
-        camera_duration_step: Продолжительность движения
-        camera_duration: Продолжительность клипа по умолчанию
-        camera_interpolate_target: Интерполировать целевые клипы
-        camera_interpolate_target_value: Значение цели интерполяции
-        camera_spectator: Переключиться на наблюдателя
-        camera_step_factor: Фактор передвижения камеры
-        camera_rotate_factor: Фактор вращения камеры
-        camera_minema: Минема
-        camera_path_default_interp: Интерполяция траектории по умолчанию
-        camera_command_name: Имя команды камеры
-        camera_simulate_velocity: Симуляция скорости
-        camera_first_tick_zero: Нулевой кадр
-        camera_debug_ticks: Тики отладки
-        camera_profile_render: Отображать профиль камеры
-        camera_auto_save: Автосохранение профилей
-
-        gui_render_mouse: Отображать курсор мыши в интерфейсе
-
-        minecrafttp_teleport: Используйте /minecraft:tp
-        tp_teleport: Использовать /tp
-        aspect_ratio: Пропорции
+        duration: Продолжительность клипов
+        spectator: Переключение на наблюдателя
+        step_factor: Фактор шага камеры
+        rotate_factor: Фактор вращения камеры
+        command_name: Название команды камеры
+        debug_ticks: Тики отладки
+        profile_render: Отображать профиль камеры
+        auto_save: Автосохранение профилей
+        essentials_tp: Использовать /minecraft:tp
 
     outside: 
         title: Внешний режим
         tooltip: Настройки связанные с внешним режимом
 
-        camera_outside: Внешний режим
-        camera_outside_hide_player: Спрятать игрока
-        camera_outside_sky: Исправить небо
-        camera_outside_hide_guis: Спрятать интерфейс
-        camera_outside_hide_overlays: Спрятать оверлей
+        enabled: Внешний режим
+        hide_player: Спрятать игрок
+        sky: Починить небо
 
-    overlay:
-        title: Оверлей редактора камеры
-        tooltip: Позволяет установить изображение-оверлей для редактора камеры
-        
-        camera_editor_overlay: Включить оверлей
-        camera_editor_overlay_rl: Путь к оверлею
-        camera_editor_f1_tooltip: Спрятать подсказку с F1
+    editor:
+        title: Редактор камеры
+        tooltip: Настройки конфигурации, используемые в редакторе камеры
+
+        sync: Режим синхронизации
+        loop: Закольцевать клип
+        overlay: Включить оверлэй
+        overlay_rl: Путь оверлэя
+        f1_tooltip: Спрятать подсказку на F1
+        position: Отображать позицию
+        rule_of_thirds: Правило третей
+        crosshair: Перекрестие
+        letter_box: Каше
+        aspect_ratio: Соотношение сторон
+
+    flight:
+        title: Режим полёта
+        tooltip: Эта категория позволяет вам назначать клавиши для кнопок режима полёта в редакторе камеры
+
+        forward: Двигаться вперёд
+        backward: Двигаться назад
+        left: Двигаться влево
+        right: Двигаться вправо
+        up: Двигаться вверх
+        down: Двигаться вниз
+        camera_up: Повернуться наверх
+        camera_down: Повернуться вниз
+        camera_left: Повернуться влево
+        camera_right: Повернуться вправо
+        fov_minus: Уменьшить поле зрения
+        fov_plus: Увеличить поле зрения
+        roll_minus: Кренить влево
+        roll_plus: Кренить вправо
+        speed_minus: Уменьшить скорость
+        speed_plus: Увеличить скорость
 
     smooth:
         title: Гладкое движение камеры
         tooltip: Настройки гладкого движения камеры
 
-        camera_smooth_clamp: Ограничить тангаж
-
+        enabled: Гладкое движение камеры включено
+        x_friction: Ослабление оси X
+        y_friction: Ослабление оси Y
+        clamp: Ограничить тангаж
         roll_speed: Скорость крена
         roll_friction: Ослабление крена
-
         fov_speed: Скорость поля зрения
         fov_friction: Ослабление поля зрения
 
-        smooth_enabled: Гладкое движение камеры включено
-        mouse_x_friction: Ослабление оси X
-        mouse_y_friction: Ослабление оси Y
+    minema:
+        title: Минема
+        tooltip: Опции, касающиеся интеграции минемы
+
+        default_profile_name: Название профиля камеры

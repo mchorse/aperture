@@ -7,9 +7,8 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.resources.I18n;
 
 import java.util.function.Consumer;
 
@@ -18,46 +17,32 @@ import java.util.function.Consumer;
  * 
  * Allows to select the type of camera fixture the user wants to create.
  */
-public class GuiFixturesPopup extends GuiElement
+public class GuiFixtures extends GuiElement
 {
     public Consumer<AbstractFixture> callback;
 
-    public GuiFixturesPopup(Minecraft mc, Consumer<AbstractFixture> callback)
+    public GuiFixtures(Minecraft mc, Consumer<AbstractFixture> callback)
     {
         super(mc);
 
         this.callback = callback;
 
-        int i = 0;
+        this.flex().column(0).vertical().stretch().height(20).padding(2);
 
-        for (FixtureInfo info : FixtureRegistry.CLIENT.values())
+        for (byte i = 0; i < FixtureRegistry.getNextId(); i ++)
         {
+            FixtureInfo info = FixtureRegistry.getInfo(i);
             byte type = info.type;
-            int color = 0xff000000 + info.color.getHex();
-            GuiButtonElement button = new GuiButtonElement(mc, I18n.format(info.title), (b) ->
-            {
-                this.actionPerformed(type);
-            });
+            int color = info.color.getRGBAColor();
 
-            button.color(color).flex().relative(this.area).set(2, i * 20 + 2, 0, 20).w(1, -4);
-            this.add(button);
-
-            i++;
+            this.add(new GuiButtonElement(mc, IKey.lang(info.title), (b) -> this.createFixture(type)).color(color));
         }
-    }
-
-    @Override
-    public void resize()
-    {
-        this.flex().h(this.getChildren().size() * 20 + 4);
-
-        super.resize();
     }
 
     /**
      * Select a fixture
      */
-    private void actionPerformed(byte type)
+    public void createFixture(byte type)
     {
         long duration = Aperture.duration.get();
         AbstractFixture fixture = null;
@@ -80,7 +65,7 @@ public class GuiFixturesPopup extends GuiElement
     @Override
     public void draw(GuiContext context)
     {
-        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0xaa000000);
+        this.area.draw(0xaa000000);
 
         super.draw(context);
     }

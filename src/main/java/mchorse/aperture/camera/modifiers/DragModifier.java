@@ -55,15 +55,20 @@ public class DragModifier extends ComponentModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        DragModifier modifier = new DragModifier();
+        return new DragModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.active = this.active;
-        modifier.factor = this.factor;
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        return modifier;
+        if (from instanceof DragModifier)
+        {
+            this.factor = ((DragModifier) from).factor;
+        }
     }
 
     @Override

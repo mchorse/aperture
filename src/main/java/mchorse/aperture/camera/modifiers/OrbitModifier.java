@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import net.minecraft.entity.Entity;
@@ -113,11 +114,11 @@ public class OrbitModifier extends EntityModifier
         /* Calculate look vector */
         final float degToPi = (float) Math.PI / 180;
 
-        float f = MathHelper.cos(-yaw * degToPi - (float) Math.PI);
-        float f1 = MathHelper.sin(-yaw * degToPi - (float) Math.PI);
-        float f2 = -MathHelper.cos(-pitch * degToPi);
-        float f3 = MathHelper.sin(-pitch * degToPi);
-        Vec3d look = new Vec3d(f1 * f2, f3, f * f2);
+        float cos = MathHelper.cos(-yaw * degToPi - (float) Math.PI);
+        float sin = MathHelper.sin(-yaw * degToPi - (float) Math.PI);
+        float cos2 = -MathHelper.cos(-pitch * degToPi);
+        float sin2 = MathHelper.sin(-pitch * degToPi);
+        Vec3d look = new Vec3d(sin * cos2, sin2, cos * cos2);
 
         pos.point.set(x, y, z);
 
@@ -130,28 +131,32 @@ public class OrbitModifier extends EntityModifier
         double dX = pos.point.x - x;
         double dY = pos.point.y - y;
         double dZ = pos.point.z - z;
-        double horizontalDistance = MathHelper.sqrt(dX * dX + dZ * dZ);
-
-        yaw = (float) (MathHelper.atan2(dZ, dX) * (180D / Math.PI)) - 90.0F;
-        pitch = (float) (-(MathHelper.atan2(dY, horizontalDistance) * (180D / Math.PI)));
+        Angle angle = Angle.angle(dX, dY, dZ);
 
         pos.point.set(x, y, z);
-        pos.angle.set(yaw, pitch);
+        pos.angle.set(angle.yaw, angle.pitch);
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        OrbitModifier modifier = new OrbitModifier();
+        return new OrbitModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.selector = this.selector;
-        modifier.yaw = this.yaw;
-        modifier.pitch = this.pitch;
-        modifier.distance = this.distance;
-        modifier.copy = this.copy;
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        return modifier;
+        if (from instanceof OrbitModifier)
+        {
+            OrbitModifier modifier = (OrbitModifier) from;
+
+            this.yaw = modifier.yaw;
+            this.pitch = modifier.pitch;
+            this.distance = modifier.distance;
+            this.copy = modifier.copy;
+        }
     }
 
     @Override

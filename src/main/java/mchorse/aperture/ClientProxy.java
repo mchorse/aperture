@@ -9,8 +9,10 @@ import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.ModifierRegistry.ModifierInfo;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
+import mchorse.aperture.camera.fixtures.DollyFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.NullFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
@@ -27,8 +29,10 @@ import mchorse.aperture.client.RenderingHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
+import mchorse.aperture.client.gui.panels.GuiDollyFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiIdleFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
+import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiNullFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAngleModifierPanel;
@@ -41,10 +45,14 @@ import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiTranslateModifierPanel;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
-import mchorse.aperture.utils.Color;
+import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.GameType;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -54,6 +62,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 
 /**
@@ -104,6 +113,21 @@ public class ClientProxy extends CommonProxy
     }
 
     /**
+     * Open the camera editor
+     */
+    public static GuiCameraEditor openCameraEditor()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        GuiCameraEditor editor = ClientProxy.getCameraEditor();
+
+        editor.updateCameraEditor(mc.player);
+        mc.player.setVelocity(0, 0, 0);
+        mc.displayGuiScreen(editor);
+
+        return editor;
+    }
+
+    /**
      * Get client cameras storage location
      * 
      * This method returns File pointer to a folder where client side camera 
@@ -137,6 +161,18 @@ public class ClientProxy extends CommonProxy
     }
 
     /**
+     * Get game mode of the player
+     */
+    public static GameType getGameMode()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.player;
+        NetworkPlayerInfo networkplayerinfo = mc.getConnection().getPlayerInfo(player.getGameProfile().getId());
+
+        return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
+    }
+
+    /**
      * Register mod items, blocks, tile entites and entities, load item,
      * block models and register entity renderer.
      */
@@ -167,12 +203,16 @@ public class ClientProxy extends CommonProxy
         GuiCameraEditor.PANELS.put(CircularFixture.class, GuiCircularFixturePanel.class);
         GuiCameraEditor.PANELS.put(KeyframeFixture.class, GuiKeyframeFixturePanel.class);
         GuiCameraEditor.PANELS.put(NullFixture.class, GuiNullFixturePanel.class);
+        GuiCameraEditor.PANELS.put(ManualFixture.class, GuiManualFixturePanel.class);
+        GuiCameraEditor.PANELS.put(DollyFixture.class, GuiDollyFixturePanel.class);
 
         FixtureRegistry.registerClient(IdleFixture.class, "aperture.gui.fixtures.idle", new Color(0.085F, 0.62F, 0.395F));
         FixtureRegistry.registerClient(PathFixture.class, "aperture.gui.fixtures.path", new Color(0.408F, 0.128F, 0.681F));
         FixtureRegistry.registerClient(CircularFixture.class, "aperture.gui.fixtures.circular", new Color(0.298F, 0.631F, 0.247F));
         FixtureRegistry.registerClient(KeyframeFixture.class, "aperture.gui.fixtures.keyframe", new Color(0.874F, 0.184F, 0.625F));
         FixtureRegistry.registerClient(NullFixture.class, "aperture.gui.fixtures.null", new Color(0.1F, 0.1F, 0.12F));
+        FixtureRegistry.registerClient(ManualFixture.class, "aperture.gui.fixtures.manual", new Color().set(0x0050b3));
+        FixtureRegistry.registerClient(DollyFixture.class, "aperture.gui.fixtures.dolly", new Color().set(0xffa500));
 
         /* Register camera modifiers */
         GuiModifiersManager.PANELS.put(ShakeModifier.class, GuiShakeModifierPanel.class);

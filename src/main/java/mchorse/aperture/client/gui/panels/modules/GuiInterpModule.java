@@ -2,11 +2,16 @@ package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.GuiUtils;
+import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Keyboard;
 
 /**
  * Path fixture interpolations GUI module
@@ -27,36 +32,36 @@ public class GuiInterpModule extends GuiAbstractModule
     {
         super(mc, editor);
 
-        this.pos = new GuiButtonElement(mc, "", (b) ->
+        this.pos = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
-            if (this.interps.isVisible())
+            if (this.interps.hasParent())
             {
-                this.interps.setVisible(false);
+                this.interps.removeFromParent();
             }
             else
             {
                 this.pickPos = true;
                 this.interps.setCurrent(this.fixture.interpolationPos);
-                this.interps.setVisible(true);
 
-                this.interps.flex().relative(this.pos.resizer());
+                this.getParentContainer().add(this.interps);
+                this.interps.flex().relative(this.pos);
                 this.interps.resize();
             }
         });
 
-        this.angle = new GuiButtonElement(mc, "", (b) ->
+        this.angle = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
-            if (this.interps.isVisible())
+            if (this.interps.hasParent())
             {
-                this.interps.setVisible(false);
+                this.interps.removeFromParent();
             }
             else
             {
                 this.pickPos = false;
                 this.interps.setCurrent(this.fixture.interpolationAngle);
-                this.interps.setVisible(true);
 
-                this.interps.flex().relative(this.angle.resizer());
+                this.getParentContainer().add(this.interps);
+                this.interps.flex().relative(this.angle);
                 this.interps.resize();
             }
         });
@@ -66,42 +71,61 @@ public class GuiInterpModule extends GuiAbstractModule
             if (this.pickPos)
             {
                 this.fixture.interpolationPos = interp.get(0);
-                this.pos.label = I18n.format("aperture.gui.panels.interps." + interp.get(0).name);
+                this.pos.label.set(interp.get(0).getKey());
             }
             else
             {
                 this.fixture.interpolationAngle = interp.get(0);
-                this.angle.label = I18n.format("aperture.gui.panels.interps." + interp.get(0).name);
+                this.angle.label.set(interp.get(0).getKey());
             }
 
-            this.interps.setVisible(false);
+            this.interps.removeFromParent();
             this.editor.updateProfile();
         });
+        this.interps.markIgnored();
 
-        this.pos.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.angle.flex().relative(this.area).set(0, 25, 0, 20).w(1, 0);
-        this.interps.flex().y(20).w(1, 0).h(96);
+        this.interps.flex().y(1F).w(1F).h(96);
 
-        this.add(this.pos, this.angle, this.interps);
+        this.flex().column(5).vertical().stretch().height(20);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.pos);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.angle);
+
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.path_position"), Keyboard.KEY_P, this::togglePosition).held(Keyboard.KEY_LCONTROL).active(editor::isFlightMode).category(GuiAbstractFixturePanel.CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.path_angle"), Keyboard.KEY_A, this::toggleAngle).held(Keyboard.KEY_LCONTROL).active(editor::isFlightMode).category(GuiAbstractFixturePanel.CATEGORY);
+    }
+
+    private void togglePosition()
+    {
+        this.fixture.interpolationPos = this.next(this.fixture.interpolationPos, this.pos);
+    }
+
+    private void toggleAngle()
+    {
+        this.fixture.interpolationAngle = this.next(this.fixture.interpolationAngle, this.angle);
+    }
+
+    private PathFixture.InterpolationType next(PathFixture.InterpolationType interp, GuiButtonElement button)
+    {
+        int factor = GuiScreen.isShiftKeyDown() ? -1 : 1;
+        int index = MathUtils.cycler(interp.ordinal() + factor, 0, PathFixture.InterpolationType.values().length - 1);
+
+        interp = PathFixture.InterpolationType.values()[index];
+        button.label.set(interp.getKey());
+        this.interps.setCurrent(interp);
+        this.editor.updateProfile();
+        GuiUtils.playClick();
+
+        return interp;
     }
 
     public void fill(PathFixture fixture)
     {
         this.fixture = fixture;
 
-        this.interps.setVisible(false);
+        this.interps.removeFromParent();
         this.interps.setCurrent(fixture.interpolationPos);
-        this.pos.label = I18n.format("aperture.gui.panels.interps." + this.interps.getCurrent().get(0).name);
+        this.pos.label.set(this.interps.getCurrentFirst().getKey());
         this.interps.setCurrent(fixture.interpolationAngle);
-        this.angle.label = I18n.format("aperture.gui.panels.interps." + this.interps.getCurrent().get(0).name);
-    }
-
-    @Override
-    public void draw(GuiContext context)
-    {
-        super.draw(context);
-
-        this.font.drawStringWithShadow(I18n.format("aperture.gui.panels.position"), this.pos.area.x + this.pos.area.w + 5, this.pos.area.y + 6, 0xffffff);
-        this.font.drawStringWithShadow(I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w + 5, this.angle.area.y + 6, 0xffffff);
+        this.angle.label.set(this.interps.getCurrentFirst().getKey());
     }
 }

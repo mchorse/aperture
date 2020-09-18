@@ -45,8 +45,7 @@ public class KeyboardHandler
 
     /* Camera profile keys */
     private KeyBinding toggleRender;
-    private KeyBinding startRunning;
-    private KeyBinding stopRunning;
+    private KeyBinding toggleRunning;
     private KeyBinding addPoint;
 
     /* Roll and FOV */
@@ -111,13 +110,11 @@ public class KeyboardHandler
         String misc = "key.aperture.misc";
 
         this.toggleRender = new KeyBinding("key.aperture.profile.toggle", Keyboard.KEY_P, profile);
-        this.startRunning = new KeyBinding("key.aperture.profile.start", Keyboard.KEY_Z, profile);
-        this.stopRunning = new KeyBinding("key.aperture.profile.stop", Keyboard.KEY_X, profile);
+        this.toggleRunning = new KeyBinding("key.aperture.profile.playback", Keyboard.KEY_Z, profile);
         this.addPoint = new KeyBinding("key.aperture.profile.point", Keyboard.KEY_NONE, profile);
 
         ClientRegistry.registerKeyBinding(this.toggleRender);
-        ClientRegistry.registerKeyBinding(this.startRunning);
-        ClientRegistry.registerKeyBinding(this.stopRunning);
+        ClientRegistry.registerKeyBinding(this.toggleRunning);
         ClientRegistry.registerKeyBinding(this.addPoint);
 
         /* Roll and FOV */
@@ -182,6 +179,7 @@ public class KeyboardHandler
     @SubscribeEvent
     public void onUserLogOut(ClientDisconnectionFromServerEvent event)
     {
+        ClientProxy.cameraEditor = null;
         ClientProxy.control.reset();
         ClientProxy.server = false;
 
@@ -217,11 +215,7 @@ public class KeyboardHandler
         /* Misc. */
         if (this.cameraEditor.isPressed())
         {
-            GuiCameraEditor editor = ClientProxy.getCameraEditor();
-
-            editor.updateCameraEditor(player);
-            player.setVelocity(0, 0, 0);
-            this.mc.displayGuiScreen(editor);
+            ClientProxy.openCameraEditor();
         }
 
         if (this.smoothCamera.isPressed())
@@ -256,14 +250,10 @@ public class KeyboardHandler
             ClientProxy.renderer.toggleRender();
         }
 
-        /* Starting stopping */
-        if (this.startRunning.isPressed())
+        /* Starting/stopping */
+        if (this.toggleRunning.isPressed())
         {
-            ClientProxy.runner.start(ClientProxy.control.currentProfile);
-        }
-        else if (this.stopRunning.isPressed())
-        {
-            ClientProxy.runner.stop();
+            ClientProxy.runner.toggle(ClientProxy.control.currentProfile, 0);
         }
 
         if (this.resetRoll.isPressed())
@@ -387,7 +377,7 @@ public class KeyboardHandler
 
         if (screen instanceof GuiCameraEditor)
         {
-            ((GuiCameraEditor) screen).cameraProfileWasChanged(event.profile);
+            ((GuiCameraEditor) screen).updateSaveButton(event.profile);
         }
     }
 }

@@ -5,9 +5,9 @@ import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifier>
 {
@@ -21,17 +21,17 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
 
         this.shake = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.shake = value;
+            this.modifier.shake = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
-        this.shake.tooltip(I18n.format("aperture.gui.modifiers.panels.shake"), Direction.BOTTOM);
+        this.shake.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake"), Direction.BOTTOM);
 
         this.shakeAmount = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.shakeAmount = value;
+            this.modifier.shakeAmount = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
-        this.shakeAmount.tooltip(I18n.format("aperture.gui.modifiers.panels.shake_amount"), Direction.BOTTOM);
+        this.shakeAmount.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake_amount"), Direction.BOTTOM);
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {

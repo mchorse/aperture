@@ -1,7 +1,7 @@
 package mchorse.aperture.client.gui.panels.keyframe;
 
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Keyframe;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeChannel;
+import mchorse.mclib.utils.keyframes.Keyframe;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
 /**
  * Keyframe cell

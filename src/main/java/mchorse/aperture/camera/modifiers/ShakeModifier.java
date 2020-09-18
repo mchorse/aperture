@@ -91,16 +91,23 @@ public class ShakeModifier extends ComponentModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        ShakeModifier modifier = new ShakeModifier();
+        return new ShakeModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.active = this.active;
-        modifier.shake = this.shake;
-        modifier.shakeAmount = this.shakeAmount;
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        return modifier;
+        if (from instanceof ShakeModifier)
+        {
+            ShakeModifier modifier = (ShakeModifier) from;
+
+            this.shake = modifier.shake;
+            this.shakeAmount = modifier.shakeAmount;
+        }
     }
 
     @Override

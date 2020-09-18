@@ -3,14 +3,15 @@ package mchorse.aperture.client.gui.panels;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiColorElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 /**
  * Base class for abstract fixture panel
@@ -20,21 +21,37 @@ import net.minecraft.client.resources.I18n;
  */
 public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends GuiElement implements IFixturePanel<T>
 {
+    public static final IKey CATEGORY = IKey.lang("aperture.gui.panels.keys.title");
+
     /**
      * Currently editing camera fixture
      */
     public T fixture;
 
-    /* Stuff */
+    /* Am Stuff */
     public GuiCameraEditor editor;
+    public GuiScrollElement left;
+    public GuiScrollElement right;
 
     /* GUI fields */
     public GuiTextElement name;
+    public GuiColorElement color;
     public GuiTrackpadElement duration;
 
     public GuiAbstractFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc);
+
+        this.editor = editor;
+
+        this.left = new GuiScrollElement(mc);
+        this.left.scroll.opposite = true;
+        this.left.flex().relative(this).y(20).w(130).hTo(this.area, 1F)
+            .column(5).vertical().stretch().scroll().height(20).padding(10);
+
+        this.right = new GuiScrollElement(mc);
+        this.right.flex().relative(this).x(1F).y(20).w(130).hTo(this.area, 1F).anchorX(1F)
+            .column(5).vertical().stretch().scroll().height(20).padding(10);
 
         this.name = new GuiTextElement(mc, 80, (str) ->
         {
@@ -42,6 +59,15 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
             this.editor.updateValues();
             this.editor.updateProfile();
         });
+        this.name.tooltip(IKey.lang("aperture.gui.panels.name_tooltip"));
+
+        this.color = new GuiColorElement(mc, (c) ->
+        {
+            this.fixture.setColor(c);
+            this.editor.updateProfile();
+        });
+        this.color.target(this).tooltip(IKey.lang("aperture.gui.panels.color_tooltip"));
+        this.color.direction(Direction.RIGHT);
 
         this.duration = new GuiTrackpadElement(mc, (value) ->
         {
@@ -49,15 +75,11 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
             this.editor.updatePlayerCurrently();
             this.editor.updateProfile();
         });
-        this.duration.tooltip(I18n.format("aperture.gui.panels.duration"), Direction.BOTTOM);
+        this.duration.tooltip(IKey.lang("aperture.gui.panels.duration"));
         this.duration.values(1.0F).limit(1, Float.POSITIVE_INFINITY, true);
 
-        this.name.flex().relative(this.area).set(0, 10, 100, 20);
-        this.duration.flex().relative(this.area).set(0, 35, 100, 20);
-
-        this.add(this.name, this.duration);
-
-        this.editor = editor;
+        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.name")).background(0x88000000), this.name, this.color, this.duration);
+        this.add(this.left, this.right);
     }
 
     protected void updateDuration(long value)
@@ -69,12 +91,16 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     public void profileWasUpdated()
     {}
 
+    public void cameraEditorOpened()
+    {}
+
     @Override
     public void select(T fixture, long duration)
     {
         this.fixture = fixture;
 
         this.name.setText(fixture.getName());
+        this.color.picker.setColor(fixture.getColor());
         this.duration.setValue(fixture.getDuration());
     }
 
@@ -88,16 +114,5 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     {
         this.select(this.fixture, -1);
         this.editor.updateProfile();
-    }
-
-    @Override
-    public void draw(GuiContext context)
-    {
-        super.draw(context);
-
-        if (!this.name.field.isFocused())
-        {
-            GuiUtils.drawRightString(this.font, I18n.format("aperture.gui.panels.name"), this.name.area.x + this.name.area.w - 4, this.name.area.y + 6, 0xffaaaaaa);
-        }
     }
 }

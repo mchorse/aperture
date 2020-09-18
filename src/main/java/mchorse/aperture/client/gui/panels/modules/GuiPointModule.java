@@ -3,6 +3,8 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -29,31 +31,28 @@ public class GuiPointModule extends GuiAbstractModule
             this.point.x = value;
             this.editor.updateProfile();
         });
-        this.x.tooltip(I18n.format("aperture.gui.panels.x"));
+        this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
             this.point.y = value;
             this.editor.updateProfile();
         });
-        this.y.tooltip(I18n.format("aperture.gui.panels.y"));
+        this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
             this.point.z = value;
             this.editor.updateProfile();
         });
-        this.z.tooltip(I18n.format("aperture.gui.panels.z"));
-
-        this.x.flex().relative(this.area).set(0, 0, 0, 20).w(1, 0);
-        this.y.flex().relative(this.area).set(0, 30, 0, 20).w(1, 0);
-        this.z.flex().relative(this.area).set(0, 60, 0, 20).w(1, 0);
+        this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 
         this.x.values(0.1F);
         this.y.values(0.1F);
         this.z.values(0.1F);
 
-        this.add(this.x, this.y, this.z);
+        this.flex().column(5).vertical().stretch().height(20);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.x, this.y, this.z);
     }
 
     public void fill(Point point)

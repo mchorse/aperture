@@ -10,12 +10,12 @@ import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
+import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
-import mchorse.mclib.client.gui.utils.resizers.layout.ColumnResizer;
-import mchorse.mclib.utils.MathUtils;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.resources.I18n;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +29,8 @@ public class GuiModifiersManager extends GuiElement
     public static final Map<Class<? extends AbstractModifier>, Class<? extends GuiAbstractModifierPanel<? extends AbstractModifier>>> PANELS = new HashMap<>();
 
     /* Strings */
-    private String stringTitle = I18n.format("aperture.gui.modifiers.title");
-    private String stringGlobal = I18n.format("aperture.gui.modifiers.global");
+    private String stringTitle = "aperture.gui.modifiers.title";
+    private String stringGlobal = "aperture.gui.modifiers.global";
 
     private AbstractModifier clipboard;
 
@@ -70,13 +70,15 @@ public class GuiModifiersManager extends GuiElement
      */
     public GuiCameraEditor editor;
 
+    public GuiLabel title;
+
     public GuiModifiersManager(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc);
 
         this.editor = editor;
         this.add = new GuiIconElement(mc, Icons.ADD, (b) -> this.buttons.setVisible(!this.buttons.isVisible()));
-
+        this.add.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.add"));
         this.paste = new GuiIconElement(mc, Icons.PASTE, (b) ->
         {
             if (this.clipboard != null)
@@ -88,34 +90,47 @@ public class GuiModifiersManager extends GuiElement
                 this.editor.updateProfile();
             }
         });
+        this.paste.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.paste"));
 
-        this.buttons = new GuiElement(mc);
-        this.buttons.setVisible(false);
-        this.buttons.flex().relative(this.area).x(1, 0).y(20).w(0.5F, 0).anchor(1, 0);
-        ColumnResizer.apply(this.buttons, 0).vertical().stretch();
 
-        for (ModifierInfo info : ModifierRegistry.CLIENT.values())
+        this.buttons = new GuiElement(mc)
         {
-            byte type = info.type;
-            int color = 0xff000000 + info.color.getHex();
+            @Override
+            public void draw(GuiContext context)
+            {
+                this.area.draw(0x88000000);
 
-            GuiButtonElement button = new GuiButtonElement(mc, I18n.format(info.title), (b) ->
+                super.draw(context);
+            }
+        };
+        this.buttons.setVisible(false);
+        this.buttons.flex().relative(this).x(1, -10).y(24).w(0.5F, 0).anchor(1, 0).column(0).vertical().stretch().padding(2);
+
+        for (byte i = 0; i < ModifierRegistry.getNextId(); i ++)
+        {
+            ModifierInfo info = ModifierRegistry.CLIENT.get(ModifierRegistry.CLASS_TO_ID.inverse().get(i));
+            byte type = info.type;
+            int color = info.color.getRGBAColor();
+
+            GuiButtonElement button = new GuiButtonElement(mc, IKey.lang(info.title), (b) ->
             {
                 this.addCameraModifier(type, this.getModifiers());
                 this.buttons.setVisible(false);
             });
 
-            button.color(color).flex().relative(this.area).h(20);
-            this.buttons.add(button);
+            this.buttons.add(button.color(color));
         }
 
         this.panels = new GuiScrollElement(mc);
-        this.panels.flex().relative(this.area).y(20).w(1F, 0).h(1, -20);
-        ColumnResizer.apply(this.panels, 0).vertical().stretch().scroll();
+        this.panels.flex().relative(this).y(28).w(1F, 0).h(1, -28).column(0).vertical().stretch().scroll();
 
-        this.add.flex().relative(this.area).set(0, 2, 16, 16).x(1, -18);
-        this.paste.flex().relative(this.add.resizer()).set(-20, 0, 16, 16);
-        this.add(this.add, this.paste, this.panels, this.buttons);
+        this.add.flex().relative(this).set(0, 4, 20, 20).x(1, -30);
+        this.paste.flex().relative(this.add).set(-20, 0, 20, 20);
+
+        this.title = Elements.label(IKey.lang(this.stringGlobal)).background(0x88000000);
+        this.title.flex().relative(this).set(10, 10, 0, 20);
+
+        this.add(this.title, this.add, this.paste, this.panels, this.buttons);
 
         this.hideTooltip();
     }
@@ -144,8 +159,9 @@ public class GuiModifiersManager extends GuiElement
      */
     public void setFixture(AbstractFixture fixture)
     {
-        this.panels.clear();
+        this.panels.removeAll();
         this.fixture = fixture;
+        this.title.label.set(fixture == null ? this.stringGlobal : this.stringTitle);
 
         if (this.getModifiers() == null)
         {
@@ -235,16 +251,19 @@ public class GuiModifiersManager extends GuiElement
     public void draw(GuiContext context)
     {
         /* Background */
-        int h = Math.min(this.panels.scroll.scrollSize + 20, this.area.h);
+        int h = Math.min(this.panels.scroll.scrollSize + 28, this.area.h);
 
         if (this.panels.getChildren().isEmpty())
         {
-            h = 20;
+            h = 28;
         }
 
         Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.y + h, 0xaa000000);
-        Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.y + 20, 0x88000000);
-        this.font.drawStringWithShadow(this.fixture == null ? this.stringGlobal : this.stringTitle, this.area.x + 6, this.area.y + 10 - this.font.FONT_HEIGHT / 2, 0xffffff);
+
+        if (this.buttons.isVisible())
+        {
+            this.add.area.draw(0x88000000);
+        }
 
         super.draw(context);
     }

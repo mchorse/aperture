@@ -2,11 +2,11 @@
     {
         "modid": "aperture",
         "name": "Aperture",
-        "description": "Enhanced camera mod",
+        "description": "Advanced camera mod",
         "version": "${version}",
         "mcversion": "${mcversion}",
-        "updateJSON": "https://raw.githubusercontent.com/mchorse/aperture/master/version.json",
-        "url": "https://github.com/mchorse/aperture",
+        "updateJSON": "https://raw.githubusercontent.com/mchorse/aperture/1.12/version.json",
+        "url": "https://www.curseforge.com/minecraft/mc-mods/aperture",
         "authorList": ["mchorse"],
         "credits": "Badr. Special thanks to ycwei982 (Chinese) and Andruxioid (Russian) for mod's translations."
     }

@@ -164,19 +164,25 @@ public class MathModifier extends ComponentModifier
     }
 
     @Override
-    public AbstractModifier copy()
+    public AbstractModifier create()
     {
-        MathModifier modifier = new MathModifier();
+        return new MathModifier();
+    }
 
-        modifier.enabled = this.enabled;
-        modifier.active = this.active;
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-        if (this.expression != null)
+        if (from instanceof MathModifier)
         {
-            modifier.rebuildExpression(this.expression.toString());
-        }
+            MathModifier modifier = (MathModifier) from;
 
-        return modifier;
+            if (modifier.expression != null)
+            {
+                this.rebuildExpression(modifier.expression.toString());
+            }
+        }
     }
 
     @Override
@@ -191,6 +197,8 @@ public class MathModifier extends ComponentModifier
     @Override
     public void fromJSON(JsonObject object)
     {
+        super.fromJSON(object);
+
         if (object.has("expression"))
         {
             this.rebuildExpression(object.get("expression").getAsString());

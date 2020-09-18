@@ -83,19 +83,26 @@ public class CircularFixture extends AbstractFixture
     }
 
     @Override
-    public AbstractFixture copy()
+    public AbstractFixture create(long duration)
     {
-        CircularFixture fixture = new CircularFixture(this.duration);
+        return new CircularFixture(duration);
+    }
 
-        AbstractFixture.copyModifiers(this, fixture);
-        fixture.name = this.name;
-        fixture.start = this.start.copy();
-        fixture.offset = this.offset;
-        fixture.distance = this.distance;
-        fixture.circles = this.circles;
-        fixture.pitch = this.pitch;
+    @Override
+    public void copy(AbstractFixture from)
+    {
+        super.copy(from);
 
-        return fixture;
+        if (from instanceof CircularFixture)
+        {
+            CircularFixture circular = (CircularFixture) from;
+
+            this.start = circular.start.copy();
+            this.offset = circular.offset;
+            this.distance = circular.distance;
+            this.circles = circular.circles;
+            this.pitch = circular.pitch;
+        }
     }
 
     @Override

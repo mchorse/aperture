@@ -227,6 +227,8 @@ aperture.gui:
         angle: Ângulo
         circle: Círculo
         selector: Seletor de destino da entidade (você também pode inserir a tag de nome da entidade em vez do seletor de destino)\n\nClique no botão "?" para obter mais informações sobre a sintaxe...
+        per_point: Duração por ponto
+
         use_speed: Controle de velocidade
         use_speed_enable: Habilitado
         use_factor: Uso do Fator

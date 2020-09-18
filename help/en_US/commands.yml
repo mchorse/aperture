@@ -59,3 +59,9 @@ aperture.commands:
                 {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
                 
                 {r}Set camera's position based on absolute or relative values. You can set absolute position of the camera by specifying plain floating point numbers {6}/camera {8}step {7}0 4 0{r}. Or you can provide a relative value by using {7}~+{r} or {7}~-{r} signs {6}/camera {8}step {7}~0 ~0.1 ~0{r}. It works similar to {6}/tp{r} command.
+
+        reload:
+            |
+                {l}{6}/{r}camera {8}reload{r}
+
+                {r}Reload camera editor.

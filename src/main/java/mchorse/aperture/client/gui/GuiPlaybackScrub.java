@@ -1,34 +1,30 @@
 package mchorse.aperture.client.gui;
 
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
-import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.opengl.GL11;
 
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.client.gui.utils.GuiUtils;
+import mchorse.mclib.utils.Color;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * GUI playback scrub
+ * GUI playback timeline
  *
  * This class is responsible for rendering and controlling the playback
  */
 public class GuiPlaybackScrub extends GuiElement
 {
-    /**
-     * Vanilla buttons resource location
-     */
-    public static final ResourceLocation VANILLA_BUTTONS = new ResourceLocation("textures/gui/widgets.png");
+    public static final Color COLOR = new Color();
 
     public boolean scrubbing;
     public int value;
@@ -102,6 +98,20 @@ public class GuiPlaybackScrub extends GuiElement
         {
             this.editor.setFlight(false);
             this.editor.scrubbed(this, this.value, fromScrub);
+
+            int v = (int) (this.value * this.scale);
+            int w = this.area.w - 4;
+
+            if (this.scroll  > v)
+            {
+                this.scroll = v;
+            }
+            else if (v > this.scroll + w)
+            {
+                this.scroll = v - w;
+            }
+
+            this.clampScroll();
         }
     }
 
@@ -114,7 +124,7 @@ public class GuiPlaybackScrub extends GuiElement
     }
 
     /**
-     * Set the value of the scrubber from scrub
+     * Set the value of the scrubber from timeline
      */
     public void setValueFromScrub(int value)
     {
@@ -230,12 +240,14 @@ public class GuiPlaybackScrub extends GuiElement
     @Override
     public boolean mouseScrolled(GuiContext context)
     {
+        int scroll = context.mouseWheel;
+
         if (!Minecraft.IS_RUNNING_ON_MAC)
         {
             scroll = -scroll;
         }
 
-        if (this.area.isInside(context.mouseX, context.mouseY) && !this.scrolling)
+        if (this.area.isInside(context) && !this.scrolling)
         {
             float scale = this.scale;
             float factor = 0.1F;
@@ -287,9 +299,9 @@ public class GuiPlaybackScrub extends GuiElement
     }
 
     /**
-     * Draw scrub on the screen
+     * Draw timeline on the screen
      *
-     * This scrub looks quite simple. The line part is inspired by Blender's
+     * This timeline looks quite simple. The line part is inspired by Blender's
      * timeline thingy. Scrub also renders all of available camera fixtures.
      */
     @Override
@@ -393,7 +405,14 @@ public class GuiPlaybackScrub extends GuiElement
 
             for (AbstractFixture fixture : this.profile.getAll())
             {
-                int color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getHex();
+                COLOR.set(fixture.getColor(), false);
+
+                int color = COLOR.getRGBColor();
+
+                if (color == 0)
+                {
+                    color = FixtureRegistry.CLIENT.get(fixture.getClass()).color.getRGBColor();
+                }
 
                 boolean selected = i == this.index;
                 int leftMargin = this.calcMouseFromValue(pos) - 1;
@@ -412,7 +431,27 @@ public class GuiPlaybackScrub extends GuiElement
                 }
 
                 /* Draw fixture's background and the hinge */
-                Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
+                if (fixture instanceof ManualFixture)
+                {
+                    ManualFixture manual = (ManualFixture) fixture;
+                    int endTick = manual.getEndTick();
+                    int end = leftMargin + (int) (endTick / (float) fixture.getDuration() * (rightMargin - leftMargin));
+
+                    if (end > leftMargin && end < rightMargin)
+                    {
+                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), end, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
+                        Gui.drawRect(end, y + (selected ? 12 : 15), rightMargin, y + h - 1, selected ? 0xaa000000 : 0x66000000);
+                    }
+                    else
+                    {
+                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xaa000000 : 0x66000000) + (end <= leftMargin ? 0 : color));
+                    }
+                }
+                else
+                {
+                    Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
+                }
+
                 Gui.drawRect(rightMargin, y + 1, rightMargin + 1, y + h - 1, 0xff000000 + color);
 
                 if (selected)
@@ -431,31 +470,13 @@ public class GuiPlaybackScrub extends GuiElement
 
                     if (c > 1)
                     {
-                        if (path.perPointDuration)
+                        float fract = (rightMargin - leftMargin) / (float) c;
+
+                        for (int j = 1; j < c; j++)
                         {
-                            long duration = path.getDuration();
-                            long frame = path.getPoint(0).getDuration();
+                            int px = leftMargin + (int) (fract * j);
 
-                            for (int j = 1; j < c; j++)
-                            {
-                                int fract = (int) ((rightMargin - leftMargin) * ((float) frame / duration));
-                                int px = leftMargin + fract;
-
-                                Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
-
-                                frame += path.getPoint(j).getDuration();
-                            }
-                        }
-                        else
-                        {
-                            float fract = (rightMargin - leftMargin) / (float) c;
-
-                            for (int j = 1; j < c; j++)
-                            {
-                                int px = leftMargin + (int) (fract * j);
-
-                                Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
-                            }
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
                         }
                     }
                 }
@@ -529,7 +550,7 @@ public class GuiPlaybackScrub extends GuiElement
 
             this.font.drawStringWithShadow(offsetLabel, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
 
-            /* Move the tick line left, so it won't overflow the scrub */
+            /* Move the tick line left, so it won't overflow the timeline */
             if (tx + 3 - x + width > w)
             {
                 tx -= width + 2;

@@ -40,6 +40,5 @@ key.aperture:
         title: Aperture Cameras
 
         toggle: Toggle Camera Profile Rendering
-        start: Start Camera Profile
-        stop: Stop Camera Profile
+        playback: Toggle Camera Playback
         point: Add path point

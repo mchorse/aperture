@@ -1,45 +1,60 @@
 # Config strings
 aperture.config.comments:
     general:
-        camera_duration_step: What is default step to use when adding or reducing duration of the camera fixture (in ticks)
-        camera_duration: What is default duration of the camera fixture (in ticks)
-        camera_interpolate_target: Interpolate target based camera fixtures (follow and look) outcome
-        camera_interpolate_target_value: Interpolation value for target based camera fixture interpolation
-        camera_spectator: Switch to spectator mode when starting camera playback
-        camera_step_factor: Camera step factor for step keys
-        camera_rotate_factor: Camera rotate factor for rotate keys
-        camera_minema: Activate Minema recording on camera start and deactivate on camera stop
-        camera_path_default_interp: Default interpolation method for path fixture
-        camera_command_name: Allows you to rebind camera command's name (requires game reload to take effect)
-        camera_simulate_velocity: Simulate player's velocity during camera playback (see legs in perspective)
-        camera_debug_ticks: Write current camera playback tick to the log
-        camera_first_tick_zero: When camera runner starts, start the actual playback when partial tick is exactly zero
-        camera_profile_render: Render camera profile in the world?
-        camera_auto_save: Save all camera profiles upon exiting the world
-        minecrafttp_teleport: When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)
-        
-    outside:
-        camera_outside: Whether camera should be played back from outside (allowing the player to act as a body actor)
-        camera_outside_hide_player: Whether player should be hidden during playback of the camera if outside mode is enabled
-        camera_outside_sky: If enabled, fixes the sky, but disables block selection (due to a bug)
-        camera_outside_hide_guis: Prevent GUI screens from rendering during outside mode
-        camera_outside_hide_overlays: Prevent rendering screen overlays (such as pumpkin overlay, fire when burning, water and etc.) during outside mode
+        duration: What is default duration of the camera fixture (in ticks)
+        spectator: Switch to spectator mode when starting camera playback
+        step_factor: Camera step factor for step keys
+        rotate_factor: Camera rotate factor for rotate keys
+        command_name: Allows you to rebind camera command's name (requires game reload to take effect)
+        debug_ticks: Write current camera playback tick to the log
+        profile_render: Render camera profile in the world?
+        auto_save: Save all camera profiles upon exiting the world
+        essentials_tp: When start the camera playback in multiplayer, teleport you with /minecraft:tp command (For Essentials)
 
-    overlay:
-        camera_editor_overlay: Enables camera editor overlay
-        camera_editor_overlay_rl: Resource location path to the texture which will be used as overlay
-        camera_editor_f1_tooltip: Show the tooltip in the bottom left corner which explains how to show back the GUI
+    outside:
+       enabled: Whether camera should be played back from outside (allowing the player to act as a body actor)
+       hide_player: Whether player should be hidden during playback of the camera if outside mode is enabled
+       sky: If enabled, fixes the sky, but disables block selection (due to a bug)
+
+    editor:
+        sync: Enables syncing of camera's position in camera editor, which previews current camera profile
+        loop: Loops playback of currently selected fixture
+        overlay: Enables camera editor overlay
+        overlay_rl: Resource location path to the texture which will be used as overlay
+        f1_tooltip: Show the tooltip in the bottom left corner which explains how to show back the GUI
+        position: Show camera properties when sync mode enabled
+        rule_of_thirds: Show rule of thirds guides
+        crosshair: Show a crosshair in the middle of the camera editor's screen
+        letter_box: Show letter box (aka black bars) which narrow or widen the camera shot as a reference
         aspect_ratio: Aspect ratio for camera editor's letterbox feature
 
-    smooth:
-        camera_smooth_clamp: Clip smooth camera's pitch between -90 and 90 degrees range?
+    flight:
+        forward: Moves the camera forward
+        backward: Moves the camera backward
+        left: Moves the camera to the left
+        right: Moves the camera to the right
+        up: Ascends the camera upward
+        down: Descends the camera downwards
+        camera_up: Tilt the camera upward toward the sky
+        camera_down: Tilt the camera downward toward the ground
+        camera_left: Pan the camera to the left
+        camera_right: Pan the camera to the right
+        fov_minus: Narrow the Field of View
+        fov_plus: Widen the Field of View
+        roll_minus: Roll counter-clockwise
+        roll_plus: Roll clockwise
+        speed_minus: Decrease overall speed factor (instead of mouse wheel down)
+        speed_plus: Increase overall speed factor (instead of mouse wheel up)
 
+    smooth:
+        enabled: Enable smooth camera
+        x_friction: Smooth mouse X friction
+        y_friction: Smooth mouse Y friction
+        clamp: Clip smooth camera's pitch between -90 and 90 degrees range?
         roll_speed: Roll acceleration speed
         roll_friction: Roll acceleration friction (how fast it slows down)
-
         fov_speed: FOV acceleration speed
         fov_friction: FOV acceleration friction (how fast it slows down)
 
-        smooth_enabled: Enable smooth camera
-        mouse_x_friction: Smooth mouse X friction
-        mouse_y_friction: Smooth mouse Y friction
+    minema:
+        default_profile_name: Whether the name of the output file should be the name of the camera profile, rather than current date

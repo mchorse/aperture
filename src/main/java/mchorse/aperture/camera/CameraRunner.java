@@ -5,6 +5,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
@@ -30,36 +31,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CameraRunner
 {
     private Minecraft mc = Minecraft.getMinecraft();
-
-    /**
-     * FOV used before camera playback
-     */
-    private float lastFov = 70.0F;
-
-    /**
-     * Roll used before camera playback
-     */
-    private float lastRoll = 0;
-
-    /**
-     * Game mode player was in before playback
-     */
-    private GameType gameMode = GameType.NOT_SET;
-
-    /**
-     * Whether it's first tick during the playback
-     */
-    private boolean firstTick = false;
-
-    /**
-     * Is camera runner waits for 0.0 partial tick
-     */
-    private boolean firstTickZero = false;
-
-    /**
-     * Whether partial tick 0.0 was detected
-     */
-    private boolean firstTickZeroStart = false;
 
     /**
      * Is camera runner running?
@@ -107,16 +78,6 @@ public class CameraRunner
         return this.position;
     }
 
-    /**
-     * Get game mode of the given player
-     */
-    public GameType getGameMode(EntityPlayer player)
-    {
-        NetworkPlayerInfo networkplayerinfo = Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getGameProfile().getId());
-
-        return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
-    }
-
     /* Playback methods (start/stop) */
 
     public void toggle(CameraProfile profile, long ticks)
@@ -155,12 +116,10 @@ public class CameraRunner
 
         if (!this.isRunning)
         {
-            this.lastFov = this.mc.gameSettings.fovSetting;
-            this.lastRoll = ClientProxy.control.roll;
-            this.gameMode = this.getGameMode(this.mc.player);
+            ClientProxy.control.cache();
             this.position.set(this.mc.player);
 
-            if (Aperture.spectator.get() && !Aperture.outside.get() && this.gameMode != GameType.SPECTATOR)
+            if (Aperture.spectator.get() && !Aperture.outside.get() && ClientProxy.control.lastGameMode != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode 3");
             }
@@ -175,10 +134,6 @@ public class CameraRunner
         this.isRunning = true;
         this.duration = this.profile.getDuration();
         this.ticks = start;
-
-        this.firstTick = true;
-        this.firstTickZero = Aperture.firstTickZero.get();
-        this.firstTickZeroStart = false;
     }
 
     /**
@@ -188,23 +143,7 @@ public class CameraRunner
     {
         if (this.isRunning)
         {
-            if (this.mc.player != null)
-            {
-                if (Aperture.spectator.get() && !Aperture.outside.get() && this.gameMode != GameType.SPECTATOR)
-                {
-                    this.mc.player.sendChatMessage("/gamemode " + this.gameMode.getID());
-                }
-
-                if (false)
-                {
-                    ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema disable");
-                }
-            }
-
-            this.mc.gameSettings.fovSetting = this.lastFov;
-            ClientProxy.control.roll = this.lastRoll;
-            this.gameMode = null;
-
+            ClientProxy.control.restore();
             MinecraftForge.EVENT_BUS.unregister(this);
 
             this.detachOutside();
@@ -221,7 +160,7 @@ public class CameraRunner
      */
     public void attachOutside()
     {
-        if (!this.outside.active && false)
+        if (!this.outside.active && Aperture.outside.get())
         {
             this.outside.start();
         }
@@ -263,18 +202,6 @@ public class CameraRunner
             return;
         }
 
-        if (this.firstTick)
-        {
-            /* Currently Minema supports client side /minema command which
-             * record video */
-            if (false)
-            {
-                ClientCommandHandler.instance.executeCommand(this.mc.player, "/minema enable");
-            }
-
-            this.firstTick = false;
-        }
-
         long progress = Math.min(this.ticks, this.duration);
 
         if (progress >= this.duration)
@@ -288,11 +215,6 @@ public class CameraRunner
                 this.mc.setRenderViewEntity(Aperture.outsideSky.get() ? this.outside.camera : this.mc.player);
             }
 
-            if (this.firstTickZero && event.renderTickTime == 0.0)
-            {
-                this.firstTickZeroStart = true;
-            }
-
             if (Aperture.debugTicks.get())
             {
                 Aperture.LOGGER.info("Camera render frame: " + event.renderTickTime + " " + this.ticks);
@@ -302,6 +224,7 @@ public class CameraRunner
             double prevY = this.position.point.y;
             double prevZ = this.position.point.z;
 
+            this.profile.applyCurves(progress, event.renderTickTime);
             this.profile.applyProfile(progress, event.renderTickTime, this.position);
 
             EntityPlayer player = this.mc.player;
@@ -316,29 +239,11 @@ public class CameraRunner
             double y = point.y + Math.sin(progress) * 0.000000001 + 0.000000001;
 
             /* Velocity simulation (useful for recording the player) */
-            if (Aperture.simulateVelocity.get())
-            {
-                if (this.ticks == 0)
-                {
-                    this.setCameraPosition(player, point.x, y, point.z, angle);
-                }
-                else
-                {
-                    this.setCameraPosition(player, player.posX, player.posY, player.posZ, angle);
-                }
+            this.setCameraPosition(player, point.x, y, point.z, angle);
 
-                player.motionX = this.position.point.x - prevX;
-                player.motionY = this.position.point.y - prevY;
-                player.motionZ = this.position.point.z - prevZ;
-            }
-            else
+            if (!this.outside.active)
             {
-                this.setCameraPosition(player, point.x, y, point.z, angle);
-
-                if (!this.outside.active)
-                {
-                    player.motionX = player.motionY = player.motionZ = 0;
-                }
+                player.motionX = player.motionY = player.motionZ = 0;
             }
 
             if (!this.mc.isSingleplayer() && !this.outside.active)
@@ -408,10 +313,7 @@ public class CameraRunner
                 Aperture.LOGGER.info("Camera frame: " + this.ticks);
             }
 
-            if (this.firstTickZero && this.firstTickZeroStart || !this.firstTickZero)
-            {
-                this.ticks++;
-            }
+            this.ticks++;
         }
     }
 }

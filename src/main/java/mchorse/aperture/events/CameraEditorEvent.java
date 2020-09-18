@@ -31,7 +31,7 @@ public abstract class CameraEditorEvent extends Event
     }
 
     /**
-     * Camera editor event when the playback scrub was scrubbed 
+     * Camera editor event when the playback timeline was scrubbed
      */
     public static class Scrubbed extends CameraEditorEvent
     {
@@ -74,6 +74,25 @@ public abstract class CameraEditorEvent extends Event
             super(editor);
 
             this.play = play;
+            this.position = position;
+        }
+    }
+
+    /**
+     * Camera editor event for notifying rewind of the camera, i.e. when camera playback was
+     * finished and requires restore
+     */
+    public static class Rewind extends CameraEditorEvent
+    {
+        /**
+         * Position at which camera editor started playing/was paused
+         */
+        public int position;
+
+        public Rewind(GuiCameraEditor editor, int position)
+        {
+            super(editor);
+
             this.position = position;
         }
     }

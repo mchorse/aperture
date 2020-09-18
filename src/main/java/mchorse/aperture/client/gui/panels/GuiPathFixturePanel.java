@@ -1,24 +1,23 @@
 package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.Easing;
-import mchorse.aperture.camera.fixtures.KeyframeFixture.KeyframeInterpolation;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.fixtures.PathFixture.DurablePosition;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
-import mchorse.aperture.client.gui.utils.GuiFixtureKeyframesGraphEditor;
+import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
+import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import org.lwjgl.input.Keyboard;
 
 /**
  * Path fixture panel
@@ -34,12 +33,11 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     public GuiAngleModule angle;
     public GuiPointsModule points;
     public GuiInterpModule interp;
-    public GuiToggleElement perPointDuration;
     public GuiToggleElement useSpeed;
-    public GuiButtonElement toKeyframe;
-    public GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel> speed;
+    public GuiToggleElement useFactor;
+    public GuiCameraEditorKeyframesGraphEditor speed;
 
-    public DurablePosition position;
+    public Position position;
 
     private long update;
 
@@ -51,118 +49,65 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle = new GuiAngleModule(mc, editor);
         this.points = new GuiPointsModule(mc, editor, this);
         this.interp = new GuiInterpModule(mc, editor);
-        this.perPointDuration = new GuiToggleElement(mc, I18n.format("aperture.gui.panels.per_point"), false, (b) ->
-        {
-            this.fixture.perPointDuration = b.isToggled();
-            this.editor.updateProfile();
-        });
-        this.useSpeed = new GuiToggleElement(mc, I18n.format("aperture.gui.panels.use_speed"), false, (b) ->
+        this.useSpeed = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_speed_enable"), false, (b) ->
         {
             this.fixture.useSpeed = b.isToggled();
             this.speed.setVisible(this.fixture.useSpeed);
             this.editor.updateProfile();
-            this.resize();
+            this.updateSpeedPanel();
 
             if (this.fixture.useSpeed)
             {
                 this.fixture.updateSpeedCache();
             }
         });
-        this.toKeyframe = new GuiButtonElement(mc, I18n.format("aperture.gui.panels.to_keyframe"), (b) -> this.toKeyframe());
-        this.speed = new GuiFixtureKeyframesGraphEditor<GuiPathFixturePanel>(mc, this);
-        this.speed.graph.setParent(this);
-        this.speed.graph.setColor(0x0088ff);
+        this.useFactor = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_factor"), false, (b) ->
+        {
+            this.fixture.useFactor = b.isToggled();
+            this.editor.updateProfile();
+        });
+        this.useFactor.tooltip(IKey.lang("aperture.gui.panels.use_factor_tooltip"));
+        this.speed = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
 
-        this.point.flex().relative(this.area).set(0, 10, 80, 80).x(1, -80);
-        this.interp.flex().relative(this.area).set(0, 60, 100, 45);
-        this.points.flex().relative(this.area).set(140, 0, 90, 20).y(1, -20).w(1, -280);
-        this.toKeyframe.flex().relative(this.interp.resizer()).set(0, 50, 100, 20);
+        this.points.flex().relative(this.left.flex()).x(1F, 40).y(1F, -30).wTo(this.right.flex(), -80).h(20);
+        this.speed.flex().relative(this).y(0.55F, 0).w(1F).h(0.45F);
+        this.left.flex().w(140);
 
-        this.perPointDuration.flex().relative(this.name.resizer()).set(0, -25, 100, 20);
-        this.useSpeed.flex().relative(this.perPointDuration.resizer()).set(0, 0, 100, 20).x(1, 5);
+        this.left.add(this.interp);
+        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.use_speed")).background(0x88000000), this.useSpeed, this.useFactor);
+        this.left.markContainer();
+        this.right.add(this.point, this.angle);
 
-        this.speed.flex().relative(this.area).set(-10, 0, 0, 0).y(0.5F, 0).w(1, 20).h(0.5F, -30);
+        this.prepend(this.speed);
+        this.add(this.points);
 
-        this.add(this.point, this.angle, this.perPointDuration, this.useSpeed, this.toKeyframe, this.speed, this.points, this.interp);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LSHIFT).active(editor::isFlightMode).category(CATEGORY);
     }
 
-	@Override
+    private void updateSpeedPanel()
+    {
+        if (this.fixture.useSpeed)
+        {
+            this.left.flex().hTo(this.speed.area);
+            this.right.flex().hTo(this.speed.area);
+        }
+        else
+        {
+            this.left.flex().hTo(this.area, 1F);
+            this.right.flex().hTo(this.area, 1F);
+        }
+
+        this.resize();
+    }
+
+    @Override
 	public void profileWasUpdated()
 	{
 		if (this.fixture.useSpeed)
 		{
-			this.update = System.currentTimeMillis() + 200;
+			this.update = System.currentTimeMillis() + 100;
 		}
 	}
-
-	private void toKeyframe()
-    {
-        int c = this.fixture.getCount();
-
-        if (c <= 1)
-        {
-            return;
-        }
-
-        long duration = this.fixture.getDuration();
-        KeyframeFixture fixture = new KeyframeFixture(duration);
-        AbstractFixture.copyModifiers(this.fixture, fixture);
-        KeyframeInterpolation pos = this.fixture.interpolationPos.interp;
-        KeyframeInterpolation angle = this.fixture.interpolationAngle.interp;
-        Easing posEasing = this.fixture.interpolationPos.easing;
-        Easing angleEasing = this.fixture.interpolationAngle.easing;
-
-        long x = 0;
-        int i = 0;
-
-        for (DurablePosition point : this.fixture.getPoints())
-        {
-            if (!this.fixture.perPointDuration)
-            {
-                x = (int) (i / (c - 1F) * duration);
-            }
-
-            int index = fixture.x.insert(x, (float) point.point.x);
-            fixture.y.insert(x, (float) point.point.y);
-            fixture.z.insert(x, (float) point.point.z);
-            fixture.yaw.insert(x, point.angle.yaw);
-            fixture.pitch.insert(x, point.angle.pitch);
-            fixture.roll.insert(x, point.angle.roll);
-            fixture.fov.insert(x, point.angle.fov);
-
-            fixture.x.get(index).setInterpolation(pos, posEasing);
-            fixture.y.get(index).setInterpolation(pos, posEasing);
-            fixture.z.get(index).setInterpolation(pos, posEasing);
-            fixture.yaw.get(index).setInterpolation(angle, angleEasing);
-            fixture.pitch.get(index).setInterpolation(angle, angleEasing);
-            fixture.roll.get(index).setInterpolation(angle, angleEasing);
-            fixture.fov.get(index).setInterpolation(angle, angleEasing);
-
-            if (this.fixture.perPointDuration)
-            {
-                x += point.getDuration();
-            }
-
-            i ++;
-        }
-
-        this.editor.createFixture(fixture);
-    }
-
-    @Override
-    public void resize()
-    {
-        boolean h = this.flex().getH() > 200;
-
-        this.angle.flex().relative(this.area).set(0, 10, 80, 80).x(1, -170);
-
-        if (h && !this.speed.isVisible())
-        {
-            this.angle.flex().x(1, -80).y(120);
-        }
-
-        super.resize();
-    }
 
     @Override
     public void pickPoint(GuiPointsModule module, int index)
@@ -171,19 +116,11 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.point.fill(this.position.point);
         this.angle.fill(this.position.angle);
+        this.duration.setValue(this.fixture.getDuration());
 
-        if (this.fixture.perPointDuration)
+        if (this.editor.isSyncing())
         {
-            this.duration.setValue(this.position.getDuration());
-        }
-        else
-        {
-            this.duration.setValue(this.fixture.getDuration());
-        }
-
-        if (this.editor.syncing)
-        {
-            this.editor.scrub.setValueFromScrub((int) this.currentOffset());
+            this.editor.timeline.setValueFromScrub((int) this.currentOffset());
         }
     }
 
@@ -200,7 +137,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         {
             index = (int) ((duration / (float) fixture.getDuration()) * fixture.getCount());
 
-            DurablePosition pos = fixture.getPoint(index);
+            Position pos = fixture.getPoint(index);
 
             this.position = pos;
             this.points.index = index;
@@ -210,19 +147,15 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.angle.fill(this.position.angle);
         this.points.fill(fixture);
         this.interp.fill(fixture);
-        this.perPointDuration.toggled(fixture.perPointDuration);
         this.useSpeed.toggled(fixture.useSpeed);
+        this.useFactor.toggled(fixture.useFactor);
+        this.updateSpeedPanel();
 
         if (!same)
         {
             this.speed.graph.setDuration(fixture.getDuration());
-            this.speed.setChannel(fixture.speed);
+            this.speed.setChannel(fixture.speed, 0x0088ff);
             this.speed.setVisible(this.fixture.useSpeed);
-        }
-
-        if (fixture.perPointDuration && this.position != null)
-        {
-            this.duration.setValue(this.position.getDuration());
         }
 
         this.points.index = index;
@@ -255,17 +188,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     protected void updateDuration(long value)
     {
-        if (this.fixture.perPointDuration)
-        {
-            this.position.setDuration(value);
-        }
-        else
-        {
-            this.fixture.setDuration(value);
-        }
+        super.updateDuration(value);
 
         this.speed.graph.setDuration((int) value);
-        this.editor.updateValues();
     }
 
     @Override
@@ -278,8 +203,5 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 	    }
 
         super.draw(context);
-
-        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.position"), this.point.area.x + this.point.area.w / 2, this.point.area.y - 14, 0xffffffff);
-        this.editor.drawCenteredString(this.font, I18n.format("aperture.gui.panels.angle"), this.angle.area.x + this.angle.area.w / 2, this.angle.area.y - 14, 0xffffffff);
     }
 }

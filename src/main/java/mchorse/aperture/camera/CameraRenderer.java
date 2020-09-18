@@ -1,23 +1,25 @@
 package mchorse.aperture.camera;
 
-import net.minecraft.client.renderer.OpenGlHelper;
-import org.lwjgl.opengl.GL11;
-
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
+import mchorse.aperture.camera.fixtures.DollyFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.utils.Color;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
+import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,9 +28,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 /**
@@ -167,25 +171,33 @@ public class CameraRenderer
         SmoothCamera camera = ClientProxy.renderer.smooth;
         EntityPlayer player = this.mc.player;
 
-        if (event.side == Side.CLIENT && event.player == player && camera.enabled.get())
+        if (event.side == Side.CLIENT && event.player == player)
         {
-            /* Copied from EntityRenderer */
-            float sensetivity = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-            float finalSensetivity = sensetivity * sensetivity * sensetivity * 8.0F;
-            float dx = this.mc.mouseHelper.deltaX * finalSensetivity * 0.15F;
-            float dy = this.mc.mouseHelper.deltaY * finalSensetivity * 0.15F;
+            if (camera.enabled.get())
+            {
+                /* Copied from EntityRenderer */
+                float sensetivity = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+                float finalSensetivity = sensetivity * sensetivity * sensetivity * 8.0F;
+                float dx = this.mc.mouseHelper.deltaX * finalSensetivity * 0.15F;
+                float dy = this.mc.mouseHelper.deltaY * finalSensetivity * 0.15F;
 
-            /* Updating smooth camera */
-            camera.update(this.mc.player, dx, dy);
+                /* Updating smooth camera */
+                camera.update(this.mc.player, dx, dy);
 
-            /* Roll and FOV acceleration */
-            KeyboardHandler keys = ClientProxy.keys;
+                /* Roll and FOV acceleration */
+                KeyboardHandler keys = ClientProxy.keys;
 
-            float roll = keys.addRoll.isKeyDown() ? 1 : (keys.reduceRoll.isKeyDown() ? -1 : 0F);
-            float fov = keys.addFov.isKeyDown() ? 1 : (keys.reduceFov.isKeyDown() ? -1 : 0F);
+                float roll = keys.addRoll.isKeyDown() ? 1 : (keys.reduceRoll.isKeyDown() ? -1 : 0F);
+                float fov = keys.addFov.isKeyDown() ? 1 : (keys.reduceFov.isKeyDown() ? -1 : 0F);
 
-            this.roll.accelerate(roll * this.roll.factor.get());
-            this.fov.accelerate(fov * this.fov.factor.get());
+                this.roll.accelerate(roll * this.roll.factor.get());
+                this.fov.accelerate(fov * this.fov.factor.get());
+            }
+
+            if (event.phase == TickEvent.Phase.START)
+            {
+                GuiManualFixturePanel.update();
+            }
         }
     }
 
@@ -195,6 +207,23 @@ public class CameraRenderer
     @SubscribeEvent
     public void onLastRender(RenderWorldLastEvent event)
     {
+        if (GuiManualFixturePanel.recording)
+        {
+            GuiAbstractFixturePanel panel = ClientProxy.getCameraEditor().panel.delegate;
+
+            if (panel instanceof GuiManualFixturePanel)
+            {
+                ((GuiManualFixturePanel) panel).recordFrame(this.mc.player, event.getPartialTicks());
+            }
+        }
+
+        int shader = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
+
+        if (shader != 0)
+        {
+            OpenGlHelper.glUseProgram(0);
+        }
+
         CameraProfile profile = ClientProxy.control.currentProfile;
         CameraRunner runner = ClientProxy.runner;
 
@@ -249,7 +278,11 @@ public class CameraRenderer
 
         GlStateManager.disableBlend();
         GlStateManager.popAttrib();
-        GL11.glLineWidth(2);
+
+        if (shader != 0)
+        {
+            OpenGlHelper.glUseProgram(shader);
+        }
     }
 
     /**
@@ -257,25 +290,13 @@ public class CameraRenderer
      */
     private void drawFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
     {
-        int shader = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
-
-        if (shader != 0)
-        {
-            OpenGlHelper.glUseProgram(0);
-        }
-
-        if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture)
+        if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture || fixture instanceof DollyFixture || fixture instanceof ManualFixture)
         {
             this.drawPathFixture(color, fixture, prev, next);
         }
         else if (fixture instanceof CircularFixture)
         {
             this.drawCircularFixture(partialTicks, color, fixture, prev, next);
-        }
-
-        if (shader != 0)
-        {
-            OpenGlHelper.glUseProgram(shader);
         }
     }
 
@@ -304,17 +325,24 @@ public class CameraRenderer
         vb.setTranslation(-this.playerX, this.mc.player.eyeHeight - this.playerY, -this.playerZ);
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
-        for (int i = 0; i < size; i++)
+        if (fixture instanceof DollyFixture)
         {
-            for (int j = 0; j < p; j++)
+            vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+            vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+        }
+        else
+        {
+            for (int i = 0; i < size; i++)
             {
-                fixture.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
-                fixture.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
+                for (int j = 0; j < p; j++)
+                {
+                    fixture.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
+                    fixture.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
 
-                vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
-                vb.pos(next.point.x, next.point.y, next.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
+                    vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+                    vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+                }
             }
-
         }
 
         Tessellator.getInstance().draw();
@@ -434,10 +462,10 @@ public class CameraRenderer
 
             if (i == 0)
             {
-                vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
+                vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
             }
 
-            vb.pos(next.point.x, next.point.y, next.point.z).color(color.red, color.green, color.blue, 1F).endVertex();
+            vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
         }
 
         Tessellator.getInstance().draw();
@@ -454,7 +482,7 @@ public class CameraRenderer
         GlStateManager.pushMatrix();
         GlStateManager.pushAttrib();
         GlStateManager.enableBlend();
-        GlStateManager.color(color.red, color.green, color.blue, 0.8F);
+        GlStateManager.color(color.r, color.g, color.b, 0.8F);
 
         this.mc.renderEngine.bindTexture(TEXTURE);
 

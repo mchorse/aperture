@@ -14,7 +14,7 @@ aperture.gui:
     record: Record
     pick: Pick morph...
     duplicate: Duplicate
-    search: "Search:"
+    search: Search...
     cancel: Cancel
     break: Break
     select: Select
@@ -23,39 +23,41 @@ aperture.gui:
     config:
         title: Camera Options
 
-        outside: Outside mode (O)
-        minema: Minema
+        outside: Outside mode
         spectator: Spectator
         show_path: Show path
-        sync: Sync (S)
-        flight: Flight mode (F)
+        sync: Sync
+        flight: Flight mode
+        flight_tooltip: Enables flight mode, which allows to control the camera within camera editor with WASD and mouse dragging (see Aperture's flight mode configuration for keybinds)
         display_info: Display position
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
         rule_of_thirds: Rule of thirds
+        crosshair: Crosshair
         letter_box: Letter box
-        repeat: Repeat fixture (R)
+        repeat: Repeat fixture
         overlay: Enable overlay
         pick_overlay: Pick overlay
 
     tooltips:
-        jump_next_fixture: Jump to next fixture (Shift + Right)
-        jump_next_frame: Jump to next frame (Right)
-        plause: Play/pause (Space)
-        jump_prev_frame: Jump to previous frame (Left)
-        jump_prev_fixture: Jump to previous fixture (Shift + Left)
+        jump_next_fixture: Jump to next fixture
+        jump_next_frame: Jump to next frame
+        plause: Play/pause
+        jump_prev_frame: Jump to previous frame
+        jump_prev_fixture: Jump to previous fixture
 
         move_up: Move fixture forward
-        move_duration: Move duration to the cursor (M)
-        copy_position: Copy player's position (B)
+        move_duration: Move duration to the cursor
+        copy_position: Copy player's position
         move_down: Move fixture backward
 
-        save: Save camera profile (Ctrl + S)
+        save: Save camera profile
         profiles: Show camera profiles
         config: Show camera editor options
-        modifiers: Show modifiers panel (N)
-        cut: Cut fixture in two at cursor (C)
-        creation: Interactive fixture creation (I)
+        modifiers: Show modifiers panel
+        minema: Minema
+        cut: Cut fixture in two at cursor
+        creation: Interactive fixture creation
         add: Add fixture
         dupe: Duplicate fixture
         replace: Replace selected fixture
@@ -65,41 +67,110 @@ aperture.gui:
         f1: Press F1 to show GUI again...
         speed: Speed
 
+        keys:
+            fixture:
+                title: Fixtures
+
+                deselect: Deselect current fixture
+                shift: Shift duration to cursor
+                copy: Apply current camera position
+                cut: Cut fixture
+                add: "Add %s fixture"
+
+            modes:
+                title: Modes
+
+                flight: Toggle flight mode
+                vertical: Toggle vertical flight mode
+                sync: Toggle sync mode
+                ouside: Toggle outside mode
+                looping: Toggle fixture looping
+                interactive: Toggle interactive mode
+
+            editor:
+                title: Camera editor
+
+                toggle: Toggle camera editor's visibility
+                modifiers: Toggle modifiers popup
+                save: Save camera profile
+                plause: Play/pause
+                next_fixture: Jump to next fixture
+                prev_fixture: Jump to previous fixture
+                next: Jump to next frame
+                prev: Jump to previous frame
+
     fixtures:
         idle: Idle
         path: Path
         circular: Circular
         keyframe: Keyframe
         null: "Null"
+        manual: Manual
+        dolly: Dolly
 
     modifiers:
         title: Modifiers
         global: Global modifiers
 
         shake: Shake
+        shake_description: Adds a simple shake (based on sine and cosine functions) to enabled camera properties
         math: Math
+        math_description: Allows to process given camera properties using math expressions
         look: Look
+        look_description: Orients the camera toward an entity or entities, block position or motion (forward)
         follow: Follow
+        follow_description: Attaches the camera to an entity or entities
         translate: Translate
+        translate_description: Shifts the camera position by specific amount
         angle: Angle
+        angle_description: Rotates the camera angles by specific amount
         orbit: Orbit
+        orbit_description: Attaches the camera to an entity or entities, but using orbit-like controls
         drag: Drag
+        drag_description: Smooths out enabled camera properties using linear interpoaltion between current and previous value
+
+        enabled: Enabled
+
+        tooltips:
+            add: Add a modifier...
+            paste: Paste a modifier...
+
+            remove: Remove this modifier
+            lock: Enable/disable this modifier
+            move_up: Move modifier up (apply this modifier first)
+            move_down: Move modifier down (apply this modifier after)
+            copy: Copy this modifier
+            envelope: Toggle envelopes panel
+            active: Click on any section of this element to toggle the work of this modifier on the given camera property.
 
         panels:
             copy_entity: Copy entity
+            copy_entity_tooltip: Copy entity's head orientation, exactly like GoPros
 
             shake: Shake
-            shake_amount: Amount
+            shake_amount: Shake amount
 
-            relative: Relative?
-            at_block: Look at block?
-            forward: Look forward?
+            relative: Relative
+            relative_tooltip: Apply relative animation of the fixture or camera profile\n\nI.e. if you have a path that has yaw animation from 90 to 100, 10 degree animation will be applied relatively to this modifier
+            at_block: Look at block
+            forward: Look forward
+            forward_tooltip: This option orients the camera toward the vector of motion, exactly like a roller coaster
             
-            factor: Factor
+            factor: Linear factor (between 0 and 1), the smaller the value, the more it will smooth out
+
+            math: Math expression\n\nClick "?" button for more information about variables and functions...
+
+        envelopes:
+            start_x: Starting point
+            start_d: Fade in
+            end_x: Ending point (relative to the end of duration, if relative is enabled, otherwise from beginning)
+            end_d: Fade out
+            interp: Pick interpolation of the envelope
 
     profiles:
         title: Profiles
         rename: Rename
+        keyframes: Keyframes
         
         rename_modal: Type in a new name to rename current camera profile.
         add_modal: Type in a name for a new camera profile.
@@ -112,9 +183,31 @@ aperture.gui:
         dupe_tooltip: Duplicate the profile
         remove_tooltip: Remove the profile
 
+    minema:
+        title: Minema
+        output: Output name (which will be used instead of random generated date)
+        set_start: Set start
+        set_start_tooltip: Move cursor in timeline, and click this button to set the starting tick of Minema clip
+        set_duration: Set duration
+        set_duration_tooltip: Move cursor in timeline, and click this button to set the duration (in ticks) of Minema clip
+        record: Record
+        premature_stop: "Minema prematurely stopped recording!\n\nPlease exit the camera editor and check the chat for more information..."
+
+        minema_not_installed: Minema mod is not installed. Please install Minema 3.5 or above...
+        minema_wrong_version: Minema mod is installed, but it's outdated! This feature requires Minema 3.5 or above...
+
+        modes:
+            tooltip: Recording mode defines at which tick recording starts and ends
+
+            full: Entire camera profile
+            fixture: Selected fixture only
+            custom: Custom section
+
     panels:
         name: Name
-        duration: Duration
+        name_tooltip: Display name which will be displayed in the timeline
+        color_tooltip: Custom color tint for the fixture, in case you want to color code it
+        duration: Fixture's duration (measured in ticks, 20 ticks equal to about 1 second)
 
         x: X
         y: "Y"
@@ -133,37 +226,36 @@ aperture.gui:
         position: Position
         angle: Angle
         circle: Circle
-        selector: Selector
-        per_point: Per point duration
-        to_keyframe: Generate keyframe
+        selector: Entity target selector (you can also enter the name tag of the entity instead of target selector)\n\nClick "?" button for more information about syntax...
         use_speed: Velocity control
+        use_speed_enable: Enabled
+        use_factor: Use factor
+        use_factor_tooltip: When enabled, it will use speed curve for manual traversal of the path. 0 is the beginning, and 1 is the end.
 
         all: All
-        tick: Tick
-        value: Value
-        
         previous: Previous
 
-        interps:
-            const: Constant
-            linear: Linear
-            quad: Quadratic
-            cubic: Cubic
-            hermite: Hermite
-            exp: Exponential
-            bezier: Bezier
+        manual:
+            title: Manual
+            shift: Playback shift, this property delays the playback of the data if positive, if negative, it cuts the duration of recorded data
+            speed: Playback speed, since the playback uses raw recorded data, consider using drag modifier to smooth out the movement
+            record: With this button, you can start recording of manual movement of the camera!
 
-            quad_in: Quadratic In
-            quad_out: Quadratic Out
-            quad_inout: Quadratic In/out
-            cubic_in: Cubic In
-            cubic_out: Cubic Out
-            cubic_inout: Cubic In/out
-            exp_in: Exponential In
-            exp_out: Exponential Out
-            exp_inout: Exponential In/out
+        dolly:
+            distance: "Distance which determines for how many blocks will dolly travel in given direction during given duration"
+            yaw: "Horizontal direction (yaw, measured in degrees) in which dolly will travel"
+            pitch: "Vertical direction (pitch, measured in degrees) in which dolly will travel"
+            speed: "Linear speed: %s blocks/s."
 
-        easing:
-            in: Ease in
-            out: Ease out
-            inout: Ease in/out
+        keys:
+            title: Current fixture panel
+
+            path_position: Cycle position interpolation
+            path_angle: Cycle angle interpolation
+            velocity: Toggle velocity control option
+
+            graph_interp: Cycle point interpolation
+            graph_easing: Cycle point easing
+
+            previous: Toggle previous option
+            record_manual: Start recording manual movement

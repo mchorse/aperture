@@ -1,6 +1,69 @@
-# Change Log
+## Aperture 1.4.2
 
-Aperture's change log.
+This is a neat update which fixes a couple of bugs, adds Dolly fixture and brightness animation (which can be used for manual focus via shader packs), giving fixtures colors, drastically improved keyframe editing (see McLib's change log) and removed a couple of outdated features.
+
+**Compatible** with McLib `2.0.3` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+<a href="https://youtu.be/6eil_zvv1KI"><img src="https://img.youtube.com/vi/6eil_zvv1KI/0.jpg"></a> 
+
+* Added keyframes tab to profile manager where you can keyframe brightness (gamma setting), it can be used with shaders to animate some properties
+* Added an ability to specify color of the fixture, for organization purposes
+* Added Dolly fixture, it's a convenience fixture which allows setting up a simple forward/backward path for given distance and angle
+* Added manual fixture's path rendering
+* Added McLib's new interpolations to work with path/dolly fixtures (back, elastic and bounce)
+* Added converter feature to replace fixture feature, which converts one fixture to another, without losing all of its data. Currently available proper conversion are: `Dolly` to `Path`, `Dolly` to `Keyframe`, `Path` to `Dolly`, and `Path` to `Keyframe`
+* Fixed fixture looping feature never stopped recording with Minema panel
+* Fixed margin of keyframe channel and display position labels
+* Fixed minor typo "Switch to specator" (reported by Lycoon)
+* Fixed flight mode being "sticky" sometimes
+* Fixed not reset partial ticks shifting keyframe editing at 0th tick
+* Moved keyframe code to McLib
+* Removed per point duration option from path fixture (per-point duration paths will be converted to keyframe fixtures)
+* Removed all channel from dope sheet editor, due to ability to multi-select in McLib **2.0.3**
+* Removed **Generate keyframe** button (in favor of replace converter feature)
+
+## Aperture 1.4.1
+
+This is a small quick patch which fixes a couple of minor issues with camera editor GUI.
+
+**Compatible** with McLib `2.0` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Fixed crash with toggle interpolation keybind
+* Fixed fixture panel's keybinds working through flight mode
+* Optimized keyframe graph
+* Updated Chinese strings for 1.4 (thanks to Chunk7, KuenYo_ and H2SO4GepaoAX)
+
+## Aperture 1.4
+
+This big update features lots of new quality of life features which should help increase productivity of camera creation, and two features that extend camera capabilities. 
+
+**Compatible** with McLib `2.0` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+<a href="https://youtu.be/2ToSwrFiVOo"><img src="https://img.youtube.com/vi/2ToSwrFiVOo/0.jpg"></a> 
+
+* Added camera modifier envelopes which allow to smoothly enable camera modifier based on two points in time and their fades
+* Added `manual` fixture (suggested by Dyl_Art and Lucatim)
+* Added Minema recording panel
+* Added crosshair option to camera editor (suggested by terbin)
+* Added many tooltips explaining what different option do
+* Changed timeline cursor to stay within the view when camera plays or jump between fixtures
+* Changed start camera profile playback's behavior into toggle playback
+* Changed position of add, dupe, change and remove fixture icon buttons when there is too few space (suggested by Andruxioid)
+* Changed camera editor profile management to never allow `null` camera profile
+* Changed to fully support `double` precision for camera position (XYZ)
+* Improved flight mode:
+    * Added mouse control to flight mode (left click drag changes yaw and pitch, horizontal right click drag changes roll, and vertical middle click drag changes FOV)
+    * Added keybinds config category to flight mode (suggested by Lucatim)
+    * Added keybinds in flight mode to change the overall speed of flight mode (suggested by Mr Wolf)
+* Improved `follow` modifier:
+    * Added relative option to `follow` modifier
+    * Added XYZ offset options to `follow` modifier (suggested by Ethobot)
+* Fixed dope sheet and graph editor points not rendering when GUI scale: Auto (reported by Lucatim)
+* Fixed restoration of roll and FOV to be much stable when entering the camera editor and exiting when camera plays
+* Fixed camera slightly falling when opening camera editor with spectator mode
+* Removed all configuration options from Mod Options (they were moved into McLib's configuration system)
+* Removed render mouse pointer option (moved to McLib)
+* Removed stop camera profile playback keybind
 
 ## Aperture 1.3.6
 

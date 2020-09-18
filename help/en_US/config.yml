@@ -6,54 +6,75 @@ aperture.config:
         title: General
         tooltip: General camera options
 
-        camera_duration_step: Duration step
-        camera_duration: Fixture duration
-        camera_interpolate_target: Interpolate target fixtures
-        camera_interpolate_target_value: Target interpolation value
-        camera_spectator: Switch to specator
-        camera_step_factor: Camera step factor
-        camera_rotate_factor: Camera rotate factor
-        camera_minema: Minema
-        camera_path_default_interp: Default path interpolation
-        camera_command_name: Camera command name
-        camera_simulate_velocity: Velocity simulation
-        camera_first_tick_zero: First tick zero
-        camera_debug_ticks: Debug ticks
-        camera_profile_render: Render camera profile
-        camera_auto_save: Auto save profiles
-        minecrafttp_teleport: Use /minecraft:tp
+        duration: Fixture duration
+        spectator: Switch to spectator
+        step_factor: Camera step factor
+        rotate_factor: Camera rotate factor
+        command_name: Camera command name
+        debug_ticks: Debug ticks
+        profile_render: Render camera profile
+        auto_save: Auto save profiles
+        essentials_tp: Use /minecraft:tp
 
-    outside: 
+    outside:
         title: Outside mode
         tooltip: Config options related to outside mode
         
-        camera_outside: Outside mode
-        camera_outside_hide_player: Hide player
-        camera_outside_sky: Fix sky
-        camera_outside_hide_guis: Hide GUIs
-        camera_outside_hide_overlays: Hide overlays
+        enabled: Outside mode
+        hide_player: Hide player
+        sky: Fix sky
 
-    overlay:
-        title: Camera editor overlay
-        tooltip: Allows to setup an overlay image that would be used in the camera editor
-        
-        camera_editor_overlay: Enable overlay
-        camera_editor_overlay_rl: Overlay path
-        camera_editor_f1_tooltip: F1 hide tooltip
+    editor:
+        title: Camera editor
+        tooltip: Config options which are used within camera editor
+
+        sync: Sync mode
+        loop: Loop fixture
+        overlay: Enable overlay
+        overlay_rl: Overlay path
+        f1_tooltip: F1 hide tooltip
+        position: Display position
+        rule_of_thirds: Rule of thirds
+        crosshair: Crosshair
+        letter_box: Letter box
         aspect_ratio: Aspect ratio
+
+    flight:
+        title: Flight mode
+        tooltip: This category allows you to set keybinds for flight mode keys within camera editor
+
+        forward: Move forward
+        backward: Move backward
+        left: Move left
+        right: Move right
+        up: Move upward
+        down: Move downward
+        camera_up: Tilt up
+        camera_down: Tilt down
+        camera_left: Pan left
+        camera_right: Pan right
+        fov_minus: Decrease FOV
+        fov_plus: Increase FOV
+        roll_minus: Roll left
+        roll_plus: Roll right
+        speed_minus: Decrease speed
+        speed_plus: Increase speed
 
     smooth:
         title: Smooth camera
         tooltip: Smooth camera options
 
-        camera_smooth_clamp: Limit pitch
-
+        enabled: Smooth camera enabled
+        x_friction: Mouse X friction
+        y_friction: Mouse Y friction
+        clamp: Limit pitch
         roll_speed: Roll speed
         roll_friction: Roll friction
-
         fov_speed: FOV speed
         fov_friction: FOV friction
 
-        smooth_enabled: Smooth camera enabled
-        mouse_x_friction: Mouse X friction
-        mouse_y_friction: Mouse Y friction
+    minema:
+        title: Minema
+        tooltip: Options related to Minema integration
+
+        default_profile_name: Camera profile name

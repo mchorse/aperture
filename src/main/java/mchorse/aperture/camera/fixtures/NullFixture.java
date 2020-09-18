@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
 
 public class NullFixture extends AbstractFixture
 {
@@ -37,20 +38,27 @@ public class NullFixture extends AbstractFixture
             long offset = profile.calculateOffset(fixture);
 
             fixture.applyFixture(target, 0, 0, profile, pos);
-            fixture.applyModifiers(offset, target, 0, 0, profile, pos);
+            AbstractModifier.applyModifiers(profile, fixture, offset, target, 0, 0, pos);
         }
     }
 
     @Override
-    public AbstractFixture copy()
+    public AbstractFixture create(long duration)
     {
-        NullFixture fixture = new NullFixture(this.duration);
+        return new NullFixture(duration);
+    }
 
-        AbstractFixture.copyModifiers(this, fixture);
-        fixture.name = this.name;
-        fixture.previous = this.previous;
+    @Override
+    public void copy(AbstractFixture from)
+    {
+        super.copy(from);
 
-        return fixture;
+        if (from instanceof NullFixture)
+        {
+            NullFixture nullFixture = (NullFixture) from;
+
+            this.previous = nullFixture.previous;
+        }
     }
 
     @Override
