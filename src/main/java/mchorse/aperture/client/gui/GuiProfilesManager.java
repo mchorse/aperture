@@ -94,6 +94,11 @@ public class GuiProfilesManager extends GuiElement
         this.add(label, this.profiles, this.curves, this.remove, this.dupe, this.add, this.rename, this.convert, this.keyframes);
     }
 
+    public void updateDuration()
+    {
+        this.curves.updateDuration();
+    }
+
     public void pickProfile(CameraProfile profile)
     {
         if (!profile.exists)

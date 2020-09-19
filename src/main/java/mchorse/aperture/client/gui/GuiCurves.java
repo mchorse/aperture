@@ -25,6 +25,11 @@ public class GuiCurves extends GuiElement
 		this.add(this.keyframes);
 	}
 
+	public void updateDuration()
+	{
+		this.keyframes.graph.duration = (int) this.editor.getProfile().getDuration();
+	}
+
 	public void update()
 	{
 		Map<String, KeyframeChannel> channels = this.editor.getProfile().getCurves();
@@ -41,14 +46,14 @@ public class GuiCurves extends GuiElement
 			return;
 		}
 
-		this.keyframes.graph.duration = (int) this.editor.getProfile().getDuration();
+		this.updateDuration();
 		this.keyframes.setChannel(channel, 0xff1493);
 	}
 
 	@Override
 	public void draw(GuiContext context)
 	{
-		this.keyframes.graph.duration = (int) this.editor.getProfile().getDuration();
+
 
 		super.draw(context);
 	}

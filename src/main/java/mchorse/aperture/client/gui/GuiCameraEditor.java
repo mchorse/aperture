@@ -812,6 +812,14 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.timeline.setValue(this.timeline.value);
     }
 
+    public void updateDuration()
+    {
+        this.updateValues();
+
+        this.profiles.updateDuration();
+        this.modifiers.updateDuration();
+    }
+
     /**
      * Makes camera profile as dirty as possible 
      */

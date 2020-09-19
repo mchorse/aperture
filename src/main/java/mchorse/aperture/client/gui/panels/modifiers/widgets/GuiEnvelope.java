@@ -148,7 +148,18 @@ public class GuiEnvelope extends GuiElement
 		if (this.getParent() != null)
 		{
 			this.getParent().getParent().resize();
+
+			if (toggled)
+			{
+				this.initiate();
+			}
 		}
+	}
+
+	public void initiate()
+	{
+		this.updateDuration();
+		this.channel.graph.resetView();
 	}
 
 	public void fillData()
@@ -166,6 +177,11 @@ public class GuiEnvelope extends GuiElement
 		this.channel.setChannel(envelope.channel, 0x0088ff);
 
 		this.toggleKeyframes(envelope.keyframes);
+	}
+
+	public void updateDuration()
+	{
+		this.channel.graph.duration = (int) this.getDuration();
 	}
 
 	private void toggleRelative(boolean toggled)
@@ -192,15 +208,6 @@ public class GuiEnvelope extends GuiElement
 	public Envelope get()
 	{
 		return this.panel.modifier.envelope;
-	}
-
-	@Override
-	public void resize()
-	{
-		super.resize();
-
-		this.channel.graph.duration = (int) this.getDuration();
-		this.channel.graph.resetView();
 	}
 
 	@Override

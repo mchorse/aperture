@@ -38,6 +38,14 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
         this.fields.add(this.expression, this.keyframes);
     }
 
+    public void initiate()
+    {
+        super.initiate();
+
+        this.updateDuration();
+        this.channel.graph.resetView();
+    }
+
     @Override
     public void fillData()
     {
@@ -49,6 +57,16 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
         this.expression.field.setTextColor(0xffffff);
 
         this.toggleKeyframes(this.modifier.keyframes);
+    }
+
+    @Override
+    public void updateDuration()
+    {
+        super.updateDuration();
+
+        AbstractFixture fixture = this.modifiers.editor.getFixture();
+
+        this.channel.graph.duration = fixture == null ? 30 : (int) fixture.getDuration();
     }
 
     private void toggleKeyframes(boolean toggled)
@@ -69,9 +87,7 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
     {
         super.resize();
 
-        AbstractFixture fixture = this.modifiers.editor.getFixture();
-
-        this.channel.graph.duration = fixture == null ? 30 : (int) fixture.getDuration();
+        this.updateDuration();
         this.channel.graph.resetView();
     }
 }

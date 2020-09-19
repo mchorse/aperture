@@ -92,10 +92,20 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.header.add(this.title, this.buttons);
     }
 
+    public void initiate()
+    {
+        this.envelopes.initiate();
+    }
+
     public void fillData()
     {
         this.envelopes.fillData();
         this.updateEnable();
+    }
+
+    public void updateDuration()
+    {
+        this.envelopes.updateDuration();
     }
 
     private void toggleEnvelopes()

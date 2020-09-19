@@ -379,6 +379,8 @@ public class GuiPlaybackScrub extends GuiElement
                         delegate.duration.setValue(this.end.getDuration());
                     }
                 }
+
+                this.editor.updateDuration();
             }
         }
 

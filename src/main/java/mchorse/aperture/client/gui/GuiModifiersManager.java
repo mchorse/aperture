@@ -7,6 +7,7 @@ import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
+import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -133,6 +134,17 @@ public class GuiModifiersManager extends GuiElement
         this.add(this.title, this.add, this.paste, this.panels, this.buttons);
 
         this.hideTooltip();
+   }
+
+    public void updateDuration()
+    {
+        for (IGuiElement element : this.panels.getChildren())
+        {
+            if (element instanceof GuiAbstractModifierPanel)
+            {
+                ((GuiAbstractModifierPanel) element).updateDuration();
+            }
+        }
     }
 
     public List<AbstractModifier> getModifiers()
@@ -191,6 +203,7 @@ public class GuiModifiersManager extends GuiElement
                 panel.fillData();
                 this.panels.add(panel);
                 this.panels.resize();
+                panel.initiate();
             }
             catch (Exception e)
             {
