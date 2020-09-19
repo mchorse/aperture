@@ -94,6 +94,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
 
     public void fillData()
     {
+        this.envelopes.fillData();
         this.updateEnable();
     }
 

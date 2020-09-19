@@ -1,9 +1,12 @@
 package mchorse.aperture.camera.smooth;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
+import mchorse.mclib.utils.MathUtils;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
 public class Envelope
 {
@@ -28,6 +31,12 @@ public class Envelope
 	@Expose
 	public Interpolation interpolation = Interpolation.LINEAR;
 
+	@Expose
+	public boolean keyframes;
+
+	@Expose
+	public KeyframeChannel channel = new KeyframeChannel();
+
 	public void copy(Envelope envelope)
 	{
 		this.enabled = envelope.enabled;
@@ -37,6 +46,8 @@ public class Envelope
 		this.endX = envelope.endX;
 		this.endDuration = envelope.endDuration;
 		this.interpolation = envelope.interpolation;
+		this.keyframes = envelope.keyframes;
+		this.channel.copy(envelope.channel);
 	}
 
 	public float getStartX(long duration)
@@ -71,9 +82,33 @@ public class Envelope
 
 	public float factor(long duration, float tick)
 	{
-		float envelope = Interpolations.envelope(tick, this.startX, this.startX + this.startDuration, this.getEndDuration(duration), this.getEndX(duration));
+		float envelope = 0;
 
-		return this.interpolation.interpolate(0, 1, envelope);
+		if (this.keyframes && this.channel != null)
+		{
+			if (!this.channel.isEmpty())
+			{
+				envelope = MathUtils.clamp((float) this.channel.interpolate(tick), 0, 1);
+			}
+		}
+		else
+		{
+			envelope = Interpolations.envelope(tick, this.startX, this.startX + this.startDuration, this.getEndDuration(duration), this.getEndX(duration));
+			envelope = this.interpolation.interpolate(0, 1, envelope);
+		}
+
+		return envelope;
+	}
+
+	public void toJSON(JsonObject object)
+	{}
+
+	public void fromJSON(JsonObject object)
+	{
+		if (this.channel == null)
+		{
+			this.channel = new KeyframeChannel();
+		}
 	}
 
 	public void toByteBuf(ByteBuf buffer)
@@ -85,6 +120,8 @@ public class Envelope
 		buffer.writeFloat(this.endX);
 		buffer.writeFloat(this.endDuration);
 		buffer.writeInt(this.interpolation.ordinal());
+		buffer.writeBoolean(this.keyframes);
+		this.channel.toByteBuf(buffer);
 	}
 
 	public void fromByteBuf(ByteBuf buffer)
@@ -96,5 +133,7 @@ public class Envelope
 		this.endX = buffer.readFloat();
 		this.endDuration = buffer.readFloat();
 		this.interpolation = Interpolation.values()[buffer.readInt()];
+		this.keyframes = buffer.readBoolean();
+		this.channel.fromByteBuf(buffer);
 	}
 }

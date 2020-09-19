@@ -285,8 +285,8 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.timeline.flex().relative(this.top).set(10, 0, 0, 20).y(1, -20).w(1, -20);
         this.panel.flex().relative(this.top).set(0, 20, 0, 0).w(1F).hTo(this.timeline.area);
         this.config.flex().relative(this.openConfig).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
-        this.profiles.flex().relative(this.openProfiles).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
-        this.modifiers.flex().relative(this.openModifiers).xy(1F, 1F).anchorX(1F).w(200).hTo(this.panel.flex(), 1F);
+        this.profiles.flex().relative(this.openProfiles).xy(1F, 1F).anchorX(1F).w(190).hTo(this.panel.flex(), 1F);
+        this.modifiers.flex().relative(this.openModifiers).xy(1F, 1F).anchorX(1F).w(210).hTo(this.panel.flex(), 1F);
         this.minema.flex().relative(this.openMinema).xy(1F, 1F).anchorX(1F).w(200);
 
         /* Adding everything */

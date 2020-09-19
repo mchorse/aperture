@@ -1,7 +1,9 @@
 package mchorse.aperture.client.gui.panels.modifiers.widgets;
 
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.smooth.Envelope;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
+import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
@@ -31,6 +33,7 @@ public class GuiEnvelope extends GuiElement
 
 	public GuiAbstractModifierPanel panel;
 
+	public GuiElement row;
 	public GuiToggleElement enabled;
 	public GuiToggleElement relative;
 	public GuiIconElement pickInterp;
@@ -39,6 +42,9 @@ public class GuiEnvelope extends GuiElement
 	public GuiTrackpadElement endX;
 	public GuiTrackpadElement endD;
 	public GuiInterpolationList interps;
+
+	public GuiToggleElement keyframes;
+	public GuiCameraEditorKeyframesGraphEditor channel;
 
 	private Color color = new Color();
 
@@ -88,6 +94,13 @@ public class GuiEnvelope extends GuiElement
 		});
 		this.interps.setVisible(false);
 
+		this.keyframes = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.keyframes"), (b) ->
+		{
+			this.toggleKeyframes(b.isToggled());
+			this.panel.modifiers.editor.updateProfile();
+		});
+		this.channel = new GuiCameraEditorKeyframesGraphEditor(mc, panel.modifiers.editor);
+
 		this.startX.limit(0);
 		this.startD.limit(0);
 		this.endX.limit(0);
@@ -96,9 +109,8 @@ public class GuiEnvelope extends GuiElement
 		this.enabled.flex().reset();
 		this.relative.flex().reset();
 
-		GuiElement row = Elements.row(mc, 5, 0, 20, this.enabled, this.relative, this.pickInterp);
-
-		row.flex().relative(this).xy(10, 10).w(1F, -20);
+		this.row = Elements.row(mc, 5, 0, 20, this.enabled, this.relative, this.pickInterp);
+		this.row.flex().relative(this).xy(10, 10).w(1F, -20);
 
 		this.startX.flex().relative(this.enabled).xy(0, 20).w(1F);
 		this.startD.flex().relative(this.startX).xy(0, 25).w(1F);
@@ -106,9 +118,54 @@ public class GuiEnvelope extends GuiElement
 		this.endD.flex().relative(this.endX).xy(0, 25).w(1F);
 		this.interps.flex().relative(this.pickInterp).xy(1F, 1F).w(110).hTo(this.area, 1F).anchor(1F, 0F);
 
-		this.add(row, this.startX, this.startD, this.endX, this.endD, this.interps);
+		this.channel.flex().relative(this.enabled).y(20).wTo(this.row.area, 1F).h(200);
+	}
 
-		this.flex().h(95);
+	private void toggleKeyframes(boolean toggled)
+	{
+		this.get().keyframes = toggled;
+
+		this.removeAll();
+		this.row.removeAll();
+
+		if (toggled)
+		{
+			this.row.add(this.enabled);
+			this.add(this.row, this.channel, this.keyframes);
+
+			this.flex().h(255);
+			this.keyframes.flex().reset().relative(this.channel).y(1F).w(1F).h(20);
+		}
+		else
+		{
+			this.row.add(this.enabled, this.relative, this.pickInterp);
+			this.add(this.row, this.startX, this.startD, this.endX, this.endD, this.keyframes, this.interps);
+
+			this.flex().h(110);
+			this.keyframes.flex().reset().relative(this.startD).y(1F).wTo(this.endD.area, 1F).h(20);
+		}
+
+		if (this.getParent() != null)
+		{
+			this.getParent().getParent().resize();
+		}
+	}
+
+	public void fillData()
+	{
+		Envelope envelope = this.get();
+
+		this.enabled.toggled(envelope.enabled);
+		this.relative.toggled(envelope.relative);
+		this.startX.setValue(envelope.startX);
+		this.startD.setValue(envelope.startDuration);
+		this.endX.setValue(envelope.endX);
+		this.endD.setValue(envelope.endDuration);
+		this.interps.setCurrent(envelope.interpolation);
+		this.keyframes.toggled(envelope.keyframes);
+		this.channel.setChannel(envelope.channel, 0x0088ff);
+
+		this.toggleKeyframes(envelope.keyframes);
 	}
 
 	private void toggleRelative(boolean toggled)
@@ -142,13 +199,8 @@ public class GuiEnvelope extends GuiElement
 	{
 		super.resize();
 
-		this.enabled.toggled(this.get().enabled);
-		this.relative.toggled(this.get().relative);
-		this.startX.setValue(this.get().startX);
-		this.startD.setValue(this.get().startDuration);
-		this.endX.setValue(this.get().endX);
-		this.endD.setValue(this.get().endDuration);
-		this.interps.setCurrent(this.get().interpolation);
+		this.channel.graph.duration = (int) this.getDuration();
+		this.channel.graph.resetView();
 	}
 
 	@Override
@@ -159,38 +211,41 @@ public class GuiEnvelope extends GuiElement
 			this.pickInterp.area.draw(0x88000000);
 		}
 
-		/* Draw an approximate visualisation of the envelope */
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buffer = tessellator.getBuffer();
-
-		GL11.glLineWidth(2);
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture2D();
-		GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
-		buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-		this.drawGraph(context, buffer, this.get());
-		tessellator.draw();
-
-		GlStateManager.enableTexture2D();
-		GlStateManager.shadeModel(GL11.GL_FLAT);
-		GL11.glLineWidth(1);
-
-		/* Draw cursor */
-		int x = this.panel.modifiers.editor.timeline.value;
-
-		if (this.panel.modifiers.fixture != null)
+		if (!this.get().keyframes)
 		{
-			x -= this.panel.modifiers.editor.getProfile().calculateOffset(this.panel.modifiers.fixture);
-		}
+			/* Draw an approximate visualisation of the envelope */
+			Tessellator tessellator = Tessellator.getInstance();
+			BufferBuilder buffer = tessellator.getBuffer();
 
-		float factor = this.get().factor(this.getDuration(), x);
+			GL11.glLineWidth(2);
+			GlStateManager.enableBlend();
+			GlStateManager.disableTexture2D();
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
-		x = this.getX(x);
+			buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+			this.drawGraph(context, buffer, this.get());
+			tessellator.draw();
 
-		if (x >= this.area.x && x < this.area.ex())
-		{
-			Gui.drawRect(x, this.area.ey() - 3 - (int) (9 * factor), x + 2, this.area.ey(), 0xff57f52a);
+			GlStateManager.enableTexture2D();
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+			GL11.glLineWidth(1);
+
+			/* Draw cursor */
+			int x = this.panel.modifiers.editor.timeline.value;
+
+			if (this.panel.modifiers.fixture != null)
+			{
+				x -= this.panel.modifiers.editor.getProfile().calculateOffset(this.panel.modifiers.fixture);
+			}
+
+			float factor = this.get().factor(this.getDuration(), x);
+
+			x = this.getX(x);
+
+			if (x >= this.area.x && x < this.area.ex())
+			{
+				Gui.drawRect(x, this.area.ey() - 3 - (int) (9 * factor), x + 2, this.area.ey(), 0xff57f52a);
+			}
 		}
 
 		super.draw(context);

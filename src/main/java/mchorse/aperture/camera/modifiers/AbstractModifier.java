@@ -1,5 +1,6 @@
 package mchorse.aperture.camera.modifiers;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
@@ -87,13 +88,27 @@ public abstract class AbstractModifier
     }
 
     public void toJSON(JsonObject object)
-    {}
+    {
+        JsonElement element = object.get("envelope");
+
+        if (this.envelope != null && element != null && element.isJsonObject())
+        {
+            this.envelope.toJSON(element.getAsJsonObject());
+        }
+    }
 
     public void fromJSON(JsonObject object)
     {
         if (this.envelope == null)
         {
             this.envelope = new Envelope();
+
+            JsonElement element = object.get("envelope");
+
+            if (element != null && element.isJsonObject())
+            {
+                this.envelope.fromJSON(element.getAsJsonObject());
+            }
         }
     }
 
