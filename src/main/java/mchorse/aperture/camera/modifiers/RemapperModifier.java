@@ -113,7 +113,7 @@ public class RemapperModifier extends AbstractModifier
 
 			this.keyframes = modifier.keyframes;
 			this.channel.copy(modifier.channel);
-			this.rebuildExpression(modifier.expression.toString());
+			this.rebuildExpression(modifier.expression == null ? "" : modifier.expression.toString());
 		}
 	}
 
