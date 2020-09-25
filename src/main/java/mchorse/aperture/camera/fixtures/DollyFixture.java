@@ -14,7 +14,7 @@ import net.minecraft.util.math.Vec3d;
 public class DollyFixture extends IdleFixture
 {
 	@Expose
-	public float distance = 1F;
+	public float distance = 0.1F;
 
 	@Expose
 	public Interpolation interp = Interpolation.LINEAR;
