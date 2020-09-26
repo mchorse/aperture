@@ -1,7 +1,6 @@
 package mchorse.aperture.camera.modifiers;
 
 import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
@@ -9,7 +8,6 @@ import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * Look modifier
@@ -93,7 +91,7 @@ public class LookModifier extends EntityModifier
         }
 
         double dX = x - pos.point.x;
-        double dY = y - pos.point.y;
+        double dY = (y - 1.62) - pos.point.y;
         double dZ = z - pos.point.z;
 
         if (this.forward)

@@ -3,14 +3,23 @@ package mchorse.aperture.client.gui.panels.modifiers;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
+import mchorse.aperture.utils.EntityUtils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
+import mchorse.mclib.client.gui.framework.elements.context.GuiContextMenu;
+import mchorse.mclib.client.gui.framework.elements.context.GuiSimpleContextMenu;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.RayTracing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 
 public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 {
@@ -90,6 +99,8 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     @Override
     public void fillData()
     {
+        super.fillData();
+
         this.selector.setText(this.modifier.selector);
         this.x.setValue((float) this.modifier.block.x);
         this.y.setValue((float) this.modifier.block.y);
@@ -99,6 +110,42 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
         this.forward.toggled(this.modifier.forward);
 
         this.updateVisibility(false);
+    }
+
+    @Override
+    public GuiContextMenu createContextMenu(GuiContext context)
+    {
+        if (this.modifier.atBlock)
+        {
+            return new GuiSimpleContextMenu(this.mc)
+                .action(Icons.VISIBLE, IKey.lang("aperture.gui.panels.context.look_coords"), () -> this.rayTrace(false))
+                .action(Icons.BLOCK, IKey.lang("aperture.gui.panels.context.look_block"), () -> this.rayTrace(true));
+        }
+
+        return super.createContextMenu(context);
+    }
+
+    private void rayTrace(boolean center)
+    {
+        RayTraceResult result = center ? RayTracing.rayTrace(this.mc.player, 128, 0F) : RayTracing.rayTraceWithEntity(this.mc.player, 128);
+
+        if (result != null)
+        {
+            if (center && result.typeOfHit == RayTraceResult.Type.BLOCK)
+            {
+                BlockPos pos = result.getBlockPos();
+
+                this.modifier.block.set(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                this.fillData();
+            }
+            else if (!center && result.typeOfHit != RayTraceResult.Type.MISS)
+            {
+                Vec3d vec = result.hitVec;
+
+                this.modifier.block.set(vec.x, vec.y, vec.z);
+                this.fillData();
+            }
+        }
     }
 
     private void updateVisibility(boolean resize)
