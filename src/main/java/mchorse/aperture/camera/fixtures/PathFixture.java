@@ -39,12 +39,6 @@ public class PathFixture extends AbstractFixture
     public boolean useSpeed;
 
     /**
-     * Whether use speed's curve should be used as input factor
-     */
-    @Expose
-    public boolean useFactor;
-
-    /**
      * Keyframe-able speed
      */
     @Expose
@@ -260,15 +254,7 @@ public class PathFixture extends AbstractFixture
             float tick = ticks + previewPartialTick;
 
             /* Just calculate enough for the speed for the difference */
-            if (this.useFactor)
-            {
-                double factor = this.speed.interpolate(tick);
-                double index = factor * (this.points.size() - 1);
-
-                this.applyPoint(this.lastPoint, (int) index, (float) (index % 1));
-                this.applyAngle(pos.angle, (int) index, (float) (index % 1));
-            }
-            else if (tick != this.lastTick || tick == 0)
+            if (tick != this.lastTick || tick == 0)
             {
                 this.applyPoint(this.lastPoint, 0, 0);
                 this.recalculate(tick, pos.angle);
@@ -602,7 +588,6 @@ public class PathFixture extends AbstractFixture
         }
 
         this.useSpeed = buffer.readBoolean();
-        this.useFactor = buffer.readBoolean();
         this.speed.fromByteBuf(buffer);
     }
 
@@ -622,7 +607,6 @@ public class PathFixture extends AbstractFixture
         }
 
         buffer.writeBoolean(this.useSpeed);
-        buffer.writeBoolean(this.useFactor);
         this.speed.toByteBuf(buffer);
     }
 
@@ -650,7 +634,6 @@ public class PathFixture extends AbstractFixture
             this.interpolationAngle = path.interpolationAngle;
 
             this.useSpeed = path.useSpeed;
-            this.useFactor = path.useFactor;
             this.speed.copy(path.speed);
         }
     }

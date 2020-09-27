@@ -18,6 +18,7 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.modifiers.RemapperModifier;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
@@ -74,6 +75,15 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
                 {
                     return this.convertToKeyframe((PathFixture) fixture, object.getAsJsonArray("points"));
                 }
+                else if (object.has("useFactor"))
+                {
+                    JsonElement useFactor = object.get("useFactor");
+
+                    if (useFactor.isJsonPrimitive() && useFactor.getAsBoolean())
+                    {
+                        this.convertUseFactorToRemapper((PathFixture) fixture, object);
+                    }
+                }
             }
         }
 
@@ -123,6 +133,20 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         keys.setDuration(x);
 
         return keys;
+    }
+
+    /**
+     * Convert use factor option to a remapper modifier
+     */
+    private void convertUseFactorToRemapper(PathFixture fixture, JsonObject object)
+    {
+        RemapperModifier modifier = new RemapperModifier();
+
+        modifier.keyframes = true;
+        modifier.channel.copy(fixture.speed);
+
+        fixture.useSpeed = false;
+        fixture.getModifiers().add(0, modifier);
     }
 
     /**
