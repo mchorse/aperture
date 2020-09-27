@@ -60,6 +60,7 @@ public class CameraRenderer
 
     private Position prev = new Position(0, 0, 0, 0, 0);
     private Position next = new Position(0, 0, 0, 0, 0);
+    private Color color = new Color();
 
     /**
      * Toggle path rendering
@@ -263,17 +264,27 @@ public class CameraRenderer
             double distY = Math.abs(this.next.point.y - this.prev.point.y);
             double distZ = Math.abs(this.next.point.z - this.prev.point.z);
 
-            Color color = FixtureRegistry.CLIENT.get(fixture.getClass()).color;
+            this.color.set(fixture.getColor(), false);
 
-            if (distX + distY + distZ >= 0.5) this.drawCard(color, i, duration, this.next);
+            if (this.color.getRGBColor() == 0)
+            {
+                this.color.copy(FixtureRegistry.CLIENT.get(fixture.getClass()).color);
+            }
 
-            this.drawCard(color, i++, duration, this.prev);
-            this.drawFixture(0.0F, color, fixture, this.prev, this.next);
+            if (distX + distY + distZ >= 0.5)
+            {
+                this.drawCard(color, i, duration, this.next);
+            }
+
+            this.drawCard(this.color, i, duration, this.prev);
+            this.drawFixture(this.color, fixture, this.prev, this.next);
 
             if (fixture instanceof PathFixture)
             {
                 ((PathFixture) fixture).reenableSpeed();
             }
+
+            i++;
         }
 
         GlStateManager.disableBlend();
@@ -288,7 +299,7 @@ public class CameraRenderer
     /**
      * Draw a fixture's fixture
      */
-    private void drawFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
+    private void drawFixture(Color color, AbstractFixture fixture, Position prev, Position next)
     {
         if (fixture instanceof PathFixture || fixture instanceof KeyframeFixture || fixture instanceof DollyFixture || fixture instanceof ManualFixture)
         {
@@ -296,7 +307,7 @@ public class CameraRenderer
         }
         else if (fixture instanceof CircularFixture)
         {
-            this.drawCircularFixture(partialTicks, color, fixture, prev, next);
+            this.drawCircularFixture(color, fixture, prev, next);
         }
     }
 
@@ -440,7 +451,7 @@ public class CameraRenderer
     /**
      * Draw the passed circular fixture
      */
-    private void drawCircularFixture(float partialTicks, Color color, AbstractFixture fixture, Position prev, Position next)
+    private void drawCircularFixture(Color color, AbstractFixture fixture, Position prev, Position next)
     {
         CameraProfile profile = ClientProxy.control.currentProfile;
         float circles = Math.min(((CircularFixture) fixture).circles, 360);
