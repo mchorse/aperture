@@ -137,13 +137,15 @@ public class Flight implements IGuiElement
             return false;
         }
 
-        if (GuiScreen.isAltKeyDown())
+        boolean isAlt = GuiScreen.isAltKeyDown();
+
+        if (isAlt && this.type == MovementType.ORBIT)
         {
             this.distance += Math.copySign(this.getZoomFactor(), context.mouseWheel);
             this.distance = MathUtils.clamp(this.distance, 0, 100);
             this.update = true;
         }
-        else
+        else if (!isAlt)
         {
             this.speed -= Math.copySign(this.getSpeedFactor(context.mouseWheel), context.mouseWheel);
             this.speed = MathHelper.clamp(this.speed, 1, 50000);
