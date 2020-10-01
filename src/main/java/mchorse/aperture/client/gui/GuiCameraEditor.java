@@ -302,7 +302,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         IKey fixture = IKey.lang("aperture.gui.editor.keys.fixture.title");
         IKey modes = IKey.lang("aperture.gui.editor.keys.modes.title");
         IKey editor = IKey.lang("aperture.gui.editor.keys.editor.title");
-        Supplier<Boolean> active = this::isFlightMode;
+        Supplier<Boolean> active = this::isFlightDisabled;
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.toggle"), Keyboard.KEY_F1, () -> this.top.toggleVisible()).category(editor);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.modifiers"), Keyboard.KEY_N, () -> this.openModifiers.clickItself(this.context)).active(active).category(editor);
@@ -330,7 +330,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         }
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.flight"), Keyboard.KEY_F, () -> this.cameraOptions.flight.clickItself(this.context)).category(modes);
-        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.vertical"), Keyboard.KEY_V, () -> this.flight.toggleMovementType()).category(modes);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.vertical"), Keyboard.KEY_V, () -> this.flight.toggleMovementType()).active(() -> this.flight.isFlightEnabled()).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.sync"), Keyboard.KEY_S, () -> this.cameraOptions.sync.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.ouside"), Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.looping"), Keyboard.KEY_L, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(modes);
@@ -372,7 +372,12 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         return Aperture.editorSync.get();
     }
 
-    public boolean isFlightMode()
+    public boolean isFlightEnabled()
+    {
+        return this.flight.isFlightEnabled();
+    }
+
+    public boolean isFlightDisabled()
     {
         return !this.flight.isFlightEnabled();
     }

@@ -1,7 +1,6 @@
 package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
@@ -11,7 +10,6 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.GuiBase;
-import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Elements;
@@ -74,7 +72,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.prepend(this.speed);
         this.add(this.points);
 
-        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LSHIFT).active(editor::isFlightMode).category(CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LSHIFT).active(editor::isFlightDisabled).category(CATEGORY);
     }
 
     private void updateSpeedPanel()
