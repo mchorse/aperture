@@ -1,6 +1,8 @@
 package mchorse.aperture.network.client;
 
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.network.common.PacketCameraState;
 import mchorse.mclib.network.ClientMessageHandler;
@@ -22,12 +24,30 @@ public class ClientHandlerCameraState extends ClientMessageHandler<PacketCameraS
     {
         if (message.toPlay)
         {
-            if (!message.filename.isEmpty())
+            AbstractDestination destination = AbstractDestination.create(message.filename);
+
+            if (destination instanceof ClientDestination)
             {
                 new ClientDestination(message.filename).load();
             }
 
-            ClientProxy.runner.start(ClientProxy.control.currentProfile);
+            if (message.filename.isEmpty())
+            {
+                ClientProxy.runner.start(ClientProxy.control.currentProfile);
+            }
+            else
+            {
+                CameraProfile profile = ClientProxy.control.getProfile(destination);
+
+                if (profile == null)
+                {
+                    ClientProxy.runner.start(ClientProxy.control.currentProfile);
+                }
+                else
+                {
+                    ClientProxy.runner.start(profile);
+                }
+            }
         }
         else
         {

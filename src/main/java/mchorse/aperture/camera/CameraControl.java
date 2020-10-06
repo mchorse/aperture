@@ -2,12 +2,15 @@ package mchorse.aperture.camera;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.Objects;
 
 /**
  * Camera control class
@@ -103,6 +106,22 @@ public class CameraControl
                 profile.save();
             }
         }
+    }
+
+    public CameraProfile getProfile(AbstractDestination destination)
+    {
+        GuiCameraEditor editor = ClientProxy.cameraEditor;
+        GuiProfilesManager manager = editor.profiles;
+
+        for (CameraProfile profile : manager.profiles.list.getList())
+        {
+            if (Objects.equals(profile.destination, destination))
+            {
+                return profile;
+            }
+        }
+
+        return null;
     }
 
     /**

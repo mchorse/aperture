@@ -156,7 +156,7 @@ public class CameraUtils
         {
             if (play)
             {
-                Dispatcher.sendTo(new PacketCameraState(true), player);
+                Dispatcher.sendTo(new PacketCameraState(filename, true), player);
             }
             else
             {
