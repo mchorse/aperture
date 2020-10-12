@@ -56,7 +56,7 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 		if (timer.checkReset())
 		{
 			recording = true;
-			ClientProxy.getCameraEditor().postPlayback(offset);
+			ClientProxy.getCameraEditor().postPlayback(offset, true);
 		}
 		else if (timer.enabled)
 		{

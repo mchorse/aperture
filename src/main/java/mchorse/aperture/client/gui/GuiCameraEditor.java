@@ -349,7 +349,12 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
 
     public void postPlayback(int tick)
     {
-        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, this.playing, tick));
+        this.postPlayback(tick, this.playing);
+    }
+
+    public void postPlayback(int tick, boolean playing)
+    {
+        ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Playback(this, playing, tick));
     }
 
     public void postScrub(int tick)
