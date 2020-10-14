@@ -32,6 +32,8 @@ public class MathModifier extends ComponentModifier
     public Variable partial;
     public Variable duration;
     public Variable progress;
+    public Variable factor;
+
     public Variable value;
 
     public Variable x;
@@ -50,6 +52,8 @@ public class MathModifier extends ComponentModifier
         this.partial = new Variable("pt", 0);
         this.duration = new Variable("d", 0);
         this.progress = new Variable("p", 0);
+        this.factor = new Variable("f", 0);
+
         this.value = new Variable("value", 0);
 
         this.x = new Variable("x", 0);
@@ -66,6 +70,8 @@ public class MathModifier extends ComponentModifier
         this.builder.register(this.partial);
         this.builder.register(this.duration);
         this.builder.register(this.progress);
+        this.builder.register(this.factor);
+
         this.builder.register(this.value);
 
         this.builder.register(this.x);
@@ -102,6 +108,7 @@ public class MathModifier extends ComponentModifier
             this.partial.set(previewPartialTick);
             this.duration.set(fixture == null ? profile.getDuration() : fixture.getDuration());
             this.progress.set(ticks + previewPartialTick);
+            this.factor.set((double) (offset + previewPartialTick) / this.duration.get());
 
             this.x.set(pos.point.x);
             this.y.set(pos.point.y);
