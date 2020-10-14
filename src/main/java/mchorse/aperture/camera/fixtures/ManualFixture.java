@@ -40,6 +40,11 @@ public class ManualFixture extends AbstractFixture
 	 */
 	public int getEndTick()
 	{
+		if (this.speed == 0)
+		{
+			return 1000000000;
+		}
+
 		return (int) (this.frames.size() / this.speed + this.shift);
 	}
 

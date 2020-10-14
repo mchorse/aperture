@@ -12,6 +12,7 @@ import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.ColorUtils;
+import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
@@ -436,17 +437,24 @@ public class GuiPlaybackScrub extends GuiElement
                 if (fixture instanceof ManualFixture)
                 {
                     ManualFixture manual = (ManualFixture) fixture;
+                    int startTick = manual.shift;
                     int endTick = manual.getEndTick();
-                    int end = leftMargin + (int) (endTick / (float) fixture.getDuration() * (rightMargin - leftMargin));
+                    int start = MathUtils.clamp(leftMargin + (int) (startTick / (float) fixture.getDuration() * (rightMargin - leftMargin)), leftMargin, rightMargin);
+                    int end = MathUtils.clamp(leftMargin + (int) (endTick / (float) fixture.getDuration() * (rightMargin - leftMargin)), leftMargin, rightMargin);
 
-                    if (end > leftMargin && end < rightMargin)
+                    if (end < rightMargin)
                     {
-                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), end, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
-                        Gui.drawRect(end, y + (selected ? 12 : 15), rightMargin, y + h - 1, selected ? 0xaa000000 : 0x66000000);
+                        Gui.drawRect(end + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, selected ? 0xaa000000 : 0x66000000);
                     }
-                    else
+
+                    if (end > leftMargin)
                     {
-                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), rightMargin, y + h - 1, (selected ? 0xaa000000 : 0x66000000) + (end <= leftMargin ? 0 : color));
+                        Gui.drawRect(start + 1, y + (selected ? 12 : 15), end + 1, y + h - 1, (selected ? 0xdd000000 : 0x66000000) + color);
+                    }
+
+                    if (start > leftMargin)
+                    {
+                        Gui.drawRect(leftMargin + 1, y + (selected ? 12 : 15), start + 1, y + h - 1, selected ? 0xaa000000 : 0x66000000);
                     }
                 }
                 else
