@@ -28,7 +28,7 @@ aperture.gui:
         show_path: 顯示路徑
         sync: 同步
         flight: 飛行模式
-        flight_tooltip: 啟用飛行模式, 可以在相機編輯器中使用 WASD 與鼠標拖拽來控制相機 (請參見 Aperture 的飛行模式選項中的快捷鍵)
+        flight_tooltip: 啟用飛行模式，可以在相機編輯器中使用 WASD 與鼠標拖拽來控制相機（請參見 Aperture 的飛行模式選項中的快捷鍵）
         display_info: 顯示位置
         minecrafttp_teleport: 使用 /minecraft:tp
         tp_teleport: 使用 /tp
@@ -66,6 +66,7 @@ aperture.gui:
     editor:
         f1: 請按 F1 來再次顯示界面...
         speed: 速度
+        distance: 距離
 
         keys:
             fixture:
@@ -80,7 +81,7 @@ aperture.gui:
             modes:
                 title: 模式
 
-                flight: 開關飛行模式
+                flight: 切換飛行模式
                 vertical: 開關垂直飛行模式
                 sync: 開關同步模式
                 ouside: 開關分離相機模式
@@ -113,11 +114,11 @@ aperture.gui:
         global: 全局調整器
 
         shake: 搖晃
-        shake_description: 為已啟用的相機屬性中添加簡單的搖晃效果 (基於正弦和余弦函數)
+        shake_description: 為已啟用的相機屬性中添加簡單的搖晃效果（基於正弦和余弦函數）
         math: 數學
         math_description: 允許使用數學表達式處理指定的相機屬性
         look: 看
-        look_description: 將相機朝向壹個或多個實體、方塊位置或 (向前) 運動
+        look_description: 將相機朝向壹個或多個實體、方塊位置或（向前）運動
         follow: 跟蹤
         follow_description: 將相機綁定於壹個或多個實體之上
         translate: 平移
@@ -125,10 +126,12 @@ aperture.gui:
         angle: 角度
         angle_description: 以特定的數值旋轉相機角度
         orbit: 軌道
-        orbit_description: 將相機綁定於壹個或多個實體, 但使用的是類似於軌道的控件
+        orbit_description: 將相機綁定於壹個或多個實體，但使用的是類似於軌道的控件
         drag: 拖拽
-        drag_description: 使用當前值與先前值之間的線性交錯, 將已啟用的相機屬性進行平滑處理
-        
+        drag_description: 使用當前值與先前值之間的線性交錯，將已啟用的相機屬性進行平滑處理
+        remapper: 重映射
+        remapper_description: 基於給定的表達式或關鍵幀重新映射關鍵點的路徑
+
         enabled: 啟用
 
         tooltips:
@@ -137,33 +140,35 @@ aperture.gui:
 
             remove: 移除該調整器
             lock: 啟用/禁用該調整器
-            move_up: 向上移動調整器 (優先應用該調整器)
-            move_down: 向下移動調整器 (之後應用該調整器)
+            move_up: 向上移動調整器（優先應用該調整器）
+            move_down: 向下移動調整器（之後應用該調整器）
             copy: 拷貝該調整器
             envelope: 開關包絡面板
-            active: 單擊此控件中的任意選項, 以選擇該調整器將作用於哪些相機屬性
+            active: 單擊此控件中的任意選項，以選擇該調整器將作用於哪些相機屬性
 
         panels:
             copy_entity: 拷貝實體
-            copy_entity_tooltip: 拷貝實體頭部的方向, 與使用 GoPros 的效果類似
+            copy_entity_tooltip: 拷貝實體頭部的方向，與使用 GoPros 的效果類似
 
             shake: 搖晃
             shake_amount: 數量值
 
             relative: 相對值
-            relative_tooltip: 應用於關鍵點或相機配置的相對動畫\n\n例如, 那麽將會有 10 度的動畫應用於該調整器
+            relative_tooltip: 應用於關鍵點或相機配置的相對動畫\n\n例如，如果妳有壹個從 90 度到 100 度的偏航動畫路徑，那麽將會有 10 度的動畫相對地應用於該調整器
             at_block: 看向方塊
             forward: 向前看
-            forward_tooltip: 該選項能使相機朝向運動矢量的方向, 類似於過山車的效果
+            forward_tooltip: 該選項能使相機朝向運動矢量的方向，類似於過山車的效果
 
-            factor: 線性系數 (介於 0 到 1), 數值越小, 平滑程度越高
+            factor: 線性系數（介於 0 到 1），數值越小，平滑程度越高
             
             math: 數學表達式\n\n點擊 "?" 按鈕了解更多關於變量和函數的信息...
+
+            keyframes: 啟用關鍵幀
 
         envelopes:
             start_x: 起始點
             start_d: 緩入點
-            end_x: 結束點 (如果啟用了“相對值”, 那麽此處為持續時間的終點, 否則從起點開始計算)
+            end_x: 結束點（如果啟用了“相對值”，那麽此處為持續時間的終點，否則從起點開始計算）
             end_d: 緩出點
             interp: 選擇包絡的插值
 
@@ -175,7 +180,7 @@ aperture.gui:
         rename_modal: 輸入當前新相機配置的名稱。
         add_modal: 輸入新相機配置的名稱。
         dupe_modal: 輸入復制後的相機配置名稱。
-        remove_modal: 您確定要移除這該機配置嗎 (無法恢復)?
+        remove_modal: 您確定要移除這該機配置嗎（無法恢復）？
 
         convert_tooltip: 轉換配置
         rename_tooltip: 重命名配置
@@ -185,16 +190,16 @@ aperture.gui:
         
     minema:
         title: Minema
-        output: 輸出名稱 (用於代替隨機生成的日期)
+        output: 輸出名稱（用於代替隨機生成的日期）
         set_start: 設定開始時間
-        set_start_tooltip: 移動時間軸上的光標, 隨後點擊該按鈕來設定 Minema 片段的開始 Tick
+        set_start_tooltip: 移動時間軸上的光標，隨後點擊該按鈕來設定 Minema 片段的開始 Tick
         set_duration: 設定持續時間
-        set_duration_tooltip: 移動時間軸上的光標,  隨後點擊該按鈕來設定 Minema 片段的持續時間 (單位為 Tick)
+        set_duration_tooltip: 移動時間軸上的光標，隨後點擊該按鈕來設定 Minema 片段的持續時間（單位為 Tick）
         record: 錄制
-        premature_stop: "Minema 提前終止了錄制!\n\n請退出相機編輯器並查看聊天欄以獲取更多信息..."
+        premature_stop: "Minema 提前終止了錄制！\n\n請退出相機編輯器並查看聊天欄以獲取更多信息..."
 
         minema_not_installed: Minema mod 未安裝。請安裝 Minema 3.5 或更高的版本...
-        minema_wrong_version: Minema mod 已安裝, 但版本已過時! 該功能需要 Minema 3.5 或更高的版本...
+        minema_wrong_version: Minema mod 已安裝，但版本已過時！該功能需要 Minema 3.5 或更高的版本...
 
         modes:
             tooltip: 錄制模式定義了開始和結束的 Tick
@@ -206,8 +211,8 @@ aperture.gui:
     panels:
         name: 名字
         name_tooltip: 顯示將會在時間軸上顯示的名稱
-        color_tooltip: 自定義關鍵點的顏色, 如果妳需要對它加以顏色上的區別的話
-        duration: 關鍵點的持續時間 (單位為 Tick, 20 Tick 約等於 1 秒)
+        color_tooltip: 自定義關鍵點的顏色，如果妳需要對它加以顏色上的區別的話
+        duration: 關鍵點的持續時間（單位為 Tick，20 Tick 約等於 1 秒）
 
         x: X
         y: "Y"
@@ -226,23 +231,25 @@ aperture.gui:
         position: 位置
         angle: 角度
         circle: 圓圈
-        selector: 實體目標選擇器 (您也可以輸入實體的名稱標簽來代替目標選擇器)\n\n點擊 "?" 按鈕了解更多關於語法的信息...
+        selector: 實體目標選擇器（您也可以輸入實體的名稱標簽來代替目標選擇器）\n\n點擊 "?" 按鈕了解更多關於語法的信息...
         use_speed: 速率控制
+        use_speed_enable: 啟用
 
         all: 全部
         previous: 上壹關鍵點
         
         manual:
             title: 手動
-            shift: 回放位移, 該屬性如果為正, 則延遲播放數據； 如果為負, 則削減錄制數據的持續時間
-            speed: 回放速度, 由於回放使用的是原始錄制的數據, 因此可以考慮使用拖動調整器來平滑運動
-            record: 通過此按鈕, 您就可以錄制相機的手動運動了!
+            shift: 回放位移，該屬性如果為正，則延遲播放數據； 如果為負，則削減錄制數據的持續時間
+            speed: 回放速度，由於回放使用的是原始錄制的數據，因此可以考慮使用拖動調整器來平滑運動
+            record: 通過此按鈕，您就可以錄制相機的手動運動了！
 
         dolly:
             distance: "距離決定了在指定的時間內，滑軌沿指定方向移動的方塊距離"
-            yaw: "滑軌在水平方向 (偏航, 以角度來衡量) 上的移動"
-            pitch: "滑軌在垂直方向 (俯仰，以角度來衡量) 上的移動"
+            yaw: "滑軌在水平方向（偏航，以角度來衡量）上的移動"
+            pitch: "滑軌在垂直方向（俯仰，以角度來衡量）上的移動"
             speed: "線性速度: %s 方塊/s."
+            reverse: "互換開始與結束的位置，因要反轉它"
 
         keys:
             title: 當前的關鍵點面板
@@ -256,3 +263,7 @@ aperture.gui:
             
             previous: 開關上壹關鍵點選項
             record_manual: 開始錄制手動動作
+
+        context:
+            look_coords: 獲取當前準星處實體/方塊的坐標
+            look_block: 獲取當前準星處方塊的中心點坐標
