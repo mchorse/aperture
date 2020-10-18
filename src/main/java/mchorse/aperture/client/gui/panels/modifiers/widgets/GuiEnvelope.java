@@ -1,6 +1,5 @@
 package mchorse.aperture.client.gui.panels.modifiers.widgets;
 
-import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.smooth.Envelope;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
@@ -159,6 +158,11 @@ public class GuiEnvelope extends GuiElement
 	public void initiate()
 	{
 		this.updateDuration();
+		this.channel.graph.resetView();
+	}
+
+	public void wasToggled()
+	{
 		this.channel.graph.resetView();
 	}
 

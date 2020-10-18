@@ -122,6 +122,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         }
 
         this.parent.resize();
+        this.envelopes.wasToggled();
     }
 
     private void updateEnable()
