@@ -18,7 +18,7 @@ key.aperture:
         stepFront: Шаг вперед
         stepBack: Шаг назад
         
-        rotateUp: Вразение вверх
+        rotateUp: Вращение вверх
         rotateDown: Вращение вниз
         rotateLeft: Вращение влево
         rotateRight: Вращение вправо
