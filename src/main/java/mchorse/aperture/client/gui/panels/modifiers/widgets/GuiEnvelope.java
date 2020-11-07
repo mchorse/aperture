@@ -242,7 +242,7 @@ public class GuiEnvelope extends GuiElement
 			GL11.glLineWidth(1);
 
 			/* Draw cursor */
-			int x = this.panel.modifiers.editor.timeline.value;
+			int x = this.panel.modifiers.editor.dashboard.timeline.value;
 
 			if (this.panel.modifiers.fixture != null)
 			{

@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiColorElement;

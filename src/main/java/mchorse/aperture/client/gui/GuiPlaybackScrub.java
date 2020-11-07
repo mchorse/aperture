@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui;
 
 import mchorse.aperture.camera.fixtures.ManualFixture;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 
@@ -11,11 +12,9 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.utils.Color;
-import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 /**

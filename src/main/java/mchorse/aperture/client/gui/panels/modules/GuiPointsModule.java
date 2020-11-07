@@ -1,7 +1,7 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;

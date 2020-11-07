@@ -1,8 +1,7 @@
 package mchorse.aperture.client.gui.config;
 
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;

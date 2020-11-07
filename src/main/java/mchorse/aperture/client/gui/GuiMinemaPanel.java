@@ -1,16 +1,14 @@
 package mchorse.aperture.client.gui;
 
 import mchorse.aperture.Aperture;
-import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
-import mchorse.aperture.capabilities.camera.Camera;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
-import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiMessageModal;
@@ -26,7 +24,6 @@ import net.minecraft.client.resources.I18n;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 public class GuiMinemaPanel extends GuiElement
 {
@@ -175,13 +172,13 @@ public class GuiMinemaPanel extends GuiElement
 	{
 		int right = (int) (this.left.value + this.right.value);
 
-		this.left.setValue(this.editor.timeline.value);
+		this.left.setValue(this.editor.dashboard.timeline.value);
 		this.right.setValue(right - this.left.value);
 	}
 
 	private void calculateRight(GuiButtonElement button)
 	{
-		this.right.setValue(this.editor.timeline.value - this.left.value);
+		this.right.setValue(this.editor.dashboard.timeline.value - this.left.value);
 	}
 
 	private void openMovies(GuiButtonElement button)
@@ -231,12 +228,12 @@ public class GuiMinemaPanel extends GuiElement
 			return;
 		}
 
-		ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this.editor, this.start));
+		Aperture.EVENT_BUS.post(new CameraEditorEvent.Rewind(this.editor, this.start));
 
-		this.editor.timeline.setValueFromScrub(this.start);
+		this.editor.dashboard.timeline.setValueFromScrub(this.start);
 		this.editor.updatePlayer(this.start, 0);
 
-		this.editor.root.setVisible(false);
+		this.editor.dashboard.panels.setVisible(false);
 		this.recording = this.waiting = true;
 	}
 
@@ -255,7 +252,7 @@ public class GuiMinemaPanel extends GuiElement
 				this.editor.togglePlayback();
 			}
 
-			this.editor.root.setVisible(true);
+			this.editor.dashboard.panels.setVisible(true);
 			this.recording = this.waiting = false;
 		}
 	}

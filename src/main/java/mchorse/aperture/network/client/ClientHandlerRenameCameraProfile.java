@@ -1,7 +1,7 @@
 package mchorse.aperture.network.client;
 
-import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.ServerDestination;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.network.common.PacketRenameCameraProfile;
 import mchorse.mclib.network.ClientMessageHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -14,6 +14,6 @@ public class ClientHandlerRenameCameraProfile extends ClientMessageHandler<Packe
     @SideOnly(Side.CLIENT)
     public void run(EntityPlayerSP player, PacketRenameCameraProfile message)
     {
-        ClientProxy.getCameraEditor().profiles.rename(new ServerDestination(message.from), message.to);
+        GuiCameraDashboard.getCameraEditor().camera.profiles.rename(new ServerDestination(message.from), message.to);
     }
 }

@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
@@ -72,7 +72,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.prepend(this.speed);
         this.add(this.points);
 
-        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LSHIFT).active(editor::isFlightDisabled).category(CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LSHIFT).active(editor.dashboard::isFlightDisabled).category(CATEGORY);
     }
 
     private void updateSpeedPanel()
@@ -111,7 +111,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         if (this.editor.isSyncing())
         {
-            this.editor.timeline.setValueFromScrub((int) this.currentOffset());
+            this.editor.dashboard.timeline.setValueFromScrub((int) this.currentOffset());
         }
     }
 

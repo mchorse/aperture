@@ -27,4 +27,5 @@ public class APIcons
 	public static final Icon RECORD = new Icon(ICONS, 0, 16);
 	public static final Icon KEYFRAMES = new Icon(ICONS, 16, 16);
 	public static final Icon ORBIT = new Icon(ICONS, 32, 16);
+	public static final Icon CAMERA = new Icon(ICONS, 48, 16);
 }

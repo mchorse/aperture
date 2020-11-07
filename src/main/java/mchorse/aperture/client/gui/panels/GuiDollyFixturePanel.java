@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.DollyFixture;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -16,8 +16,6 @@ import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-
-import java.util.function.Consumer;
 
 public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
 {

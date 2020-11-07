@@ -3,6 +3,7 @@ package mchorse.aperture.camera.destination;
 import java.io.File;
 import java.nio.charset.Charset;
 
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import org.apache.commons.io.FileUtils;
 
 import mchorse.aperture.ClientProxy;
@@ -38,7 +39,7 @@ public class ClientDestination extends AbstractDestination
 
         if (from.renameTo(to))
         {
-            ClientProxy.getCameraEditor().profiles.rename(this, name);
+            GuiCameraDashboard.getCameraEditor().camera.profiles.rename(this, name);
         }
     }
 
@@ -68,7 +69,7 @@ public class ClientDestination extends AbstractDestination
             newProfile.setDestination(this);
             newProfile.dirty = false;
 
-            ClientProxy.getCameraEditor().profiles.addProfile(newProfile);
+            GuiCameraDashboard.getCameraEditor().camera.profiles.addProfile(newProfile);
 
             L10n.success(Minecraft.getMinecraft().player, "profile.client_load", this.filename);
         }

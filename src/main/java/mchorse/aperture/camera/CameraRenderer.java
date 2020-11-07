@@ -12,7 +12,7 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.smooth.Filter;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.KeyboardHandler;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import mchorse.mclib.utils.Color;
@@ -108,9 +108,9 @@ public class CameraRenderer
                 this.mc.gameSettings.thirdPersonView = 1;
             }
         }
-        else if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
+        else if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraDashboard)
         {
-            Position position = ClientProxy.getCameraEditor().position;
+            Position position = GuiCameraDashboard.getCameraEditor().camera.position;
 
             event.setYaw(-180 + position.angle.yaw);
             event.setPitch(position.angle.pitch);
@@ -210,7 +210,7 @@ public class CameraRenderer
     {
         if (GuiManualFixturePanel.recording)
         {
-            GuiAbstractFixturePanel panel = ClientProxy.getCameraEditor().panel.delegate;
+            GuiAbstractFixturePanel panel = GuiCameraDashboard.getCameraEditor().camera.panel.delegate;
 
             if (panel instanceof GuiManualFixturePanel)
             {
@@ -393,9 +393,9 @@ public class CameraRenderer
         GL11.glNormal3f(0, 1, 0);
         GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
 
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraDashboard)
         {
-            Position pos = ClientProxy.getCameraEditor().position;
+            Position pos = GuiCameraDashboard.getCameraEditor().camera.position;
 
             GlStateManager.rotate(-pos.angle.yaw, 0, 1, 0);
             GlStateManager.rotate(pos.angle.pitch, 1, 0, 0);
@@ -504,9 +504,9 @@ public class CameraRenderer
         GL11.glNormal3f(0, 1, 0);
         GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
 
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraDashboard)
         {
-            Position position = ClientProxy.getCameraEditor().position;
+            Position position = GuiCameraDashboard.getCameraEditor().camera.position;
 
             GlStateManager.rotate(-position.angle.yaw, 0, 1, 0);
             GlStateManager.rotate(position.angle.pitch, 1, 0, 0);

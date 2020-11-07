@@ -1,10 +1,6 @@
 package mchorse.aperture.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.client.gui.config.GuiAbstractConfigOptions;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
@@ -17,17 +13,6 @@ public abstract class CameraEditorEvent extends Event
     public CameraEditorEvent(GuiCameraEditor editor)
     {
         this.editor = editor;
-    }
-
-    /**
-     * Camera editor initiate event 
-     */
-    public static class Init extends CameraEditorEvent
-    {
-        public Init(GuiCameraEditor editor)
-        {
-            super(editor);
-        }
     }
 
     /**
@@ -94,19 +79,6 @@ public abstract class CameraEditorEvent extends Event
             super(editor);
 
             this.position = position;
-        }
-    }
-
-    /**
-     * Camera editor event for loading camera options  
-     */
-    public static class Options extends CameraEditorEvent
-    {
-        public final List<GuiAbstractConfigOptions> options = new ArrayList<GuiAbstractConfigOptions>();
-
-        public Options(GuiCameraEditor editor)
-        {
-            super(editor);
         }
     }
 }

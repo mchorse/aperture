@@ -1,5 +1,6 @@
 package mchorse.aperture;
 
+import mchorse.aperture.commands.CommandAperture;
 import mchorse.mclib.McLib;
 import mchorse.mclib.config.ConfigBuilder;
 import mchorse.mclib.config.values.ValueBoolean;
@@ -8,16 +9,15 @@ import mchorse.mclib.config.values.ValueInt;
 import mchorse.mclib.config.values.ValueRL;
 import mchorse.mclib.config.values.ValueString;
 import mchorse.mclib.events.RegisterConfigEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.logging.log4j.Logger;
-
-import mchorse.aperture.commands.CommandAperture;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -47,6 +47,12 @@ public class Aperture
 
     @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
     public static CommonProxy proxy;
+
+    /**
+     * Event bus for handling camera editor events (I don't want to spam a lot
+     * of events in the main event bus).
+     */
+    public static EventBus EVENT_BUS = new EventBus();
 
     /* Mod's logger */
     public static Logger LOGGER;

@@ -1,7 +1,7 @@
 package mchorse.aperture.client;
 
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -42,7 +42,7 @@ public class RenderingHandler
     @SubscribeEvent
     public void onChatDraw(RenderGameOverlayEvent.Chat event)
     {
-        if (this.mc.currentScreen instanceof GuiCameraEditor)
+        if (this.mc.currentScreen instanceof GuiCameraDashboard)
         {
             event.setCanceled(true);
         }
@@ -54,7 +54,7 @@ public class RenderingHandler
     @SubscribeEvent
     public void onHUDRender(RenderGameOverlayEvent.Text event)
     {
-        if (this.mc.currentScreen instanceof GuiCameraEditor)
+        if (this.mc.currentScreen instanceof GuiCameraDashboard)
         {
             event.setCanceled(true);
         }

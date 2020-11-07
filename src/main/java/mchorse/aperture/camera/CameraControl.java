@@ -3,7 +3,7 @@ package mchorse.aperture.camera;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.AbstractDestination;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.client.gui.GuiProfilesManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.GameType;
@@ -81,7 +81,7 @@ public class CameraControl
         /* Saving dirty camera profiles */
         if (Aperture.profileAutoSave.get())
         {
-            GuiCameraEditor cameraEditor = ClientProxy.cameraEditor;
+            GuiCameraDashboard cameraEditor = GuiCameraDashboard.cameraEditor;
 
             if (cameraEditor != null)
             {
@@ -95,9 +95,9 @@ public class CameraControl
         this.lastGameMode = null;
     }
 
-    private void saveCameraProfiles(GuiCameraEditor editor)
+    private void saveCameraProfiles(GuiCameraDashboard editor)
     {
-        GuiProfilesManager manager = editor.profiles;
+        GuiProfilesManager manager = editor.camera.profiles;
 
         for (CameraProfile profile : manager.profiles.list.getList())
         {
@@ -110,8 +110,8 @@ public class CameraControl
 
     public CameraProfile getProfile(AbstractDestination destination)
     {
-        GuiCameraEditor editor = ClientProxy.cameraEditor;
-        GuiProfilesManager manager = editor.profiles;
+        GuiCameraDashboard editor = GuiCameraDashboard.cameraEditor;
+        GuiProfilesManager manager = editor.camera.profiles;
 
         for (CameraProfile profile : manager.profiles.list.getList())
         {

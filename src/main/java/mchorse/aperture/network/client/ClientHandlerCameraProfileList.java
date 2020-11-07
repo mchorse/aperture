@@ -4,7 +4,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraAPI;
 import mchorse.aperture.camera.destination.ClientDestination;
 import mchorse.aperture.camera.destination.ServerDestination;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.client.gui.GuiProfilesManager;
 import mchorse.aperture.network.common.PacketCameraProfileList;
 import mchorse.mclib.network.ClientMessageHandler;
@@ -22,9 +22,9 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
     {
         GuiScreen current = Minecraft.getMinecraft().currentScreen;
 
-        if (current instanceof GuiCameraEditor)
+        if (current instanceof GuiCameraDashboard)
         {
-            GuiProfilesManager manager = ((GuiCameraEditor) current).profiles;
+            GuiProfilesManager manager = ((GuiCameraDashboard) current).camera.profiles;
 
             for (String filename : CameraAPI.getClientProfiles())
             {

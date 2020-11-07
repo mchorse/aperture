@@ -1,6 +1,6 @@
 package mchorse.aperture.commands.camera;
 
-import mchorse.aperture.ClientProxy;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -23,6 +23,6 @@ public class SubCommandCameraReload extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
-		ClientProxy.cameraEditor = null;
+		GuiCameraDashboard.cameraEditor = null;
 	}
 }

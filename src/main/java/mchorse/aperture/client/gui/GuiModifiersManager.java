@@ -4,6 +4,7 @@ import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.ModifierRegistry.ModifierInfo;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;

@@ -1,7 +1,7 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -90,8 +90,8 @@ public class GuiInterpModule extends GuiAbstractModule
         this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.pos);
         this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.angle);
 
-        this.keys().register(IKey.lang("aperture.gui.panels.keys.path_position"), Keyboard.KEY_P, this::togglePosition).held(Keyboard.KEY_LCONTROL).active(editor::isFlightDisabled).category(GuiAbstractFixturePanel.CATEGORY);
-        this.keys().register(IKey.lang("aperture.gui.panels.keys.path_angle"), Keyboard.KEY_A, this::toggleAngle).held(Keyboard.KEY_LCONTROL).active(editor::isFlightDisabled).category(GuiAbstractFixturePanel.CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.path_position"), Keyboard.KEY_P, this::togglePosition).held(Keyboard.KEY_LCONTROL).active(editor.dashboard::isFlightDisabled).category(GuiAbstractFixturePanel.CATEGORY);
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.path_angle"), Keyboard.KEY_A, this::toggleAngle).held(Keyboard.KEY_LCONTROL).active(editor.dashboard::isFlightDisabled).category(GuiAbstractFixturePanel.CATEGORY);
     }
 
     private void togglePosition()

@@ -2,7 +2,8 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.fixtures.ManualFixture;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -56,7 +57,7 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 		if (timer.checkReset())
 		{
 			recording = true;
-			ClientProxy.getCameraEditor().postPlayback(offset, true);
+			GuiCameraDashboard.getCameraEditor().camera.postPlayback(offset, true);
 		}
 		else if (timer.enabled)
 		{
@@ -97,7 +98,7 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 
 		this.left.add(Elements.label(IKey.lang("aperture.gui.panels.manual.title")).background(0x88000000), this.shift, this.speed, this.record);
 
-		this.keys().register(IKey.lang("aperture.gui.panels.keys.record_manual"), Keyboard.KEY_R, () -> this.record.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).active(editor::isFlightDisabled).category(CATEGORY);
+		this.keys().register(IKey.lang("aperture.gui.panels.keys.record_manual"), Keyboard.KEY_R, () -> this.record.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).active(editor.dashboard::isFlightDisabled).category(CATEGORY);
 	}
 
 	@Override
@@ -117,7 +118,7 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 		timer.mark();
 
 		this.editor.postRewind(offset);
-		this.editor.exit();
+		this.editor.dashboard.exit();
 	}
 
 	@Override

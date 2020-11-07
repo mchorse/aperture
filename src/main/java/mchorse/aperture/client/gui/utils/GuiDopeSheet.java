@@ -1,6 +1,6 @@
 package mchorse.aperture.client.gui.utils;
 
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import net.minecraft.client.Minecraft;
@@ -34,7 +34,7 @@ public class GuiDopeSheet extends mchorse.mclib.client.gui.framework.elements.ke
             return 0;
         }
 
-        return (int) (this.editor.timeline.value - this.getFixtureOffset());
+        return (int) (this.editor.dashboard.timeline.value - this.getFixtureOffset());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class GuiDopeSheet extends mchorse.mclib.client.gui.framework.elements.ke
         {
             long offset = this.getFixtureOffset();
 
-            this.editor.timeline.setValueFromScrub((int) (x + offset));
+            this.editor.dashboard.timeline.setValueFromScrub((int) (x + offset));
         }
     }
 

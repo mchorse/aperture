@@ -1,7 +1,8 @@
-package mchorse.aperture.client.gui;
+package mchorse.aperture.client.gui.dashboard;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -11,7 +12,6 @@ import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,7 +27,7 @@ public class Flight implements IGuiElement
     private IKey stringSpeed = IKey.lang("aperture.gui.editor.speed");
     private IKey stringDistance = IKey.lang("aperture.gui.editor.distance");
 
-    private GuiCameraEditor editor;
+    private GuiCameraDashboard editor;
 
     private boolean enabled;
     private MovementType type = MovementType.HORIZONTAL;
@@ -42,7 +42,7 @@ public class Flight implements IGuiElement
     private float distance;
     private boolean update;
 
-    public Flight(GuiCameraEditor editor)
+    public Flight(GuiCameraDashboard editor)
     {
         this.editor = editor;
     }
@@ -84,7 +84,7 @@ public class Flight implements IGuiElement
             return;
         }
 
-        Position position = this.editor.position;
+        Position position = this.editor.camera.position;
         Vec3d vec = new Vec3d(0, 0, this.distance);
         double x = position.point.x;
         double y = position.point.y;

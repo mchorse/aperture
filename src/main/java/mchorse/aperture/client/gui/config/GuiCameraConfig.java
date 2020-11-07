@@ -1,8 +1,6 @@
 package mchorse.aperture.client.gui.config;
 
-import mchorse.aperture.ClientProxy;
-import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.events.CameraEditorEvent;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
@@ -17,16 +15,7 @@ public class GuiCameraConfig extends GuiScrollElement
 
         this.editor = editor;
 
-        CameraEditorEvent.Options event = new CameraEditorEvent.Options(editor);
-        event.options.add(editor.cameraOptions);
-
-        ClientProxy.EVENT_BUS.post(event);
-
-        for (GuiAbstractConfigOptions option : event.options)
-        {
-            this.add(option);
-        }
-
+        this.add(editor.cameraOptions);
         this.flex().column(0).vertical().stretch().scroll();
     }
 

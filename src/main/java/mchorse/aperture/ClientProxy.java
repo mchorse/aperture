@@ -27,7 +27,8 @@ import mchorse.aperture.camera.modifiers.ShakeModifier;
 import mchorse.aperture.camera.modifiers.TranslateModifier;
 import mchorse.aperture.client.KeyboardHandler;
 import mchorse.aperture.client.RenderingHandler;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.GuiCircularFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiDollyFixturePanel;
@@ -58,7 +59,6 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -84,43 +84,19 @@ public class ClientProxy extends CommonProxy
 
     public static KeyboardHandler keys;
 
-    /**
-     * Event bus for handling camera editor events (I don't want to spam a lot 
-     * of events in the main event bus). 
-     */
-    public static EventBus EVENT_BUS = new EventBus();
-
     /* Files */
     public static File config;
     public static File cameras;
 
     /**
-     * An instance of a camera editor
-     */
-    public static GuiCameraEditor cameraEditor;
-
-    /**
-     * Get camera editor
-     */
-    public static GuiCameraEditor getCameraEditor()
-    {
-        if (cameraEditor == null)
-        {
-            cameraEditor = new GuiCameraEditor(Minecraft.getMinecraft(), runner);
-        }
-
-        return cameraEditor;
-    }
-
-    /**
      * Open the camera editor
      */
-    public static GuiCameraEditor openCameraEditor()
+    public static GuiCameraDashboard openCameraEditor()
     {
         Minecraft mc = Minecraft.getMinecraft();
-        GuiCameraEditor editor = ClientProxy.getCameraEditor();
+        GuiCameraDashboard editor = GuiCameraDashboard.getCameraEditor();
 
-        editor.updateCameraEditor(mc.player);
+        editor.camera.updateCameraEditor(mc.player);
         mc.player.setVelocity(0, 0, 0);
         mc.displayGuiScreen(editor);
 

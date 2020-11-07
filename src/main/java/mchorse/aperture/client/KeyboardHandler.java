@@ -8,7 +8,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.smooth.SmoothCamera;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
 import mchorse.aperture.events.CameraProfileChangedEvent;
 import mchorse.aperture.utils.L10n;
 import net.minecraft.client.Minecraft;
@@ -179,7 +179,7 @@ public class KeyboardHandler
     @SubscribeEvent
     public void onUserLogOut(ClientDisconnectionFromServerEvent event)
     {
-        ClientProxy.cameraEditor = null;
+        GuiCameraDashboard.cameraEditor = null;
         ClientProxy.control.reset();
         ClientProxy.server = false;
 
@@ -234,7 +234,7 @@ public class KeyboardHandler
 
         if (this.addPoint.isPressed())
         {
-            ClientProxy.getCameraEditor().addPathPoint();
+            GuiCameraDashboard.getCameraEditor().camera.addPathPoint();
         }
     }
 
@@ -375,9 +375,9 @@ public class KeyboardHandler
     {
         GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 
-        if (screen instanceof GuiCameraEditor)
+        if (screen instanceof GuiCameraDashboard)
         {
-            ((GuiCameraEditor) screen).updateSaveButton(event.profile);
+            ((GuiCameraDashboard) screen).camera.updateSaveButton(event.profile);
         }
     }
 }

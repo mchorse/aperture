@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui.config;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -51,10 +51,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.renderPath = new GuiToggleElement(mc, Aperture.profileRender);
         this.sync = new GuiToggleElement(mc, Aperture.editorSync);
 
-        this.flight = new GuiToggleElement(mc, IKey.lang("aperture.gui.config.flight"), this.editor.flight.isFlightEnabled(), (b) ->
-        {
-            this.editor.setFlight(b.isToggled());
-        });
+        this.flight = new GuiToggleElement(mc, IKey.lang("aperture.gui.config.flight"), this.editor.dashboard.flight.isFlightEnabled(), (b) -> this.editor.setFlight(b.isToggled()));
         this.flight.tooltip(IKey.lang("aperture.gui.config.flight_tooltip"));
 
         this.displayPosition = new GuiToggleElement(mc, Aperture.editorDisplayPosition);
@@ -74,7 +71,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.overlayPicker.fill(this.editor.overlayLocation);
             this.overlayPicker.resize();
 
-            this.editor.top.add(this.overlayPicker);
+            this.editor.dashboard.panels.add(this.overlayPicker);
         });
 
         this.overlayPicker = new GuiTexturePicker(mc, (rl) ->
@@ -82,7 +79,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             Aperture.editorOverlayRL.set(rl);
             this.editor.updateOverlay();
         });
-        this.overlayPicker.flex().relative(this.editor.viewport).wh(1F, 1F);
+        this.overlayPicker.flex().relative(this.editor.area).wh(1F, 1F);
 
         this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.crosshair, this.letterBox, this.aspectRatio, this.loop, this.overlay, this.pickOverlay);
 
@@ -108,7 +105,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.renderPath.toggled(Aperture.profileRender.get());
         this.sync.toggled(Aperture.editorSync.get());
         this.loop.toggled(Aperture.editorLoop.get());
-        this.flight.toggled(this.editor.flight.isFlightEnabled());
+        this.flight.toggled(this.editor.dashboard.flight.isFlightEnabled());
         this.displayPosition.toggled(Aperture.editorDisplayPosition.get());
         this.essentialsTeleport.toggled(Aperture.essentialsTeleport.get());
         this.ruleOfThirds.toggled(Aperture.editorRuleOfThirds.get());
