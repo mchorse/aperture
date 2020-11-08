@@ -51,6 +51,21 @@ public class GuiCameraDashboard extends GuiAbstractDashboard
     public GuiPlaybackScrub timeline;
 
     /**
+     * Open the camera editor
+     */
+    public static GuiCameraDashboard openCameraEditor()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        GuiCameraDashboard editor = GuiCameraDashboard.getCameraEditor();
+
+        editor.camera.updateCameraEditor(mc.player);
+        mc.player.setVelocity(0, 0, 0);
+        mc.displayGuiScreen(editor);
+
+        return editor;
+    }
+
+    /**
      * Get camera editor
      */
     public static GuiCameraDashboard getCameraEditor()

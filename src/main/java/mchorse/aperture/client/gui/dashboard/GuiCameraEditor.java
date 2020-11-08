@@ -298,6 +298,7 @@ public class GuiCameraEditor extends GuiDashboardPanel<GuiCameraDashboard> imple
 
 	public void postPlayback(int tick, boolean playing)
 	{
+		Aperture.EVENT_BUS.post(new CameraEditorEvent.Playback(this, playing, tick));
 	}
 
 	public void postScrub(int tick)

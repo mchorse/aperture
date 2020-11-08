@@ -1,9 +1,5 @@
 package mchorse.aperture.client;
 
-import java.lang.reflect.Field;
-
-import org.lwjgl.input.Keyboard;
-
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
@@ -26,6 +22,9 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToSe
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+
+import java.lang.reflect.Field;
 
 /**
  * Separate event handler for keyboard events
@@ -215,7 +214,7 @@ public class KeyboardHandler
         /* Misc. */
         if (this.cameraEditor.isPressed())
         {
-            ClientProxy.openCameraEditor();
+            GuiCameraDashboard.openCameraEditor();
         }
 
         if (this.smoothCamera.isPressed())

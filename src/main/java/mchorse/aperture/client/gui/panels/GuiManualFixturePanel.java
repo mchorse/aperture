@@ -1,9 +1,8 @@
 package mchorse.aperture.client.gui.panels;
 
-import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.fixtures.ManualFixture;
-import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.client.gui.dashboard.GuiCameraDashboard;
+import mchorse.aperture.client.gui.dashboard.GuiCameraEditor;
 import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -38,7 +37,7 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 
 		if (tick >= duration)
 		{
-			ClientProxy.openCameraEditor();
+			GuiCameraDashboard.openCameraEditor();
 		}
 		else
 		{
