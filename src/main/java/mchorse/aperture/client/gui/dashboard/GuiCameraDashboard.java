@@ -58,8 +58,6 @@ public class GuiCameraDashboard extends GuiAbstractDashboard
         Minecraft mc = Minecraft.getMinecraft();
         GuiCameraDashboard editor = GuiCameraDashboard.getCameraEditor();
 
-        editor.camera.updateCameraEditor(mc.player);
-        mc.player.setVelocity(0, 0, 0);
         mc.displayGuiScreen(editor);
 
         return editor;
@@ -87,7 +85,7 @@ public class GuiCameraDashboard extends GuiAbstractDashboard
 
         this.timeline = new GuiPlaybackScrub(mc, this.camera, null);
         this.timeline.flex().relative(this.panels.view).set(10, 0, 0, 20).y(1F).w(1, -20);
-        this.root.add(this.timeline);
+        this.panels.add(this.timeline);
 
         this.panels.view.flex().h.offset -= 20;
 

@@ -623,8 +623,13 @@ public class GuiCameraEditor extends GuiDashboardPanel<GuiCameraDashboard> imple
 	 * Update the state of camera editor (should be invoked upon opening this
 	 * screen)
 	 */
-	public void updateCameraEditor(EntityPlayer player)
+	@Override
+	public void open()
 	{
+		EntityPlayerSP player = this.mc.player;
+
+		player.setVelocity(0, 0, 0);
+
 		this.updateOverlay();
 		this.position.set(player);
 		this.setProfile(ClientProxy.control.currentProfile);
@@ -649,7 +654,7 @@ public class GuiCameraEditor extends GuiDashboardPanel<GuiCameraDashboard> imple
 		{
 			if (ClientProxy.control.lastGameMode != GameType.SPECTATOR)
 			{
-				((EntityPlayerSP) player).sendChatMessage("/gamemode 3");
+				player.sendChatMessage("/gamemode 3");
 			}
 		}
 
