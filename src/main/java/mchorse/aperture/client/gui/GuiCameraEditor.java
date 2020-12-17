@@ -225,7 +225,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
         this.nextFixture.tooltip(IKey.lang("aperture.gui.tooltips.jump_next_fixture"));
         this.nextFrame = new GuiIconElement(mc, APIcons.FORWARD, (b) -> this.jumpToNextFrame());
         this.nextFrame.tooltip(IKey.lang("aperture.gui.tooltips.jump_next_frame"));
-        this.plause = new GuiIconElement(mc, APIcons.PLAY, (b) -> this.togglePlayback());
+        this.plause = new GuiIconElement(mc, Icons.PLAY, (b) -> this.togglePlayback());
         this.plause.tooltip(IKey.lang("aperture.gui.tooltips.plause"), Direction.BOTTOM);
         this.prevFrame = new GuiIconElement(mc, APIcons.BACKWARD, (b) -> this.jumpToPrevFrame());
         this.prevFrame.tooltip(IKey.lang("aperture.gui.tooltips.jump_prev_frame"));
@@ -931,7 +931,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     private void updatePlauseButton()
     {
-        this.plause.both(this.runner.isRunning() ? APIcons.PAUSE : APIcons.PLAY);
+        this.plause.both(this.runner.isRunning() ? Icons.PAUSE : Icons.PLAY);
     }
 
     /**

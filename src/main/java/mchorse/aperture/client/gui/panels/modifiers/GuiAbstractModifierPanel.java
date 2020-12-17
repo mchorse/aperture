@@ -140,7 +140,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         else
         {
             ColorUtils.bindColor(0x88000000 + this.color);
-            APIcons.DISABLED.renderArea(this.area.x, this.area.y, this.area.w, this.area.h);
+            Icons.DISABLED.renderArea(this.area.x, this.area.y, this.area.w, this.area.h);
         }
 
         this.buttons.setVisible(this.area.isInside(context.mouseX, context.mouseY));
