@@ -79,8 +79,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (!same)
         {
-            this.scroll = 0;
-            this.scale = 1;
+            this.clampScroll();
         }
     }
 
@@ -475,8 +474,14 @@ public class GuiPlaybackScrub extends GuiElement
                 /* Draw path's fixture separators */
                 if (fixture instanceof PathFixture)
                 {
+                    ColorUtils.COLOR.set(color, false);
+                    ColorUtils.COLOR.r *= 0.89F;
+                    ColorUtils.COLOR.g *= 0.89F;
+                    ColorUtils.COLOR.b *= 0.89F;
+
                     PathFixture path = (PathFixture) fixture;
                     int c = path.getCount() - 1;
+                    int highlight = ColorUtils.COLOR.getRGBAColor();
 
                     if (c > 1)
                     {
@@ -486,7 +491,7 @@ public class GuiPlaybackScrub extends GuiElement
                         {
                             int px = leftMargin + (int) (fract * j);
 
-                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, 0xff000000 + color - 0x00181818);
+                            Gui.drawRect(px, y + 5, px + 1, y + h - 1, highlight);
                         }
                     }
                 }
