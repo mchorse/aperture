@@ -10,6 +10,7 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.utils.Scale;
 import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
@@ -36,9 +37,8 @@ public class GuiPlaybackScrub extends GuiElement
     public GuiCameraEditor editor;
     public CameraProfile profile;
 
-    public int scroll;
     public boolean scrolling;
-    public float scale = 1;
+    public Scale scale = new Scale(false);
 
     private int lastX;
     private boolean dragging;
@@ -99,16 +99,16 @@ public class GuiPlaybackScrub extends GuiElement
             this.editor.setFlight(false);
             this.editor.scrubbed(this, this.value, fromScrub);
 
-            int v = (int) (this.value * this.scale);
+            int v = (int) (this.value * this.scale.zoom);
             int w = this.area.w - 4;
 
-            if (this.scroll  > v)
+            if (this.scale.shift > v)
             {
-                this.scroll = v;
+                this.scale.shift = v;
             }
-            else if (v > this.scroll + w)
+            else if (v > this.scale.shift + w)
             {
-                this.scroll = v - w;
+                this.scale.shift = v - w;
             }
 
             this.clampScroll();
@@ -137,7 +137,7 @@ public class GuiPlaybackScrub extends GuiElement
     public int calcValueFromMouse(int mouseX)
     {
         int max = this.max == 0 ? 1 : this.max;
-        float factor = (mouseX - 2 - this.area.x + this.scroll) / (max * this.scale);
+        double factor = (mouseX - 2 - this.area.x + this.scale.shift) / (max * this.scale.zoom);
 
         return (int) (factor * (max - this.min)) + this.min;
     }
@@ -148,9 +148,9 @@ public class GuiPlaybackScrub extends GuiElement
     public int calcMouseFromValue(int value)
     {
         int max = this.max == 0 ? 1 : this.max;
-        float factor = (value - this.min) / (float) (max - this.min);
+        double factor = (value - this.min) / (float) (max - this.min);
 
-        return (int) (factor * max * this.scale) + this.area.x + 2 - this.scroll;
+        return (int) ((factor * max * this.scale.zoom) + this.area.x + 2 - this.scale.shift);
     }
 
     /**
@@ -158,9 +158,9 @@ public class GuiPlaybackScrub extends GuiElement
      */
     public void clampScroll()
     {
-        int max = (int) (this.max * this.scale) - this.area.w + 4;
+        int max = (int) (this.max * this.scale.zoom) - this.area.w + 4;
 
-        this.scroll = MathHelper.clamp(this.scroll, 0, max > 0 ? max : 0);
+        this.scale.shift = MathHelper.clamp(this.scale.shift, 0, max > 0 ? max : 0);
     }
 
     /* GUI interactions */
@@ -249,27 +249,27 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (this.area.isInside(context) && !this.scrolling)
         {
-            float scale = this.scale;
+            double scale = this.scale.zoom;
             float factor = 0.1F;
             int value = (int) (this.calcValueFromMouse(context.mouseX) * scale);
 
-            if (this.scale < 0.1F) factor = 0.005F;
-            else if (this.scale < 1) factor = 0.05F;
+            if (this.scale.zoom < 0.1F) factor = 0.005F;
+            else if (this.scale.zoom < 1) factor = 0.05F;
 
-            this.scale += Math.copySign(factor, scroll);
-            this.scale = MathHelper.clamp(this.scale, 0.01F, 10F);
+            this.scale.zoom += Math.copySign(factor, scroll);
+            this.scale.zoom = MathHelper.clamp(this.scale.zoom, 0.01F, 10F);
 
             /* Correct the left pivoted scroll */
-            if (this.scale != scale)
+            if (this.scale.zoom != scale)
             {
-                /* I don't know what the fuck is that formula, but I 
-                 * spent literally two hours coming up with it so it 
-                 * would give correct results for scaling where exactly 
+                /* I don't know what the fuck is that formula, but I
+                 * spent literally two hours coming up with it so it
+                 * would give correct results for scaling where exactly
                  * the cursor is...
-                 * 
+                 *
                  * I don't know how it works, don't ask me about it xD
                  */
-                this.scroll = (int) ((value - (value - this.scroll) * (scale / this.scale)) * (this.scale / scale));
+                this.scale.shift = (int) (this.scale.zoom / scale * value - (value - this.scale.shift));
             }
 
             this.clampScroll();
@@ -314,7 +314,7 @@ public class GuiPlaybackScrub extends GuiElement
         {
             this.setValueFromScrub(this.calcValueFromMouse(mouseX));
 
-            if (this.max * this.scale - this.area.w + 4 > 0)
+            if (this.max * this.scale.zoom - this.area.w + 4 > 0)
             {
                 int delta = mouseX - this.area.mx();
                 int edge = (int) Math.copySign(this.area.w / 2 - 50, -delta) + delta;
@@ -322,9 +322,9 @@ public class GuiPlaybackScrub extends GuiElement
                 if (Math.copySign(1, edge) == Math.copySign(1, delta) && delta != 0)
                 {
                     float factor = edge / 50F;
-                    float scaleFactor = this.scale <= 1 ? 1F / this.scale : this.scale;
+                    double scaleFactor = this.scale.zoom <= 1 ? 1F / this.scale.zoom : this.scale.zoom;
 
-                    this.scroll += factor * scaleFactor;
+                    this.scale.shift += factor * scaleFactor;
                     this.clampScroll();
                 }
             }
@@ -332,7 +332,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (this.scrolling)
         {
-            this.scroll -= (mouseX - this.lastX);
+            this.scale.shift -= (mouseX - this.lastX);
             this.lastX = mouseX;
 
             this.clampScroll();
@@ -544,8 +544,8 @@ public class GuiPlaybackScrub extends GuiElement
             }
 
             /* Draw shadows to indicate that there are still stuff to scroll */
-            if (this.scroll > this.min * this.scale) GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
-            if (this.scroll < this.max * this.scale - this.area.w + 4) GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
+            if (this.scale.shift > this.min * this.scale.zoom) GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
+            if (this.scale.shift < this.max * this.scale.zoom - this.area.w + 4) GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
 
             /* Draw end marker and also shadow of area where there is no  */
             int stopX = this.calcMouseFromValue((int) this.profile.getDuration());
