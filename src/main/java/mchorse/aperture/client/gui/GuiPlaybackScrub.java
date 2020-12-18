@@ -35,6 +35,7 @@ public class GuiPlaybackScrub extends GuiElement
     public GuiCameraEditor editor;
     public CameraProfile profile;
 
+    private Area timeline = new Area();
     public boolean scrolling;
     public Scale scale;
 
@@ -44,7 +45,7 @@ public class GuiPlaybackScrub extends GuiElement
     private AbstractFixture start;
     private AbstractFixture end;
 
-    private Area timeline = new Area();
+    private boolean firstTime;
 
     public GuiPlaybackScrub(Minecraft mc, GuiCameraEditor editor, CameraProfile profile)
     {
@@ -63,6 +64,13 @@ public class GuiPlaybackScrub extends GuiElement
 
         this.timeline.copy(this.area);
         this.timeline.offsetX(-2);
+
+        if (!this.firstTime)
+        {
+            this.scale.view(this.min, this.max);
+            this.firstTime = true;
+        }
+
         this.clampScroll();
     }
 
@@ -81,7 +89,7 @@ public class GuiPlaybackScrub extends GuiElement
      */
     public void setProfile(CameraProfile profile)
     {
-        boolean same = profile == this.profile;
+        boolean same = this.profile == profile;
 
         this.profile = profile;
         this.index = -1;
@@ -89,9 +97,9 @@ public class GuiPlaybackScrub extends GuiElement
         this.set(0, Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub));
         this.value = MathHelper.clamp(this.value, this.min, this.max);
 
-        if (!same && profile.getDuration() > 0)
+        if (!same && profile.getDuration() > 0 && this.area.w != 0)
         {
-            this.scale.view(0, profile.getDuration(), this.area.w - 2);
+            this.scale.view(this.min, profile.getDuration());
         }
     }
 
@@ -104,7 +112,7 @@ public class GuiPlaybackScrub extends GuiElement
         int old = this.value;
 
         this.value = value;
-        this.value = MathHelper.clamp(this.value, this.min, this.max);
+        this.value = MathHelper.clamp(this.value, this.min, this.max - 1);
 
         if (this.value != old)
         {
@@ -213,10 +221,13 @@ public class GuiPlaybackScrub extends GuiElement
                 }
 
                 /* Select camera fixture */
-                int index = this.profile.getAll().indexOf(fixture);
+                if (!this.dragging)
+                {
+                    int index = this.profile.getAll().indexOf(fixture);
 
-                this.editor.pickCameraFixture(fixture, tick - offset);
-                this.index = index;
+                    this.editor.pickCameraFixture(fixture, tick - offset);
+                    this.index = index;
+                }
             }
             else if (context.mouseButton == 2)
             {
@@ -240,25 +251,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (this.area.isInside(context) && !this.scrolling)
         {
-            double scale = this.scale.getZoom();
-            int value = (int) (this.fromGraphX(context.mouseX) * scale);
-
             this.scale.zoom(Math.copySign(this.scale.getZoomFactor(), scroll), 0.001D, 1000D);
-
-            /* Correct the left pivoted scroll */
-            // if (this.scale.zoom != scale)
-            {
-                /* I don't know what the fuck is that formula, but I
-                 * spent literally two hours coming up with it so it
-                 * would give correct results for scaling where exactly
-                 * the cursor is...
-                 *
-                 * I don't know how it works, don't ask me about it xD
-                 */
-                // this.scale.shift = (int) (this.scale.zoom / scale * value - (value - this.scale.shift));
-            }
-
-            this.clampScroll();
 
             return true;
         }
@@ -570,13 +563,5 @@ public class GuiPlaybackScrub extends GuiElement
         Gui.drawRect(x + 1, y + h / 2, x + 2, y + h, 0xaaffffff);
         Gui.drawRect(x + w - 2, y + h / 2, x + w - 1, y + h, 0xaaffffff);
         Gui.drawRect(x, y + h - 1, x + w, y + h, 0xffffffff);
-    }
-
-    /**
-     * Scrub event listener
-     */
-    public static interface IScrubListener
-    {
-        public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub);
     }
 }

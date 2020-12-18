@@ -11,7 +11,6 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.client.gui.GuiPlaybackScrub.IScrubListener;
 import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
@@ -54,7 +53,7 @@ import java.util.function.Supplier;
  * This GUI provides tools for managing camera profiles. 
  */
 @SideOnly(Side.CLIENT)
-public class GuiCameraEditor extends GuiBase implements IScrubListener
+public class GuiCameraEditor extends GuiBase
 {
     /**
      * Registry of editing camera fixture panels. Per every fixture class type
@@ -396,7 +395,6 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      * Teleport player and setup position, motion and angle based on the value
      * was scrubbed from playback scrubber.
      */
-    @Override
     public void scrubbed(GuiPlaybackScrub scrub, int value, boolean fromScrub)
     {
         if (this.runner.isRunning())
