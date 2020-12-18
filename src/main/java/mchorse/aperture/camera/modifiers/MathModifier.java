@@ -24,6 +24,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  */
 public class MathModifier extends ComponentModifier
 {
+    private static Position position = new Position();
+
     public IValue expression;
     public MathBuilder builder = new MathBuilder();
 
@@ -33,6 +35,7 @@ public class MathModifier extends ComponentModifier
     public Variable duration;
     public Variable progress;
     public Variable factor;
+    public Variable velocity;
 
     public Variable value;
 
@@ -53,6 +56,7 @@ public class MathModifier extends ComponentModifier
         this.duration = new Variable("d", 0);
         this.progress = new Variable("p", 0);
         this.factor = new Variable("f", 0);
+        this.velocity = new Variable("v", 0);
 
         this.value = new Variable("value", 0);
 
@@ -71,6 +75,7 @@ public class MathModifier extends ComponentModifier
         this.builder.register(this.duration);
         this.builder.register(this.progress);
         this.builder.register(this.factor);
+        this.builder.register(this.velocity);
 
         this.builder.register(this.value);
 
@@ -103,6 +108,21 @@ public class MathModifier extends ComponentModifier
     {
         if (this.expression != null)
         {
+            if (fixture != null)
+            {
+                fixture.applyFixture(offset + (offset == 0 ? 1 : -1), previewPartialTick, profile, position);
+            }
+            else
+            {
+                profile.applyProfile(ticks +  + (offset == 0 ? 1 : -1), previewPartialTick, position, false);
+            }
+
+            double dx = pos.point.x - position.point.x;
+            double dy = pos.point.y - position.point.y;
+            double dz = pos.point.z - position.point.z;
+
+            this.velocity.set(Math.sqrt(dx * dx + dy * dy + dz * dz));
+
             this.ticks.set(ticks);
             this.offset.set(offset);
             this.partial.set(previewPartialTick);
