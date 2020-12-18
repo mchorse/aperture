@@ -8,6 +8,8 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.List;
+
 /**
  * Keyframe fixture
  * 
@@ -155,6 +157,28 @@ public class KeyframeFixture extends AbstractFixture
                 KeyframeFixture kf = path.toKeyframe();
 
                 this.copy(kf);
+            }
+        }
+        else if (from instanceof ManualFixture)
+        {
+            ManualFixture fixture = (ManualFixture) from;
+
+            for (int i = 0, c = fixture.frames.size(); i < c; i++)
+            {
+                List<ManualFixture.RenderFrame> frames = fixture.frames.get(i);
+
+                if (frames != null && frames.size() > 0)
+                {
+                    ManualFixture.RenderFrame frame = frames.get(0);
+
+                    this.x.insert(i, frame.x);
+                    this.y.insert(i, frame.y);
+                    this.z.insert(i, frame.z);
+                    this.yaw.insert(i, frame.yaw);
+                    this.pitch.insert(i, frame.pitch);
+                    this.roll.insert(i, frame.roll);
+                    this.fov.insert(i, frame.fov);
+                }
             }
         }
     }
