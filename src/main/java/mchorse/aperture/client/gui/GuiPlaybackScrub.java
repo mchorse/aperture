@@ -1,22 +1,20 @@
 package mchorse.aperture.client.gui;
 
-import mchorse.aperture.camera.fixtures.ManualFixture;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
-
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
+import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Scale;
 import mchorse.mclib.utils.Color;
-import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -30,15 +28,15 @@ public class GuiPlaybackScrub extends GuiElement
 
     public boolean scrubbing;
     public int value;
-    public int min;
-    public int max;
+    protected int min;
+    protected int max;
     public int index;
 
     public GuiCameraEditor editor;
     public CameraProfile profile;
 
     public boolean scrolling;
-    public Scale scale = new Scale(false);
+    public Scale scale;
 
     private int lastX;
     private boolean dragging;
@@ -46,12 +44,16 @@ public class GuiPlaybackScrub extends GuiElement
     private AbstractFixture start;
     private AbstractFixture end;
 
+    private Area timeline = new Area();
+
     public GuiPlaybackScrub(Minecraft mc, GuiCameraEditor editor, CameraProfile profile)
     {
         super(mc);
 
         this.editor = editor;
         this.profile = profile;
+        this.scale = new Scale(this.timeline, false);
+        this.scale.anchor(0.5F);
     }
 
     @Override
@@ -59,6 +61,16 @@ public class GuiPlaybackScrub extends GuiElement
     {
         super.resize();
 
+        this.timeline.copy(this.area);
+        this.timeline.offsetX(-2);
+        this.clampScroll();
+    }
+
+    public void set(int min, int max)
+    {
+        this.min = min;
+        this.max = max;
+        this.scale.lock(min, max);
         this.clampScroll();
     }
 
@@ -74,12 +86,12 @@ public class GuiPlaybackScrub extends GuiElement
         this.profile = profile;
         this.index = -1;
 
-        this.max = Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub);
+        this.set(0, Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub));
         this.value = MathHelper.clamp(this.value, this.min, this.max);
 
-        if (!same)
+        if (!same && profile.getDuration() > 0)
         {
-            this.clampScroll();
+            this.scale.view(0, profile.getDuration(), this.area.w - 2);
         }
     }
 
@@ -98,20 +110,7 @@ public class GuiPlaybackScrub extends GuiElement
         {
             this.editor.setFlight(false);
             this.editor.scrubbed(this, this.value, fromScrub);
-
-            int v = (int) (this.value * this.scale.zoom);
-            int w = this.area.w - 4;
-
-            if (this.scale.shift > v)
-            {
-                this.scale.shift = v;
-            }
-            else if (v > this.scale.shift + w)
-            {
-                this.scale.shift = v - w;
-            }
-
-            this.clampScroll();
+            this.scale.shiftInto(this.value);
         }
     }
 
@@ -134,23 +133,17 @@ public class GuiPlaybackScrub extends GuiElement
     /**
      * Calculate value from given mouse X
      */
-    public int calcValueFromMouse(int mouseX)
+    public int fromGraphX(int mouseX)
     {
-        int max = this.max == 0 ? 1 : this.max;
-        double factor = (mouseX - 2 - this.area.x + this.scale.shift) / (max * this.scale.zoom);
-
-        return (int) (factor * (max - this.min)) + this.min;
+        return (int) this.scale.from(mouseX);
     }
 
     /**
      * Calculate mouse X from given value
      */
-    public int calcMouseFromValue(int value)
+    public int toGraphX(int value)
     {
-        int max = this.max == 0 ? 1 : this.max;
-        double factor = (value - this.min) / (float) (max - this.min);
-
-        return (int) ((factor * max * this.scale.zoom) + this.area.x + 2 - this.scale.shift);
+        return (int) this.scale.to(value);
     }
 
     /**
@@ -158,9 +151,7 @@ public class GuiPlaybackScrub extends GuiElement
      */
     public void clampScroll()
     {
-        int max = (int) (this.max * this.scale.zoom) - this.area.w + 4;
-
-        this.scale.shift = MathHelper.clamp(this.scale.shift, 0, max > 0 ? max : 0);
+        this.scale.setShift(this.scale.getShift());
     }
 
     /* GUI interactions */
@@ -179,11 +170,11 @@ public class GuiPlaybackScrub extends GuiElement
             if (context.mouseButton == 0)
             {
                 this.scrubbing = true;
-                this.setValueFromScrub(this.calcValueFromMouse(mouseX));
+                this.setValueFromScrub(this.fromGraphX(mouseX));
             }
             else if (context.mouseButton == 1 && this.profile != null)
             {
-                int tick = this.calcValueFromMouse(mouseX);
+                int tick = this.fromGraphX(mouseX);
 
                 if (this.editor.creating)
                 {
@@ -197,8 +188,8 @@ public class GuiPlaybackScrub extends GuiElement
 
                 if (fixture != null)
                 {
-                    boolean left = Math.abs(this.calcMouseFromValue((int) offset) - mouseX) < 5;
-                    boolean right = Math.abs(this.calcMouseFromValue((int) (offset + fixture.getDuration())) - mouseX) < 5;
+                    boolean left = Math.abs(this.toGraphX((int) offset) - mouseX) < 5;
+                    boolean right = Math.abs(this.toGraphX((int) (offset + fixture.getDuration())) - mouseX) < 5;
 
                     if (left || right)
                     {
@@ -249,18 +240,13 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (this.area.isInside(context) && !this.scrolling)
         {
-            double scale = this.scale.zoom;
-            float factor = 0.1F;
-            int value = (int) (this.calcValueFromMouse(context.mouseX) * scale);
+            double scale = this.scale.getZoom();
+            int value = (int) (this.fromGraphX(context.mouseX) * scale);
 
-            if (this.scale.zoom < 0.1F) factor = 0.005F;
-            else if (this.scale.zoom < 1) factor = 0.05F;
-
-            this.scale.zoom += Math.copySign(factor, scroll);
-            this.scale.zoom = MathHelper.clamp(this.scale.zoom, 0.01F, 10F);
+            this.scale.zoom(Math.copySign(this.scale.getZoomFactor(), scroll), 0.001D, 1000D);
 
             /* Correct the left pivoted scroll */
-            if (this.scale.zoom != scale)
+            // if (this.scale.zoom != scale)
             {
                 /* I don't know what the fuck is that formula, but I
                  * spent literally two hours coming up with it so it
@@ -269,7 +255,7 @@ public class GuiPlaybackScrub extends GuiElement
                  *
                  * I don't know how it works, don't ask me about it xD
                  */
-                this.scale.shift = (int) (this.scale.zoom / scale * value - (value - this.scale.shift));
+                // this.scale.shift = (int) (this.scale.zoom / scale * value - (value - this.scale.shift));
             }
 
             this.clampScroll();
@@ -312,27 +298,12 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (this.scrubbing)
         {
-            this.setValueFromScrub(this.calcValueFromMouse(mouseX));
-
-            if (this.max * this.scale.zoom - this.area.w + 4 > 0)
-            {
-                int delta = mouseX - this.area.mx();
-                int edge = (int) Math.copySign(this.area.w / 2 - 50, -delta) + delta;
-
-                if (Math.copySign(1, edge) == Math.copySign(1, delta) && delta != 0)
-                {
-                    float factor = edge / 50F;
-                    double scaleFactor = this.scale.zoom <= 1 ? 1F / this.scale.zoom : this.scale.zoom;
-
-                    this.scale.shift += factor * scaleFactor;
-                    this.clampScroll();
-                }
-            }
+            this.setValueFromScrub(this.fromGraphX(mouseX));
         }
 
         if (this.scrolling)
         {
-            this.scale.shift -= (mouseX - this.lastX);
+            this.scale.setShift(this.scale.getShift() - (mouseX - this.lastX) / this.scale.getZoom());
             this.lastX = mouseX;
 
             this.clampScroll();
@@ -354,9 +325,9 @@ public class GuiPlaybackScrub extends GuiElement
                 end += this.end.getDuration();
             }
 
-            long value = this.calcValueFromMouse(mouseX);
+            long value = this.fromGraphX(mouseX);
 
-            if (value >= start + 5 && (this.end == null ? true : value <= end - 5))
+            if (value >= start + 5 && (this.end == null || value <= end - 5))
             {
                 this.start.setDuration(value - start);
 
@@ -393,7 +364,7 @@ public class GuiPlaybackScrub extends GuiElement
         {
             /* Calculate tick marker position and tick label width */
             String label = this.value + "/" + this.max;
-            int tx = this.calcMouseFromValue(this.value);
+            int tx = this.toGraphX(this.value);
             int width = this.font.getStringWidth(label) + 4;
 
             /* Draw fixtures */
@@ -417,8 +388,8 @@ public class GuiPlaybackScrub extends GuiElement
                 }
 
                 boolean selected = i == this.index;
-                int leftMargin = this.calcMouseFromValue(pos) - 1;
-                int rightMargin = this.calcMouseFromValue(pos + (int) fixture.getDuration()) - 1;
+                int leftMargin = this.toGraphX(pos) - 1;
+                int rightMargin = this.toGraphX(pos + (int) fixture.getDuration()) - 1;
 
                 if (rightMargin < this.area.x)
                 {
@@ -474,14 +445,14 @@ public class GuiPlaybackScrub extends GuiElement
                 /* Draw path's fixture separators */
                 if (fixture instanceof PathFixture)
                 {
-                    ColorUtils.COLOR.set(color, false);
-                    ColorUtils.COLOR.r *= 0.89F;
-                    ColorUtils.COLOR.g *= 0.89F;
-                    ColorUtils.COLOR.b *= 0.89F;
+                    COLOR.set(color, false);
+                    COLOR.r *= 0.89F;
+                    COLOR.g *= 0.89F;
+                    COLOR.b *= 0.89F;
 
                     PathFixture path = (PathFixture) fixture;
                     int c = path.getCount() - 1;
-                    int highlight = ColorUtils.COLOR.getRGBAColor();
+                    int highlight = COLOR.getRGBAColor();
 
                     if (c > 1)
                     {
@@ -537,18 +508,25 @@ public class GuiPlaybackScrub extends GuiElement
             {
                 for (Integer marker : this.editor.markers)
                 {
-                    int mx = this.calcMouseFromValue(marker);
+                    int mx = this.toGraphX(marker);
 
                     Gui.drawRect(mx, y + 5, mx + 1, y + h - 1,0xaaff0000);
                 }
             }
 
             /* Draw shadows to indicate that there are still stuff to scroll */
-            if (this.scale.shift > this.min * this.scale.zoom) GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
-            if (this.scale.shift < this.max * this.scale.zoom - this.area.w + 4) GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
+            if (this.scale.getMinValue() > this.min)
+            {
+                GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
+            }
+
+            if (this.scale.getMaxValue() < this.max)
+            {
+                GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
+            }
 
             /* Draw end marker and also shadow of area where there is no  */
-            int stopX = this.calcMouseFromValue((int) this.profile.getDuration());
+            int stopX = this.toGraphX((int) this.profile.getDuration());
 
             if (stopX < this.area.ex() - 2)
             {

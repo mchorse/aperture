@@ -824,7 +824,7 @@ public class GuiCameraEditor extends GuiBase implements IScrubListener
      */
     public void updateValues()
     {
-        this.timeline.max = Math.max((int) this.getProfile().getDuration(), this.maxScrub);
+        this.timeline.set(0, Math.max((int) this.getProfile().getDuration(), this.maxScrub));
         this.timeline.setValue(this.timeline.value);
     }
 
