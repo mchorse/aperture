@@ -112,7 +112,7 @@ public class GuiPlaybackScrub extends GuiElement
         int old = this.value;
 
         this.value = value;
-        this.value = MathHelper.clamp(this.value, this.min, this.max - 1);
+        this.value = MathHelper.clamp(this.value, this.min, this.max);
 
         if (this.value != old)
         {

@@ -121,7 +121,6 @@ public class ManualFixture extends AbstractFixture
 			if (frame.tick > lastTick)
 			{
 				this.frames.add(tick);
-				last.pt = 0;
 
 				/* Fill missing ticks */
 				while (lastTick + 1 < frame.tick)
