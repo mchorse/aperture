@@ -1,8 +1,10 @@
 package mchorse.aperture.camera.modifiers;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.utils.EntitySelector;
 import net.minecraft.client.Minecraft;
@@ -41,6 +43,9 @@ public abstract class EntityModifier extends AbstractModifier
      */
     @Expose
     public String selector = "";
+
+    @Expose
+    public Point offset = new Point(0, 0, 0);
 
     /**
      * Try finding entity based on entity selector or target's UUID
@@ -115,6 +120,18 @@ public abstract class EntityModifier extends AbstractModifier
         if (from instanceof EntityModifier)
         {
             this.selector = ((EntityModifier) from).selector;
+            this.offset.set(((EntityModifier) from).offset);
+        }
+    }
+
+    @Override
+    public void fromJSON(JsonObject object)
+    {
+        super.fromJSON(object);
+
+        if (this.offset == null)
+        {
+            this.offset = new Point(0, 0, 0);
         }
     }
 
@@ -124,6 +141,7 @@ public abstract class EntityModifier extends AbstractModifier
         super.fromByteBuf(buffer);
 
         this.selector = ByteBufUtils.readUTF8String(buffer);
+        this.offset = Point.fromByteBuf(buffer);
     }
 
     @Override
@@ -132,5 +150,6 @@ public abstract class EntityModifier extends AbstractModifier
         super.toByteBuf(buffer);
 
         ByteBufUtils.writeUTF8String(buffer, this.selector);
+        this.offset.toByteBuf(buffer);
     }
 }

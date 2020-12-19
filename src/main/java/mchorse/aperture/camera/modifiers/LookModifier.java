@@ -90,6 +90,10 @@ public class LookModifier extends EntityModifier
             z = sz / size;
         }
 
+        x += this.offset.x;
+        y += this.offset.y;
+        z += this.offset.z;
+
         double dX = x - pos.point.x;
         double dY = (y - 1.62) - pos.point.y;
         double dZ = z - pos.point.z;

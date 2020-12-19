@@ -22,9 +22,6 @@ public class FollowModifier extends EntityModifier
     @Expose
     public boolean relative;
 
-    @Expose
-    public Point offset = new Point(0, 0, 0);
-
     public FollowModifier()
     {}
 
@@ -76,23 +73,11 @@ public class FollowModifier extends EntityModifier
     }
 
     @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        if (this.offset == null)
-        {
-            this.offset = new Point(0, 0, 0);
-        }
-    }
-
-    @Override
     public void fromByteBuf(ByteBuf buffer)
     {
         super.fromByteBuf(buffer);
 
         this.relative = buffer.readBoolean();
-        this.offset = Point.fromByteBuf(buffer);
     }
 
     @Override
@@ -101,6 +86,5 @@ public class FollowModifier extends EntityModifier
         super.toByteBuf(buffer);
 
         buffer.writeBoolean(this.relative);
-        this.offset.toByteBuf(buffer);
     }
 }
