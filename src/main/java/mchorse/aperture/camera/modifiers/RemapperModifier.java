@@ -3,6 +3,7 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -49,6 +50,7 @@ public class RemapperModifier extends AbstractModifier
 
 		this.channel = new KeyframeChannel();
 		this.channel.insert(0, 0);
+		this.channel.insert(Aperture.duration.get(), 1);
 	}
 
 	@Override
