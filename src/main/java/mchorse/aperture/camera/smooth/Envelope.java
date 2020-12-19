@@ -3,6 +3,7 @@ package mchorse.aperture.camera.smooth;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.Aperture;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
 import mchorse.mclib.utils.MathUtils;
@@ -35,7 +36,17 @@ public class Envelope
 	public boolean keyframes;
 
 	@Expose
-	public KeyframeChannel channel = new KeyframeChannel();
+	public KeyframeChannel channel = this.create();
+
+	public KeyframeChannel create()
+	{
+		KeyframeChannel channel = new KeyframeChannel();
+
+		channel.insert(0, 0);
+		channel.insert(Aperture.duration.get(), 1);
+
+		return channel;
+	}
 
 	public void copy(Envelope envelope)
 	{
@@ -107,7 +118,7 @@ public class Envelope
 	{
 		if (this.channel == null)
 		{
-			this.channel = new KeyframeChannel();
+			this.channel = this.create();
 		}
 	}
 
