@@ -76,6 +76,7 @@ public class Aperture
     public static ValueBoolean editorCrosshair;
     public static ValueBoolean editorLetterbox;
     public static ValueString editorLetterboxAspect;
+    public static ValueBoolean editorHideChat;
 
     public static ValueInt flightForward;
     public static ValueInt flightBackward;
@@ -145,6 +146,7 @@ public class Aperture
         editorCrosshair = builder.getBoolean("crosshair", false);
         editorLetterbox = builder.getBoolean("letter_box", false);
         editorLetterboxAspect = builder.getString("aspect_ratio", "21:9");
+        editorHideChat = builder.getBoolean("hide_chat", true);
 
         /* Flight mode keybinds */
         flightForward = builder.category("flight").getInt("forward", Keyboard.KEY_W).keybind();

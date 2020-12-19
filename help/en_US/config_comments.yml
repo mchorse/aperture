@@ -27,6 +27,7 @@ aperture.config.comments:
         crosshair: Show a crosshair in the middle of the camera editor's screen
         letter_box: Show letter box (aka black bars) which narrow or widen the camera shot as a reference
         aspect_ratio: Aspect ratio for camera editor's letterbox feature
+        hide_chat: When enabled, this option hides the chat, which could be quite distracting when adjusting camera angles
 
     flight:
         forward: Moves the camera forward

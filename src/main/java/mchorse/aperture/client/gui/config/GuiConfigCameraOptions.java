@@ -29,6 +29,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiToggleElement overlay;
     public GuiButtonElement pickOverlay;
     public GuiTexturePicker overlayPicker;
+    public GuiToggleElement hideChat;
 
     public GuiConfigCameraOptions(Minecraft mc, GuiCameraEditor editor)
     {
@@ -83,8 +84,9 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
             this.editor.updateOverlay();
         });
         this.overlayPicker.flex().relative(this.editor.viewport).wh(1F, 1F);
+        this.hideChat = new GuiToggleElement(mc, Aperture.editorHideChat);
 
-        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.crosshair, this.letterBox, this.aspectRatio, this.loop, this.overlay, this.pickOverlay);
+        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.crosshair, this.letterBox, this.aspectRatio, this.loop, this.overlay, this.pickOverlay, this.hideChat);
 
         if (!mc.isSingleplayer())
         {
@@ -116,6 +118,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.letterBox.toggled(Aperture.editorLetterbox.get());
         this.aspectRatio.setText(Aperture.editorLetterboxAspect.get());
         this.overlay.toggled(Aperture.editorOverlay.get());
+        this.hideChat.toggled(Aperture.editorHideChat.get());
     }
 
     @Override

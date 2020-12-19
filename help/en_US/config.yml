@@ -38,6 +38,7 @@ aperture.config:
         crosshair: Crosshair
         letter_box: Letter box
         aspect_ratio: Aspect ratio
+        hide_chat: Hide the chat
 
     flight:
         title: Flight mode

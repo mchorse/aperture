@@ -1,5 +1,6 @@
 package mchorse.aperture.client;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
@@ -42,7 +43,7 @@ public class RenderingHandler
     @SubscribeEvent
     public void onChatDraw(RenderGameOverlayEvent.Chat event)
     {
-        if (this.mc.currentScreen instanceof GuiCameraEditor)
+        if (Aperture.editorHideChat.get() && this.mc.currentScreen instanceof GuiCameraEditor)
         {
             event.setCanceled(true);
         }

@@ -119,7 +119,7 @@ public class CameraRunner
             ClientProxy.control.cache();
             this.position.set(this.mc.player);
 
-            if (Aperture.spectator.get() && !Aperture.outside.get() && ClientProxy.control.lastGameMode != GameType.SPECTATOR)
+            if (Aperture.spectator.get() && !Aperture.outside.get() && ClientProxy.getGameMode() != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode 3");
             }
