@@ -265,6 +265,7 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.area.isInside(context) && !this.scrolling)
         {
             this.scale.zoom(Math.copySign(this.scale.getZoomFactor(), scroll), 0.001D, 1000D);
+            this.scale.calculateMultiplier();
 
             return true;
         }
@@ -510,6 +511,8 @@ public class GuiPlaybackScrub extends GuiElement
                 i++;
             }
 
+            this.drawTickMarks(y, h);
+
             if (this.editor.creating)
             {
                 for (Integer marker : this.editor.markers)
@@ -576,5 +579,28 @@ public class GuiPlaybackScrub extends GuiElement
         Gui.drawRect(x + 1, y + h / 2, x + 2, y + h, 0xaaffffff);
         Gui.drawRect(x + w - 2, y + h / 2, x + w - 1, y + h, 0xaaffffff);
         Gui.drawRect(x, y + h - 1, x + w, y + h, 0xffffffff);
+    }
+
+    private void drawTickMarks(int y, int h)
+    {
+        int mult = this.scale.getMult() * 2;
+        int start = (int) this.scale.getMinValue();
+        int end = (int) this.scale.getMaxValue();
+        int max = this.max - (this.max - 1) % mult;
+
+        start -= start % mult;
+        end -= end % mult;
+
+        start = MathUtils.clamp(start, mult, max);
+        end = MathUtils.clamp(end, mult, max);
+
+        for (int j = start; j <= end; j += mult)
+        {
+            int xx = this.toGraphX(j);
+            String value = String.valueOf(j);
+
+            GuiDraw.drawTextBackground(this.font, value, xx - this.font.getStringWidth(value) / 2, y, 0xffffff, 0x88000000, 2);
+            Gui.drawRect(xx, y + h / 2, xx + 1, y + h, 0x66ffffff);
+        }
     }
 }
