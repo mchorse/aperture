@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -78,7 +79,19 @@ public class GuiPlaybackScrub extends GuiElement
     {
         this.min = min;
         this.max = max;
-        this.scale.lock(min, max);
+
+        if (this.profile.getDuration() == 0)
+        {
+            max = Aperture.duration.get();
+
+            this.scale.lock(min, max);
+            this.scale.view(min, max);
+        }
+        else
+        {
+            this.scale.lock(min, max);
+        }
+
         this.clampScroll();
     }
 

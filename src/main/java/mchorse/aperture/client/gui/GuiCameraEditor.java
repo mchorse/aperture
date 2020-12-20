@@ -501,8 +501,22 @@ public class GuiCameraEditor extends GuiBase
             }
         }
 
+        double min = this.timeline.scale.getMinValue();
+        double max = this.timeline.scale.getMaxValue();
+
         this.updateValues();
         this.pickCameraFixture(fixture, 0);
+
+        long offset = this.getProfile().calculateOffset(fixture) + fixture.getDuration();
+
+        if (offset > max)
+        {
+            this.timeline.scale.view(min, offset);
+        }
+        else if (offset < min)
+        {
+            this.timeline.scale.view(offset, max);
+        }
     }
 
     /**
