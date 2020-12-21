@@ -80,7 +80,7 @@ public class GuiPlaybackScrub extends GuiElement
         this.min = min;
         this.max = max;
 
-        if (this.profile.getDuration() == 0)
+        if (this.profile == null || this.profile.getDuration() == 0)
         {
             max = Aperture.duration.get();
 
