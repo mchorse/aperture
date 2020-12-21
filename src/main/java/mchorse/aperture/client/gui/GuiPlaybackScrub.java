@@ -265,7 +265,6 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.area.isInside(context) && !this.scrolling)
         {
             this.scale.zoom(Math.copySign(this.scale.getZoomFactor(), scroll), 0.001D, 1000D);
-            this.scale.calculateMultiplier();
 
             return true;
         }
