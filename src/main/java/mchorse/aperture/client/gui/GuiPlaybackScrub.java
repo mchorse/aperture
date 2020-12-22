@@ -110,9 +110,11 @@ public class GuiPlaybackScrub extends GuiElement
         this.set(0, Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub));
         this.value = MathHelper.clamp(this.value, this.min, this.max);
 
-        if (!same && profile.getDuration() > 0 && this.area.w != 0)
+        long duration = profile.getDuration();
+
+        if (!same && duration > 0 && this.area.w != 0)
         {
-            this.scale.view(this.min, profile.getDuration());
+            this.scale.view(this.min, duration);
         }
     }
 
@@ -382,6 +384,8 @@ public class GuiPlaybackScrub extends GuiElement
 
             GuiDraw.scissor(x + 2, y - 16, w - 4, h + 16, context);
 
+            this.drawTickMarks(y, h);
+
             for (AbstractFixture fixture : this.profile.getAll())
             {
                 COLOR.set(fixture.getColor(), false);
@@ -510,8 +514,6 @@ public class GuiPlaybackScrub extends GuiElement
                 i++;
             }
 
-            this.drawTickMarks(y, h);
-
             if (this.editor.creating)
             {
                 for (Integer marker : this.editor.markers)
@@ -523,12 +525,14 @@ public class GuiPlaybackScrub extends GuiElement
             }
 
             /* Draw shadows to indicate that there are still stuff to scroll */
-            if (this.scale.getMinValue() > this.min)
+            final double bias = 0.001;
+
+            if (this.scale.getMinValue() > this.min + bias)
             {
                 GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
             }
 
-            if (this.scale.getMaxValue() < this.max)
+            if (this.scale.getMaxValue() < this.max - bias)
             {
                 GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
             }
@@ -540,6 +544,11 @@ public class GuiPlaybackScrub extends GuiElement
             {
                 this.drawGradientRect(stopX + 1, y + h / 2, x + w - 1, y + h, 0x00, 0x88000000);
                 Gui.drawRect(stopX, y + h / 2, stopX + 1, y + h, 0xaaffffff);
+            }
+
+            if (tx + 3 - x + width > w)
+            {
+                tx -= 2;
             }
 
             /* Draw the marker */
