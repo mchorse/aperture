@@ -156,6 +156,7 @@ public class KeyframeFixture extends AbstractFixture
             {
                 KeyframeFixture kf = path.toKeyframe();
 
+                this.modifiers.clear();
                 this.copy(kf);
             }
         }
