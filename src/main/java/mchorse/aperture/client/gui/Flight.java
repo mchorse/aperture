@@ -5,6 +5,7 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Icon;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.MathUtils;
@@ -372,6 +373,12 @@ public class Flight implements IGuiElement
     public boolean keyTyped(GuiContext guiContext)
     {
         return false;
+    }
+
+    @Override
+    public boolean canBeDrawn(Area area)
+    {
+        return true;
     }
 
     @Override
