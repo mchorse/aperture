@@ -449,13 +449,7 @@ public class GuiCameraEditor extends GuiBase
 
                 if (this.isSyncing())
                 {
-                    long offset = this.getProfile().calculateOffset(fixture);
-                    boolean shouldShift = this.timeline.value < offset || this.timeline.value >= offset + fixture.getDuration();
-
-                    if (shouldShift || fixture instanceof PathFixture)
-                    {
-                        this.timeline.setValueFromScrub((int) panel.currentOffset());
-                    }
+                    this.timeline.setValueFromScrub((int) panel.currentOffset());
                 }
 
                 this.timeline.index = this.getProfile().getAll().indexOf(fixture);
