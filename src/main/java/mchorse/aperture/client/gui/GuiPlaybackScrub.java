@@ -110,7 +110,7 @@ public class GuiPlaybackScrub extends GuiElement
         this.set(0, Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub));
         this.value = MathHelper.clamp(this.value, this.min, this.max);
 
-        long duration = profile.getDuration();
+        long duration = profile == null ? 0 : profile.getDuration();
 
         if (!same && duration > 0 && this.area.w != 0)
         {
