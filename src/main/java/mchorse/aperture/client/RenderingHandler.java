@@ -5,7 +5,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
-import mchorse.mclib.events.PreRenderOverlayEvent;
+import mchorse.mclib.events.RenderOverlayEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -81,7 +81,7 @@ public class RenderingHandler
      * Render letter box outside of camera editor GUI
      */
     @SubscribeEvent
-    public void onPreRenderOverlay(PreRenderOverlayEvent event)
+    public void onPreRenderOverlay(RenderOverlayEvent.Pre event)
     {
         if (!Aperture.editorLetterbox.get())
         {
