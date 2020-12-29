@@ -47,6 +47,7 @@ import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiTranslateModifierPanel;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
+import mchorse.mclib.McLib;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
@@ -238,7 +239,10 @@ public class ClientProxy extends CommonProxy
         super.load(event);
 
         /* Event listeners */
-        MinecraftForge.EVENT_BUS.register(new RenderingHandler());
+        RenderingHandler handler = new RenderingHandler();
+
+        McLib.EVENT_BUS.register(handler);
+        MinecraftForge.EVENT_BUS.register(handler);
         MinecraftForge.EVENT_BUS.register(keys = new KeyboardHandler());
         MinecraftForge.EVENT_BUS.register(renderer);
 

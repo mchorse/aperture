@@ -4,6 +4,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraRunner;
+import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
@@ -642,28 +643,7 @@ public class GuiCameraEditor extends GuiBase
      */
     public void setAspectRatio(String aspectRatio)
     {
-        float aspect = this.aspectRatio;
-
-        try
-        {
-            aspect = Float.parseFloat(aspectRatio);
-        }
-        catch (Exception e)
-        {
-            try
-            {
-                String[] strips = aspectRatio.split(":");
-
-                if (strips.length >= 2)
-                {
-                    aspect = Float.parseFloat(strips[0]) / Float.parseFloat(strips[1]);
-                }
-            }
-            catch (Exception ee)
-            {}
-        }
-
-        this.aspectRatio = aspect;
+        this.aspectRatio = CameraUtils.parseAspectRation(aspectRatio, this.aspectRatio);
     }
 
     public void addPathPoint()
@@ -1304,6 +1284,7 @@ public class GuiCameraEditor extends GuiBase
         int rw = this.width;
         int rh = this.height;
 
+        /* The rendering went to RenderingHandler */
         if (Aperture.editorLetterbox.get() && this.aspectRatio > 0)
         {
             int width = (int) (this.aspectRatio * this.height);
@@ -1315,9 +1296,6 @@ public class GuiCameraEditor extends GuiBase
                     /* Horizontal bars */
                     int w = (this.width - width) / 2;
 
-                    Gui.drawRect(0, 0, w, this.height, 0xff000000);
-                    Gui.drawRect(this.width - w, 0, this.width, this.height, 0xff000000);
-
                     rx = w;
                     rw -= w * 2;
                 }
@@ -1325,9 +1303,6 @@ public class GuiCameraEditor extends GuiBase
                 {
                     /* Vertical bars */
                     int h = (int) (this.height - (1F / this.aspectRatio * this.width)) / 2;
-
-                    Gui.drawRect(0, 0, this.width, h, 0xff000000);
-                    Gui.drawRect(0, this.height - h, this.width, this.height, 0xff000000);
 
                     ry = h;
                     rh -= h * 2;

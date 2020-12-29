@@ -2,9 +2,13 @@ package mchorse.aperture.client;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
+import mchorse.mclib.events.PreRenderOverlayEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -70,6 +74,64 @@ public class RenderingHandler
         if (ClientProxy.runner.isRunning())
         {
             list.add("Camera ticks " + ClientProxy.runner.ticks);
+        }
+    }
+
+    /**
+     * Render letter box outside of camera editor GUI
+     */
+    @SubscribeEvent
+    public void onPreRenderOverlay(PreRenderOverlayEvent event)
+    {
+        if (!Aperture.editorLetterbox.get())
+        {
+            return;
+        }
+
+        GuiScreen screen = event.mc.currentScreen;
+        boolean isCameraEditor = screen instanceof GuiCameraEditor;
+
+        if (!(isCameraEditor || ClientProxy.runner.isRunning()))
+        {
+            return;
+        }
+
+        int screenW = event.resolution.getScaledWidth();
+        int screenH = event.resolution.getScaledHeight();
+        float aspectRatio = 16F / 9F;
+
+        if (isCameraEditor)
+        {
+            aspectRatio = ((GuiCameraEditor) screen).aspectRatio;
+        }
+        else
+        {
+            aspectRatio = CameraUtils.parseAspectRation(Aperture.editorLetterboxAspect.get(), aspectRatio);
+        }
+
+        if (aspectRatio > 0)
+        {
+            int width = (int) (aspectRatio * screenH);
+
+            if (width != screenW)
+            {
+                if (width < screenW)
+                {
+                    /* Horizontal bars */
+                    int w = (screenW - width) / 2;
+
+                    Gui.drawRect(0, 0, w, screenH, 0xff000000);
+                    Gui.drawRect(screenW - w, 0, screenW, screenH, 0xff000000);
+                }
+                else
+                {
+                    /* Vertical bars */
+                    int h = (int) (screenH - (1F / aspectRatio * screenW)) / 2;
+
+                    Gui.drawRect(0, 0, screenW, h, 0xff000000);
+                    Gui.drawRect(0, screenH - h, screenW, screenH, 0xff000000);
+                }
+            }
         }
     }
 }
