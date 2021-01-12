@@ -126,7 +126,7 @@ public class CameraUtils
                 return;
             }
 
-            CameraProfile profile = cameraJSONBuilder(true).fromJson(readCameraProfile(filename), CameraProfile.class);
+            CameraProfile profile = readProfile(filename);
             ICamera recording = Camera.get(player);
 
             recording.setCurrentProfile(filename);
@@ -139,6 +139,11 @@ public class CameraUtils
             e.printStackTrace();
             L10n.error(player, "profile.cant_load", filename);
         }
+    }
+
+    public static CameraProfile readProfile(String filename) throws Exception
+    {
+        return cameraJSONBuilder(true).fromJson(readCameraProfile(filename), CameraProfile.class);
     }
 
     /**
