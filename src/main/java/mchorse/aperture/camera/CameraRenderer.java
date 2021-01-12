@@ -153,7 +153,7 @@ public class CameraRenderer
             }
         }
 
-        float roll = ClientProxy.control.roll;
+        float roll = ClientProxy.control.getRoll(ticks);
 
         if (roll == 0)
         {

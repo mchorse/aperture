@@ -5,6 +5,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
+import mchorse.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,6 +26,9 @@ public class CameraControl
      * Currently rendered/editing camera profile
      */
     public CameraProfile currentProfile;
+
+    private boolean prevRollMode;
+    private float prevRoll;
 
     /**
      * Roll of the camera
@@ -129,7 +133,21 @@ public class CameraControl
      */
     public void setRoll(float value)
     {
+        this.prevRollMode = false;
+
         ClientProxy.renderer.roll.reset(value);
+        this.roll = value;
+    }
+
+    /**
+     * Add roll (it can be negative too)
+     */
+    public void setRoll(float prevValue, float value)
+    {
+        this.prevRollMode = true;
+
+        ClientProxy.renderer.roll.reset(value);
+        this.prevRoll = prevValue;
         this.roll = value;
     }
 
@@ -165,5 +183,10 @@ public class CameraControl
     {
         this.setRoll(roll);
         this.setFOV(fov);
+    }
+
+    public float getRoll(float partialTicks)
+    {
+        return this.prevRollMode ? Interpolations.lerp(this.prevRoll, this.roll, partialTicks) : this.roll;
     }
 }
