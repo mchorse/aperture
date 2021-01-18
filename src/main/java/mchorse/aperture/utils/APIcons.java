@@ -14,10 +14,10 @@ public class APIcons
 	public static final Icon BACKWARD = new Icon(ICONS, 48, 0);
 	public static final Icon FRAME_NEXT = new Icon(ICONS, 64, 0);
 	public static final Icon FRAME_PREV = new Icon(ICONS, 80, 0);
-	public static final Icon MOVE_FORWARD = new Icon(ICONS, 96, 0);
-	public static final Icon MOVE_BACK = new Icon(ICONS, 112, 0);
-	public static final Icon POSITION = new Icon(ICONS, 128, 0);
-	public static final Icon SHIFT = new Icon(ICONS, 144, 0);
+	//
+	//
+	//
+	//
 	public static final Icon INTERACTIVE = new Icon(ICONS, 160, 0);
 	public static final Icon PLANE = new Icon(ICONS, 176, 0);
 	public static final Icon HELICOPTER = new Icon(ICONS, 192, 0);

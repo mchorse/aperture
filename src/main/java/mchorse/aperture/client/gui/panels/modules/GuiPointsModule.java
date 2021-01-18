@@ -42,7 +42,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
         this.picker = picker;
 
-        GuiIconElement back = new GuiIconElement(mc, APIcons.MOVE_BACK, (b) ->
+        GuiIconElement back = new GuiIconElement(mc, Icons.SHIFT_BACKWARD, (b) ->
         {
             if (this.index == 0) return;
 
@@ -54,7 +54,7 @@ public class GuiPointsModule extends GuiAbstractModule
         GuiIconElement add = new GuiIconElement(mc, Icons.ADD, (b) -> this.addPoint());
         GuiIconElement remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.removePoint());
 
-        GuiIconElement forward = new GuiIconElement(mc, APIcons.MOVE_FORWARD, (b) ->
+        GuiIconElement forward = new GuiIconElement(mc, Icons.SHIFT_FORWARD, (b) ->
         {
             if (this.index >= this.path.getCount() - 1) return;
 

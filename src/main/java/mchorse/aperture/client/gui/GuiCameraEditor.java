@@ -256,13 +256,13 @@ public class GuiCameraEditor extends GuiBase
         this.creation.tooltip(IKey.lang("aperture.gui.tooltips.creation"));
         this.cut = new GuiIconElement(mc, Icons.CUT, (b) -> this.cutFixture());
         this.cut.tooltip(IKey.lang("aperture.gui.tooltips.cut"));
-        this.moveForward = new GuiIconElement(mc, APIcons.MOVE_FORWARD, (b) -> this.moveTo(1));
+        this.moveForward = new GuiIconElement(mc, Icons.SHIFT_FORWARD, (b) -> this.moveTo(1));
         this.moveForward.tooltip(IKey.lang("aperture.gui.tooltips.move_up"));
-        this.moveDuration = new GuiIconElement(mc, APIcons.SHIFT, (b) -> this.shiftDurationToCursor());
+        this.moveDuration = new GuiIconElement(mc, Icons.SHIFT_TO, (b) -> this.shiftDurationToCursor());
         this.moveDuration.tooltip(IKey.lang("aperture.gui.tooltips.move_duration"));
-        this.copyPosition = new GuiIconElement(mc, APIcons.POSITION, (b) -> this.editFixture());
+        this.copyPosition = new GuiIconElement(mc, Icons.MOVE_TO, (b) -> this.editFixture());
         this.copyPosition.tooltip(IKey.lang("aperture.gui.tooltips.copy_position"));
-        this.moveBackward = new GuiIconElement(mc, APIcons.MOVE_BACK, (b) -> this.moveTo(-1));
+        this.moveBackward = new GuiIconElement(mc, Icons.SHIFT_BACKWARD, (b) -> this.moveTo(-1));
         this.moveBackward.tooltip(IKey.lang("aperture.gui.tooltips.move_down"));
 
         /* Button placement */
