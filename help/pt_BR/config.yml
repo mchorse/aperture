@@ -38,6 +38,7 @@ aperture.config:
         crosshair: Mira
         letter_box: Caixa postal
         aspect_ratio: Proporção da tela
+        hide_chat: Ocultar chat
 
     flight:
         title: Modo de voo
