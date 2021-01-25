@@ -27,6 +27,7 @@ aperture.config.comments:
         crosshair: Mostra uma mira no meio da tela do editor de câmera
         letter_box: Mostrar caixa postal (também conhecidas como barras pretas) que estreitam ou ampliam a foto da câmera como referência
         aspect_ratio: Relação de aspecto para o recurso de caixa postal do editor de câmera
+        hide_chat: Quando ativada, esta opção oculta o bate-papo, o que pode ser bastante incômodo ao ajustar os ângulos da câmera
         
     flight:
         forward: Mover a câmera para frente
@@ -55,3 +56,6 @@ aperture.config.comments:
         roll_friction: Deslizamento de aceleração de rolagem (com que rapidez diminui)
         fov_speed: Velocidade de aceleração do FOV
         fov_friction: Delizamento de aceleração do FOV (com que rapidez diminui)
+
+    minema:
+        default_profile_name: Se o nome do arquivo de saída deve ser o nome do perfil da câmera, ao invés da data atual
