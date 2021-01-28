@@ -6,8 +6,8 @@ aperture.info:
             profile: "{f}Профиль камеры воспроизводится за %s{f} тиков и имеет %s{f} клипов камеры."
         
         # Camera roll and fov
-        fov: "{f}Ваше поле зрения %s{f} градусов."
-        roll: "{f}Ваш крен %s{f} градусов."
+        fov: "{f}Ваше поле зрения равен %s{f} градусам."
+        roll: "{f}Ваш крен равен %s{f} градусам."
     
     # General command infos
     commands:
