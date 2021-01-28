@@ -11,11 +11,11 @@ aperture.commands:
     aperture:
         help:
             |
-                {r}{o}Aperture 服務器命令{r}。該命令可用於讓指定的玩家 (通過實體選擇器) 播放相機配置。
+                {r}{o}Aperture 服務器命令{r}。該命令可用於讓指定的玩家（通過實體選擇器）播放相機配置。
 
                 {l}{6}/{r}aperture {8}play{r} {7}<target|camera_profile> [camera_profile]{r}
 
-                {r}如果您只指定了 {7}<target|camera_profile>{r}, 那麽被指定的相機配置會在您身上播放。如果您在。如果您在 {8}play{r} 後面指定了兩個參數, 您便可以指定玩家 (使用用戶名或者目標選擇器）和相機配置。
+                {r}如果您只指定了 {7}<target|camera_profile>{r}，那麽被指定的相機配置會在您身上播放。如果您在。如果您在 {8}play{r} 後面指定了兩個參數，您便可以指定玩家（使用用戶名或者目標選擇器）和相機配置。
 
     # Camera's commands
     camera:
@@ -25,7 +25,7 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}start{r} {7}[tick]{r}
 
-                {r}開始播放相機配置。(可選) 從給定的 {7}[tick]{r} 後開始播放。
+                {r}開始播放相機配置。（可選）從給定的 {7}[tick]{r} 後開始播放。
         stop:
             |
                 {l}{6}/{r}camera {8}stop{r}
@@ -36,17 +36,17 @@ aperture.commands:
             |
                 {l}{6}/{r}camera {8}default{r}
 
-                {r}重置相機的 {7}FOV{r} 和 {7}翻滾角度{r} 到默認值 ({7}70.0{r} 和 {7}0.0{r} 度)。
+                {r}重置相機的 {7}FOV{r} 和 {7}翻滾角度{r} 到默認值（{7}70.0{r} 和 {7}0.0{r} 度）。
         fov:
             |
                 {l}{6}/{r}camera {8}fov{r} {7}[fov]{r}
 
-                {r}設定或獲取客戶端相機的 {l}角視場{r} ({8}FOV{r})。
+                {r}設定或獲取客戶端相機的 {l}角視場{r}（{8}FOV{r}）。
         roll:
             |
                 {l}{6}/{r}camera {8}roll{r} {7}[roll]{r}
 
-                {r}設定或獲取客戶端相機的 {7}[roll]{r} ({7}Z 軸{r}翻滾程度)。
+                {r}設定或獲取客戶端相機的 {7}[roll]{r}（{7}Z 軸{r}翻滾程度）。
 
         rotate:
             |

@@ -38,6 +38,7 @@ aperture.config:
         crosshair: 十字准心
         letter_box: 画面黑边
         aspect_ratio: 纵横比
+        hide_chat: 隐藏聊天栏
 
     flight:
         title: 飞行模式
