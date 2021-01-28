@@ -38,6 +38,7 @@ aperture.config:
         crosshair: Перекрестие
         letter_box: Каше
         aspect_ratio: Соотношение сторон
+        hide_chat: Спрятать чат
 
     flight:
         title: Режим полёта
