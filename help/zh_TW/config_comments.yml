@@ -1,23 +1,23 @@
 # Config strings
 aperture.config.comments:
     general:
-        duration: 關鍵點的默認時長有多長 (單位為 Tick)
+        duration: 關鍵點的默認時長有多長（單位為 Tick）
         spectator: 當開始播放相機回放時切換至旁觀模式
         step_factor: 位移按鍵的相機位移系數
         rotate_factor: 旋轉按鍵的相機旋轉系數
-        command_name: 允許您重新綁定相機命令的名稱 (重啟遊戲生效)
+        command_name: 允許您重新綁定相機命令的名稱（重啟遊戲生效）
         debug_ticks: 將當前相機播放的 Tick 寫入日誌
-        profile_render: 是否在世界中渲染相機配置?
+        profile_render: 是否在世界中渲染相機配置？
         auto_save: 在退出世界時保存所有相機配置
-        essentials_tp: 在多人遊戲中啟動相機回放時, 使用 /minecraft:tp 進行傳送 (適用於裝有 Essentials 的服務器)
+        essentials_tp: 在多人遊戲中啟動相機回放時，使用 /minecraft:tp 進行傳送（適用於裝有 Essentials 的服務器）
 
     outside:
-       enabled: 相機是否會使用相機分離開來播放 (會讓玩家成為壹個真實的演員)
-       hide_player: 在啟用分離相機模式並播放相機回放時, 玩家是否是否會被隱藏
-       sky: 若啟用, 則會修復天空, 但這會禁用方塊選區 (因為存在 BUG)
+       enabled: 相機是否會使用相機分離開來播放（會讓玩家成為壹個真實的演員）
+       hide_player: 在啟用分離相機模式並播放相機回放時，玩家是否是否會被隱藏
+       sky: 若啟用，則會修復天空，但這會禁用方塊選區（因為存在 BUG）
 
     editor:
-        sync: 啟用相機編輯器中的相機位置同步, 用於預覽當前的相機配置
+        sync: 啟用相機編輯器中的相機位置同步，用於預覽當前的相機配置
         loop: 循環播放當前被選中的相機關鍵點
         overlay: 啟用相機編輯器附加層
         overlay_rl: 應用於附加層的材質的文件路徑
@@ -25,8 +25,9 @@ aperture.config.comments:
         position: 啟用同步模式時顯示相機位置信息
         rule_of_thirds: 顯示三分法構圖輔助線
         crosshair: 在相機編輯器的中央顯示十字準心
-        letter_box: 顯示畫面黑邊 (硬黑邊), 用於縮小或或擴大相機的取景範圍作為參考
+        letter_box: 顯示畫面黑邊（硬黑邊），用於縮小或或擴大相機的取景範圍作為參考
         aspect_ratio: 相機編輯器畫面黑邊功能的縱橫比
+        hide_chat: 啟用後，該選項會隱藏在妳調整攝像頭角度時，可能會分散註意力的聊天欄
 
     flight:
         forward: 向前移動相機
@@ -39,12 +40,12 @@ aperture.config.comments:
         camera_down: 令相機向下方的地面傾斜
         camera_left: 令相機搖向左側
         camera_right: 令相機搖向右側
-        fov_minus: 縮小角視場 (FOV)
-        fov_plus: 增大角視場 (FOV)
+        fov_minus: 縮小角視場（FOV）
+        fov_plus: 增大角視場（FOV）
         roll_minus: 逆時針方向翻滾
         roll_plus: 順時針方向翻滾
-        speed_minus: 降低全局速度系數 (區別於向下滾動鼠標滾輪)
-        speed_plus: 提升全局速度系數 (區別於向上滾動鼠標滾輪)
+        speed_minus: 降低全局速度系數（區別於向下滾動鼠標滾輪）
+        speed_plus: 提升全局速度系數（區別於向上滾動鼠標滾輪）
 
     smooth:
         enabled: 啟用平滑相機
@@ -52,9 +53,9 @@ aperture.config.comments:
         y_friction: 平滑鼠標在 Y 軸上的摩擦力
         clamp: 解除平滑相機在 -90 與 90 度俯仰的範圍限制
         roll_speed: 翻滾的加速度
-        roll_friction: 翻滾加速的摩擦力 (慢下來有多快)
+        roll_friction: 翻滾加速的摩擦力（慢下來有多快）
         fov_speed: FOV 的加速度
-        fov_friction: FOV 加速度的摩擦力 (慢下來有多快)
+        fov_friction: FOV 加速度的摩擦力（慢下來有多快）
 
     minema:
-        default_profile_name: 輸出文件是否為相機配置的名稱, 否則為當前日誌
+        default_profile_name: 輸出文件是否為相機配置的名稱，否則為當前日誌
