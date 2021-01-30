@@ -1,3 +1,23 @@
+## Aperture 1.5.1
+
+This decent patch update adds a couple of neat quality of life camera tweaks.
+
+**Compatible** with McLib `2.2` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Added an ability to convert `manual` fixture to `keyframe` fixture
+* Added `v` (camera's velocity) variable to `math` modifier
+* Added XYZ offset options to look modifier
+* Added generation of second keyframe (`1.0` value) to `remapper` modifier and keyframe based envelopes
+* Added **Hide the chat** mod option (suggested by Jvonlins)
+* Added tick markers to playback timeline
+* Changed behavior upon switching between camera profiles, the playback scrub won't get rewind to tick `0`
+* Changed timeline to use same code from keyframe elements
+* Changed letterbox to be drawn outside of camera editor (suggested by The Darvin Studio)
+* Fixed playback scrub event not getting fired upon selecting the fixture during sync mode
+* Fixed `follow` modifier's XYZ offset options not being synced
+* Fixed stuttering of `manual` fixture's recording code (reported by fad)
+* Fixed double moidifiers when converting `path` fixture to `keyframe` fixture
+
 ## Aperture 1.5
 
 This update adds a couple of QoL tweaks and two new awesome features involving keyframes and modifiers.
