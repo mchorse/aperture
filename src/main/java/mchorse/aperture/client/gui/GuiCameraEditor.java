@@ -693,6 +693,9 @@ public class GuiCameraEditor extends GuiBase
      */
     public void updateCameraEditor(EntityPlayer player)
     {
+        this.maxScrub = 0;
+        this.haveScrubbed = false;
+
         this.updateOverlay();
         this.position.set(player);
         this.setProfile(ClientProxy.control.currentProfile);
@@ -707,8 +710,6 @@ public class GuiCameraEditor extends GuiBase
         GuiIngameForge.renderHotbar = false;
         GuiIngameForge.renderCrosshairs = false;
 
-        this.maxScrub = 0;
-        this.haveScrubbed = false;
         this.flight.setFlightEnabled(false);
         ClientProxy.control.cache();
         this.setAspectRatio(Aperture.editorLetterboxAspect.get());

@@ -38,11 +38,6 @@ public class CameraRunner
     private boolean isRunning = false;
 
     /**
-     * The duration of camera profile
-     */
-    private long duration;
-
-    /**
      * Camera profile which is getting currently played
      */
     private CameraProfile profile;
@@ -132,7 +127,6 @@ public class CameraRunner
         this.position.set(this.mc.player);
 
         this.isRunning = true;
-        this.duration = this.profile.getDuration();
         this.ticks = start;
     }
 
@@ -202,9 +196,10 @@ public class CameraRunner
             return;
         }
 
-        long progress = Math.min(this.ticks, this.duration);
+        long duration = this.profile.getDuration();
+        long progress = this.ticks;
 
-        if (progress >= this.duration)
+        if (progress >= duration)
         {
             this.stop();
         }
