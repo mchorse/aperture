@@ -175,6 +175,7 @@ public class GuiPlaybackScrub extends GuiElement
     public void clampScroll()
     {
         this.scale.setShift(this.scale.getShift());
+        this.scale.calculateMultiplier();
     }
 
     /* GUI interactions */
