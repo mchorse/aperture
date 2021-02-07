@@ -1,3 +1,12 @@
+## Aperture 1.5.2
+
+This patch update fixes a couple of bugs.
+
+**Compatible** with McLib `2.2.1` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Fix tick markers looking chaotic upon first load (reported by Ник)
+* Fix duration of playback defined upon start of playback, which disallows resizing last fixture during playback (reported by Ник and Andruxioid)
+
 ## Aperture 1.5.1
 
 This decent patch update adds a couple of neat quality of life camera tweaks.
@@ -16,7 +25,7 @@ This decent patch update adds a couple of neat quality of life camera tweaks.
 * Fixed playback scrub event not getting fired upon selecting the fixture during sync mode
 * Fixed `follow` modifier's XYZ offset options not being synced
 * Fixed stuttering of `manual` fixture's recording code (reported by fad)
-* Fixed double moidifiers when converting `path` fixture to `keyframe` fixture
+* Fixed double modifiers when converting `path` fixture to `keyframe` fixture
 
 ## Aperture 1.5
 
