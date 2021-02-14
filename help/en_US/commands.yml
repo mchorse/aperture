@@ -13,9 +13,9 @@ aperture.commands:
             |
                 {r}{o}Aperture server command{r}. This command can be used to make given player (by an entity selector) start playing camera profile.
                 
-                {l}{6}/{r}aperture {8}play{r} {7}<target|camera_profile> [camera_profile]{r}
+                {l}{6}/{r}aperture {8}play{r} {7}<camera_profile> [target]{r}
                 
-                {r}If you pass only {7}<target|camera_profile>{r}, then the given camera profile will be played back on you. If you pass two arguments after {8}play{r}, then you would be able to specify both player (using username or target selector) and camera profile. 
+                {r}If you pass only {7}<camera_profile>{r}, then the given camera profile will be played using current player. If you pass two arguments after {8}play{r}, then you would be able to specify a {7}<camera_profile>{r} to be played on given player(s) using entity {7}[target]{r} selector.
     
     # Camera's commands
     camera:

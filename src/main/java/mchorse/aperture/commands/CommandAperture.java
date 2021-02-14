@@ -32,6 +32,12 @@ public class CommandAperture extends CommandBase
     }
 
     @Override
+    public boolean isUsernameIndex(String[] args, int index)
+    {
+        return index == 2 && args.length >= 2;
+    }
+
+    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 2)
@@ -47,7 +53,7 @@ public class CommandAperture extends CommandBase
             }
             else
             {
-                CameraAPI.playCameraProfile(getPlayer(server, sender, args[1]), new ResourceLocation(args[2]));
+                CameraAPI.playCameraProfile(getPlayer(server, sender, args[2]), new ResourceLocation(args[1]));
             }
         }
     }
@@ -55,11 +61,11 @@ public class CommandAperture extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
-        if (args.length == 0)
+        if (args.length == 1)
         {
             return getListOfStringsMatchingLastWord(args, "play");
         }
-        else if (args.length == 1)
+        else if (args.length == 3)
         {
             return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
         }
