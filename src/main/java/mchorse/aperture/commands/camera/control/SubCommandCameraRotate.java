@@ -52,6 +52,11 @@ public class SubCommandCameraRotate extends CommandBase
      */
     public static double parseRelativeDouble(String input, double base) throws CommandException
     {
+        if (input.equals("~"))
+        {
+            return base;
+        }
+
         String first = input.substring(0, 1);
         boolean relative = first.equals("~");
 
