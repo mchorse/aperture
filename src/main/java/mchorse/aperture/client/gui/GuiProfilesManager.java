@@ -22,6 +22,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -330,7 +331,9 @@ public class GuiProfilesManager extends GuiElement
 
     public void init()
     {
-        if (ClientProxy.server)
+        this.convert.setEnabled(OpHelper.isPlayerOp());
+
+        if (ClientProxy.server && OpHelper.isPlayerOp())
         {
             Dispatcher.sendToServer(new PacketRequestCameraProfiles());
         }

@@ -219,6 +219,11 @@ public class KeyboardHandler
             ClientProxy.openCameraEditor();
         }
 
+        if (this.addPoint.isPressed())
+        {
+            ClientProxy.getCameraEditor().addPathPoint();
+        }
+
         if (this.smoothCamera.isPressed())
         {
             SmoothCamera camera = ClientProxy.renderer.smooth;
@@ -231,11 +236,6 @@ public class KeyboardHandler
             }
 
             camera.enabled.category.config.save();
-        }
-
-        if (this.addPoint.isPressed())
-        {
-            ClientProxy.getCameraEditor().addPathPoint();
         }
     }
 

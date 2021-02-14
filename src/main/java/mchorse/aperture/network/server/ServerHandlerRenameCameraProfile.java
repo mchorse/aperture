@@ -6,6 +6,7 @@ import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketRenameCameraProfile;
 import mchorse.mclib.network.ServerMessageHandler;
+import mchorse.mclib.utils.OpHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ServerHandlerRenameCameraProfile extends ServerMessageHandler<PacketRenameCameraProfile>
@@ -13,6 +14,11 @@ public class ServerHandlerRenameCameraProfile extends ServerMessageHandler<Packe
     @Override
     public void run(EntityPlayerMP player, PacketRenameCameraProfile message)
     {
+        if (!OpHelper.isPlayerOp(player))
+        {
+            return;
+        }
+
         if (CameraUtils.renameProfile(message.from, message.to))
         {
             ICamera cap = Camera.get(player);

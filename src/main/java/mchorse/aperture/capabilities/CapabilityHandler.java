@@ -7,6 +7,7 @@ import mchorse.aperture.capabilities.camera.CameraProvider;
 import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketAperture;
+import mchorse.mclib.utils.OpHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -45,7 +46,7 @@ public class CapabilityHandler
         EntityPlayer player = event.player;
         ICamera camera = Camera.get(player);
 
-        if (camera != null && camera.hasProfile())
+        if (camera != null && camera.hasProfile() && OpHelper.isPlayerOp((EntityPlayerMP) player))
         {
             CameraUtils.sendProfileToPlayer(camera.currentProfile(), (EntityPlayerMP) player, false, true);
 

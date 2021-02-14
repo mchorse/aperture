@@ -2,6 +2,7 @@ package mchorse.aperture.camera.destination;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,7 +38,7 @@ public abstract class AbstractDestination
     @SideOnly(Side.CLIENT)
     public static AbstractDestination create(String filename)
     {
-        return ClientProxy.server ? new ServerDestination(filename) : new ClientDestination(filename);
+        return ClientProxy.server && OpHelper.isPlayerOp() ? new ServerDestination(filename) : new ClientDestination(filename);
     }
 
     /**
