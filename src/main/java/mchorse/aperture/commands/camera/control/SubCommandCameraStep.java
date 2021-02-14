@@ -1,5 +1,6 @@
 package mchorse.aperture.commands.camera.control;
 
+import mchorse.mclib.utils.OpHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -30,6 +31,11 @@ public class SubCommandCameraStep extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
+        if (!OpHelper.isPlayerOp())
+        {
+            return;
+        }
+
         EntityPlayer player = (EntityPlayer) sender;
 
         double x = args.length > 0 ? SubCommandCameraRotate.parseRelativeDouble(args[0], player.posX) : player.posX;

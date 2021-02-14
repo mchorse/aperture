@@ -2,6 +2,7 @@ package mchorse.aperture.client;
 
 import java.lang.reflect.Field;
 
+import mchorse.mclib.utils.OpHelper;
 import org.lwjgl.input.Keyboard;
 
 import mchorse.aperture.Aperture;
@@ -345,6 +346,11 @@ public class KeyboardHandler
             if (this.stepFront.isKeyDown() || this.stepBack.isKeyDown())
             {
                 zz = (this.stepFront.isKeyDown() ? factor : -factor);
+            }
+
+            if (!OpHelper.isPlayerOp())
+            {
+                return;
             }
 
             if (xx != 0 || yy != 0 || zz != 0 || yaw != player.rotationYaw || pitch != player.rotationPitch)
