@@ -39,7 +39,7 @@ public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyf
 
         for (int i = 0; i < fixture.channels.length; i++)
         {
-            sheets.add(new GuiSheet(panel.titles[i + 1], panel.colors[i], fixture.channels[i]));
+            sheets.add(new GuiSheet(String.valueOf(i), panel.titles[i + 1], panel.colors[i], fixture.channels[i]));
         }
 
         this.graph.resetView();
