@@ -9,13 +9,13 @@ import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
-import mchorse.mclib.utils.MathUtils;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import mchorse.mclib.utils.keyframes.KeyframeEasing;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
+import javax.vecmath.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class PathFixture extends AbstractFixture
 {
+    public static final Vector2d VECTOR = new Vector2d();
+
     /**
      * List of points in this fixture 
      */
@@ -46,6 +48,15 @@ public class PathFixture extends AbstractFixture
 
     public InterpolationType interpolationPos;
     public InterpolationType interpolationAngle;
+
+    @Expose
+    public boolean cirularAutoCenter = true;
+
+    @Expose
+    public double circularX = 0;
+
+    @Expose
+    public double circularZ = 0;
 
     /* Speed related cache data */
     private float lastTick;
@@ -483,16 +494,134 @@ public class PathFixture extends AbstractFixture
             y = Interpolations.cubicHermite(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
             z = Interpolations.cubicHermite(p0.point.z, p1.point.z, p2.point.z, p3.point.z, progress);
         }
+        else if (interp == InterpolationType.CIRCULAR)
+        {
+            int size = this.points.size();
+
+            if (index >= size)
+            {
+                x = p2.point.x;
+                y = p2.point.y;
+                z = p2.point.z;
+            }
+            else if (index < 0)
+            {
+                x = p1.point.x;
+                y = p1.point.y;
+                z = p1.point.z;
+            }
+            else
+            {
+                Vector2d center = this.getCenter();
+
+                double mx = center.x;
+                double mz = center.y;
+
+                Vector2d a0 = this.calculateCircular(mx, mz, index - 1);
+                Vector2d a1 = this.calculateCircular(mx, mz, index);
+                Vector2d a2 = this.calculateCircular(mx, mz, index + 1);
+                Vector2d a3 = this.calculateCircular(mx, mz, index + 2);
+
+                double a = Interpolations.cubicHermite(a0.x, a1.x, a2.x, a3.x, progress);
+                double d = Interpolations.cubicHermite(a0.y, a1.y, a2.y, a3.y, progress);
+
+                a = a / 180 * Math.PI;
+
+                x = mx + Math.cos(a) * d;
+                y = Interpolations.cubicHermite(p0.point.y, p1.point.y, p2.point.y, p3.point.y, progress);
+                z = mz + Math.sin(a) * d;
+            }
+        }
         else if (interp.interp != null)
         {
             Interpolation func = interp.function;
 
-            x = (double) func.interpolate((float) p1.point.x, (float) p2.point.x, progress);
-            y = (double) func.interpolate((float) p1.point.y, (float) p2.point.y, progress);
-            z = (double) func.interpolate((float) p1.point.z, (float) p2.point.z, progress);
+            x = func.interpolate(p1.point.x, p2.point.x, progress);
+            y = func.interpolate(p1.point.y, p2.point.y, progress);
+            z = func.interpolate(p1.point.z, p2.point.z, progress);
         }
 
         point.set(x, y, z);
+    }
+
+    private Vector2d calculateCircular(double mx, double mz, int index)
+    {
+        int size = this.points.size();
+
+        double a = 0;
+        double d = 0;
+        double lastA = 0;
+
+        if (index < 0)
+        {
+            index = 0;
+        }
+        else if (index >= size)
+        {
+            index = size - 1;
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            Position p = this.points.get(i);
+
+            double dx = p.point.x - mx;
+            double dz = p.point.z - mz;
+
+            d = Math.sqrt(dx * dx + dz * dz);
+            a = Math.atan2(dz, dx) / Math.PI * 180;
+
+            if (a < 0)
+            {
+                a = 360 + a;
+            }
+
+            double originalA = a;
+
+            if (Math.abs(a - lastA) > 180)
+            {
+                a = Interpolations.normalizeYaw(lastA, a);
+            }
+
+            if (i == index)
+            {
+                break;
+            }
+
+            lastA = originalA;
+        }
+
+        return new Vector2d(a, d);
+    }
+
+    public Vector2d getCenter()
+    {
+        if (this.cirularAutoCenter)
+        {
+            this.calculateCenter(VECTOR);
+        }
+        else
+        {
+            VECTOR.set(this.circularX, this.circularZ);
+        }
+
+        return VECTOR;
+    }
+
+    public Vector2d calculateCenter(Vector2d vector)
+    {
+        vector.set(0, 0);
+
+        for (Position position : this.points)
+        {
+            vector.x += position.point.x;
+            vector.y += position.point.z;
+        }
+
+        vector.x /= this.points.size();
+        vector.y /= this.points.size();
+
+        return vector;
     }
 
     /**
@@ -589,6 +718,10 @@ public class PathFixture extends AbstractFixture
 
         this.useSpeed = buffer.readBoolean();
         this.speed.fromByteBuf(buffer);
+
+        this.cirularAutoCenter = buffer.readBoolean();
+        this.circularX = buffer.readDouble();
+        this.circularZ = buffer.readDouble();
     }
 
     @Override
@@ -608,6 +741,10 @@ public class PathFixture extends AbstractFixture
 
         buffer.writeBoolean(this.useSpeed);
         this.speed.toByteBuf(buffer);
+
+        buffer.writeBoolean(this.cirularAutoCenter);
+        buffer.writeDouble(this.circularX);
+        buffer.writeDouble(this.circularZ);
     }
 
     @Override
@@ -635,6 +772,10 @@ public class PathFixture extends AbstractFixture
 
             this.useSpeed = path.useSpeed;
             this.speed.copy(path.speed);
+
+            this.cirularAutoCenter = path.cirularAutoCenter;
+            this.circularX = path.circularX;
+            this.circularZ = path.circularZ;
         }
     }
 
@@ -696,7 +837,9 @@ public class PathFixture extends AbstractFixture
         /* Back interpolations */
         ELASTIC_IN(Interpolation.ELASTIC_IN, KeyframeInterpolation.ELASTIC, KeyframeEasing.IN), ELASTIC_OUT(Interpolation.ELASTIC_OUT, KeyframeInterpolation.ELASTIC, KeyframeEasing.OUT), ELASTIC_INOUT(Interpolation.ELASTIC_INOUT, KeyframeInterpolation.ELASTIC, KeyframeEasing.INOUT),
         /* Back interpolations */
-        BOUNCE_IN(Interpolation.BOUNCE_IN, KeyframeInterpolation.BOUNCE, KeyframeEasing.IN), BOUNCE_OUT(Interpolation.BOUNCE_OUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.OUT), BOUNCE_INOUT(Interpolation.BOUNCE_INOUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.INOUT);
+        BOUNCE_IN(Interpolation.BOUNCE_IN, KeyframeInterpolation.BOUNCE, KeyframeEasing.IN), BOUNCE_OUT(Interpolation.BOUNCE_OUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.OUT), BOUNCE_INOUT(Interpolation.BOUNCE_INOUT, KeyframeInterpolation.BOUNCE, KeyframeEasing.INOUT),
+        /* Exclusive (no way to convert properly to keyframe) */
+        CIRCULAR("circular", KeyframeInterpolation.LINEAR);
 
         public final String name;
         public Interpolation function;

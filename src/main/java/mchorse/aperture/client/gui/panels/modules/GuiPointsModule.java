@@ -36,7 +36,7 @@ public class GuiPointsModule extends GuiAbstractModule
      */
     public int index = 0;
 
-    public GuiPointsModule(Minecraft mc, GuiCameraEditor editor, GuiPathFixturePanel picker)
+    public GuiPointsModule(Minecraft mc, GuiPathFixturePanel picker, GuiCameraEditor editor)
     {
         super(mc, editor);
 

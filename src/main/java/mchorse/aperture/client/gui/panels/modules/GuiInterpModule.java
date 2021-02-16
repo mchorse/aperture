@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.utils.Elements;
@@ -28,9 +29,13 @@ public class GuiInterpModule extends GuiAbstractModule
     public PathFixture fixture;
     public boolean pickPos = false;
 
-    public GuiInterpModule(Minecraft mc, GuiCameraEditor editor)
+    private GuiPathFixturePanel panel;
+
+    public GuiInterpModule(Minecraft mc, GuiPathFixturePanel panel, GuiCameraEditor editor)
     {
         super(mc, editor);
+
+        this.panel = panel;
 
         this.pos = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
@@ -79,6 +84,7 @@ public class GuiInterpModule extends GuiAbstractModule
                 this.angle.label.set(interp.get(0).getKey());
             }
 
+            this.panel.interpolationWasUpdated(this.pickPos);
             this.interps.removeFromParent();
             this.editor.updateProfile();
         });

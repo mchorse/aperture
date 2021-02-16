@@ -227,10 +227,15 @@ aperture.gui:
         circles: Circles
         distance: Distance
 
+        auto_center: Auto center
+        circular_x: Center point X
+        circular_z: Center point Z
+
         path_points: Path points
         position: Position
         angle: Angle
         circle: Circle
+        circular: Circular
         selector: Entity target selector (you can also enter the name tag of the entity instead of target selector)\n\nClick "?" button for more information about syntax...
         use_speed: Velocity control
         use_speed_enable: Enabled

@@ -35,6 +35,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import javax.vecmath.Vector2d;
+
 /**
  * Profile path renderer
  *
@@ -330,16 +332,16 @@ public class CameraRenderer
 
         final int p = 15;
 
-        BufferBuilder vb = Tessellator.getInstance().getBuffer();
+        BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
         GlStateManager.disableTexture2D();
-        vb.setTranslation(-this.playerX, this.mc.player.eyeHeight - this.playerY, -this.playerZ);
-        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        builder.setTranslation(-this.playerX, this.mc.player.eyeHeight - this.playerY, -this.playerZ);
+        builder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
         if (fixture instanceof DollyFixture)
         {
-            vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
-            vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+            builder.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+            builder.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
         }
         else
         {
@@ -350,14 +352,43 @@ public class CameraRenderer
                     fixture.applyFixture((long) ((float) (j + i * p) / (float) (size * p) * duration), 0, profile, prev);
                     fixture.applyFixture((long) ((float) (j + i * p + 1) / (float) (size * p) * duration), 0, profile, next);
 
-                    vb.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
-                    vb.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+                    builder.pos(prev.point.x, prev.point.y, prev.point.z).color(color.r, color.g, color.b, 1F).endVertex();
+                    builder.pos(next.point.x, next.point.y, next.point.z).color(color.r, color.g, color.b, 1F).endVertex();
                 }
             }
         }
 
         Tessellator.getInstance().draw();
-        vb.setTranslation(0, 0, 0);
+
+        if (path != null && path.interpolationPos == PathFixture.InterpolationType.CIRCULAR && path.getPoints().size() > 0)
+        {
+            Vector2d center = path.getCenter();
+            double y = 0;
+
+            for (Position position : path.getPoints())
+            {
+                y += position.point.y;
+            }
+
+            y /= path.getPoints().size();
+
+            /* Draw anchor */
+            GL11.glPointSize(10);
+            builder.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
+            builder.pos(center.x, y, center.y).color(0F, 0F, 0F, 1F).endVertex();
+            builder.pos(center.x, y, center.y).color(0F, 0F, 0F, 1F).endVertex();
+
+            Tessellator.getInstance().draw();
+
+            GL11.glPointSize(8);
+            builder.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
+            builder.pos(center.x, y, center.y).color(1F, 1F, 1F, 1F).endVertex();
+            builder.pos(center.x, y, center.y).color(1F, 1F, 1F, 1F).endVertex();
+
+            Tessellator.getInstance().draw();
+        }
+
+        builder.setTranslation(0, 0, 0);
         GlStateManager.enableTexture2D();
 
         if (path != null)
