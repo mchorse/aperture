@@ -319,7 +319,7 @@ public class Flight implements IGuiElement
         this.lastY = context.mouseY;
     }
 
-	public void drawSpeed(FontRenderer font, int x, int y)
+    public void drawSpeed(FontRenderer font, int x, int y)
     {
         float flightSpeed = this.speed / 1000F;
         String speedFormat = "%.0f";
@@ -349,9 +349,9 @@ public class Flight implements IGuiElement
             Gui.drawRect(x - width - 2, y - 3, x + 2, y + 10, 0xbb000000);
             font.drawStringWithShadow(speed, x - width, y, 0xffffff);
         }
-	}
+    }
 
-	/* Unimplemented GUI element methods */
+    /* Unimplemented GUI element methods */
 
     @Override
     public void resize()

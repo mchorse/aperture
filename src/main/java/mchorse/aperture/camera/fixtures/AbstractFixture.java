@@ -283,9 +283,9 @@ public abstract class AbstractFixture implements IByteBufSerializable
     /**
      * Copy data from another fixture during replacement
      */
-	public void copyByReplacing(AbstractFixture from)
+    public void copyByReplacing(AbstractFixture from)
     {
         this.copy(from);
         this.setDuration(from.getDuration());
-	}
+    }
 }

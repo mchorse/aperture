@@ -10,51 +10,51 @@ import java.util.Map;
 
 public class GuiCurves extends GuiElement
 {
-	public GuiCameraEditor editor;
-	public GuiCameraEditorKeyframesGraphEditor keyframes;
+    public GuiCameraEditor editor;
+    public GuiCameraEditorKeyframesGraphEditor keyframes;
 
-	public GuiCurves(Minecraft mc, GuiCameraEditor editor)
-	{
-		super(mc);
+    public GuiCurves(Minecraft mc, GuiCameraEditor editor)
+    {
+        super(mc);
 
-		this.editor = editor;
-		this.keyframes = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
-		this.keyframes.graph.global = true;
-		this.keyframes.flex().relative(this).wh(1F, 1F);
+        this.editor = editor;
+        this.keyframes = new GuiCameraEditorKeyframesGraphEditor(mc, editor);
+        this.keyframes.graph.global = true;
+        this.keyframes.flex().relative(this).wh(1F, 1F);
 
-		this.add(this.keyframes);
-	}
+        this.add(this.keyframes);
+    }
 
-	public void updateDuration()
-	{
-		this.keyframes.graph.duration = (int) this.editor.getProfile().getDuration();
-	}
+    public void updateDuration()
+    {
+        this.keyframes.graph.duration = (int) this.editor.getProfile().getDuration();
+    }
 
-	public void update()
-	{
-		Map<String, KeyframeChannel> channels = this.editor.getProfile().getCurves();
-		KeyframeChannel channel = channels.get("brightness");
+    public void update()
+    {
+        Map<String, KeyframeChannel> channels = this.editor.getProfile().getCurves();
+        KeyframeChannel channel = channels.get("brightness");
 
-		if (channel == null)
-		{
-			channel = new KeyframeChannel();
-			channels.put("brightness", channel);
-		}
+        if (channel == null)
+        {
+            channel = new KeyframeChannel();
+            channels.put("brightness", channel);
+        }
 
-		if (this.keyframes.graph.sheet.channel == channel)
-		{
-			return;
-		}
+        if (this.keyframes.graph.sheet.channel == channel)
+        {
+            return;
+        }
 
-		this.updateDuration();
-		this.keyframes.setChannel(channel, 0xff1493);
-	}
+        this.updateDuration();
+        this.keyframes.setChannel(channel, 0xff1493);
+    }
 
-	@Override
-	public void draw(GuiContext context)
-	{
+    @Override
+    public void draw(GuiContext context)
+    {
 
 
-		super.draw(context);
-	}
+        super.draw(context);
+    }
 }

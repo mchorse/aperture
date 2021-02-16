@@ -16,153 +16,153 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class RemapperModifier extends AbstractModifier
 {
-	@Expose
-	public boolean keyframes;
+    @Expose
+    public boolean keyframes;
 
-	@Expose
-	public KeyframeChannel channel;
+    @Expose
+    public KeyframeChannel channel;
 
-	public MathBuilder builder = new MathBuilder();
-	public IValue expression;
+    public MathBuilder builder = new MathBuilder();
+    public IValue expression;
 
-	public Variable ticks;
-	public Variable offset;
-	public Variable partial;
-	public Variable duration;
-	public Variable progress;
-	public Variable factor;
+    public Variable ticks;
+    public Variable offset;
+    public Variable partial;
+    public Variable duration;
+    public Variable progress;
+    public Variable factor;
 
-	public RemapperModifier()
-	{
-		this.ticks = new Variable("t", 0);
-		this.offset = new Variable("o", 0);
-		this.partial = new Variable("pt", 0);
-		this.duration = new Variable("d", 0);
-		this.progress = new Variable("p", 0);
-		this.factor = new Variable("f", 0);
+    public RemapperModifier()
+    {
+        this.ticks = new Variable("t", 0);
+        this.offset = new Variable("o", 0);
+        this.partial = new Variable("pt", 0);
+        this.duration = new Variable("d", 0);
+        this.progress = new Variable("p", 0);
+        this.factor = new Variable("f", 0);
 
-		this.builder.register(this.ticks);
-		this.builder.register(this.offset);
-		this.builder.register(this.partial);
-		this.builder.register(this.duration);
-		this.builder.register(this.progress);
-		this.builder.register(this.factor);
+        this.builder.register(this.ticks);
+        this.builder.register(this.offset);
+        this.builder.register(this.partial);
+        this.builder.register(this.duration);
+        this.builder.register(this.progress);
+        this.builder.register(this.factor);
 
-		this.channel = new KeyframeChannel();
-		this.channel.insert(0, 0);
-		this.channel.insert(Aperture.duration.get(), 1);
-	}
+        this.channel = new KeyframeChannel();
+        this.channel.insert(0, 0);
+        this.channel.insert(Aperture.duration.get(), 1);
+    }
 
-	@Override
-	public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
-	{
-		if (fixture == null)
-		{
-			return;
-		}
+    @Override
+    public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
+    {
+        if (fixture == null)
+        {
+            return;
+        }
 
-		double factor = 0;
+        double factor = 0;
 
-		if (this.keyframes && this.channel != null)
-		{
-			factor = this.channel.interpolate(offset + previewPartialTick);
-		}
-		else if (!this.keyframes && this.expression != null)
-		{
-			this.ticks.set(ticks);
-			this.offset.set(offset);
-			this.partial.set(previewPartialTick);
-			this.duration.set(fixture.getDuration());
-			this.progress.set(ticks + previewPartialTick);
-			this.factor.set((double) (offset + previewPartialTick) / this.duration.get());
+        if (this.keyframes && this.channel != null)
+        {
+            factor = this.channel.interpolate(offset + previewPartialTick);
+        }
+        else if (!this.keyframes && this.expression != null)
+        {
+            this.ticks.set(ticks);
+            this.offset.set(offset);
+            this.partial.set(previewPartialTick);
+            this.duration.set(fixture.getDuration());
+            this.progress.set(ticks + previewPartialTick);
+            this.factor.set((double) (offset + previewPartialTick) / this.duration.get());
 
-			factor = this.expression.get();
-		}
+            factor = this.expression.get();
+        }
 
-		factor *= fixture.getDuration();
-		factor = MathUtils.clamp(factor, 0, fixture.getDuration());
+        factor *= fixture.getDuration();
+        factor = MathUtils.clamp(factor, 0, fixture.getDuration());
 
-		fixture.applyFixture((long) factor, (float) (factor % 1), profile, pos);
-	}
+        fixture.applyFixture((long) factor, (float) (factor % 1), profile, pos);
+    }
 
-	public boolean rebuildExpression(String expression)
-	{
-		try
-		{
-			this.expression = this.builder.parse(expression);
+    public boolean rebuildExpression(String expression)
+    {
+        try
+        {
+            this.expression = this.builder.parse(expression);
 
-			return true;
-		}
-		catch (Exception e)
-		{}
+            return true;
+        }
+        catch (Exception e)
+        {}
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public AbstractModifier create()
-	{
-		return new RemapperModifier();
-	}
+    @Override
+    public AbstractModifier create()
+    {
+        return new RemapperModifier();
+    }
 
-	@Override
-	public void copy(AbstractModifier from)
-	{
-		super.copy(from);
+    @Override
+    public void copy(AbstractModifier from)
+    {
+        super.copy(from);
 
-		if (from instanceof RemapperModifier)
-		{
-			RemapperModifier modifier = (RemapperModifier) from;
+        if (from instanceof RemapperModifier)
+        {
+            RemapperModifier modifier = (RemapperModifier) from;
 
-			this.keyframes = modifier.keyframes;
-			this.channel.copy(modifier.channel);
-			this.rebuildExpression(modifier.expression == null ? "" : modifier.expression.toString());
-		}
-	}
+            this.keyframes = modifier.keyframes;
+            this.channel.copy(modifier.channel);
+            this.rebuildExpression(modifier.expression == null ? "" : modifier.expression.toString());
+        }
+    }
 
-	@Override
-	public void toJSON(JsonObject object)
-	{
-		if (this.expression != null)
-		{
-			object.addProperty("expression", this.expression.toString());
-		}
-	}
+    @Override
+    public void toJSON(JsonObject object)
+    {
+        if (this.expression != null)
+        {
+            object.addProperty("expression", this.expression.toString());
+        }
+    }
 
-	@Override
-	public void fromJSON(JsonObject object)
-	{
-		super.fromJSON(object);
+    @Override
+    public void fromJSON(JsonObject object)
+    {
+        super.fromJSON(object);
 
-		if (object.has("expression"))
-		{
-			this.rebuildExpression(object.get("expression").getAsString());
-		}
+        if (object.has("expression"))
+        {
+            this.rebuildExpression(object.get("expression").getAsString());
+        }
 
-		if (this.channel == null)
-		{
-			this.channel = new KeyframeChannel();
-			this.channel.insert(0, 0);
-		}
-	}
+        if (this.channel == null)
+        {
+            this.channel = new KeyframeChannel();
+            this.channel.insert(0, 0);
+        }
+    }
 
-	@Override
-	public void toBytes(ByteBuf buffer)
-	{
-		super.toBytes(buffer);
+    @Override
+    public void toBytes(ByteBuf buffer)
+    {
+        super.toBytes(buffer);
 
-		buffer.writeBoolean(this.keyframes);
-		this.channel.toBytes(buffer);
-		ByteBufUtils.writeUTF8String(buffer, this.expression == null ? "" : this.expression.toString());
-	}
+        buffer.writeBoolean(this.keyframes);
+        this.channel.toBytes(buffer);
+        ByteBufUtils.writeUTF8String(buffer, this.expression == null ? "" : this.expression.toString());
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buffer)
-	{
-		super.fromBytes(buffer);
+    @Override
+    public void fromBytes(ByteBuf buffer)
+    {
+        super.fromBytes(buffer);
 
-		this.keyframes = buffer.readBoolean();
-		this.channel.fromBytes(buffer);
-		this.rebuildExpression(ByteBufUtils.readUTF8String(buffer));
-	}
+        this.keyframes = buffer.readBoolean();
+        this.channel.fromBytes(buffer);
+        this.rebuildExpression(ByteBufUtils.readUTF8String(buffer));
+    }
 }

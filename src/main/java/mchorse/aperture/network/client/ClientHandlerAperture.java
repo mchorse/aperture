@@ -9,10 +9,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClientHandlerAperture extends ClientMessageHandler<PacketAperture>
 {
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void run(EntityPlayerSP entityPlayerSP, PacketAperture packetAperture)
-	{
-		ClientProxy.server = true;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void run(EntityPlayerSP entityPlayerSP, PacketAperture packetAperture)
+    {
+        ClientProxy.server = true;
+    }
 }

@@ -11,45 +11,45 @@ import java.lang.reflect.Field;
 @SideOnly(Side.CLIENT)
 public class OptifineHelper
 {
-	public static Field ofCameraZoom;
-	public static KeyBinding ofCameraZoomKey;
+    public static Field ofCameraZoom;
+    public static KeyBinding ofCameraZoomKey;
 
-	static
-	{
-		for (Field field : GameSettings.class.getDeclaredFields())
-		{
-			if (field.getName().startsWith("of") && field.getType().getName().contains("KeyBinding"))
-			{
-				ofCameraZoom = field;
-				ofCameraZoom.setAccessible(true);
+    static
+    {
+        for (Field field : GameSettings.class.getDeclaredFields())
+        {
+            if (field.getName().startsWith("of") && field.getType().getName().contains("KeyBinding"))
+            {
+                ofCameraZoom = field;
+                ofCameraZoom.setAccessible(true);
 
-				break;
-			}
-		}
-	}
+                break;
+            }
+        }
+    }
 
-	public static boolean isZooming()
-	{
-		if (ofCameraZoom != null)
-		{
-			return getKeybind().isKeyDown();
-		}
+    public static boolean isZooming()
+    {
+        if (ofCameraZoom != null)
+        {
+            return getKeybind().isKeyDown();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private static KeyBinding getKeybind()
-	{
-		if (ofCameraZoomKey == null)
-		{
-			try
-			{
-				ofCameraZoomKey = (KeyBinding) ofCameraZoom.get(Minecraft.getMinecraft().gameSettings);
-			}
-			catch (Exception e)
-			{}
-		}
+    private static KeyBinding getKeybind()
+    {
+        if (ofCameraZoomKey == null)
+        {
+            try
+            {
+                ofCameraZoomKey = (KeyBinding) ofCameraZoom.get(Minecraft.getMinecraft().gameSettings);
+            }
+            catch (Exception e)
+            {}
+        }
 
-		return ofCameraZoomKey;
-	}
+        return ofCameraZoomKey;
+    }
 }

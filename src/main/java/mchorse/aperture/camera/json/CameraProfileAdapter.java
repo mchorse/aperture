@@ -24,99 +24,99 @@ import java.util.Map;
  */
 public class CameraProfileAdapter implements JsonDeserializer<CameraProfile>, JsonSerializer<CameraProfile>
 {
-	@Override
-	public CameraProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-	{
-		CameraProfile profile = new CameraProfile(null);
+    @Override
+    public CameraProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        CameraProfile profile = new CameraProfile(null);
 
-		if (!json.isJsonObject())
-		{
-			return profile;
-		}
+        if (!json.isJsonObject())
+        {
+            return profile;
+        }
 
-		JsonObject object = json.getAsJsonObject();
+        JsonObject object = json.getAsJsonObject();
 
-		if (object.has("fixtures") && object.get("fixtures").isJsonArray())
-		{
-			for (JsonElement element : object.get("fixtures").getAsJsonArray())
-			{
-				AbstractFixture fixture = context.deserialize(element, AbstractFixture.class);
+        if (object.has("fixtures") && object.get("fixtures").isJsonArray())
+        {
+            for (JsonElement element : object.get("fixtures").getAsJsonArray())
+            {
+                AbstractFixture fixture = context.deserialize(element, AbstractFixture.class);
 
-				if (fixture != null)
-				{
-					profile.getAll().add(fixture);
-				}
-			}
-		}
+                if (fixture != null)
+                {
+                    profile.getAll().add(fixture);
+                }
+            }
+        }
 
-		if (object.has("modifiers") && object.get("modifiers").isJsonArray())
-		{
-			for (JsonElement element : object.get("modifiers").getAsJsonArray())
-			{
-				AbstractModifier modifier = context.deserialize(element, AbstractModifier.class);
+        if (object.has("modifiers") && object.get("modifiers").isJsonArray())
+        {
+            for (JsonElement element : object.get("modifiers").getAsJsonArray())
+            {
+                AbstractModifier modifier = context.deserialize(element, AbstractModifier.class);
 
-				if (modifier != null)
-				{
-					profile.getModifiers().add(modifier);
-				}
-			}
-		}
+                if (modifier != null)
+                {
+                    profile.getModifiers().add(modifier);
+                }
+            }
+        }
 
-		if (object.has("curves") && object.get("curves").isJsonObject())
-		{
-			JsonObject curves = object.get("curves").getAsJsonObject();
+        if (object.has("curves") && object.get("curves").isJsonObject())
+        {
+            JsonObject curves = object.get("curves").getAsJsonObject();
 
-			for (Map.Entry<String, JsonElement> entry : curves.entrySet())
-			{
-				KeyframeChannel channel = context.deserialize(entry.getValue(), KeyframeChannel.class);
+            for (Map.Entry<String, JsonElement> entry : curves.entrySet())
+            {
+                KeyframeChannel channel = context.deserialize(entry.getValue(), KeyframeChannel.class);
 
-				if (channel != null)
-				{
-					profile.getCurves().put(entry.getKey(), channel);
-				}
-			}
-		}
+                if (channel != null)
+                {
+                    profile.getCurves().put(entry.getKey(), channel);
+                }
+            }
+        }
 
-		return profile;
-	}
+        return profile;
+    }
 
-	@Override
-	public JsonElement serialize(CameraProfile src, Type typeOfSrc, JsonSerializationContext context)
-	{
-		JsonObject object = new JsonObject();
-		JsonArray fixtures = new JsonArray();
-		JsonArray modifiers = new JsonArray();
-		JsonObject curves = new JsonObject();
+    @Override
+    public JsonElement serialize(CameraProfile src, Type typeOfSrc, JsonSerializationContext context)
+    {
+        JsonObject object = new JsonObject();
+        JsonArray fixtures = new JsonArray();
+        JsonArray modifiers = new JsonArray();
+        JsonObject curves = new JsonObject();
 
-		object.add("fixtures", fixtures);
-		object.add("modifiers", modifiers);
-		object.add("curves", curves);
+        object.add("fixtures", fixtures);
+        object.add("modifiers", modifiers);
+        object.add("curves", curves);
 
-		for (AbstractFixture fixture : src.getAll())
-		{
-			JsonElement element = context.serialize(fixture, AbstractFixture.class);
+        for (AbstractFixture fixture : src.getAll())
+        {
+            JsonElement element = context.serialize(fixture, AbstractFixture.class);
 
-			if (element != null)
-			{
-				fixtures.add(element);
-			}
-		}
+            if (element != null)
+            {
+                fixtures.add(element);
+            }
+        }
 
-		for (AbstractModifier modifier : src.getModifiers())
-		{
-			JsonElement element = context.serialize(modifier, AbstractModifier.class);
+        for (AbstractModifier modifier : src.getModifiers())
+        {
+            JsonElement element = context.serialize(modifier, AbstractModifier.class);
 
-			if (element != null)
-			{
-				modifiers.add(element);
-			}
-		}
+            if (element != null)
+            {
+                modifiers.add(element);
+            }
+        }
 
-		for (Map.Entry<String, KeyframeChannel> entry : src.getCurves().entrySet())
-		{
-			curves.add(entry.getKey(), context.serialize(entry.getValue()));
-		}
+        for (Map.Entry<String, KeyframeChannel> entry : src.getCurves().entrySet())
+        {
+            curves.add(entry.getKey(), context.serialize(entry.getValue()));
+        }
 
-		return object;
-	}
+        return object;
+    }
 }

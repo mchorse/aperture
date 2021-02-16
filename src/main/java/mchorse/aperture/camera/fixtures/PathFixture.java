@@ -898,7 +898,7 @@ public class PathFixture extends AbstractFixture
         public String getKey()
         {
             return "mclib.interpolations." + this.name;
-	    }
+        }
     }
 
     public static class CachedPosition
