@@ -226,17 +226,17 @@ public class MathModifier extends ComponentModifier
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
         ByteBufUtils.writeUTF8String(buffer, this.expression == null ? "" : this.expression.toString());
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
         this.rebuildExpression(ByteBufUtils.readUTF8String(buffer));
     }

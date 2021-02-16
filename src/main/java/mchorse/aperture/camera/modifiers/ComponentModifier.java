@@ -24,14 +24,6 @@ public abstract class ComponentModifier extends AbstractModifier
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
-    {
-        super.toByteBuf(buffer);
-
-        buffer.writeByte(this.active);
-    }
-
-    @Override
     public void copy(AbstractModifier from)
     {
         super.copy(from);
@@ -43,9 +35,17 @@ public abstract class ComponentModifier extends AbstractModifier
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.toBytes(buffer);
+
+        buffer.writeByte(this.active);
+    }
+
+    @Override
+    public void fromBytes(ByteBuf buffer)
+    {
+        super.fromBytes(buffer);
 
         this.active = buffer.readByte();
     }

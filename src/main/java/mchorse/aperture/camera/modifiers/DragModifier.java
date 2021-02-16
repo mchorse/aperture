@@ -72,17 +72,17 @@ public class DragModifier extends ComponentModifier
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
         this.factor = buffer.readFloat();
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
         buffer.writeFloat(this.factor);
     }

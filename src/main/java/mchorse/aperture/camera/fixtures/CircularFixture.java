@@ -106,11 +106,11 @@ public class CircularFixture extends AbstractFixture
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
-        this.start = Point.fromByteBuf(buffer);
+        this.start = Point.fromBytes(buffer);
         this.offset = buffer.readFloat();
         this.distance = buffer.readFloat();
         this.circles = buffer.readFloat();
@@ -118,11 +118,11 @@ public class CircularFixture extends AbstractFixture
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
-        this.start.toByteBuf(buffer);
+        this.start.toBytes(buffer);
         buffer.writeFloat(this.offset);
         buffer.writeFloat(this.distance);
         buffer.writeFloat(this.circles);

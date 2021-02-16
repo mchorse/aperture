@@ -55,18 +55,18 @@ public class IdleFixture extends AbstractFixture
     /* Save/load methods */
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
-        this.position = Position.fromByteBuf(buffer);
+        this.position = Position.fromBytes(buffer);
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
-        this.position.toByteBuf(buffer);
+        this.position.toBytes(buffer);
     }
 }

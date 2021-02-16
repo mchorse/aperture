@@ -30,7 +30,7 @@ public class Angle
     @Expose
     public float fov = 70.0F;
 
-    public static Angle fromByteBuf(ByteBuf buffer)
+    public static Angle fromBytes(ByteBuf buffer)
     {
         return new Angle(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
     }
@@ -90,7 +90,7 @@ public class Angle
         this.set(player.rotationYaw, player.rotationPitch, ClientProxy.control.roll, fov);
     }
 
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
         buffer.writeFloat(this.yaw);
         buffer.writeFloat(this.pitch);

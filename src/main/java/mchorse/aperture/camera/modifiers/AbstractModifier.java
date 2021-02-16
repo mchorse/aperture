@@ -3,12 +3,12 @@ package mchorse.aperture.camera.modifiers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.smooth.Envelope;
+import mchorse.mclib.network.IByteBufSerializable;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * Camera modifiers are special blocks of logic which post-processes 
  * {@link Position} after it was computed by an {@link AbstractFixture}. 
  */
-public abstract class AbstractModifier
+public abstract class AbstractModifier implements IByteBufSerializable
 {
     public static final Position temporary = new Position();
 
@@ -112,15 +112,17 @@ public abstract class AbstractModifier
         }
     }
 
-    public void toByteBuf(ByteBuf buffer)
+    @Override
+    public void toBytes(ByteBuf buffer)
     {
         buffer.writeBoolean(this.enabled);
-        this.envelope.toByteBuf(buffer);
+        this.envelope.fromBytes(buffer);
     }
 
-    public void fromByteBuf(ByteBuf buffer)
+    @Override
+    public void fromBytes(ByteBuf buffer)
     {
         this.enabled = buffer.readBoolean();
-        this.envelope.fromByteBuf(buffer);
+        this.envelope.toBytes(buffer);
     }
 }

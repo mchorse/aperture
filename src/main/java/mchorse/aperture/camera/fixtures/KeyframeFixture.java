@@ -199,30 +199,30 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
-        this.x.fromByteBuf(buffer);
-        this.y.fromByteBuf(buffer);
-        this.z.fromByteBuf(buffer);
-        this.yaw.fromByteBuf(buffer);
-        this.pitch.fromByteBuf(buffer);
-        this.roll.fromByteBuf(buffer);
-        this.fov.fromByteBuf(buffer);
+        this.x.fromBytes(buffer);
+        this.y.fromBytes(buffer);
+        this.z.fromBytes(buffer);
+        this.yaw.fromBytes(buffer);
+        this.pitch.fromBytes(buffer);
+        this.roll.fromBytes(buffer);
+        this.fov.fromBytes(buffer);
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
-        this.x.toByteBuf(buffer);
-        this.y.toByteBuf(buffer);
-        this.z.toByteBuf(buffer);
-        this.yaw.toByteBuf(buffer);
-        this.pitch.toByteBuf(buffer);
-        this.roll.toByteBuf(buffer);
-        this.fov.toByteBuf(buffer);
+        this.x.toBytes(buffer);
+        this.y.toBytes(buffer);
+        this.z.toBytes(buffer);
+        this.yaw.toBytes(buffer);
+        this.pitch.toBytes(buffer);
+        this.roll.toBytes(buffer);
+        this.fov.toBytes(buffer);
     }
 }

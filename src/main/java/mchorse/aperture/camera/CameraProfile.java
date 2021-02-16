@@ -15,6 +15,7 @@ import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.events.CameraProfileChangedEvent;
+import mchorse.mclib.network.IByteBufSerializable;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * camera fixtures that can be used to playback the camera movement and can be
  * loaded/saved to the disk.
  */
-public class CameraProfile
+public class CameraProfile implements IByteBufSerializable
 {
     /**
      * Pattern for finding numbered
@@ -397,11 +398,12 @@ public class CameraProfile
     /**
      * Read camera profile from a byte buffer 
      */
-    public void fromByteBuf(ByteBuf buffer)
+    @Override
+    public void fromBytes(ByteBuf buffer)
     {
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            AbstractFixture fixture = FixtureRegistry.fromByteBuf(buffer);
+            AbstractFixture fixture = FixtureRegistry.fromBytes(buffer);
 
             if (fixture != null)
             {
@@ -411,7 +413,7 @@ public class CameraProfile
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            AbstractModifier modifier = ModifierRegistry.fromByteBuf(buffer);
+            AbstractModifier modifier = ModifierRegistry.fromBytes(buffer);
 
             if (modifier != null)
             {
@@ -424,7 +426,7 @@ public class CameraProfile
             String key = ByteBufUtils.readUTF8String(buffer);
             KeyframeChannel channel = new KeyframeChannel();
 
-            channel.fromByteBuf(buffer);
+            channel.fromBytes(buffer);
             this.curves.put(key, channel);
         }
     }
@@ -432,20 +434,21 @@ public class CameraProfile
     /**
      * Write camera profile to a byte buffer 
      */
-    public void toByteBuf(ByteBuf buffer)
+    @Override
+    public void toBytes(ByteBuf buffer)
     {
         buffer.writeInt(this.fixtures.size());
 
         for (AbstractFixture fixture : this.fixtures)
         {
-            FixtureRegistry.toByteBuf(fixture, buffer);
+            FixtureRegistry.toBytes(fixture, buffer);
         }
 
         buffer.writeInt(this.getModifiers().size());
 
         for (AbstractModifier modifier : this.getModifiers())
         {
-            ModifierRegistry.toByteBuf(modifier, buffer);
+            ModifierRegistry.toBytes(modifier, buffer);
         }
 
         buffer.writeInt(this.curves.size());
@@ -453,7 +456,7 @@ public class CameraProfile
         for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
         {
             ByteBufUtils.writeUTF8String(buffer, entry.getKey());
-            entry.getValue().toByteBuf(buffer);
+            entry.getValue().toBytes(buffer);
         }
     }
 

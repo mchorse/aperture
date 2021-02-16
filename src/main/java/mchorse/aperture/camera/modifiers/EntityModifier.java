@@ -8,7 +8,6 @@ import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.utils.EntitySelector;
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -136,20 +135,20 @@ public abstract class EntityModifier extends AbstractModifier
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
         this.selector = ByteBufUtils.readUTF8String(buffer);
-        this.offset = Point.fromByteBuf(buffer);
+        this.offset = Point.fromBytes(buffer);
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
         ByteBufUtils.writeUTF8String(buffer, this.selector);
-        this.offset.toByteBuf(buffer);
+        this.offset.toBytes(buffer);
     }
 }

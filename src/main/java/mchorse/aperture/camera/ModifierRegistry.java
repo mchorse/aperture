@@ -73,23 +73,23 @@ public class ModifierRegistry
     /**
      * Write an abstract modifier to byte buffer 
      */
-    public static void toByteBuf(AbstractModifier modifier, ByteBuf buffer)
+    public static void toBytes(AbstractModifier modifier, ByteBuf buffer)
     {
         buffer.writeByte(getType(modifier));
 
-        modifier.toByteBuf(buffer);
+        modifier.toBytes(buffer);
     }
 
     /**
      * Read an abstract modifier from a byte buffer
      */
-    public static AbstractModifier fromByteBuf(ByteBuf buffer)
+    public static AbstractModifier fromBytes(ByteBuf buffer)
     {
         try
         {
             AbstractModifier modifier = fromType(buffer.readByte());
 
-            modifier.fromByteBuf(buffer);
+            modifier.fromBytes(buffer);
 
             return modifier;
         }

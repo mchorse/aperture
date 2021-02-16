@@ -4,12 +4,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
+import mchorse.mclib.network.IByteBufSerializable;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
 import mchorse.mclib.utils.MathUtils;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
-public class Envelope
+public class Envelope implements IByteBufSerializable
 {
 	@Expose
 	public boolean enabled;
@@ -122,7 +123,8 @@ public class Envelope
 		}
 	}
 
-	public void toByteBuf(ByteBuf buffer)
+	@Override
+	public void toBytes(ByteBuf buffer)
 	{
 		buffer.writeBoolean(this.enabled);
 		buffer.writeBoolean(this.relative);
@@ -132,10 +134,11 @@ public class Envelope
 		buffer.writeFloat(this.endDuration);
 		buffer.writeInt(this.interpolation.ordinal());
 		buffer.writeBoolean(this.keyframes);
-		this.channel.toByteBuf(buffer);
+		this.channel.toBytes(buffer);
 	}
 
-	public void fromByteBuf(ByteBuf buffer)
+	@Override
+	public void fromBytes(ByteBuf buffer)
 	{
 		this.enabled = buffer.readBoolean();
 		this.relative = buffer.readBoolean();
@@ -145,6 +148,6 @@ public class Envelope
 		this.endDuration = buffer.readFloat();
 		this.interpolation = Interpolation.values()[buffer.readInt()];
 		this.keyframes = buffer.readBoolean();
-		this.channel.fromByteBuf(buffer);
+		this.channel.fromBytes(buffer);
 	}
 }

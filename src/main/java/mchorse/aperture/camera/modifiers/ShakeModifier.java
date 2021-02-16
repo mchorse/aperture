@@ -111,18 +111,18 @@ public class ShakeModifier extends ComponentModifier
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
         buffer.writeFloat(this.shake);
         buffer.writeFloat(this.shakeAmount);
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
         this.shake = buffer.readFloat();
         this.shakeAmount = buffer.readFloat();

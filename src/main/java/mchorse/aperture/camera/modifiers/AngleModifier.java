@@ -49,18 +49,18 @@ public class AngleModifier extends AbstractModifier
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
-        this.angle.toByteBuf(buffer);
+        this.angle.toBytes(buffer);
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
-        this.angle = Angle.fromByteBuf(buffer);
+        this.angle = Angle.fromBytes(buffer);
     }
 }

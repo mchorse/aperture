@@ -147,22 +147,22 @@ public class RemapperModifier extends AbstractModifier
 	}
 
 	@Override
-	public void toByteBuf(ByteBuf buffer)
+	public void toBytes(ByteBuf buffer)
 	{
-		super.toByteBuf(buffer);
+		super.toBytes(buffer);
 
 		buffer.writeBoolean(this.keyframes);
-		this.channel.toByteBuf(buffer);
+		this.channel.toBytes(buffer);
 		ByteBufUtils.writeUTF8String(buffer, this.expression == null ? "" : this.expression.toString());
 	}
 
 	@Override
-	public void fromByteBuf(ByteBuf buffer)
+	public void fromBytes(ByteBuf buffer)
 	{
-		super.fromByteBuf(buffer);
+		super.fromBytes(buffer);
 
 		this.keyframes = buffer.readBoolean();
-		this.channel.fromByteBuf(buffer);
+		this.channel.fromBytes(buffer);
 		this.rebuildExpression(ByteBufUtils.readUTF8String(buffer));
 	}
 }

@@ -32,7 +32,7 @@ public class PacketCameraProfile implements IMessage
         this.play = buf.readBoolean();
         this.filename = ByteBufUtils.readUTF8String(buf);
         this.profile = new CameraProfile(null);
-        this.profile.fromByteBuf(buf);
+        this.profile.fromBytes(buf);
     }
 
     @Override
@@ -40,6 +40,6 @@ public class PacketCameraProfile implements IMessage
     {
         buf.writeBoolean(this.play);
         ByteBufUtils.writeUTF8String(buf, this.filename);
-        this.profile.toByteBuf(buf);
+        this.profile.toBytes(buf);
     }
 }

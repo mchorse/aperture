@@ -24,9 +24,9 @@ public class Position
     @Expose
     public Angle angle = new Angle(0, 0);
 
-    public static Position fromByteBuf(ByteBuf buffer)
+    public static Position fromBytes(ByteBuf buffer)
     {
-        return new Position(Point.fromByteBuf(buffer), Angle.fromByteBuf(buffer));
+        return new Position(Point.fromBytes(buffer), Angle.fromBytes(buffer));
     }
 
     public Position()
@@ -92,10 +92,10 @@ public class Position
         this.angle.fov = Interpolations.lerp(this.angle.fov, position.angle.fov, factor);
     }
 
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        this.point.toByteBuf(buffer);
-        this.angle.toByteBuf(buffer);
+        this.point.toBytes(buffer);
+        this.angle.toBytes(buffer);
     }
 
     public Position copy()

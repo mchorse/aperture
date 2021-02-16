@@ -26,7 +26,7 @@ public class Point
     /**
      * Read a {@link Point} instance from byte buffer 
      */
-    public static Point fromByteBuf(ByteBuf buffer)
+    public static Point fromBytes(ByteBuf buffer)
     {
         return new Point(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
@@ -58,7 +58,7 @@ public class Point
         this.set(player.posX, player.posY, player.posZ);
     }
 
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
         buffer.writeDouble(this.x);
         buffer.writeDouble(this.y);

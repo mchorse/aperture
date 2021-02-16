@@ -195,9 +195,9 @@ public class ManualFixture extends AbstractFixture
 	}
 
 	@Override
-	public void fromByteBuf(ByteBuf buffer)
+	public void fromBytes(ByteBuf buffer)
 	{
-		super.fromByteBuf(buffer);
+		super.fromBytes(buffer);
 
 		this.frames.clear();
 		this.shift = buffer.readInt();
@@ -223,9 +223,9 @@ public class ManualFixture extends AbstractFixture
 	}
 
 	@Override
-	public void toByteBuf(ByteBuf buffer)
+	public void toBytes(ByteBuf buffer)
 	{
-		super.toByteBuf(buffer);
+		super.toBytes(buffer);
 
 		buffer.writeInt(this.shift);
 		buffer.writeFloat(this.speed);

@@ -74,20 +74,20 @@ public class FixtureRegistry
     /**
      * Write a camera fixture to byte buffer 
      */
-    public static void toByteBuf(AbstractFixture fixture, ByteBuf buffer)
+    public static void toBytes(AbstractFixture fixture, ByteBuf buffer)
     {
         byte type = CLASS_TO_ID.get(fixture.getClass());
 
         buffer.writeByte(type);
         buffer.writeLong(fixture.getDuration());
 
-        fixture.toByteBuf(buffer);
+        fixture.toBytes(buffer);
     }
 
     /**
      * Create an abstract camera fixture out of byte buffer
      */
-    public static AbstractFixture fromByteBuf(ByteBuf buffer)
+    public static AbstractFixture fromBytes(ByteBuf buffer)
     {
         byte type = buffer.readByte();
         long duration = buffer.readLong();
@@ -96,7 +96,7 @@ public class FixtureRegistry
         {
             AbstractFixture fixture = fromType(type, duration);
 
-            fixture.fromByteBuf(buffer);
+            fixture.fromBytes(buffer);
 
             return fixture;
         }

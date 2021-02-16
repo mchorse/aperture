@@ -704,20 +704,20 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public void fromByteBuf(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        super.fromByteBuf(buffer);
+        super.fromBytes(buffer);
 
         this.interpolationPos = interpFromInt(buffer.readByte());
         this.interpolationAngle = interpFromInt(buffer.readByte());
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            this.addPoint(Position.fromByteBuf(buffer));
+            this.addPoint(Position.fromBytes(buffer));
         }
 
         this.useSpeed = buffer.readBoolean();
-        this.speed.fromByteBuf(buffer);
+        this.speed.fromBytes(buffer);
 
         this.cirularAutoCenter = buffer.readBoolean();
         this.circularX = buffer.readDouble();
@@ -725,9 +725,9 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public void toByteBuf(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        super.toByteBuf(buffer);
+        super.toBytes(buffer);
 
         buffer.writeByte(this.interpolationPos.ordinal());
         buffer.writeByte(this.interpolationAngle.ordinal());
@@ -736,11 +736,11 @@ public class PathFixture extends AbstractFixture
 
         for (Position pos : this.points)
         {
-            pos.toByteBuf(buffer);
+            pos.toBytes(buffer);
         }
 
         buffer.writeBoolean(this.useSpeed);
-        this.speed.toByteBuf(buffer);
+        this.speed.toBytes(buffer);
 
         buffer.writeBoolean(this.cirularAutoCenter);
         buffer.writeDouble(this.circularX);

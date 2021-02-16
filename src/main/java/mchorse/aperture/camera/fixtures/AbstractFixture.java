@@ -13,6 +13,7 @@ import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.mclib.network.IByteBufSerializable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -24,7 +25,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  *
  * Every fixture have duration field.
  */
-public abstract class AbstractFixture
+public abstract class AbstractFixture implements IByteBufSerializable
 {
     /**
      * Duration of this fixture. Represented in ticks. There are 20 ticks in a
@@ -151,14 +152,15 @@ public abstract class AbstractFixture
     /**
      * Read abstract fixture's properties from byte buffer 
      */
-    public void fromByteBuf(ByteBuf buffer)
+    @Override
+    public void fromBytes(ByteBuf buffer)
     {
         this.name = ByteBufUtils.readUTF8String(buffer);
         this.color = buffer.readInt();
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            AbstractModifier modifier = ModifierRegistry.fromByteBuf(buffer);
+            AbstractModifier modifier = ModifierRegistry.fromBytes(buffer);
 
             if (modifier != null)
             {
@@ -170,7 +172,8 @@ public abstract class AbstractFixture
     /**
      * Write this abstract fixture to the byte buffer 
      */
-    public void toByteBuf(ByteBuf buffer)
+    @Override
+    public void toBytes(ByteBuf buffer)
     {
         ByteBufUtils.writeUTF8String(buffer, this.name);
         buffer.writeInt(this.color);
@@ -197,7 +200,7 @@ public abstract class AbstractFixture
 
             for (AbstractModifier modifier : this.modifiers)
             {
-                ModifierRegistry.toByteBuf(modifier, buffer);
+                ModifierRegistry.toBytes(modifier, buffer);
             }
         }
     }
