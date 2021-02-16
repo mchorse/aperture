@@ -130,10 +130,14 @@ public class Aperture
             commandName.set("camera");
         }
 
+        builder.getCategory().markClientSide();
+
         /* Camera outside mode */
         outside = builder.category("outside").getBoolean("enabled", false);
         outsideHidePlayer = builder.getBoolean("hide_player", false);
         outsideSky = builder.getBoolean("sky", true);
+
+        builder.getCategory().markClientSide();
 
         /* Camera editor */
         editorSync = builder.category("editor").getBoolean("sync", false);
@@ -147,6 +151,8 @@ public class Aperture
         editorLetterbox = builder.getBoolean("letter_box", false);
         editorLetterboxAspect = builder.getString("aspect_ratio", "21:9");
         editorHideChat = builder.getBoolean("hide_chat", true);
+
+        builder.getCategory().markClientSide();
 
         /* Flight mode keybinds */
         flightForward = builder.category("flight").getInt("forward", Keyboard.KEY_W).keybind();
@@ -166,6 +172,8 @@ public class Aperture
         flightCameraSpeedMinus = builder.getInt("speed_minus", Keyboard.KEY_O).keybind();
         flightCameraSpeedPlus = builder.getInt("speed_plus", Keyboard.KEY_P).keybind();
 
+        builder.getCategory().markClientSide();
+
         /* Smooth camera */
         smooth = builder.category("smooth").getBoolean("enabled", false);
         smoothClampPitch = builder.getBoolean("clamp", true);
@@ -176,8 +184,12 @@ public class Aperture
         fovFriction = builder.getFloat("fov_friction", 0.985F, 0.0F, 0.99999F);
         fovFactor = builder.getFloat("fov_speed", 0.075F, 0.0F, 10.0F);
 
+        builder.getCategory().markClientSide();
+
         /* Minema integration */
         minemaDefaultProfileName = builder.category("minema").getBoolean("default_profile_name", false);
+
+        builder.getCategory().markClientSide();
 
         event.modules.add(builder.build());
     }
