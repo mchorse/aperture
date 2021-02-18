@@ -7,8 +7,8 @@ import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.mclib.network.ClientMessageHandler;
+import mchorse.mclib.utils.EntityUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,7 +38,7 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
             ClientProxy.runner.start(ClientProxy.control.currentProfile);
         }
 
-        if (ClientProxy.getGameMode() != GameType.ADVENTURE)
+        if (!EntityUtils.isAdventureMode(player))
         {
             Aperture.l10n.success(player, "profile.load", message.filename);
         }

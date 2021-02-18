@@ -5,6 +5,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.mclib.utils.EntityUtils;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -114,7 +115,7 @@ public class CameraRunner
             ClientProxy.control.cache();
             this.position.set(this.mc.player);
 
-            if (Aperture.spectator.get() && !Aperture.outside.get() && ClientProxy.getGameMode() != GameType.SPECTATOR)
+            if (Aperture.spectator.get() && !Aperture.outside.get() && EntityUtils.getGameMode() != GameType.SPECTATOR)
             {
                 this.mc.player.sendChatMessage("/gamemode 3");
             }

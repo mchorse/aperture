@@ -52,10 +52,7 @@ import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.GameType;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -160,18 +157,6 @@ public class ClientProxy extends CommonProxy
         }
 
         return file;
-    }
-
-    /**
-     * Get game mode of the player
-     */
-    public static GameType getGameMode()
-    {
-        Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.player;
-        NetworkPlayerInfo networkplayerinfo = mc.getConnection().getPlayerInfo(player.getGameProfile().getId());
-
-        return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
     }
 
     public static boolean canUseCameraEditor()

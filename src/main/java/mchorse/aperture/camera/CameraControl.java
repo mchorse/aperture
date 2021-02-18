@@ -5,6 +5,7 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.GuiProfilesManager;
+import mchorse.mclib.utils.EntityUtils;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.GameType;
@@ -47,7 +48,7 @@ public class CameraControl
         {
             Minecraft mc = Minecraft.getMinecraft();
 
-            this.lastGameMode = ClientProxy.getGameMode();
+            this.lastGameMode = EntityUtils.getGameMode();
             this.lastRoll = roll;
             this.lastFov = mc.gameSettings.fovSetting;
             this.lastGamma = mc.gameSettings.gammaSetting;
@@ -68,7 +69,7 @@ public class CameraControl
             mc.gameSettings.fovSetting = this.lastFov;
             mc.gameSettings.gammaSetting = this.lastGamma;
 
-            if (this.lastGameMode != ClientProxy.getGameMode())
+            if (this.lastGameMode != EntityUtils.getGameMode())
             {
                 mc.player.sendChatMessage("/gamemode " + this.lastGameMode.getID());
             }
