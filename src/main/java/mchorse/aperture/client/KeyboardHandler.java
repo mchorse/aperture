@@ -1,17 +1,12 @@
 package mchorse.aperture.client;
 
-import java.lang.reflect.Field;
-
-import mchorse.mclib.utils.OpHelper;
-import org.lwjgl.input.Keyboard;
-
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.smooth.SmoothCamera;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.events.CameraProfileChangedEvent;
-import mchorse.aperture.utils.L10n;
+import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
@@ -27,6 +22,9 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToSe
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+
+import java.lang.reflect.Field;
 
 /**
  * Separate event handler for keyboard events
@@ -210,7 +208,7 @@ public class KeyboardHandler
         }
         catch (CommandException e)
         {
-            L10n.error(player, e.getMessage(), e.getErrorObjects());
+            Aperture.l10n.error(player, e.getMessage(), e.getErrorObjects());
         }
 
         /* Misc. */

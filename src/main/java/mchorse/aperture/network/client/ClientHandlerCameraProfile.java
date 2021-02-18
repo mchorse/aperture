@@ -1,11 +1,11 @@
 package mchorse.aperture.network.client;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.network.common.PacketCameraProfile;
-import mchorse.aperture.utils.L10n;
 import mchorse.mclib.network.ClientMessageHandler;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.world.GameType;
@@ -40,7 +40,7 @@ public class ClientHandlerCameraProfile extends ClientMessageHandler<PacketCamer
 
         if (ClientProxy.getGameMode() != GameType.ADVENTURE)
         {
-            L10n.success(player, "profile.load", message.filename);
+            Aperture.l10n.success(player, "profile.load", message.filename);
         }
     }
 }

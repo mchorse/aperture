@@ -1,10 +1,10 @@
 package mchorse.aperture.network.server;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraUtils;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.common.PacketCameraProfile;
-import mchorse.aperture.utils.L10n;
 import mchorse.mclib.network.ServerMessageHandler;
 import mchorse.mclib.utils.OpHelper;
 import mchorse.mclib.utils.Patterns;
@@ -22,7 +22,7 @@ public class ServerHandlerCameraProfile extends ServerMessageHandler<PacketCamer
 
         if (!Patterns.FILENAME.matcher(message.filename).matches())
         {
-            L10n.error(player, "profile.wrong_filename", message.filename);
+            Aperture.l10n.error(player, "profile.wrong_filename", message.filename);
 
             return;
         }
@@ -34,7 +34,7 @@ public class ServerHandlerCameraProfile extends ServerMessageHandler<PacketCamer
             cap.setCurrentProfile(message.filename);
             cap.setCurrentProfileTimestamp(System.currentTimeMillis());
 
-            L10n.success(player, "profile.save", message.filename);
+            Aperture.l10n.success(player, "profile.save", message.filename);
         }
     }
 }

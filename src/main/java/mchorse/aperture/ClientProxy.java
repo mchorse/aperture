@@ -165,7 +165,7 @@ public class ClientProxy extends CommonProxy
     /**
      * Get game mode of the player
      */
-    public static GameType getGameMode()    
+    public static GameType getGameMode()
     {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;

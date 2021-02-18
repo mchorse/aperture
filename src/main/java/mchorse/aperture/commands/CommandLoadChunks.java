@@ -1,8 +1,6 @@
 package mchorse.aperture.commands;
 
-import java.lang.reflect.Field;
-
-import mchorse.aperture.utils.L10n;
+import mchorse.aperture.Aperture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.ViewFrustum;
@@ -13,6 +11,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+
+import java.lang.reflect.Field;
 
 /**
  * Command /load_chunks
@@ -39,7 +39,7 @@ public class CommandLoadChunks extends CommandBase
     {
         if (args.length > 0)
         {
-            L10n.send(sender, this.getUsage(sender));
+            Aperture.l10n.send(sender, this.getUsage(sender));
 
             return;
         }
@@ -85,14 +85,14 @@ public class CommandLoadChunks extends CommandBase
                     }
                 }
 
-                L10n.info(sender, "commands.load_chunks");
+                Aperture.l10n.info(sender, "commands.load_chunks");
             }
             catch (Exception e)
             {
                 /* I don't know what might happen code to go here */
                 e.printStackTrace();
 
-                L10n.error(sender, "commands.load_chunks");
+                Aperture.l10n.error(sender, "commands.load_chunks");
             }
         }
     }

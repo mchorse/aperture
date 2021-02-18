@@ -1,7 +1,7 @@
 package mchorse.aperture.commands.camera.control;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.utils.L10n;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -34,7 +34,7 @@ public class SubCommandCameraFOV extends CommandBase
 
         if (args.length == 0)
         {
-            L10n.info(sender, "camera.fov", mc.gameSettings.fovSetting);
+            Aperture.l10n.info(sender, "camera.fov", mc.gameSettings.fovSetting);
         }
         else
         {

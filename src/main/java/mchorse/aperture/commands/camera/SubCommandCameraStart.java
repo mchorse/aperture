@@ -1,7 +1,7 @@
 package mchorse.aperture.commands.camera;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -37,6 +37,6 @@ public class SubCommandCameraStart extends CommandBase
         int tick = args.length == 0 ? 0 : CommandBase.parseInt(args[0], 0);
 
         ClientProxy.runner.start(ClientProxy.control.currentProfile, tick);
-        L10n.info(sender, "profile.start");
+        Aperture.l10n.info(sender, "profile.start");
     }
 }

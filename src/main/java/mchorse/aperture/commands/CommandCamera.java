@@ -10,6 +10,7 @@ import mchorse.aperture.commands.camera.control.SubCommandCameraFOV;
 import mchorse.aperture.commands.camera.control.SubCommandCameraRoll;
 import mchorse.aperture.commands.camera.control.SubCommandCameraRotate;
 import mchorse.aperture.commands.camera.control.SubCommandCameraStep;
+import mchorse.mclib.commands.SubCommandBase;
 
 /**
  * Command /camera

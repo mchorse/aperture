@@ -1,6 +1,7 @@
 package mchorse.aperture;
 
 import mchorse.mclib.McLib;
+import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;
 import mchorse.mclib.config.values.ValueBoolean;
 import mchorse.mclib.config.values.ValueFloat;
@@ -50,6 +51,8 @@ public class Aperture
 
     /* Mod's logger */
     public static Logger LOGGER;
+
+    public static L10n l10n = new L10n(MOD_ID);
 
     /* Configuration */
     public static ValueBoolean opCameraEditor;

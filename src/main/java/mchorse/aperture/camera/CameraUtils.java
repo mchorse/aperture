@@ -2,7 +2,7 @@ package mchorse.aperture.camera;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
+import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.json.AbstractFixtureAdapter;
@@ -15,7 +15,6 @@ import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketCameraState;
-import mchorse.aperture.utils.L10n;
 import mchorse.mclib.utils.JsonUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
@@ -25,7 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Scanner;
 
 /**
@@ -121,7 +119,7 @@ public class CameraUtils
 
             if (!cameraFile(filename).isFile())
             {
-                L10n.error(player, "profile.cant_load", filename);
+                Aperture.l10n.error(player, "profile.cant_load", filename);
 
                 return;
             }
@@ -137,7 +135,7 @@ public class CameraUtils
         catch (Exception e)
         {
             e.printStackTrace();
-            L10n.error(player, "profile.cant_load", filename);
+            Aperture.l10n.error(player, "profile.cant_load", filename);
         }
     }
 
@@ -165,7 +163,7 @@ public class CameraUtils
             }
             else
             {
-                L10n.info(player, "profile.loaded", filename);
+                Aperture.l10n.info(player, "profile.loaded", filename);
             }
 
             return true;
@@ -187,7 +185,7 @@ public class CameraUtils
         catch (IOException e)
         {
             e.printStackTrace();
-            L10n.error(player, "profile.cant_save", filename);
+            Aperture.l10n.error(player, "profile.cant_save", filename);
 
             return false;
         }

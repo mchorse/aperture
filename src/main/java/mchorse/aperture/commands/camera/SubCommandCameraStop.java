@@ -1,7 +1,7 @@
 package mchorse.aperture.commands.camera;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
-import mchorse.aperture.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -35,6 +35,6 @@ public class SubCommandCameraStop extends CommandBase
         }
 
         ClientProxy.runner.stop();
-        L10n.info(sender, "profile.stop");
+        Aperture.l10n.info(sender, "profile.stop");
     }
 }
