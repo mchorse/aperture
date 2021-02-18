@@ -59,3 +59,6 @@ aperture.config.comments:
 
     minema:
         default_profile_name: Whether the name of the output file should be the name of the camera profile, rather than current date
+
+op_access.config.comments.aperture:
+    camera_editor: Can non-OP players use camera editor?

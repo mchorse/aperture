@@ -214,12 +214,12 @@ public class KeyboardHandler
         }
 
         /* Misc. */
-        if (this.cameraEditor.isPressed())
+        if (this.cameraEditor.isPressed() && ClientProxy.canUseCameraEditor())
         {
             ClientProxy.openCameraEditor();
         }
 
-        if (this.addPoint.isPressed())
+        if (this.addPoint.isPressed() && ClientProxy.canUseCameraEditor())
         {
             ClientProxy.getCameraEditor().addPathPoint();
         }
@@ -252,7 +252,7 @@ public class KeyboardHandler
         }
 
         /* Starting/stopping */
-        if (this.toggleRunning.isPressed())
+        if (this.toggleRunning.isPressed() && ClientProxy.canUseCameraEditor())
         {
             ClientProxy.runner.toggle(ClientProxy.control.currentProfile, 0);
         }

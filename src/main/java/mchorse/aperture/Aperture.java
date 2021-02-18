@@ -52,6 +52,8 @@ public class Aperture
     public static Logger LOGGER;
 
     /* Configuration */
+    public static ValueBoolean opCameraEditor;
+
     public static ValueInt duration;
     public static ValueBoolean spectator;
     public static ValueFloat stepFactor;
@@ -109,6 +111,10 @@ public class Aperture
     @SubscribeEvent
     public void onConfigRegister(RegisterConfigEvent event)
     {
+        opCameraEditor = event.opAccess.category(MOD_ID).getBoolean("camera_editor", true);
+        opCameraEditor.syncable();
+
+        /* Aperture's configuration */
         ConfigBuilder builder = event.createBuilder(MOD_ID);
 
         /* Camera */

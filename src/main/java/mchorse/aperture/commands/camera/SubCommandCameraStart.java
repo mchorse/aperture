@@ -29,6 +29,11 @@ public class SubCommandCameraStart extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
+        if (!ClientProxy.canUseCameraEditor())
+        {
+            return;
+        }
+
         int tick = args.length == 0 ? 0 : CommandBase.parseInt(args[0], 0);
 
         ClientProxy.runner.start(ClientProxy.control.currentProfile, tick);

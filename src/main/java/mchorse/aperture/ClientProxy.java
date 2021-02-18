@@ -49,6 +49,7 @@ import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
 import mchorse.mclib.McLib;
 import mchorse.mclib.utils.Color;
+import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -164,13 +165,18 @@ public class ClientProxy extends CommonProxy
     /**
      * Get game mode of the player
      */
-    public static GameType getGameMode()
+    public static GameType getGameMode()    
     {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         NetworkPlayerInfo networkplayerinfo = mc.getConnection().getPlayerInfo(player.getGameProfile().getId());
 
         return networkplayerinfo != null ? networkplayerinfo.getGameType() : GameType.CREATIVE;
+    }
+
+    public static boolean canUseCameraEditor()
+    {
+        return Minecraft.getMinecraft().isSingleplayer() || Aperture.opCameraEditor.get() || OpHelper.isPlayerOp();
     }
 
     /**

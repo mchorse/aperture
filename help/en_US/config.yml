@@ -79,3 +79,9 @@ aperture.config:
         tooltip: Options related to Minema integration
 
         default_profile_name: Camera profile name
+
+op_access.config.aperture:
+    title: Aperture
+    tooltip: Aperture's OP access options
+
+    camera_editor: Camera editor
