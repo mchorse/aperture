@@ -85,7 +85,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     protected void updateDuration(long value)
     {
         this.fixture.setDuration(value);
-        this.editor.updateDuration();
+        this.editor.updateDuration(this.fixture);
     }
 
     public void profileWasUpdated()

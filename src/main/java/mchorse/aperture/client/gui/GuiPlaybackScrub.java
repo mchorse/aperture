@@ -360,7 +360,7 @@ public class GuiPlaybackScrub extends GuiElement
                     }
                 }
 
-                this.editor.updateDuration();
+                this.editor.updateDuration(this.end);
             }
         }
 

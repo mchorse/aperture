@@ -815,9 +815,13 @@ public class GuiCameraEditor extends GuiBase
         this.timeline.setValue(this.timeline.value);
     }
 
-    public void updateDuration()
+    public void updateDuration(AbstractFixture fixture)
     {
         this.updateValues();
+
+        int offset = (int) (this.getProfile().calculateOffset(fixture) + fixture.getDuration());
+
+        this.timeline.scale.view(this.timeline.scale.getMinValue(), Math.max(offset, this.timeline.scale.getMaxValue()));
 
         this.profiles.updateDuration();
         this.modifiers.updateDuration();
