@@ -113,16 +113,16 @@ public abstract class AbstractModifier implements IByteBufSerializable
     }
 
     @Override
-    public void toBytes(ByteBuf buffer)
+    public void fromBytes(ByteBuf buffer)
     {
-        buffer.writeBoolean(this.enabled);
+        this.enabled = buffer.readBoolean();
         this.envelope.fromBytes(buffer);
     }
 
     @Override
-    public void fromBytes(ByteBuf buffer)
+    public void toBytes(ByteBuf buffer)
     {
-        this.enabled = buffer.readBoolean();
+        buffer.writeBoolean(this.enabled);
         this.envelope.toBytes(buffer);
     }
 }

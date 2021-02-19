@@ -66,12 +66,6 @@ public class CommandCamera extends SubCommandBase
     }
 
     @Override
-    public String getSyntax()
-    {
-        return "";
-    }
-
-    @Override
     public L10n getL10n()
     {
         return Aperture.l10n;

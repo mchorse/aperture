@@ -112,15 +112,29 @@ public class Envelope implements IByteBufSerializable
         return envelope;
     }
 
-    public void toJSON(JsonObject object)
-    {}
-
     public void fromJSON(JsonObject object)
     {
         if (this.channel == null)
         {
             this.channel = this.create();
         }
+    }
+
+    public void toJSON(JsonObject object)
+    {}
+
+    @Override
+    public void fromBytes(ByteBuf buffer)
+    {
+        this.enabled = buffer.readBoolean();
+        this.relative = buffer.readBoolean();
+        this.startX = buffer.readFloat();
+        this.startDuration = buffer.readFloat();
+        this.endX = buffer.readFloat();
+        this.endDuration = buffer.readFloat();
+        this.interpolation = Interpolation.values()[buffer.readInt()];
+        this.keyframes = buffer.readBoolean();
+        this.channel.fromBytes(buffer);
     }
 
     @Override
@@ -135,19 +149,5 @@ public class Envelope implements IByteBufSerializable
         buffer.writeInt(this.interpolation.ordinal());
         buffer.writeBoolean(this.keyframes);
         this.channel.toBytes(buffer);
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        this.enabled = buffer.readBoolean();
-        this.relative = buffer.readBoolean();
-        this.startX = buffer.readFloat();
-        this.startDuration = buffer.readFloat();
-        this.endX = buffer.readFloat();
-        this.endDuration = buffer.readFloat();
-        this.interpolation = Interpolation.values()[buffer.readInt()];
-        this.keyframes = buffer.readBoolean();
-        this.channel.fromBytes(buffer);
     }
 }
