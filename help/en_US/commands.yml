@@ -1,11 +1,7 @@
 # Commands
 aperture.commands:
     # Load chunks command
-    load_chunks: 
-        |
-            {l}{6}/{r}load_chunks
-            
-            This command loads all chunks in render distance. It might take a while
+    load_chunks: "This command loads all chunks in render distance. It might take a while..."
     
     # Aperture command
     aperture:
@@ -21,47 +17,11 @@ aperture.commands:
     camera:
         help: "{r}{o}Camera command{r}. Provides sub-commands for managing camera profile and its camera fixtures."
         
-        start: 
-            |
-                {l}{6}/{r}camera {8}start{r} {7}[tick]{r}
-                
-                {r}Starts a camera profile. Optionally starting from given {7}[tick]{r}.
-        stop: 
-            |
-                {l}{6}/{r}camera {8}stop{r}
-        
-                {r}Stops currently running camera profile
-
-        default:
-            |
-                {l}{6}/{r}camera {8}default{r}
-                
-                {r}Resets camera's {7}Field-Of-View{r} and {7}roll{r} to default values ({7}70.0{r} and {7}0.0{r} degrees).
-        fov: 
-            |
-                {l}{6}/{r}camera {8}fov{r} {7}[fov]{r}
-                
-                Set or get client's camera {l}Field Of View{r} ({8}fov{r}) setting.
-        roll: 
-            |
-                {l}{6}/{r}camera {8}roll{r} {7}[roll]{r}
-                
-                {r}Set or get client's camera {7}[roll]{r} (rotation across {7}Z-axis{r}).
-        
-        rotate:
-            |
-                {l}{6}/{r}camera {8}rotate{r} {7}[yaw] [pitch]{r}
-                
-                {r}Set camera's angle based on absolute or relative values. You can set absolute angle of the camera by specifying plain floating point numbers {6}/camera {8}rotate {7}90 90{r}. Or you can provide a relative value by using {7}~+{r} or {7}~-{r} signs {6}/camera {8}rotate {7}~0.5 ~-0.5{r}.
-        
-        step:
-            |
-                {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
-                
-                {r}Set camera's position based on absolute or relative values. You can set absolute position of the camera by specifying plain floating point numbers {6}/camera {8}step {7}0 4 0{r}. Or you can provide a relative value by using {7}~+{r} or {7}~-{r} signs {6}/camera {8}step {7}~0 ~0.1 ~0{r}. It works similar to {6}/tp{r} command.
-
-        reload:
-            |
-                {l}{6}/{r}camera {8}reload{r}
-
-                {r}Reload camera editor.
+        start: "{r}Starts a camera profile. Optionally starting from given {7}[tick]{r}."
+        stop: "{r}Stops currently running camera profile."
+        default: "{r}Resets camera's {7}Field-Of-View{r} and {7}roll{r} to default values ({7}70.0{r} and {7}0.0{r} degrees)."
+        fov: "Set or get client's camera {l}Field Of View{r} ({8}fov{r}) setting."
+        roll: "{r}Set or get client's camera {7}[roll]{r} (rotation across {7}Z-axis{r})."
+        rotate: "{r}Set camera's angle based on absolute or relative values. You can set absolute angle of the camera by specifying plain floating point numbers {6}/camera {8}rotate {7}90 90{r}. Or you can provide a relative value by using {7}~+{r} or {7}~-{r} signs {6}/camera {8}rotate {7}~0.5 ~-0.5{r}."
+        step: "{r}Set camera's position based on absolute or relative values. You can set absolute position of the camera by specifying plain floating point numbers {6}/camera {8}step {7}0 4 0{r}. Or you can provide a relative value by using {7}~+{r} or {7}~-{r} signs {6}/camera {8}step {7}~0 ~0.1 ~0{r}. It works similar to {6}/tp{r} command."
+        reload: "{r}Reload camera editor."

@@ -11,6 +11,8 @@ import mchorse.aperture.commands.camera.control.SubCommandCameraRoll;
 import mchorse.aperture.commands.camera.control.SubCommandCameraRotate;
 import mchorse.aperture.commands.camera.control.SubCommandCameraStep;
 import mchorse.mclib.commands.SubCommandBase;
+import mchorse.mclib.commands.utils.L10n;
+import net.minecraft.command.ICommandSender;
 
 /**
  * Command /camera
@@ -58,8 +60,20 @@ public class CommandCamera extends SubCommandBase
     }
 
     @Override
-    protected String getHelp()
+    public String getUsage(ICommandSender sender)
     {
         return "aperture.commands.camera.help";
+    }
+
+    @Override
+    public String getSyntax()
+    {
+        return "";
+    }
+
+    @Override
+    public L10n getL10n()
+    {
+        return Aperture.l10n;
     }
 }

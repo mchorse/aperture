@@ -1,5 +1,8 @@
 package mchorse.aperture.commands.camera.control;
 
+import mchorse.aperture.Aperture;
+import mchorse.mclib.commands.McCommandBase;
+import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.utils.OpHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -14,7 +17,7 @@ import net.minecraft.server.MinecraftServer;
  * on absolute or relative value. Very useful for adjusting position of the
  * cameras more precisely.
  */
-public class SubCommandCameraStep extends CommandBase
+public class SubCommandCameraStep extends McCommandBase
 {
     @Override
     public String getName()
@@ -29,7 +32,19 @@ public class SubCommandCameraStep extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public String getSyntax()
+    {
+        return "{l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}";
+    }
+
+    @Override
+    public L10n getL10n()
+    {
+        return Aperture.l10n;
+    }
+
+    @Override
+    public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (!OpHelper.isPlayerOp())
         {

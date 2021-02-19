@@ -1,11 +1,7 @@
 # Commands
 aperture.commands:
     # Load chunks command
-    load_chunks:
-        |
-            {l}{6}/{r}load_chunks
-
-            該命令會加載渲染範圍內的所有區塊。這需要壹些時間。
+    load_chunks: "該命令會加載渲染範圍內的所有區塊。這需要壹些時間。"
 
     # Aperture command
     aperture:
@@ -21,47 +17,11 @@ aperture.commands:
     camera:
         help: "{r}{o}相機命令。{r} 提供關於管理相機配置和相機關鍵點的次級命令。"
 
-        start:
-            |
-                {l}{6}/{r}camera {8}start{r} {7}[tick]{r}
-
-                {r}開始播放相機配置。（可選）從給定的 {7}[tick]{r} 後開始播放。
-        stop:
-            |
-                {l}{6}/{r}camera {8}stop{r}
-
-                {r}停止當前播放的相機配置。
-
-        default:
-            |
-                {l}{6}/{r}camera {8}default{r}
-
-                {r}重置相機的 {7}FOV{r} 和 {7}翻滾角度{r} 到默認值（{7}70.0{r} 和 {7}0.0{r} 度）。
-        fov:
-            |
-                {l}{6}/{r}camera {8}fov{r} {7}[fov]{r}
-
-                {r}設定或獲取客戶端相機的 {l}角視場{r}（{8}FOV{r}）。
-        roll:
-            |
-                {l}{6}/{r}camera {8}roll{r} {7}[roll]{r}
-
-                {r}設定或獲取客戶端相機的 {7}[roll]{r}（{7}Z 軸{r}翻滾程度）。
-
-        rotate:
-            |
-                {l}{6}/{r}camera {8}rotate{r} {7}[yaw] [pitch]{r}
-
-                {r}根據絕對或相對值設定相機角度。您可以通過指定數字來設定絕對的相機角度 {6}/camera {8}rotate {7}90 90{r}。或者您可以通過 {7}+{r} 或 {7}-{r} 符號來增加或減少幅度 {6}/camera {8}rotate {7}+0.5 -0.5{r}。
-
-        step:
-            |
-                {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
-                
-                {r}根據絕對或相對值設定相機位置。您可以通過指定普通浮點數 {6}/camera {8}step {7}0 4 0{r} 來設定絕對的相機位置。或者您可以通過 {7}+{r} 或 {7}-{r} 符號來增加或減少位置的值 {6}/camera {8}step {7}+0 +0.1 +0{r}。類似於 {6}/tp{r} 命令。
-                
-        reload:
-            |
-                {l}{6}/{r}camera {8}reload{r}
-
-                {r}重載相機編輯器。
+        start: "{r}開始播放相機配置。（可選）從給定的 {7}[tick]{r} 後開始播放。"
+        stop: "{r}停止當前播放的相機配置。"
+        default: "{r}重置相機的 {7}FOV{r} 和 {7}翻滾角度{r} 到默認值（{7}70.0{r} 和 {7}0.0{r} 度）。"
+        fov: "{r}設定或獲取客戶端相機的 {l}角視場{r}（{8}FOV{r}）。"
+        roll: "{r}設定或獲取客戶端相機的 {7}[roll]{r}（{7}Z 軸{r}翻滾程度）。"
+        rotate: "{r}根據絕對或相對值設定相機角度。您可以通過指定數字來設定絕對的相機角度 {6}/camera {8}rotate {7}90 90{r}。或者您可以通過 {7}+{r} 或 {7}-{r} 符號來增加或減少幅度 {6}/camera {8}rotate {7}+0.5 -0.5{r}。"
+        step: "{r}根據絕對或相對值設定相機位置。您可以通過指定普通浮點數 {6}/camera {8}step {7}0 4 0{r} 來設定絕對的相機位置。或者您可以通過 {7}+{r} 或 {7}-{r} 符號來增加或減少位置的值 {6}/camera {8}step {7}+0 +0.1 +0{r}。類似於 {6}/tp{r} 命令。"
+        reload: "{r}重載相機編輯器。"

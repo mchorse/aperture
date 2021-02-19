@@ -2,7 +2,10 @@ package mchorse.aperture.commands.camera.control;
 
 import com.google.common.primitives.Doubles;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.mclib.commands.McCommandBase;
+import mchorse.mclib.commands.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -16,7 +19,7 @@ import net.minecraft.server.MinecraftServer;
  * This command allows player to rotate camera more precisely using absolute or
  * relative values.
  */
-public class SubCommandCameraRotate extends CommandBase
+public class SubCommandCameraRotate extends McCommandBase
 {
     @Override
     public String getName()
@@ -31,7 +34,19 @@ public class SubCommandCameraRotate extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public String getSyntax()
+    {
+        return "{l}{6}/{r}camera {8}rotate{r} {7}[yaw] [pitch]{r}";
+    }
+
+    @Override
+    public L10n getL10n()
+    {
+        return Aperture.l10n;
+    }
+
+    @Override
+    public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         EntityPlayer player = (EntityPlayer) sender;
 

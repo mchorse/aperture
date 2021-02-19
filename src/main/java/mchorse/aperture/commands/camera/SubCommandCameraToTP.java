@@ -1,8 +1,11 @@
 package mchorse.aperture.commands.camera;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.mclib.commands.McCommandBase;
+import mchorse.mclib.commands.utils.L10n;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -10,7 +13,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 
-public class SubCommandCameraToTP extends CommandBase
+public class SubCommandCameraToTP extends McCommandBase
 {
     @Override
     public String getName()
@@ -25,7 +28,19 @@ public class SubCommandCameraToTP extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public String getSyntax()
+    {
+        return "{l}{6}/{r}camera {8}to_tp{r}";
+    }
+
+    @Override
+    public L10n getL10n()
+    {
+        return Aperture.l10n;
+    }
+
+    @Override
+    public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         CameraProfile profile = ClientProxy.control.currentProfile;
 
