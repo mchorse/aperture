@@ -17,8 +17,6 @@ public class GuiNullFixturePanel extends GuiAbstractFixturePanel<NullFixture>
         super(mc, editor);
 
         this.previous = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.previous"), false, (b) -> this.fixture.previous = b.isToggled());
-        this.previous.flex().relative(this.duration).set(0, 0, 0, 20).y(1, 5).w(1, 0);
-
         this.left.add(this.previous);
 
         this.keys().register(IKey.lang("aperture.gui.panels.keys.previous"), Keyboard.KEY_P, () -> this.previous.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).active(editor::isFlightDisabled).category(CATEGORY);

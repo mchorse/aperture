@@ -44,6 +44,7 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
 
         this.updateDuration();
         this.channel.graph.resetView();
+        this.channel.updateConverter();
     }
 
     @Override

@@ -69,6 +69,15 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     }
 
     @Override
+    public void updateDurationSettings()
+    {
+        super.updateDurationSettings();
+
+        this.dope.updateConverter();
+        this.graph.updateConverter();
+    }
+
+    @Override
     public void select(KeyframeFixture fixture, long duration)
     {
         boolean same = this.fixture == fixture;

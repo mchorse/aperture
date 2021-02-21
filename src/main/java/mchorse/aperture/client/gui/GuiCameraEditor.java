@@ -704,6 +704,7 @@ public class GuiCameraEditor extends GuiBase
         if (this.panel.delegate != null)
         {
             this.panel.delegate.cameraEditorOpened();
+            this.modifiers.cameraEditorOpened();
         }
 
         Minecraft.getMinecraft().gameSettings.hideGUI = true;

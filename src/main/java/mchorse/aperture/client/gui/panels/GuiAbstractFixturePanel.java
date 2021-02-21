@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiColorElement;
@@ -36,7 +37,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     /* GUI fields */
     public GuiTextElement name;
     public GuiColorElement color;
-    public GuiTrackpadElement duration;
+    private GuiTrackpadElement duration;
 
     public GuiAbstractFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
@@ -71,15 +72,25 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
 
         this.duration = new GuiTrackpadElement(mc, (value) ->
         {
-            this.updateDuration(value.longValue());
+            this.updateDuration(TimeUtils.fromTime(value));
             this.editor.updatePlayerCurrently();
             this.editor.updateProfile();
         });
         this.duration.tooltip(IKey.lang("aperture.gui.panels.duration"));
-        this.duration.values(1.0F).limit(1, Float.POSITIVE_INFINITY, true);
 
         this.left.add(Elements.label(IKey.lang("aperture.gui.panels.name")).background(0x88000000), this.name, this.color, this.duration);
         this.add(this.left, this.right);
+    }
+
+    public void setDuration(long ticks)
+    {
+        this.duration.setValue(TimeUtils.toTime(ticks));
+    }
+
+    public void updateDurationSettings()
+    {
+        TimeUtils.configure(this.duration, 1);
+        this.setDuration(this.fixture.getDuration());
     }
 
     protected void updateDuration(long value)
@@ -92,7 +103,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     {}
 
     public void cameraEditorOpened()
-    {}
+    {
+        this.updateDurationSettings();
+    }
 
     @Override
     public void select(T fixture, long duration)
@@ -101,7 +114,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
 
         this.name.setText(fixture.getName());
         this.color.picker.setColor(fixture.getColor());
-        this.duration.setValue(fixture.getDuration());
+        this.updateDurationSettings();
     }
 
     @Override

@@ -134,7 +134,18 @@ public class GuiModifiersManager extends GuiElement
         this.add(this.title, this.add, this.paste, this.panels, this.buttons);
 
         this.hideTooltip();
-   }
+    }
+
+    public void cameraEditorOpened()
+    {
+        for (IGuiElement element : this.panels.getChildren())
+        {
+            if (element instanceof GuiAbstractModifierPanel)
+            {
+                ((GuiAbstractModifierPanel) element).initiate();
+            }
+        }
+    }
 
     public void updateDuration()
     {

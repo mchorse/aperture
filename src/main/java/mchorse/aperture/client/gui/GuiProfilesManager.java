@@ -9,7 +9,6 @@ import mchorse.aperture.camera.destination.ServerDestination;
 import mchorse.aperture.network.Dispatcher;
 import mchorse.aperture.network.common.PacketRequestCameraProfiles;
 import mchorse.aperture.utils.APIcons;
-import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
@@ -26,13 +25,10 @@ import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -331,6 +327,7 @@ public class GuiProfilesManager extends GuiElement
 
     public void init()
     {
+        this.curves.updateKeyframeEditor();
         this.convert.setEnabled(OpHelper.isPlayerOp());
 
         if (ClientProxy.server && OpHelper.isPlayerOp())

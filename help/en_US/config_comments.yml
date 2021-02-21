@@ -28,6 +28,7 @@ aperture.config.comments:
         letter_box: Show letter box (aka black bars) which narrow or widen the camera shot as a reference
         aspect_ratio: Aspect ratio for camera editor's letterbox feature
         hide_chat: When enabled, this option hides the chat, which could be quite distracting when adjusting camera angles
+        seconds: When enabled, this option will use seconds, instead of ticks, for displaying and editing in camera editor
 
     flight:
         forward: Moves the camera forward

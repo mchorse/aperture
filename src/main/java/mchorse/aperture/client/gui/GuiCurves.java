@@ -25,6 +25,11 @@ public class GuiCurves extends GuiElement
         this.add(this.keyframes);
     }
 
+    public void updateKeyframeEditor()
+    {
+        this.keyframes.updateConverter();
+    }
+
     public void updateDuration()
     {
         this.keyframes.graph.duration = (int) this.editor.getProfile().getDuration();

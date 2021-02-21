@@ -123,6 +123,8 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
     @Override
     public void cameraEditorOpened()
     {
+        super.cameraEditorOpened();
+
         if (recording)
         {
             recording = false;

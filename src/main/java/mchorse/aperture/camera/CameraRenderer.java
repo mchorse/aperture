@@ -15,6 +15,7 @@ import mchorse.aperture.client.KeyboardHandler;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
+import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -578,7 +579,7 @@ public class CameraRenderer
         GlStateManager.disableBlend();
 
         String indexString = String.valueOf(index);
-        String durationString = duration + "t";
+        String durationString = TimeUtils.formatTime(duration) + (Aperture.editorSeconds.get() ? "s" : "t");
         int indexWidth = this.mc.fontRenderer.getStringWidth(indexString) / 2;
         int durationWidth = this.mc.fontRenderer.getStringWidth(durationString) / 2;
 

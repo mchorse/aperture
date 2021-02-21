@@ -7,6 +7,7 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -352,11 +353,11 @@ public class GuiPlaybackScrub extends GuiElement
                 {
                     if (delegate.fixture == this.start)
                     {
-                        delegate.duration.setValue(this.start.getDuration());
+                        delegate.setDuration(this.start.getDuration());
                     }
                     else if (delegate.fixture == this.end)
                     {
-                        delegate.duration.setValue(this.end.getDuration());
+                        delegate.setDuration(this.end.getDuration());
                     }
                 }
 
@@ -372,7 +373,7 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.profile != null)
         {
             /* Calculate tick marker position and tick label width */
-            String label = this.value + "/" + this.max;
+            String label = TimeUtils.formatTime(this.value) + "/" + TimeUtils.formatTime(this.max);
             int tx = this.toGraphX(this.value);
             int width = this.font.getStringWidth(label) + 4;
 
@@ -556,7 +557,7 @@ public class GuiPlaybackScrub extends GuiElement
             Gui.drawRect(tx, y + 1, tx + 2, y + h - 1, 0xff57f52a);
 
             /* Draw the "how far into fixture" tick */
-            String offsetLabel = String.valueOf(this.value - this.profile.calculateOffset(this.value, false));
+            String offsetLabel = TimeUtils.formatTime(this.value - this.profile.calculateOffset(this.value, false));
             int ow = this.font.getStringWidth(offsetLabel);
 
             this.font.drawStringWithShadow(offsetLabel, tx - ow / 2 + 1, y + h - this.font.FONT_HEIGHT * 3 - 1, 0xffffff);
@@ -606,7 +607,7 @@ public class GuiPlaybackScrub extends GuiElement
         for (int j = start; j <= end; j += mult)
         {
             int xx = this.toGraphX(j);
-            String value = String.valueOf(j);
+            String value = TimeUtils.formatTime(j);
 
             GuiDraw.drawTextBackground(this.font, value, xx - this.font.getStringWidth(value) / 2, y, 0xffffff, 0x88000000, 2);
             Gui.drawRect(xx, y + h / 2, xx + 1, y + h, 0x66ffffff);

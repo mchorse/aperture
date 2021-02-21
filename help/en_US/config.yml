@@ -39,6 +39,7 @@ aperture.config:
         letter_box: Letter box
         aspect_ratio: Aspect ratio
         hide_chat: Hide the chat
+        seconds: Use seconds
 
     flight:
         title: Flight mode

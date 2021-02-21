@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels.modifiers.widgets;
 import mchorse.aperture.camera.smooth.Envelope;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
+import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
@@ -64,25 +65,25 @@ public class GuiEnvelope extends GuiElement
 
         this.startX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().startX = value.floatValue();
+            this.get().startX = TimeUtils.fromTime(value.floatValue());
             this.panel.modifiers.editor.updateProfile();
         });
         this.startX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_x"), Direction.TOP);
         this.startD = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().startDuration = value.floatValue();
+            this.get().startDuration = TimeUtils.fromTime(value.floatValue());
             this.panel.modifiers.editor.updateProfile();
         });
         this.startD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_d"), Direction.TOP);
         this.endX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().endX = value.floatValue();
+            this.get().endX = TimeUtils.fromTime(value.floatValue());
             this.panel.modifiers.editor.updateProfile();
         });
         this.endX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_x"), Direction.TOP);
         this.endD = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().endDuration = value.floatValue();
+            this.get().endDuration = TimeUtils.fromTime(value.floatValue());
             this.panel.modifiers.editor.updateProfile();
         });
         this.endD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_d"), Direction.TOP);
@@ -159,6 +160,14 @@ public class GuiEnvelope extends GuiElement
     {
         this.updateDuration();
         this.channel.graph.resetView();
+        this.channel.updateConverter();
+
+        TimeUtils.configure(this.startX, 0);
+        TimeUtils.configure(this.startD, 0);
+        TimeUtils.configure(this.endX, 0);
+        TimeUtils.configure(this.endD, 0);
+
+        this.fillIntervals();
     }
 
     public void wasToggled()
@@ -172,15 +181,22 @@ public class GuiEnvelope extends GuiElement
 
         this.enabled.toggled(envelope.enabled);
         this.relative.toggled(envelope.relative);
-        this.startX.setValue(envelope.startX);
-        this.startD.setValue(envelope.startDuration);
-        this.endX.setValue(envelope.endX);
-        this.endD.setValue(envelope.endDuration);
+        this.fillIntervals();
         this.interps.setCurrent(envelope.interpolation);
         this.keyframes.toggled(envelope.keyframes);
         this.channel.setChannel(envelope.channel, 0x0088ff);
 
         this.toggleKeyframes(envelope.keyframes);
+    }
+
+    private void fillIntervals()
+    {
+        Envelope envelope = this.get();
+
+        this.startX.setValue(TimeUtils.toTime((int) envelope.startX));
+        this.startD.setValue(TimeUtils.toTime((int) envelope.startDuration));
+        this.endX.setValue(TimeUtils.toTime((int) envelope.endX));
+        this.endD.setValue(TimeUtils.toTime((int) envelope.endDuration));
     }
 
     public void updateDuration()

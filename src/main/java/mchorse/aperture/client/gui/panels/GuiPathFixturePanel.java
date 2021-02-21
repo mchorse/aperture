@@ -9,6 +9,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
+import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
@@ -99,6 +100,14 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.keys().register(IKey.lang("aperture.gui.panels.keys.velocity"), Keyboard.KEY_E, () -> this.useSpeed.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LSHIFT).active(editor::isFlightDisabled).category(CATEGORY);
     }
 
+    @Override
+    public void updateDurationSettings()
+    {
+        super.updateDurationSettings();
+
+        this.speed.updateConverter();
+    }
+
     public void interpolationWasUpdated(boolean position)
     {
         if (position)
@@ -164,7 +173,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.point.fill(this.position.point);
         this.angle.fill(this.position.angle);
-        this.duration.setValue(this.fixture.getDuration());
+        this.setDuration(this.fixture.getDuration());
 
         if (this.editor.isSyncing())
         {
