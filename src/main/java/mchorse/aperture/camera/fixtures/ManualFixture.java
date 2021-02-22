@@ -1,38 +1,31 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
-import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
-import mchorse.aperture.utils.OptifineHelper;
-import mchorse.mclib.utils.Interpolations;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import mchorse.aperture.camera.data.RenderFrame;
+import mchorse.aperture.camera.values.ValueRenderFrames;
+import mchorse.mclib.config.values.ValueFloat;
+import mchorse.mclib.config.values.ValueInt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ManualFixture extends AbstractFixture
 {
-    @Expose
-    public float speed = 1;
-
-    @Expose
-    public int shift = 0;
-
-    @Expose
-    public List<List<RenderFrame>> frames = new ArrayList<List<RenderFrame>>();
+    public final ValueFloat speed = new ValueFloat("speed", 1);
+    public final ValueInt shift = new ValueInt("shift", 0);
+    public final ValueRenderFrames frames = new ValueRenderFrames("frames");
 
     public List<RenderFrame> recorded = new ArrayList<RenderFrame>();
 
     public ManualFixture(long duration)
     {
         super(duration);
+
+        this.register(this.speed);
+        this.register(this.shift);
+        this.register(this.frames);
     }
 
     /**
@@ -40,18 +33,21 @@ public class ManualFixture extends AbstractFixture
      */
     public int getEndTick()
     {
-        if (this.speed == 0)
+        float speed = this.speed.get();
+
+        if (speed <= 0)
         {
             return 1000000000;
         }
 
-        return (int) (this.frames.size() / this.speed + this.shift);
+        return (int) (this.frames.get().size() / speed + this.shift.get());
     }
 
     @Override
     public void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        int size = this.frames.size();
+        List<List<RenderFrame>> frames = this.frames.get();
+        int size = frames.size();
 
         if (size <= 0)
         {
@@ -59,29 +55,29 @@ public class ManualFixture extends AbstractFixture
         }
 
         float tick = ticks + previewPartialTick;
-        int index = (int) ((int) tick * this.speed) - this.shift;
+        int index = (int) ((int) tick * this.speed.get()) - this.shift.get();
         previewPartialTick = tick % 1;
 
         if (index < 0)
         {
-            this.frames.get(0).get(0).apply(pos);
+            frames.get(0).get(0).apply(pos);
 
             return;
         }
         else if (index >= size)
         {
-            List<RenderFrame> lastTick = this.frames.get(size - 1);
+            List<RenderFrame> lastTick = frames.get(size - 1);
 
             lastTick.get(lastTick.size() - 1).apply(pos);
 
             return;
         }
 
-        List<RenderFrame> lastTick = index - 1 >= 0 ? this.frames.get(index - 1) : null;
+        List<RenderFrame> lastTick = index - 1 >= 0 ? frames.get(index - 1) : null;
         RenderFrame last = lastTick == null || lastTick.isEmpty() ? null : lastTick.get(lastTick.size() - 1);
         float lastPt = last == null ? 0 : last.pt - 1;
 
-        for (RenderFrame frame : this.frames.get(index))
+        for (RenderFrame frame : frames.get(index))
         {
             if (frame.pt > previewPartialTick && previewPartialTick >= lastPt)
             {
@@ -103,14 +99,14 @@ public class ManualFixture extends AbstractFixture
     /**
      * Reorganize the recorded data in a much efficient structure
      */
-    public void setupRecorded()
+    public List<List<RenderFrame>> setupRecorded()
     {
         if (this.recorded.isEmpty())
         {
-            return;
+            return null;
         }
 
-        this.frames.clear();
+        List<List<RenderFrame>> frames = new ArrayList<List<RenderFrame>>();
 
         List<RenderFrame> tick = new ArrayList<RenderFrame>();
         RenderFrame last = this.recorded.get(0);
@@ -120,7 +116,7 @@ public class ManualFixture extends AbstractFixture
         {
             if (frame.tick > lastTick)
             {
-                this.frames.add(tick);
+                frames.add(tick);
 
                 /* Fill missing ticks */
                 while (lastTick + 1 < frame.tick)
@@ -129,7 +125,7 @@ public class ManualFixture extends AbstractFixture
                     tick.add(last.copy());
                     lastTick += 1;
 
-                    this.frames.add(tick);
+                    frames.add(tick);
                 }
 
                 lastTick = frame.tick;
@@ -142,10 +138,12 @@ public class ManualFixture extends AbstractFixture
 
         if (!tick.isEmpty())
         {
-            this.frames.add(tick);
+            frames.add(tick);
         }
 
         this.recorded.clear();
+
+        return frames;
     }
 
     @Override
@@ -163,63 +161,22 @@ public class ManualFixture extends AbstractFixture
         {
             ManualFixture manual = (ManualFixture) from;
 
-            this.shift = manual.shift;
-            this.speed = manual.speed;
-            this.frames.clear();
-
-            for (List<RenderFrame> tick : manual.frames)
-            {
-                List<RenderFrame> list = new ArrayList<RenderFrame>();
-
-                for (RenderFrame frame : tick)
-                {
-                    list.add(frame.copy());
-                }
-
-                this.frames.add(list);
-            }
+            this.shift.copy(manual.shift);
+            this.speed.copy(manual.speed);
+            this.frames.copy(manual.frames);
         }
     }
 
     /* Save/load methods */
 
     @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        if (this.frames == null)
-        {
-            this.frames = new ArrayList<List<RenderFrame>>();
-        }
-    }
-
-    @Override
     public void fromBytes(ByteBuf buffer)
     {
         super.fromBytes(buffer);
 
-        this.frames.clear();
-        this.shift = buffer.readInt();
-        this.speed = buffer.readFloat();
-
-        for (int i = 0, c = buffer.readInt(); i < c; i ++)
-        {
-            List<RenderFrame> tick = new ArrayList<RenderFrame>();
-
-            for (int j = 0, d = buffer.readInt(); j < d; j ++)
-            {
-                RenderFrame frame = new RenderFrame();
-
-                frame.position(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                frame.angle(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-                frame.pt = buffer.readFloat();
-
-                tick.add(frame);
-            }
-
-            this.frames.add(tick);
-        }
+        this.shift.fromBytes(buffer);
+        this.speed.fromBytes(buffer);
+        this.frames.fromBytes(buffer);
     }
 
     @Override
@@ -227,117 +184,8 @@ public class ManualFixture extends AbstractFixture
     {
         super.toBytes(buffer);
 
-        buffer.writeInt(this.shift);
-        buffer.writeFloat(this.speed);
-        buffer.writeInt(this.frames.size());
-
-        for (List<RenderFrame> tick : this.frames)
-        {
-            buffer.writeInt(tick.size());
-
-            for (RenderFrame frame : tick)
-            {
-                buffer.writeDouble(frame.x);
-                buffer.writeDouble(frame.y);
-                buffer.writeDouble(frame.z);
-                buffer.writeFloat(frame.yaw);
-                buffer.writeFloat(frame.pitch);
-                buffer.writeFloat(frame.roll);
-                buffer.writeFloat(frame.fov);
-                buffer.writeFloat(frame.pt);
-            }
-        }
-    }
-
-    public static class RenderFrame
-    {
-        @Expose
-        public double x;
-
-        @Expose
-        public double y;
-
-        @Expose
-        public double z;
-
-        @Expose
-        public float yaw;
-
-        @Expose
-        public float pitch;
-
-        @Expose
-        public float roll;
-
-        @Expose
-        public float fov;
-
-        @Expose
-        public float pt;
-
-        /**
-         * Used only during recording
-         */
-        public int tick;
-
-        public RenderFrame()
-        {}
-
-        @SideOnly(Side.CLIENT)
-        public RenderFrame(EntityPlayer player, float partialTicks)
-        {
-            this.fromPlayer(player, partialTicks);
-        }
-
-        public void position(double x, double y, double z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public void angle(float yaw, float pitch, float roll, float fov)
-        {
-            this.yaw = yaw;
-            this.pitch = pitch;
-            this.roll = roll;
-            this.fov = fov;
-        }
-
-        public void apply(Position pos)
-        {
-            pos.point.set(this.x, this.y, this.z);
-            pos.angle.set(this.yaw, this.pitch, this.roll, this.fov);
-        }
-
-        @SideOnly(Side.CLIENT)
-        public void fromPlayer(EntityPlayer player, float partialTicks)
-        {
-            this.x = Interpolations.lerp(player.prevPosX, player.posX, partialTicks);
-            this.y = Interpolations.lerp(player.prevPosY, player.posY, partialTicks);
-            this.z = Interpolations.lerp(player.prevPosZ, player.posZ, partialTicks);
-            this.yaw = player.rotationYaw;
-            this.pitch = player.rotationPitch;
-            this.roll = ClientProxy.control.roll;
-            this.fov = Minecraft.getMinecraft().gameSettings.fovSetting;
-            this.pt = partialTicks;
-            this.tick = GuiManualFixturePanel.tick;
-
-            if (OptifineHelper.isZooming())
-            {
-                this.fov *= 0.25F;
-            }
-        }
-
-        public RenderFrame copy()
-        {
-            RenderFrame frame = new RenderFrame();
-
-            frame.position(this.x, this.y, this.z);
-            frame.angle(this.yaw, this.pitch, this.roll, this.fov);
-            frame.pt = this.pt;
-
-            return frame;
-        }
+        this.shift.toBytes(buffer);
+        this.speed.toBytes(buffer);
+        this.frames.toBytes(buffer);
     }
 }

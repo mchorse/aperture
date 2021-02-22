@@ -1,6 +1,7 @@
 package mchorse.aperture.camera.data;
 
 import com.google.common.base.MoreObjects;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.mclib.utils.Interpolations;
@@ -90,6 +91,25 @@ public class Position
         this.angle.pitch = Interpolations.lerp(this.angle.pitch, position.angle.pitch, factor);
         this.angle.roll = Interpolations.lerp(this.angle.roll, position.angle.roll, factor);
         this.angle.fov = Interpolations.lerp(this.angle.fov, position.angle.fov, factor);
+    }
+
+    public void fromJSON(JsonObject element)
+    {
+        if (element.has("point") && element.get("point").isJsonObject() && element.has("angle") && element.get("angle").isJsonObject())
+        {
+            this.point.fromJSON(element.get("point").getAsJsonObject());
+            this.angle.fromJSON(element.get("angle").getAsJsonObject());
+        }
+    }
+
+    public JsonObject toJSON()
+    {
+        JsonObject object = new JsonObject();
+
+        object.add("point", this.point.toJSON());
+        object.add("angle", this.angle.toJSON());
+
+        return object;
     }
 
     public void toBytes(ByteBuf buffer)

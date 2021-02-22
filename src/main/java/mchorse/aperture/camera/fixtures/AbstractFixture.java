@@ -1,21 +1,25 @@
 package mchorse.aperture.camera.fixtures;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.mclib.config.ConfigCategory;
+import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.ValueInt;
+import mchorse.mclib.config.values.ValueLong;
+import mchorse.mclib.config.values.ValueString;
 import mchorse.mclib.network.IByteBufSerializable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Abstract camera fixture
@@ -27,24 +31,23 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  */
 public abstract class AbstractFixture implements IByteBufSerializable
 {
-    /**
-     * Duration of this fixture. Represented in ticks. There are 20 ticks in a
-     * second.
-     */
-    @Expose
-    protected long duration;
+    protected ConfigCategory category = new ConfigCategory("");
 
     /**
      * The name of this camera fixture. Added just for organization.
      */
-    @Expose
-    protected String name = "";
+    public final ValueString name = new ValueString("name", "");
 
     /**
      * Custom color tint for fixtures
      */
-    @Expose
-    protected int color = 0x000000;
+    public final ValueInt color = new ValueInt("color", 0x000000);
+
+    /**
+     * Duration of this fixture. Represented in ticks. There are 20 ticks in a
+     * second.
+     */
+    public final ValueLong duration = new ValueLong("duration", 1);
 
     /**
      * List of camera modifiers. 
@@ -75,6 +78,51 @@ public abstract class AbstractFixture implements IByteBufSerializable
     public AbstractFixture(long duration)
     {
         this.setDuration(duration);
+
+        this.register(this.name);
+        this.register(this.color);
+        this.register(this.duration);
+    }
+
+    protected void register(IConfigValue value)
+    {
+        this.category.values.put(value.getId(), value);
+    }
+
+    public IConfigValue getProperty(String name)
+    {
+        IConfigValue value = this.category.values.get(name);
+
+        if (value == null && name.contains("."))
+        {
+            String[] splits = name.split("\\.");
+
+            value = this.searchRecursively(this.category.values.get(splits[0]), splits, 0, splits[0], name);
+        }
+
+        return value;
+    }
+
+    private IConfigValue searchRecursively(IConfigValue value, String[] splits, int i, String prefix, String name)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        for (IConfigValue child : value.getSubValues())
+        {
+            if (child.getId().equals(name))
+            {
+                return child;
+            }
+            else if (i + 1 < splits.length && child.getId().equals(prefix))
+            {
+                return this.searchRecursively(child, splits, i + 1, child.getId(), name);
+            }
+        }
+
+        return null;
     }
 
     public void initiate()
@@ -84,12 +132,12 @@ public abstract class AbstractFixture implements IByteBufSerializable
 
     public void setColor(int color)
     {
-        this.color = color;
+        this.color.set(color);
     }
 
     public int getColor()
     {
-        return this.color;
+        return this.color.get();
     }
 
     /* Duration management */
@@ -99,7 +147,7 @@ public abstract class AbstractFixture implements IByteBufSerializable
      */
     public void setDuration(long duration)
     {
-        this.duration = duration;
+        this.duration.set(duration);
     }
 
     /**
@@ -107,7 +155,7 @@ public abstract class AbstractFixture implements IByteBufSerializable
      */
     public long getDuration()
     {
-        return this.duration;
+        return this.duration.get();
     }
 
     /* Name management */
@@ -117,7 +165,7 @@ public abstract class AbstractFixture implements IByteBufSerializable
      */
     public void setName(String name)
     {
-        this.name = name;
+        this.name.set(name);
     }
 
     /**
@@ -125,11 +173,11 @@ public abstract class AbstractFixture implements IByteBufSerializable
      */
     public String getName()
     {
-        return this.name == null ? "" : this.name;
+        return this.name.get();
     }
 
     /**
-     * Get some properties from player upon creation  
+     * Get some properties from player upon creation
      */
     public void fromPlayer(EntityPlayer player)
     {}
@@ -138,6 +186,14 @@ public abstract class AbstractFixture implements IByteBufSerializable
 
     public void fromJSON(JsonObject object)
     {
+        for (IConfigValue value : this.category.values.values())
+        {
+            if (object.has(value.getId()))
+            {
+                value.fromJSON(object.get(value.getId()));
+            }
+        }
+
         if (this.getDuration() <= 0)
         {
             this.setDuration(1);
@@ -145,7 +201,12 @@ public abstract class AbstractFixture implements IByteBufSerializable
     }
 
     public void toJSON(JsonObject object)
-    {}
+    {
+        for (IConfigValue value : this.category.values.values())
+        {
+            object.add(value.getId(), value.toJSON());
+        }
+    }
 
     /* ByteBuf (de)serialization methods */
 
@@ -155,8 +216,8 @@ public abstract class AbstractFixture implements IByteBufSerializable
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        this.name = ByteBufUtils.readUTF8String(buffer);
-        this.color = buffer.readInt();
+        this.name.set(ByteBufUtils.readUTF8String(buffer));
+        this.color.set(buffer.readInt());
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
@@ -175,8 +236,8 @@ public abstract class AbstractFixture implements IByteBufSerializable
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        ByteBufUtils.writeUTF8String(buffer, this.name);
-        buffer.writeInt(this.color);
+        ByteBufUtils.writeUTF8String(buffer, this.name.get());
+        buffer.writeInt(this.color.get());
 
         if (this.modifiers == null)
         {
@@ -276,8 +337,8 @@ public abstract class AbstractFixture implements IByteBufSerializable
     {
         AbstractFixture.copyModifiers(from, this);
 
-        this.name = from.name;
-        this.color = from.color;
+        this.name.copy(from.name);
+        this.color.copy(from.color);
     }
 
     /**

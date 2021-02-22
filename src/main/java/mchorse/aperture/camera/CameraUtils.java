@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.fixtures.ManualFixture;
+import mchorse.aperture.camera.data.RenderFrame;
 import mchorse.aperture.camera.json.AbstractFixtureAdapter;
 import mchorse.aperture.camera.json.AbstractModifierAdapter;
 import mchorse.aperture.camera.json.CameraProfileAdapter;
@@ -69,7 +69,7 @@ public class CameraUtils
         builder.registerTypeAdapter(AbstractModifier.class, new AbstractModifierAdapter());
         builder.registerTypeAdapter(CameraProfile.class, new CameraProfileAdapter());
 
-        builder.registerTypeAdapter(ManualFixture.RenderFrame.class, new RenderFrameAdapter());
+        builder.registerTypeAdapter(RenderFrame.class, new RenderFrameAdapter());
 
         return builder.create();
     }

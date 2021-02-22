@@ -16,14 +16,19 @@ import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.aperture.utils.APIcons;
+import mchorse.aperture.utils.undo.CompoundUndo;
+import mchorse.aperture.utils.undo.IUndo;
+import mchorse.aperture.utils.undo.UndoManager;
 import mchorse.mclib.client.InputRenderer;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.client.gui.utils.resizers.IResizer;
@@ -312,6 +317,8 @@ public class GuiCameraEditor extends GuiBase
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.prev_fixture"), Keyboard.KEY_LEFT, this::jumpToPrevFixture).held(Keyboard.KEY_LSHIFT).active(active).category(editor);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.next"), Keyboard.KEY_RIGHT, this::jumpToNextFrame).active(active).category(editor);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.prev"), Keyboard.KEY_LEFT, this::jumpToPrevFrame).active(active).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.undo"), Keyboard.KEY_Z, this::undo).held(Keyboard.KEY_LCONTROL).category(editor);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.redo"), Keyboard.KEY_Y, this::redo).held(Keyboard.KEY_LCONTROL).category(editor);
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.deselect"), Keyboard.KEY_D, () -> this.pickCameraFixture(null, 0)).active(active).category(fixture);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.shift"), Keyboard.KEY_M, this::shiftDurationToCursor).active(active).category(fixture);
@@ -335,6 +342,58 @@ public class GuiCameraEditor extends GuiBase
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.ouside"), Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.looping"), Keyboard.KEY_L, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.interactive"), Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(modes);
+    }
+
+    public void postUndo(IUndo<CameraProfile> undo)
+    {
+        if (undo == null)
+        {
+            throw new RuntimeException("Given undo is null!");
+        }
+
+        CameraProfile profile = this.getProfile();
+        UndoManager<CameraProfile> undoManager = profile.undoManager;
+
+        undoManager.setCallback(null);
+        undoManager.pushApplyUndo(undo, profile);
+        undoManager.setCallback(this::handleUndos);
+
+        this.updateProfile();
+    }
+
+    private void handleUndos(IUndo<CameraProfile> undo)
+    {
+        boolean updateFixturePanel = undo instanceof FixtureValueChangeUndo;
+
+        if (!updateFixturePanel && undo instanceof CompoundUndo)
+        {
+            updateFixturePanel = ((CompoundUndo) undo).has(FixtureValueChangeUndo.class);
+        }
+
+        if (updateFixturePanel && this.panel.delegate != null)
+        {
+            this.panel.delegate.select(this.panel.delegate.fixture, -1);
+        }
+    }
+
+    public void undo()
+    {
+        CameraProfile profile = this.getProfile();
+
+        if (profile != null && profile.undoManager.undo(profile))
+        {
+            GuiUtils.playClick();
+        }
+    }
+
+    public void redo()
+    {
+        CameraProfile profile = this.getProfile();
+
+        if (profile != null && profile.undoManager.redo(profile))
+        {
+            GuiUtils.playClick();
+        }
     }
 
     public void exit()

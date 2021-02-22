@@ -8,15 +8,17 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.mclib.config.values.ValueBoolean;
 
 public class NullFixture extends AbstractFixture
 {
-    @Expose
-    public boolean previous;
+    public ValueBoolean previous = new ValueBoolean("previous", false);
 
     public NullFixture(long duration)
     {
         super(duration);
+
+        this.register(this.previous);
     }
 
     @Override
@@ -27,14 +29,15 @@ public class NullFixture extends AbstractFixture
 
         if (index != -1)
         {
-            AbstractFixture fixture = profile.get(index + (this.previous ? -1 : 1));
+            boolean previous = this.previous.get();
+            AbstractFixture fixture = profile.get(index + (previous ? -1 : 1));
 
             if (fixture == null || fixture instanceof NullFixture)
             {
                 return;
             }
 
-            long target = this.previous ? fixture.getDuration() : 0;
+            long target = previous ? fixture.getDuration() : 0;
             long offset = profile.calculateOffset(fixture);
 
             fixture.applyFixture(target, 0, 0, profile, pos);
@@ -57,7 +60,7 @@ public class NullFixture extends AbstractFixture
         {
             NullFixture nullFixture = (NullFixture) from;
 
-            this.previous = nullFixture.previous;
+            this.previous.copy(nullFixture.previous);
         }
     }
 
@@ -66,7 +69,7 @@ public class NullFixture extends AbstractFixture
     {
         super.toBytes(buffer);
 
-        buffer.writeBoolean(this.previous);
+        this.previous.toBytes(buffer);
     }
 
     @Override
@@ -74,6 +77,6 @@ public class NullFixture extends AbstractFixture
     {
         super.fromBytes(buffer);
 
-        this.previous = buffer.readBoolean();
+        this.previous.fromBytes(buffer);
     }
 }

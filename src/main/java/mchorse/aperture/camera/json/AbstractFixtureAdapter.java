@@ -64,12 +64,17 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
 
             if (clazz != null)
             {
-                fixture = this.gson.fromJson(json, clazz);
-                fixture.fromJSON(object);
+                try
+                {
+                    fixture = clazz.getConstructor(long.class).newInstance(0);
+                    fixture.fromJSON(object);
+                }
+                catch (Exception e)
+                {}
             }
 
             /* Special case for per-point path */
-            if (type.equals("path"))
+            if (type.equals("path") && fixture != null)
             {
                 if (object.has("perPointDuration") && object.get("perPointDuration").getAsBoolean())
                 {

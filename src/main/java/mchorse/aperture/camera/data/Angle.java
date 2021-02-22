@@ -1,6 +1,7 @@
 package mchorse.aperture.camera.data;
 
 import com.google.common.base.MoreObjects;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
@@ -88,6 +89,26 @@ public class Angle
         float fov = Minecraft.getMinecraft().gameSettings.fovSetting;
 
         this.set(player.rotationYaw, player.rotationPitch, ClientProxy.control.roll, fov);
+    }
+
+    public void fromJSON(JsonObject element)
+    {
+        this.yaw = element.get("yaw").getAsFloat();
+        this.pitch = element.get("pitch").getAsFloat();
+        this.roll = element.get("roll").getAsFloat();
+        this.fov = element.get("fov").getAsFloat();
+    }
+
+    public JsonObject toJSON()
+    {
+        JsonObject object = new JsonObject();
+
+        object.addProperty("yaw", this.yaw);
+        object.addProperty("pitch", this.pitch);
+        object.addProperty("roll", this.roll);
+        object.addProperty("fov", this.fov);
+
+        return object;
     }
 
     public void toBytes(ByteBuf buffer)

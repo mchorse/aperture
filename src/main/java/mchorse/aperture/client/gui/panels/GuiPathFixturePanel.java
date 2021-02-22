@@ -171,8 +171,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     {
         this.position = this.fixture.getPoint(index);
 
-        this.point.fill(this.position.point);
-        this.angle.fill(this.position.angle);
+        // this.point.fill(this.position.point);
+        // this.angle.fill(this.position.angle);
         this.setDuration(this.fixture.getDuration());
 
         if (this.editor.isSyncing())
@@ -200,8 +200,8 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.points.index = index;
         }
 
-        this.point.fill(this.position.point);
-        this.angle.fill(this.position.angle);
+        // this.point.fill(this.position.point);
+        // this.angle.fill(this.position.angle);
         this.points.fill(fixture);
         this.interp.fill(fixture);
         this.useSpeed.toggled(fixture.useSpeed);

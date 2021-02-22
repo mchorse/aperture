@@ -419,7 +419,7 @@ public class GuiPlaybackScrub extends GuiElement
                 if (fixture instanceof ManualFixture)
                 {
                     ManualFixture manual = (ManualFixture) fixture;
-                    int startTick = manual.shift;
+                    int startTick = manual.shift.get();
                     int endTick = manual.getEndTick();
                     int start = MathUtils.clamp(leftMargin + (int) (startTick / (float) fixture.getDuration() * (rightMargin - leftMargin)), leftMargin, rightMargin);
                     int end = MathUtils.clamp(leftMargin + (int) (endTick / (float) fixture.getDuration() * (rightMargin - leftMargin)), leftMargin, rightMargin);

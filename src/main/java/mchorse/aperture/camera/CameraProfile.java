@@ -15,6 +15,7 @@ import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.events.CameraProfileChangedEvent;
+import mchorse.aperture.utils.undo.UndoManager;
 import mchorse.mclib.network.IByteBufSerializable;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
@@ -70,6 +71,11 @@ public class CameraProfile implements IByteBufSerializable
      * Whether camera profile wasn't saved before
      */
     public boolean exists = true;
+
+    /**
+     * Undo manager that tracks changes made to this camera profile
+     */
+    public UndoManager<CameraProfile> undoManager = new UndoManager<CameraProfile>();
 
     public CameraProfile(AbstractDestination destination)
     {

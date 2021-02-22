@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.data.RenderFrame;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class KeyframeFixture extends AbstractFixture
 {
-    /* Different animatable channels */
+    /* Different animated channels */
 
     @Expose
     public final KeyframeChannel x;
@@ -42,20 +43,6 @@ public class KeyframeFixture extends AbstractFixture
     public final KeyframeChannel fov;
 
     public KeyframeChannel[] channels;
-
-    public KeyframeFixture()
-    {
-        super(0);
-
-        this.x = new KeyframeChannel();
-        this.y = new KeyframeChannel();
-        this.z = new KeyframeChannel();
-        this.yaw = new KeyframeChannel();
-        this.pitch = new KeyframeChannel();
-        this.roll = new KeyframeChannel();
-        this.fov = new KeyframeChannel();
-        this.channels = new KeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
-    }
 
     public KeyframeFixture(long duration)
     {
@@ -163,14 +150,15 @@ public class KeyframeFixture extends AbstractFixture
         else if (from instanceof ManualFixture)
         {
             ManualFixture fixture = (ManualFixture) from;
+            List<List<RenderFrame>> ticks = fixture.frames.get();
 
-            for (int i = 0, c = fixture.frames.size(); i < c; i++)
+            for (int i = 0, c = ticks.size(); i < c; i++)
             {
-                List<ManualFixture.RenderFrame> frames = fixture.frames.get(i);
+                List<RenderFrame> frames = ticks.get(i);
 
                 if (frames != null && frames.size() > 0)
                 {
-                    ManualFixture.RenderFrame frame = frames.get(0);
+                    RenderFrame frame = frames.get(0);
 
                     this.x.insert(i, frame.x);
                     this.y.insert(i, frame.y);

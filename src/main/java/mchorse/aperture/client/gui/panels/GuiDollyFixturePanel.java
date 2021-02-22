@@ -1,10 +1,12 @@
 package mchorse.aperture.client.gui.panels;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.DollyFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
+import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
@@ -16,8 +18,6 @@ import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-
-import java.util.function.Consumer;
 
 public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
 {
@@ -38,13 +38,13 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
 
         this.point = new GuiPointModule(mc, editor);
         this.angle = new GuiAngleModule(mc, editor);
-        this.distance = new GuiTrackpadElement(mc, (value) -> this.fixture.distance = value.floatValue());
+        this.distance = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo("distance", value.floatValue())));
         this.distance.tooltip(IKey.lang("aperture.gui.panels.dolly.distance"));
         this.reverse = new GuiIconElement(mc, Icons.REVERSE, (b) -> this.reverse());
         this.reverse.tooltip(IKey.lang("aperture.gui.panels.dolly.reverse"));
-        this.yaw = new GuiTrackpadElement(mc, (value) -> this.fixture.yaw = value.floatValue());
+        this.yaw = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo("yaw", value.floatValue())));
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.dolly.yaw"));
-        this.pitch = new GuiTrackpadElement(mc, (value) -> this.fixture.pitch = value.floatValue());
+        this.pitch = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo("pitch", value.floatValue())));
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.dolly.pitch"));
 
         this.pickInterp = new GuiButtonElement(mc, IKey.lang(""), (b) ->
@@ -55,7 +55,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
             }
             else
             {
-                this.interps.setCurrent(this.fixture.interp);
+                this.interps.setCurrent(this.fixture.interp.get());
 
                 this.add(this.interps);
                 this.interps.flex().relative(this.pickInterp);
@@ -65,7 +65,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
 
         this.interps = new GuiInterpolationList(mc, (interp) ->
         {
-            this.fixture.interp = interp.get(0);
+            this.editor.postUndo(this.undo("interp", interp.get(0)));
             this.pickInterp.label.set(interp.get(0).getKey());
             this.interps.removeFromParent();
             this.editor.updateProfile();
@@ -81,8 +81,8 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         Position position = new Position();
 
         this.fixture.applyLast(this.editor.getProfile(), position);
-        this.fixture.position.copy(position);
-        this.fixture.distance = -this.fixture.distance;
+        this.fixture.position.get().copy(position);
+        this.fixture.distance.set(-this.fixture.distance.get());
 
         this.select(this.fixture, 0);
     }
@@ -92,23 +92,25 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
     {
         super.select(fixture, duration);
 
-        this.point.fill(fixture.position.point);
-        this.angle.fill(fixture.position.angle);
+        this.point.fill(fixture.position.getPoint());
+        this.angle.fill(fixture.position.getAngle());
 
-        this.yaw.setValue(fixture.yaw);
-        this.pitch.setValue(fixture.pitch);
-        this.distance.setValue(fixture.distance);
+        this.yaw.setValue(fixture.yaw.get());
+        this.pitch.setValue(fixture.pitch.get());
+        this.distance.setValue(fixture.distance.get());
 
-        this.interps.setCurrent(fixture.interp);
-        this.pickInterp.label.set(fixture.interp.getKey());
+        this.interps.setCurrent(fixture.interp.get());
+        this.pickInterp.label.set(fixture.interp.get().getKey());
     }
 
     @Override
     public void editFixture(Position position)
     {
-        this.fixture.position.set(position);
-        this.fixture.yaw = position.angle.yaw;
-        this.fixture.pitch = position.angle.pitch;
+        this.editor.postUndo(new CompoundUndo<CameraProfile>(
+            this.undo("position", position),
+            this.undo("yaw", position.angle.yaw),
+            this.undo("pitch", position.angle.pitch)
+        ));
 
         super.editFixture(position);
     }
@@ -116,7 +118,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
     @Override
     public void draw(GuiContext context)
     {
-        double speed = this.fixture.distance / (this.fixture.getDuration() / 20D);
+        double speed = this.fixture.distance.get() / (this.fixture.getDuration() / 20D);
         String label = I18n.format("aperture.gui.panels.dolly.speed", GuiTrackpadElement.FORMAT.format(speed));
 
         GuiDraw.drawTextBackground(this.font, label, this.area.mx(this.font.getStringWidth(label)), this.area.ey() - this.font.FONT_HEIGHT - 20, 0xffffff, 0x88000000);

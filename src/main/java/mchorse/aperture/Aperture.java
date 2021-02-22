@@ -1,5 +1,7 @@
 package mchorse.aperture;
 
+import mchorse.aperture.utils.undo.IUndo;
+import mchorse.aperture.utils.undo.UndoManager;
 import mchorse.mclib.McLib;
 import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;

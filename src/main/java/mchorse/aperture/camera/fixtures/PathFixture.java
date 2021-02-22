@@ -66,13 +66,6 @@ public class PathFixture extends AbstractFixture
     private List<CachedPosition> cache = new ArrayList<CachedPosition>();
     private boolean disableSpeed = false;
 
-    public PathFixture()
-    {
-        super(0);
-
-        this.speed = new KeyframeChannel();
-    }
-
     public PathFixture(long duration)
     {
         super(duration);
@@ -229,10 +222,10 @@ public class PathFixture extends AbstractFixture
      */
     public int getIndexForPoint(int frame)
     {
-        float range = (float) frame / this.duration;
+        float range = (float) frame / this.getDuration();
         int index = (int) Math.floor(range * (this.points.size() - 1));
 
-        return MathHelper.clamp(index, 0, (int) this.duration);
+        return MathHelper.clamp(index, 0, (int) this.getDuration());
     }
 
     /**
@@ -240,7 +233,7 @@ public class PathFixture extends AbstractFixture
      */
     public long getTickForPoint(int index)
     {
-        return (long) ((index / (float) (this.points.size() - 1)) * this.duration);
+        return (long) ((index / (float) (this.points.size() - 1)) * this.getDuration());
     }
 
     @Override
@@ -280,7 +273,7 @@ public class PathFixture extends AbstractFixture
             int index;
             float x;
 
-            x = (ticks / (float) this.duration) + (1.0F / duration) * previewPartialTick;
+            x = (ticks / (float) this.getDuration()) + (1.0F / duration) * previewPartialTick;
             x = MathHelper.clamp    (x * length, 0, length);
             index = (int) Math.floor(x);
             x = x - index;
@@ -792,9 +785,9 @@ public class PathFixture extends AbstractFixture
             from.applyLast(null, position);
 
             this.points.clear();
-            this.points.add(dolly.position.copy());
+            this.points.add(dolly.position.get().copy());
             this.points.add(position);
-            this.interpolationPos = this.interpolationAngle = InterpolationType.fromInterp(dolly.interp);
+            this.interpolationPos = this.interpolationAngle = InterpolationType.fromInterp(dolly.interp.get());
         }
     }
 

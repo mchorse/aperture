@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
@@ -54,19 +55,10 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         this.right.flex().relative(this).x(1F).y(20).w(130).hTo(this.area, 1F).anchorX(1F)
             .column(5).vertical().stretch().scroll().height(20).padding(10);
 
-        this.name = new GuiTextElement(mc, 80, (str) ->
-        {
-            this.fixture.setName(str);
-            this.editor.updateValues();
-            this.editor.updateProfile();
-        });
+        this.name = new GuiTextElement(mc, 80, (str) -> this.editor.postUndo(this.undo("name", str)));
         this.name.tooltip(IKey.lang("aperture.gui.panels.name_tooltip"));
 
-        this.color = new GuiColorElement(mc, (c) ->
-        {
-            this.fixture.setColor(c);
-            this.editor.updateProfile();
-        });
+        this.color = new GuiColorElement(mc, (c) -> this.editor.postUndo(this.undo("color", c)));
         this.color.target(this).tooltip(IKey.lang("aperture.gui.panels.color_tooltip"));
         this.color.direction(Direction.RIGHT);
 
@@ -74,12 +66,17 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         {
             this.updateDuration(TimeUtils.fromTime(value));
             this.editor.updatePlayerCurrently();
-            this.editor.updateProfile();
+            this.editor.updateValues();
         });
         this.duration.tooltip(IKey.lang("aperture.gui.panels.duration"));
 
         this.left.add(Elements.label(IKey.lang("aperture.gui.panels.name")).background(0x88000000), this.name, this.color, this.duration);
         this.add(this.left, this.right);
+    }
+
+    protected FixtureValueChangeUndo undo(String name, Object value)
+    {
+        return FixtureValueChangeUndo.create(this.editor, name, value);
     }
 
     public void setDuration(long ticks)
@@ -95,7 +92,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
 
     protected void updateDuration(long value)
     {
-        this.fixture.setDuration(value);
+        this.editor.postUndo(this.undo("duration", value));
         this.editor.updateDuration(this.fixture);
     }
 

@@ -7,16 +7,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import mchorse.aperture.camera.fixtures.ManualFixture;
+import mchorse.aperture.camera.data.RenderFrame;
 
 import java.lang.reflect.Type;
 
-public class RenderFrameAdapter implements JsonDeserializer<ManualFixture.RenderFrame>, JsonSerializer<ManualFixture.RenderFrame>
+public class RenderFrameAdapter implements JsonDeserializer<RenderFrame>, JsonSerializer<RenderFrame>
 {
     @Override
-    public ManualFixture.RenderFrame deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public RenderFrame deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        ManualFixture.RenderFrame frame = new ManualFixture.RenderFrame();
+        RenderFrame frame = new RenderFrame();
 
         if (json.isJsonArray())
         {
@@ -35,7 +35,7 @@ public class RenderFrameAdapter implements JsonDeserializer<ManualFixture.Render
     }
 
     @Override
-    public JsonElement serialize(ManualFixture.RenderFrame src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement serialize(RenderFrame src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonArray array = new JsonArray();
 

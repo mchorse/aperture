@@ -1,6 +1,7 @@
 package mchorse.aperture.camera.data;
 
 import com.google.common.base.MoreObjects;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import io.netty.buffer.ByteBuf;
@@ -56,6 +57,24 @@ public class Point
     public void set(EntityPlayer player)
     {
         this.set(player.posX, player.posY, player.posZ);
+    }
+
+    public void fromJSON(JsonObject element)
+    {
+        this.x = element.get("x").getAsDouble();
+        this.y = element.get("y").getAsDouble();
+        this.z = element.get("z").getAsDouble();
+    }
+
+    public JsonObject toJSON()
+    {
+        JsonObject object = new JsonObject();
+
+        object.addProperty("x", this.x);
+        object.addProperty("y", this.y);
+        object.addProperty("z", this.z);
+
+        return object;
     }
 
     public void toBytes(ByteBuf buffer)

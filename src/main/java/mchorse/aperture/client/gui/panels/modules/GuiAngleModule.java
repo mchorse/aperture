@@ -1,7 +1,9 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.data.Angle;
+import mchorse.aperture.camera.values.ValueAngle;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
@@ -20,7 +22,7 @@ public class GuiAngleModule extends GuiAbstractModule
     public GuiTrackpadElement roll;
     public GuiTrackpadElement fov;
 
-    public Angle angle;
+    public ValueAngle angle;
 
     public GuiAngleModule(Minecraft mc, GuiCameraEditor editor)
     {
@@ -28,29 +30,37 @@ public class GuiAngleModule extends GuiAbstractModule
 
         this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
-            this.angle.yaw = value.floatValue();
-            this.editor.updateProfile();
+            Angle point = this.angle.angle.copy();
+
+            point.yaw = value.floatValue();
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
         });
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.angle.pitch = value.floatValue();
-            this.editor.updateProfile();
+            Angle point = this.angle.angle.copy();
+
+            point.pitch = value.floatValue();
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.roll = new GuiTrackpadElement(mc, (value) ->
         {
-            this.angle.roll = value.floatValue();
-            this.editor.updateProfile();
+            Angle point = this.angle.angle.copy();
+
+            point.roll = value.floatValue();
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
         });
         this.roll.tooltip(IKey.lang("aperture.gui.panels.roll"));
 
         this.fov = new GuiTrackpadElement(mc, (value) ->
         {
-            this.angle.fov = value.floatValue();
-            this.editor.updateProfile();
+            Angle point = this.angle.angle.copy();
+
+            point.fov = value.floatValue();
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
         });
         this.fov.tooltip(IKey.lang("aperture.gui.panels.fov"));
 
@@ -58,13 +68,13 @@ public class GuiAngleModule extends GuiAbstractModule
         this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.yaw, this.pitch, this.roll, this.fov);
     }
 
-    public void fill(Angle angle)
+    public void fill(ValueAngle angle)
     {
         this.angle = angle;
 
-        this.yaw.setValue(angle.yaw);
-        this.pitch.setValue(angle.pitch);
-        this.roll.setValue(angle.roll);
-        this.fov.setValue(angle.fov);
+        this.yaw.setValue(angle.angle.yaw);
+        this.pitch.setValue(angle.angle.pitch);
+        this.roll.setValue(angle.angle.roll);
+        this.fov.setValue(angle.angle.fov);
     }
 }

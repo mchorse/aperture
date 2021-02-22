@@ -99,6 +99,8 @@ aperture.gui:
                 prev_fixture: Jump to previous fixture
                 next: Jump to next frame
                 prev: Jump to previous frame
+                undo: Undo
+                redo: Redo
 
     fixtures:
         idle: Idle

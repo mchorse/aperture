@@ -1,11 +1,12 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
+import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.values.ValueInterpolation;
+import mchorse.mclib.config.values.ValueFloat;
 import mchorse.mclib.utils.Interpolation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -13,21 +14,19 @@ import net.minecraft.util.math.Vec3d;
 
 public class DollyFixture extends IdleFixture
 {
-    @Expose
-    public float distance = 0.1F;
-
-    @Expose
-    public Interpolation interp = Interpolation.LINEAR;
-
-    @Expose
-    public float yaw;
-
-    @Expose
-    public float pitch;
+    public final ValueFloat distance = new ValueFloat("distance", 0.1F);
+    public final ValueInterpolation interp = new ValueInterpolation("interp");
+    public final ValueFloat yaw = new ValueFloat("yaw", 0);
+    public final ValueFloat pitch = new ValueFloat("pitch", 0);
 
     public DollyFixture(long duration)
     {
         super(duration);
+
+        this.register(this.distance);
+        this.register(this.interp);
+        this.register(this.yaw);
+        this.register(this.pitch);
     }
 
     @Override
@@ -35,27 +34,30 @@ public class DollyFixture extends IdleFixture
     {
         super.fromPlayer(player);
 
-        this.yaw = this.position.angle.yaw;
-        this.pitch = this.position.angle.pitch;
+        this.yaw.set(this.position.get().angle.yaw);
+        this.pitch.set(this.position.get().angle.pitch);
     }
 
     @Override
     public void applyFixture(long ticks, float partialTicks, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        pos.copy(this.position);
+        pos.copy(this.position.get());
 
-        Interpolation interp = this.interp == null ? Interpolation.LINEAR : this.interp;
-        double x = this.position.point.x;
-        double y = this.position.point.y;
-        double z = this.position.point.z;
+        Interpolation interp = this.interp.get();
+        Point point = this.position.get().point;
+        double x = point.x;
+        double y = point.y;
+        double z = point.z;
 
         final float degToPi = (float) Math.PI / 180;
 
-        float cos = MathHelper.cos(-this.yaw * degToPi - (float) Math.PI);
-        float sin = MathHelper.sin(-this.yaw * degToPi - (float) Math.PI);
-        float cos2 = -MathHelper.cos(-this.pitch * degToPi);
-        float sin2 = MathHelper.sin(-this.pitch * degToPi);
-        Vec3d look = new Vec3d(sin * cos2, sin2, cos * cos2).normalize().scale(this.distance);
+        float yaw = this.yaw.get();
+        float pitch = this.pitch.get();
+        float cos = MathHelper.cos(-yaw * degToPi - (float) Math.PI);
+        float sin = MathHelper.sin(-yaw * degToPi - (float) Math.PI);
+        float cos2 = -MathHelper.cos(-pitch * degToPi);
+        float sin2 = MathHelper.sin(-pitch * degToPi);
+        Vec3d look = new Vec3d(sin * cos2, sin2, cos * cos2).normalize().scale(this.distance.get());
 
         partialTicks = (ticks + previewPartialTick) / this.getDuration();
 
@@ -81,10 +83,10 @@ public class DollyFixture extends IdleFixture
         {
             DollyFixture dolly = (DollyFixture) from;
 
-            this.yaw = dolly.yaw;
-            this.pitch = dolly.pitch;
-            this.distance = dolly.distance;
-            this.interp = dolly.interp;
+            this.yaw.copy(dolly.yaw);
+            this.pitch.copy(dolly.pitch);
+            this.distance.copy(dolly.distance);
+            this.interp.copy(dolly.interp);
         }
     }
 
@@ -106,15 +108,15 @@ public class DollyFixture extends IdleFixture
             Position b = path.getPoint(1);
             Angle angle = Angle.angle(b.point, a.point);
 
-            this.distance = (float) a.point.length(b.point);
-            this.position.copy(a);
+            this.distance.set((float) a.point.length(b.point));
+            this.position.get().copy(a);
 
-            this.yaw = angle.yaw;
-            this.pitch = angle.pitch;
+            this.yaw.set(angle.yaw);
+            this.pitch.set(angle.pitch);
 
             if (path.interpolationPos.function != null)
             {
-                this.interp = path.interpolationPos.function;
+                this.interp.set(path.interpolationPos.function);
             }
         }
     }
@@ -122,35 +124,14 @@ public class DollyFixture extends IdleFixture
     /* Save/load methods */
 
     @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        if (this.interp == null)
-        {
-            this.interp = Interpolation.LINEAR;
-        }
-    }
-
-    @Override
     public void fromBytes(ByteBuf buffer)
     {
         super.fromBytes(buffer);
 
-        this.yaw = buffer.readFloat();
-        this.pitch = buffer.readFloat();
-        this.distance = buffer.readFloat();
-
-        int index = buffer.readInt();
-
-        if (index >= 0 && index < Interpolation.values().length)
-        {
-            this.interp = Interpolation.values()[index];
-        }
-        else
-        {
-            this.interp = Interpolation.LINEAR;
-        }
+        this.yaw.fromBytes(buffer);
+        this.pitch.fromBytes(buffer);
+        this.distance.fromBytes(buffer);
+        this.interp.fromBytes(buffer);
     }
 
     @Override
@@ -158,9 +139,9 @@ public class DollyFixture extends IdleFixture
     {
         super.toBytes(buffer);
 
-        buffer.writeFloat(this.yaw);
-        buffer.writeFloat(this.pitch);
-        buffer.writeFloat(this.distance);
-        buffer.writeInt(this.interp == null ? -1 : this.interp.ordinal());
+        this.yaw.toBytes(buffer);
+        this.pitch.toBytes(buffer);
+        this.distance.toBytes(buffer);
+        this.interp.toBytes(buffer);
     }
 }

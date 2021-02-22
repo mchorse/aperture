@@ -5,10 +5,7 @@ import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 /**
  * Idle fixture panel
@@ -36,14 +33,14 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture>
     {
         super.select(fixture, duration);
 
-        this.point.fill(fixture.position.point);
-        this.angle.fill(fixture.position.angle);
+        this.point.fill(fixture.position.getPoint());
+        this.angle.fill(fixture.position.getAngle());
     }
 
     @Override
     public void editFixture(Position position)
     {
-        this.fixture.position.set(position);
+        this.editor.postUndo(this.undo("position", position));
 
         super.editFixture(position);
     }

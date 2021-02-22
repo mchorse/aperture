@@ -2,6 +2,7 @@ package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
@@ -27,32 +28,16 @@ public class GuiCircularModule extends GuiAbstractModule
     {
         super(mc, editor);
 
-        this.offset = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.fixture.offset = value.floatValue();
-            this.editor.updateProfile();
-        });
+        this.offset = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "offset", value.floatValue())));
         this.offset.tooltip(IKey.lang("aperture.gui.panels.offset"));
 
-        this.pitch = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.fixture.pitch = value.floatValue();
-            this.editor.updateProfile();
-        });
+        this.pitch = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "pitch", value.floatValue())));
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
-        this.circles = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.fixture.circles = value.floatValue();
-            this.editor.updateProfile();
-        });
+        this.circles = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "circles", value.floatValue())));
         this.circles.tooltip(IKey.lang("aperture.gui.panels.circles"));
 
-        this.distance = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.fixture.distance = value.floatValue();
-            this.editor.updateProfile();
-        });
+        this.distance = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "distance", value.floatValue())));
         this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
 
         this.flex().column(5).vertical().stretch().height(20);
@@ -63,9 +48,9 @@ public class GuiCircularModule extends GuiAbstractModule
     {
         this.fixture = fixture;
 
-        this.offset.setValue(fixture.offset);
-        this.pitch.setValue(fixture.pitch);
-        this.circles.setValue(fixture.circles);
-        this.distance.setValue(fixture.distance);
+        this.offset.setValue(fixture.offset.get());
+        this.pitch.setValue(fixture.pitch.get());
+        this.circles.setValue(fixture.circles.get());
+        this.distance.setValue(fixture.distance.get());
     }
 }

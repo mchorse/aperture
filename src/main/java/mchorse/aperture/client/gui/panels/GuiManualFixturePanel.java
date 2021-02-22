@@ -2,6 +2,7 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.fixtures.ManualFixture;
+import mchorse.aperture.camera.data.RenderFrame;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.utils.APIcons;
 import mchorse.mclib.client.gui.framework.GuiBase;
@@ -15,6 +16,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
+
+import java.util.List;
 
 public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture>
 {
@@ -86,10 +89,10 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
     {
         super(mc, editor);
 
-        this.shift = new GuiTrackpadElement(mc, (v) -> this.fixture.shift = v.intValue());
+        this.shift = new GuiTrackpadElement(mc, (v) -> this.editor.postUndo(this.undo("shift", v.intValue())));
         this.shift.integer().tooltip(IKey.lang("aperture.gui.panels.manual.shift"));
 
-        this.speed = new GuiTrackpadElement(mc, (v) -> this.fixture.speed = v.floatValue());
+        this.speed = new GuiTrackpadElement(mc, (v) -> this.editor.postUndo(this.undo("speed", v.floatValue())));
         this.speed.limit(0).tooltip(IKey.lang("aperture.gui.panels.manual.speed"));
 
         this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.record"), this::startRecording);
@@ -105,11 +108,11 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
     {
         super.select(fixture, duration);
 
-        this.shift.setValue(fixture.shift);
-        this.speed.setValue(fixture.speed);
+        this.shift.setValue(fixture.shift.get());
+        this.speed.setValue(fixture.speed.get());
     }
 
-    private void startRecording(GuiButtonElement buttonElement)
+    private void startRecording(GuiButtonElement button)
     {
         offset = (int) this.editor.getProfile().calculateOffset(this.fixture);
         duration = (int) this.fixture.getDuration();
@@ -131,8 +134,12 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 
             if (tick > 0)
             {
-                this.fixture.setupRecorded();
-                this.editor.updateProfile();
+                List<List<RenderFrame>> frames = this.fixture.setupRecorded();
+
+                if (frames != null)
+                {
+                    this.editor.postUndo(this.undo("frames", frames));
+                }
             }
         }
         else
@@ -143,6 +150,6 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 
     public void recordFrame(EntityPlayerSP player, float partialTicks)
     {
-        this.fixture.recorded.add(new ManualFixture.RenderFrame(player, partialTicks));
+        this.fixture.recorded.add(new RenderFrame(player, partialTicks));
     }
 }

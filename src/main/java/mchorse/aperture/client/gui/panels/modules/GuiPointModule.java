@@ -1,12 +1,13 @@
 package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.data.Point;
+import mchorse.aperture.camera.values.ValuePoint;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 /**
  * Point GUI module
@@ -20,7 +21,7 @@ public class GuiPointModule extends GuiAbstractModule
     public GuiTrackpadElement y;
     public GuiTrackpadElement z;
 
-    public Point point;
+    public ValuePoint point;
 
     public GuiPointModule(Minecraft mc, GuiCameraEditor editor)
     {
@@ -28,22 +29,28 @@ public class GuiPointModule extends GuiAbstractModule
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
-            this.point.x = value;
-            this.editor.updateProfile();
+            Point point = this.point.point.copy();
+
+            point.x = value;
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
-            this.point.y = value;
-            this.editor.updateProfile();
+            Point point = this.point.point.copy();
+
+            point.y = value;
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
-            this.point.z = value;
-            this.editor.updateProfile();
+            Point point = this.point.point.copy();
+
+            point.z = value;
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 
@@ -55,12 +62,12 @@ public class GuiPointModule extends GuiAbstractModule
         this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.x, this.y, this.z);
     }
 
-    public void fill(Point point)
+    public void fill(ValuePoint point)
     {
         this.point = point;
 
-        this.x.setValue((float) point.x);
-        this.y.setValue((float) point.y);
-        this.z.setValue((float) point.z);
+        this.x.setValue((float) point.point.x);
+        this.y.setValue((float) point.point.y);
+        this.z.setValue((float) point.point.z);
     }
 }

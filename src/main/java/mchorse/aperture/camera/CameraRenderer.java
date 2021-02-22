@@ -486,7 +486,7 @@ public class CameraRenderer
     private void drawCircularFixture(Color color, AbstractFixture fixture, Position prev, Position next)
     {
         CameraProfile profile = ClientProxy.control.currentProfile;
-        float circles = Math.min(((CircularFixture) fixture).circles, 360);
+        float circles = Math.min(((CircularFixture) fixture).circles.get(), 360);
         long duration = fixture.getDuration();
 
         BufferBuilder vb = Tessellator.getInstance().getBuffer();

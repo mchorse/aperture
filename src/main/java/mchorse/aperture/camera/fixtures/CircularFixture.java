@@ -1,11 +1,11 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.values.ValuePoint;
+import mchorse.mclib.config.values.ValueFloat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
@@ -23,63 +23,66 @@ public class CircularFixture extends AbstractFixture
     /**
      * Center point of circular fixture
      */
-    @Expose
-    public Point start = new Point(0, 0, 0);
+    public final ValuePoint start = new ValuePoint("start", new Point(0, 0, 0));
 
     /**
      * Start angle offset (in degrees)
      */
-    @Expose
-    public float offset = 0;
+    public final ValueFloat offset = new ValueFloat("offset", 0);
 
     /**
      * Distance (in blocks units) from center point
      */
-    @Expose
-    public float distance = 5;
+    public final ValueFloat distance = new ValueFloat("distance", 5);
 
     /**
      * How much degrees to perform during running
      */
-    @Expose
-    public float circles = 360;
+    public final ValueFloat circles = new ValueFloat("circles", 360);
 
     /**
      * Pitch of the circular fixture
      */
-    @Expose
-    public float pitch = 0;
+    public final ValueFloat pitch = new ValueFloat("pitch", 0);
 
     public CircularFixture(long duration)
     {
         super(duration);
+
+        this.register(this.start);
+        this.register(this.offset);
+        this.register(this.distance);
+        this.register(this.circles);
+        this.register(this.pitch);
     }
 
     @Override
     public void fromPlayer(EntityPlayer player)
     {
-        this.start.set(player);
-        this.pitch = player.rotationPitch;
+        this.start.get().set(player);
+        this.pitch.set(player.rotationPitch);
     }
 
     @Override
     public void applyFixture(long ticks, float partialTicks, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        float progress = (ticks / (float) this.duration) + (1.0F / this.duration * previewPartialTick);
-        float angle = (float) (Math.toRadians(this.offset) + progress * Math.toRadians(this.circles));
+        float progress = (ticks / (float) this.getDuration()) + (1.0F / this.getDuration() * previewPartialTick);
+        float angle = (float) (Math.toRadians(this.offset.get()) + progress * Math.toRadians(this.circles.get()));
 
-        double cos = this.distance * Math.cos(angle);
-        double sin = this.distance * Math.sin(angle);
+        float distance = this.distance.get();
+        double cos = distance * Math.cos(angle);
+        double sin = distance * Math.sin(angle);
 
         /* +0.5, because player's position isn't in the entity's center */
-        double x = this.start.x + 0.5 + cos;
-        double y = this.start.y;
-        double z = this.start.z + 0.5 + sin;
+        Point point = this.start.get();
+        double x = point.x + 0.5 + cos;
+        double y = point.y;
+        double z = point.z + 0.5 + sin;
 
         float yaw = (float) (MathHelper.atan2(sin, cos) * (180D / Math.PI)) - 90.0F;
 
         pos.point.set(x - 0.5F, y, z - 0.5F);
-        pos.angle.set(MathHelper.wrapDegrees(yaw - 180.0F), this.pitch, 0, 70);
+        pos.angle.set(MathHelper.wrapDegrees(yaw - 180.0F), this.pitch.get(), 0, 70);
     }
 
     @Override
@@ -97,11 +100,11 @@ public class CircularFixture extends AbstractFixture
         {
             CircularFixture circular = (CircularFixture) from;
 
-            this.start = circular.start.copy();
-            this.offset = circular.offset;
-            this.distance = circular.distance;
-            this.circles = circular.circles;
-            this.pitch = circular.pitch;
+            this.start.copy(circular.start);
+            this.offset.copy(circular.offset);
+            this.distance.copy(circular.distance);
+            this.circles.copy(circular.circles);
+            this.pitch.copy(circular.pitch);
         }
     }
 
@@ -110,11 +113,11 @@ public class CircularFixture extends AbstractFixture
     {
         super.fromBytes(buffer);
 
-        this.start = Point.fromBytes(buffer);
-        this.offset = buffer.readFloat();
-        this.distance = buffer.readFloat();
-        this.circles = buffer.readFloat();
-        this.pitch = buffer.readFloat();
+        this.start.fromBytes(buffer);
+        this.offset.fromBytes(buffer);
+        this.distance.fromBytes(buffer);
+        this.circles.fromBytes(buffer);
+        this.pitch.fromBytes(buffer);
     }
 
     @Override
@@ -123,9 +126,9 @@ public class CircularFixture extends AbstractFixture
         super.toBytes(buffer);
 
         this.start.toBytes(buffer);
-        buffer.writeFloat(this.offset);
-        buffer.writeFloat(this.distance);
-        buffer.writeFloat(this.circles);
-        buffer.writeFloat(this.pitch);
+        this.offset.toBytes(buffer);
+        this.distance.toBytes(buffer);
+        this.circles.toBytes(buffer);
+        this.pitch.toBytes(buffer);
     }
 }

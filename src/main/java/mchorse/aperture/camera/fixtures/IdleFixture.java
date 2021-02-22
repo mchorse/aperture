@@ -1,10 +1,9 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.values.ValuePosition;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -15,24 +14,25 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class IdleFixture extends AbstractFixture
 {
-    @Expose
-    public Position position = new Position(0, 0, 0, 0, 0);
+    public final ValuePosition position = new ValuePosition("position");
 
     public IdleFixture(long duration)
     {
         super(duration);
+
+        this.register(this.position);
     }
 
     @Override
     public void fromPlayer(EntityPlayer player)
     {
-        this.position.set(player);
+        this.position.get().set(player);
     }
 
     @Override
     public void applyFixture(long ticks, float partialTicks, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        pos.copy(this.position);
+        pos.copy(this.position.get());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class IdleFixture extends AbstractFixture
 
         if (from instanceof IdleFixture)
         {
-            this.position = ((IdleFixture) from).position.copy();
+            this.position.copy(((IdleFixture) from).position);
         }
     }
 
@@ -59,7 +59,7 @@ public class IdleFixture extends AbstractFixture
     {
         super.fromBytes(buffer);
 
-        this.position = Position.fromBytes(buffer);
+        this.position.fromBytes(buffer);
     }
 
     @Override
