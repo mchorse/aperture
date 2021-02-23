@@ -19,6 +19,7 @@ import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.modifiers.RemapperModifier;
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
@@ -113,9 +114,9 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         {
             JsonObject point = points.get(i).getAsJsonObject();
 
-            for (KeyframeChannel channel : keys.channels)
+            for (ValueKeyframeChannel channel : keys.channels)
             {
-                Keyframe frame = channel.get(i);
+                Keyframe frame = channel.get().get(i);
 
                 frame.tick = x;
             }
@@ -150,7 +151,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         modifier.keyframes = true;
         modifier.channel.copy(fixture.speed);
 
-        fixture.useSpeed = false;
+        fixture.useSpeed.set(false);
         fixture.getModifiers().add(0, modifier);
     }
 

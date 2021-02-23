@@ -1,12 +1,10 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.data.RenderFrame;
-import mchorse.mclib.utils.keyframes.KeyframeChannel;
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.List;
@@ -21,49 +19,34 @@ public class KeyframeFixture extends AbstractFixture
 {
     /* Different animated channels */
 
-    @Expose
-    public final KeyframeChannel x;
+    public final ValueKeyframeChannel x = new ValueKeyframeChannel("x");
+    public final ValueKeyframeChannel y = new ValueKeyframeChannel("y");
+    public final ValueKeyframeChannel z = new ValueKeyframeChannel("z");
+    public final ValueKeyframeChannel yaw = new ValueKeyframeChannel("yaw");
+    public final ValueKeyframeChannel pitch = new ValueKeyframeChannel("pitch");
+    public final ValueKeyframeChannel roll = new ValueKeyframeChannel("roll");
+    public final ValueKeyframeChannel fov = new ValueKeyframeChannel("fov");
 
-    @Expose
-    public final KeyframeChannel y;
-
-    @Expose
-    public final KeyframeChannel z;
-
-    @Expose
-    public final KeyframeChannel yaw;
-
-    @Expose
-    public final KeyframeChannel pitch;
-
-    @Expose
-    public final KeyframeChannel roll;
-
-    @Expose
-    public final KeyframeChannel fov;
-
-    public KeyframeChannel[] channels;
+    public ValueKeyframeChannel[] channels;
 
     public KeyframeFixture(long duration)
     {
         super(duration);
 
-        this.x = new KeyframeChannel();
-        this.y = new KeyframeChannel();
-        this.z = new KeyframeChannel();
-        this.yaw = new KeyframeChannel();
-        this.pitch = new KeyframeChannel();
-        this.roll = new KeyframeChannel();
-        this.fov = new KeyframeChannel();
-        this.channels = new KeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
+        this.channels = new ValueKeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
+
+        for (ValueKeyframeChannel channel : this.channels)
+        {
+            this.register(channel);
+        }
     }
 
     @Override
     public void initiate()
     {
-        for (KeyframeChannel channel : this.channels)
+        for (ValueKeyframeChannel channel : this.channels)
         {
-            channel.sort();
+            channel.get().sort();
         }
     }
 
@@ -72,13 +55,13 @@ public class KeyframeFixture extends AbstractFixture
     {
         Position pos = new Position(player);
 
-        this.x.insert(0, pos.point.x);
-        this.y.insert(0, pos.point.y);
-        this.z.insert(0, pos.point.z);
-        this.yaw.insert(0, pos.angle.yaw);
-        this.pitch.insert(0, pos.angle.pitch);
-        this.roll.insert(0, pos.angle.roll);
-        this.fov.insert(0, pos.angle.fov);
+        this.x.get().insert(0, pos.point.x);
+        this.y.get().insert(0, pos.point.y);
+        this.z.get().insert(0, pos.point.z);
+        this.yaw.get().insert(0, pos.angle.yaw);
+        this.pitch.get().insert(0, pos.angle.pitch);
+        this.roll.get().insert(0, pos.angle.roll);
+        this.fov.get().insert(0, pos.angle.fov);
     }
 
     @Override
@@ -86,13 +69,13 @@ public class KeyframeFixture extends AbstractFixture
     {
         float t = ticks + previewPartialTick;
 
-        if (!this.x.isEmpty()) pos.point.x = this.x.interpolate(t);
-        if (!this.y.isEmpty()) pos.point.y = this.y.interpolate(t);
-        if (!this.z.isEmpty()) pos.point.z = this.z.interpolate(t);
-        if (!this.yaw.isEmpty()) pos.angle.yaw = (float) this.yaw.interpolate(t);
-        if (!this.pitch.isEmpty()) pos.angle.pitch = (float) this.pitch.interpolate(t);
-        if (!this.roll.isEmpty()) pos.angle.roll = (float) this.roll.interpolate(t);
-        if (!this.fov.isEmpty()) pos.angle.fov = (float) this.fov.interpolate(t);
+        if (!this.x.get().isEmpty()) pos.point.x = this.x.get().interpolate(t);
+        if (!this.y.get().isEmpty()) pos.point.y = this.y.get().interpolate(t);
+        if (!this.z.get().isEmpty()) pos.point.z = this.z.get().interpolate(t);
+        if (!this.yaw.get().isEmpty()) pos.angle.yaw = (float) this.yaw.get().interpolate(t);
+        if (!this.pitch.get().isEmpty()) pos.angle.pitch = (float) this.pitch.get().interpolate(t);
+        if (!this.roll.get().isEmpty()) pos.angle.roll = (float) this.roll.get().interpolate(t);
+        if (!this.fov.get().isEmpty()) pos.angle.fov = (float) this.fov.get().interpolate(t);
     }
 
     @Override
@@ -160,30 +143,16 @@ public class KeyframeFixture extends AbstractFixture
                 {
                     RenderFrame frame = frames.get(0);
 
-                    this.x.insert(i, frame.x);
-                    this.y.insert(i, frame.y);
-                    this.z.insert(i, frame.z);
-                    this.yaw.insert(i, frame.yaw);
-                    this.pitch.insert(i, frame.pitch);
-                    this.roll.insert(i, frame.roll);
-                    this.fov.insert(i, frame.fov);
+                    this.x.get().insert(i, frame.x);
+                    this.y.get().insert(i, frame.y);
+                    this.z.get().insert(i, frame.z);
+                    this.yaw.get().insert(i, frame.yaw);
+                    this.pitch.get().insert(i, frame.pitch);
+                    this.roll.get().insert(i, frame.roll);
+                    this.fov.get().insert(i, frame.fov);
                 }
             }
         }
-    }
-
-    @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        this.x.sort();
-        this.y.sort();
-        this.z.sort();
-        this.yaw.sort();
-        this.pitch.sort();
-        this.roll.sort();
-        this.fov.sort();
     }
 
     @Override

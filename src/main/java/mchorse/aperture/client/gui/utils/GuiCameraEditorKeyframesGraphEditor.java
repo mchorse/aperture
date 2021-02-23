@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.utils;
 
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,15 @@ public class GuiCameraEditorKeyframesGraphEditor extends GuiCameraEditorKeyframe
     @Override
     protected GuiGraphView createElement(Minecraft mc)
     {
-        return new GuiGraphView(mc, this::fillData);
+        return new GuiGraphView(mc, this, this::fillData);
+    }
+
+    public void setChannel(ValueKeyframeChannel channel, int color)
+    {
+        this.setChannel(channel.channel, color);
+
+        this.valueChannels.clear();
+        this.valueChannels.add(channel);
     }
 
     public void setChannel(KeyframeChannel channel, int color)

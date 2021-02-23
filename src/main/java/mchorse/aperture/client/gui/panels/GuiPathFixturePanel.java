@@ -9,7 +9,6 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule.IPointPicker;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
-import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
@@ -58,12 +57,14 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         this.interp = new GuiInterpModule(mc, this, editor);
         this.useSpeed = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_speed_enable"), false, (b) ->
         {
-            this.fixture.useSpeed = b.isToggled();
-            this.speed.setVisible(this.fixture.useSpeed);
-            this.editor.updateProfile();
+            this.editor.postUndo(this.undo("useSpeed", b.isToggled()));
+
+            boolean useSpeed = this.fixture.useSpeed.get();
+
+            this.speed.setVisible(useSpeed);
             this.updateSpeedPanel();
 
-            if (this.fixture.useSpeed)
+            if (useSpeed)
             {
                 this.fixture.updateSpeedCache();
             }
@@ -72,13 +73,13 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
         this.autoCenter = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.auto_center"), (b) ->
         {
-            this.fixture.cirularAutoCenter = b.isToggled();
+            this.editor.postUndo(this.undo("cirularAutoCenter", b.isToggled()));
             this.updateCircular();
         });
 
-        this.circularX = new GuiTrackpadElement(mc, (value) -> this.fixture.circularX = value);
+        this.circularX = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo("circularX", value)));
         this.circularX.tooltip(IKey.lang("aperture.gui.panels.circular_x"));
-        this.circularZ = new GuiTrackpadElement(mc, (value) -> this.fixture.circularZ = value);
+        this.circularZ = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo("circularZ", value)));
         this.circularZ.tooltip(IKey.lang("aperture.gui.panels.circular_z"));
 
         this.circular = new GuiElement(mc);
@@ -133,7 +134,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
             this.circular.add(this.circularZ);
         }
 
-        if (this.fixture.interpolationPos == PathFixture.InterpolationType.CIRCULAR)
+        if (this.fixture.interpolation.get() == PathFixture.InterpolationType.CIRCULAR)
         {
             this.right.add(this.circular);
         }
@@ -143,7 +144,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
 
     private void updateSpeedPanel()
     {
-        if (this.fixture.useSpeed)
+        if (this.fixture.useSpeed.get())
         {
             this.left.flex().hTo(this.speed.area);
             this.right.flex().hTo(this.speed.area);
@@ -160,7 +161,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     public void profileWasUpdated()
     {
-        if (this.fixture.useSpeed)
+        if (this.fixture.useSpeed.get())
         {
             this.update = System.currentTimeMillis() + 100;
         }
@@ -204,14 +205,14 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
         // this.angle.fill(this.position.angle);
         this.points.fill(fixture);
         this.interp.fill(fixture);
-        this.useSpeed.toggled(fixture.useSpeed);
+        this.useSpeed.toggled(fixture.useSpeed.get());
         this.updateSpeedPanel();
 
         if (!same)
         {
             this.speed.graph.setDuration(fixture.getDuration());
             this.speed.setChannel(fixture.speed, 0x0088ff);
-            this.speed.setVisible(this.fixture.useSpeed);
+            this.speed.setVisible(this.fixture.useSpeed.get());
         }
 
         this.points.index = index;
@@ -253,7 +254,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture> im
     @Override
     public void draw(GuiContext context)
     {
-        if (this.fixture.useSpeed && this.update > 0 && System.currentTimeMillis() >= this.update)
+        if (this.fixture.useSpeed.get() && this.update > 0 && System.currentTimeMillis() >= this.update)
         {
             this.fixture.updateSpeedCache();
             this.update = 0;

@@ -114,9 +114,11 @@ public class DollyFixture extends IdleFixture
             this.yaw.set(angle.yaw);
             this.pitch.set(angle.pitch);
 
-            if (path.interpolationPos.function != null)
+            Interpolation function = path.interpolation.get().function;
+
+            if (function != null)
             {
-                this.interp.set(path.interpolationPos.function);
+                this.interp.set(function);
             }
         }
     }

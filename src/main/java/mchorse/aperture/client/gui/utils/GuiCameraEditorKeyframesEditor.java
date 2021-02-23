@@ -1,19 +1,27 @@
 package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.Aperture;
+import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.utils.TimeUtils;
+import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.keyframes.GuiKeyframeElement;
 import mchorse.mclib.client.gui.framework.elements.keyframes.GuiKeyframesEditor;
 import mchorse.mclib.client.gui.framework.elements.keyframes.IAxisConverter;
 import mchorse.mclib.client.gui.framework.elements.keyframes.Selection;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Special subclass of graph editor for fixture editor panels to allow 
@@ -24,6 +32,11 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
     public static final AxisConverter CONVERTER = new AxisConverter();
 
     protected GuiCameraEditor editor;
+    protected List<ValueKeyframeChannel> valueChannels = new ArrayList<ValueKeyframeChannel>();
+
+    private List<Object> cachedData = new ArrayList<Object>();
+    private int type = -1;
+    private long lastUpdate;
 
     public GuiCameraEditorKeyframesEditor(Minecraft mc, GuiCameraEditor editor)
     {
@@ -40,46 +53,114 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
         this.setConverter(CONVERTER);
     }
 
-    @Override
-    protected void toggleInterpolation()
+    public void markUndo(int type)
     {
-        super.toggleInterpolation();
-        this.editor.updateProfile();
+        if (this.type == -1 || this.type == type)
+        {
+            this.lastUpdate = System.currentTimeMillis() + 400;
+        }
+
+        if (this.type != type)
+        {
+            if (this.type >= 0)
+            {
+                this.submitUndo();
+            }
+
+            this.cachedData.clear();
+
+            for (ValueKeyframeChannel channel : this.valueChannels)
+            {
+                this.cachedData.add(channel.getValue());
+            }
+        }
+
+        this.type = type;
+    }
+
+    private void submitUndo()
+    {
+        this.type = -1;
+
+        List<Object> newCachedData = new ArrayList<Object>();
+
+        for (ValueKeyframeChannel channel : this.valueChannels)
+        {
+            newCachedData.add(channel.getValue());
+        }
+
+        if (newCachedData.size() > 1)
+        {
+            FixtureValueChangeUndo[] undos = new FixtureValueChangeUndo[newCachedData.size()];
+
+            for (int i = 0; i < undos.length; i++)
+            {
+                undos[i] = FixtureValueChangeUndo.create(this.editor, this.valueChannels.get(i).getId(), this.cachedData.get(i), newCachedData.get(i));
+            }
+
+            this.editor.postUndo(new CompoundUndo<CameraProfile>(undos).unmergable(), false);
+        }
+        else
+        {
+            ValueKeyframeChannel channel = this.valueChannels.get(0);
+
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, channel.getId(), this.cachedData.get(0), newCachedData.get(0)).unmergable(), false);
+        }
+
+        this.cachedData.clear();
     }
 
     @Override
     protected void doubleClick(int mouseX, int mouseY)
     {
+        this.markUndo(0);
         super.doubleClick(mouseX, mouseY);
-        this.editor.updateProfile();
+    }
+
+    @Override
+    public void removeSelectedKeyframes()
+    {
+        this.markUndo(1);
+        super.removeSelectedKeyframes();
     }
 
     @Override
     public void setTick(double value)
     {
+        this.markUndo(2);
         super.setTick(value);
-        this.editor.updateProfile();
     }
 
     @Override
     public void setValue(double value)
     {
+        this.markUndo(3);
         super.setValue(value);
-        this.editor.updateProfile();
     }
 
     @Override
     public void changeEasing()
     {
+        this.markUndo(4);
         super.changeEasing();
-        this.editor.updateProfile();
     }
 
     @Override
     public void pickInterpolation(KeyframeInterpolation interp)
     {
+        this.markUndo(5);
         super.pickInterpolation(interp);
-        this.editor.updateProfile();
+    }
+
+    @Override
+    public void draw(GuiContext context)
+    {
+        super.draw(context);
+
+        if (this.type >= 0 && this.lastUpdate < System.currentTimeMillis())
+        {
+            this.submitUndo();
+        }
     }
 
     public static class AxisConverter implements IAxisConverter

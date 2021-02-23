@@ -5,6 +5,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.GuiUtils;
@@ -46,7 +47,7 @@ public class GuiInterpModule extends GuiAbstractModule
             else
             {
                 this.pickPos = true;
-                this.interps.setCurrent(this.fixture.interpolationPos);
+                this.interps.setCurrent(this.fixture.interpolation.get());
 
                 this.getParentContainer().add(this.interps);
                 this.interps.flex().relative(this.pos);
@@ -63,7 +64,7 @@ public class GuiInterpModule extends GuiAbstractModule
             else
             {
                 this.pickPos = false;
-                this.interps.setCurrent(this.fixture.interpolationAngle);
+                this.interps.setCurrent(this.fixture.interpolationAngle.get());
 
                 this.getParentContainer().add(this.interps);
                 this.interps.flex().relative(this.angle);
@@ -75,18 +76,17 @@ public class GuiInterpModule extends GuiAbstractModule
         {
             if (this.pickPos)
             {
-                this.fixture.interpolationPos = interp.get(0);
+                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolation", interp.get(0)));
                 this.pos.label.set(interp.get(0).getKey());
             }
             else
             {
-                this.fixture.interpolationAngle = interp.get(0);
+                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolationAngle", interp.get(0)));
                 this.angle.label.set(interp.get(0).getKey());
             }
 
             this.panel.interpolationWasUpdated(this.pickPos);
             this.interps.removeFromParent();
-            this.editor.updateProfile();
         });
         this.interps.markIgnored();
 
@@ -102,12 +102,16 @@ public class GuiInterpModule extends GuiAbstractModule
 
     private void togglePosition()
     {
-        this.fixture.interpolationPos = this.next(this.fixture.interpolationPos, this.pos);
+        PathFixture.InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
+
+        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolation", type));
     }
 
     private void toggleAngle()
     {
-        this.fixture.interpolationAngle = this.next(this.fixture.interpolationAngle, this.angle);
+        PathFixture.InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
+
+        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolationAngle", type));
     }
 
     private PathFixture.InterpolationType next(PathFixture.InterpolationType interp, GuiButtonElement button)
@@ -129,9 +133,9 @@ public class GuiInterpModule extends GuiAbstractModule
         this.fixture = fixture;
 
         this.interps.removeFromParent();
-        this.interps.setCurrent(fixture.interpolationPos);
+        this.interps.setCurrent(fixture.interpolation.get());
         this.pos.label.set(this.interps.getCurrentFirst().getKey());
-        this.interps.setCurrent(fixture.interpolationAngle);
+        this.interps.setCurrent(fixture.interpolationAngle.get());
         this.angle.label.set(this.interps.getCurrentFirst().getKey());
     }
 }

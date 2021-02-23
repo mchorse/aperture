@@ -361,7 +361,7 @@ public class CameraRenderer
 
         Tessellator.getInstance().draw();
 
-        if (path != null && path.interpolationPos == PathFixture.InterpolationType.CIRCULAR && path.getPoints().size() > 0)
+        if (path != null && path.interpolation.get() == PathFixture.InterpolationType.CIRCULAR && path.getPoints().size() > 0)
         {
             Vector2d center = path.getCenter();
             double y = 0;

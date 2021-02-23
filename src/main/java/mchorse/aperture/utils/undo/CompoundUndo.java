@@ -1,16 +1,18 @@
 package mchorse.aperture.utils.undo;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Compound undo
  */
 public class CompoundUndo <T> implements IUndo<T>
 {
     private List<IUndo<T>> undos = new ArrayList<IUndo<T>>();
+    private boolean mergable = true;
 
     public CompoundUndo(IUndo<T>... undos)
     {
@@ -43,10 +45,17 @@ public class CompoundUndo <T> implements IUndo<T>
         return false;
     }
 
+    public CompoundUndo<T> unmergable()
+    {
+        this.mergable = false;
+
+        return this;
+    }
+
     @Override
     public boolean isMergeable(IUndo<T> undo)
     {
-        return undo instanceof CompoundUndo && ((CompoundUndo<T>) undo).undos.size() == this.undos.size();
+        return this.mergable && undo instanceof CompoundUndo && ((CompoundUndo<T>) undo).undos.size() == this.undos.size();
     }
 
     @Override

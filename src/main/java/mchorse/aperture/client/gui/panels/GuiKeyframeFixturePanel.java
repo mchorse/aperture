@@ -2,8 +2,8 @@ package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.client.gui.panels.keyframe.AllKeyframeChannel;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -43,14 +43,14 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.graph = new GuiCameraEditorKeyframesGraphEditor(mc, this.editor);
         this.dope = new GuiCameraEditorKeyframesDopeSheetEditor(mc, this.editor);
 
-        this.all = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.all"), (b) -> this.selectChannel(null));
-        this.x = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x));
-        this.y = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y));
-        this.z = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z));
-        this.yaw = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.yaw"), (b) -> this.selectChannel(this.fixture.yaw));
-        this.pitch = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch));
-        this.roll = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll));
-        this.fov = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov));
+        this.all = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.all"), (b) -> this.selectChannel(null, 0));
+        this.x = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.x"), (b) -> this.selectChannel(this.fixture.x, 1));
+        this.y = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.y"), (b) -> this.selectChannel(this.fixture.y, 2));
+        this.z = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.z"), (b) -> this.selectChannel(this.fixture.z, 3));
+        this.yaw = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.yaw"), (b) -> this.selectChannel(this.fixture.yaw, 4));
+        this.pitch = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch, 5));
+        this.roll = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll, 6));
+        this.fov = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov, 7));
 
         this.buttons.add(this.all);
         this.buttons.add(this.x, this.y, this.z);
@@ -91,7 +91,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         if (!same)
         {
             this.dope.setFixture(fixture);
-            this.selectChannel(null);
+            this.selectChannel(null, 0);
         }
 
         if (duration != -1)
@@ -109,18 +109,8 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.dope.graph.setDuration(value);
     }
 
-    public void selectChannel(KeyframeChannel channel)
+    public void selectChannel(ValueKeyframeChannel channel, int id)
     {
-        int id = 0;
-
-        if (channel == this.fixture.x) id = 1;
-        else if (channel == this.fixture.y) id = 2;
-        else if (channel == this.fixture.z) id = 3;
-        else if (channel == this.fixture.yaw) id = 4;
-        else if (channel == this.fixture.pitch) id = 5;
-        else if (channel == this.fixture.roll) id = 6;
-        else if (channel == this.fixture.fov) id = 7;
-
         this.title = this.titles[id];
         this.dope.setVisible(id == 0);
         this.graph.setVisible(id != 0);
@@ -136,13 +126,14 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         long tick = this.editor.timeline.value - this.currentOffset();
 
-        this.fixture.x.insert(tick, (float) position.point.x);
-        this.fixture.y.insert(tick, (float) position.point.y);
-        this.fixture.z.insert(tick, (float) position.point.z);
-        this.fixture.yaw.insert(tick, position.angle.yaw);
-        this.fixture.pitch.insert(tick, position.angle.pitch);
-        this.fixture.roll.insert(tick, position.angle.roll);
-        this.fixture.fov.insert(tick, position.angle.fov);
+        /* TODO: undo */
+        this.fixture.x.get().insert(tick, position.point.x);
+        this.fixture.y.get().insert(tick, position.point.y);
+        this.fixture.z.get().insert(tick, position.point.z);
+        this.fixture.yaw.get().insert(tick, position.angle.yaw);
+        this.fixture.pitch.get().insert(tick, position.angle.pitch);
+        this.fixture.roll.get().insert(tick, position.angle.roll);
+        this.fixture.fov.get().insert(tick, position.angle.fov);
 
         this.editor.updateProfile();
     }

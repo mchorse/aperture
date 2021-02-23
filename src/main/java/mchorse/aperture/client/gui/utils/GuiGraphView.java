@@ -13,9 +13,13 @@ public class GuiGraphView extends mchorse.mclib.client.gui.framework.elements.ke
     public GuiCameraEditor editor;
     public boolean global;
 
-    public GuiGraphView(Minecraft mc, Consumer<Keyframe> callback)
+    private GuiCameraEditorKeyframesGraphEditor keyframeEditor;
+
+    public GuiGraphView(Minecraft mc, GuiCameraEditorKeyframesGraphEditor keyframeEditor, Consumer<Keyframe> callback)
     {
         super(mc, callback);
+
+        this.keyframeEditor = keyframeEditor;
     }
 
     public long getFixtureOffset()
@@ -39,12 +43,21 @@ public class GuiGraphView extends mchorse.mclib.client.gui.framework.elements.ke
     }
 
     @Override
-    protected void updateMoved()
+    protected void pickedKeyframe(int amount)
     {
-        if (this.editor != null)
+        super.pickedKeyframe(amount);
+
+        if (amount > 0)
         {
-            this.editor.updateProfile();
+            this.keyframeEditor.markUndo(100);
         }
+    }
+
+    @Override
+    protected void keepMoving()
+    {
+        super.keepMoving();
+        this.keyframeEditor.markUndo(100);
     }
 
     @Override

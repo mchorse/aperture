@@ -346,6 +346,11 @@ public class GuiCameraEditor extends GuiBase
 
     public void postUndo(IUndo<CameraProfile> undo)
     {
+        this.postUndo(undo, true);
+    }
+
+    public void postUndo(IUndo<CameraProfile> undo, boolean apply)
+    {
         if (undo == null)
         {
             throw new RuntimeException("Given undo is null!");
@@ -355,7 +360,16 @@ public class GuiCameraEditor extends GuiBase
         UndoManager<CameraProfile> undoManager = profile.undoManager;
 
         undoManager.setCallback(null);
-        undoManager.pushApplyUndo(undo, profile);
+
+        if (apply)
+        {
+            undoManager.pushApplyUndo(undo, profile);
+        }
+        else
+        {
+            undoManager.pushUndo(undo);
+        }
+
         undoManager.setCallback(this::handleUndos);
 
         this.updateProfile();

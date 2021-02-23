@@ -1,7 +1,6 @@
 package mchorse.aperture.client.gui.utils.undo;
 
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.utils.undo.IUndo;
 
@@ -12,24 +11,39 @@ public class FixtureValueChangeUndo implements IUndo<CameraProfile>
     public Object oldValue;
     public Object newValue;
 
+    private boolean mergable = true;
+
     public static FixtureValueChangeUndo create(GuiCameraEditor editor, String name, Object newValue)
     {
-        return new FixtureValueChangeUndo(editor.getProfile(), editor.getFixture(), name, newValue);
+        return create(editor, name, editor.getFixture().getProperty(name).getValue(), newValue);
     }
 
-    public FixtureValueChangeUndo(CameraProfile profile, AbstractFixture fixture, String name, Object newValue)
+    public static FixtureValueChangeUndo create(GuiCameraEditor editor, String name, Object oldValue, Object newValue)
     {
-        this.index = profile.getAll().indexOf(fixture);
-        this.name = name;
+        int index = editor.getProfile().getAll().indexOf(editor.getFixture());
 
-        this.oldValue = fixture.getProperty(name).getValue();
+        return new FixtureValueChangeUndo(index, name, oldValue, newValue);
+    }
+
+    public FixtureValueChangeUndo(int index, String name, Object oldValue, Object newValue)
+    {
+        this.index = index;
+        this.name = name;
+        this.oldValue = oldValue;
         this.newValue = newValue;
+    }
+
+    public FixtureValueChangeUndo unmergable()
+    {
+        this.mergable = false;
+
+        return this;
     }
 
     @Override
     public boolean isMergeable(IUndo<CameraProfile> undo)
     {
-        return undo instanceof FixtureValueChangeUndo && ((FixtureValueChangeUndo) undo).name.equals(this.name);
+        return this.mergable && undo instanceof FixtureValueChangeUndo && ((FixtureValueChangeUndo) undo).name.equals(this.name);
     }
 
     @Override

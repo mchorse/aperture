@@ -20,7 +20,7 @@ public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyf
     @Override
     protected GuiDopeSheet createElement(Minecraft mc)
     {
-        return new GuiDopeSheet(mc, this::fillData);
+        return new GuiDopeSheet(mc, this, this::fillData);
     }
 
     public void setFixture(KeyframeFixture fixture)
@@ -37,9 +37,12 @@ public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyf
 
         GuiKeyframeFixturePanel panel = (GuiKeyframeFixturePanel) this.editor.panel.delegate;
 
+        this.valueChannels.clear();
+
         for (int i = 0; i < fixture.channels.length; i++)
         {
-            sheets.add(new GuiSheet(String.valueOf(i), panel.titles[i + 1], panel.colors[i], fixture.channels[i]));
+            this.valueChannels.add(fixture.channels[i]);
+            sheets.add(new GuiSheet(String.valueOf(i), panel.titles[i + 1], panel.colors[i], fixture.channels[i].get()));
         }
 
         this.graph.resetView();

@@ -47,7 +47,7 @@ public abstract class AbstractFixture implements IByteBufSerializable
      * Duration of this fixture. Represented in ticks. There are 20 ticks in a
      * second.
      */
-    public final ValueLong duration = new ValueLong("duration", 1);
+    public final ValueLong duration = new ValueLong("duration", 1, 1, Long.MAX_VALUE);
 
     /**
      * List of camera modifiers. 

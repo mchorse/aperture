@@ -1,12 +1,14 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.values.ValueInterpolationType;
+import mchorse.mclib.config.values.ValueBoolean;
+import mchorse.mclib.config.values.ValueDouble;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
@@ -32,31 +34,25 @@ public class PathFixture extends AbstractFixture
      * List of points in this fixture 
      */
     @Expose
-    protected List<Position> points = new ArrayList<Position>();
+    protected final List<Position> points = new ArrayList<Position>();
 
     /**
      * Whether keyframe-able speed should be used for this
      */
-    @Expose
-    public boolean useSpeed;
+    public final ValueBoolean useSpeed = new ValueBoolean("useSpeed", false);
 
     /**
      * Keyframe-able speed
      */
     @Expose
-    public KeyframeChannel speed;
+    public final KeyframeChannel speed;
 
-    public InterpolationType interpolationPos;
-    public InterpolationType interpolationAngle;
+    public final ValueInterpolationType interpolation = new ValueInterpolationType("interpolation");
+    public final ValueInterpolationType interpolationAngle = new ValueInterpolationType("interpolationAngle");
 
-    @Expose
-    public boolean cirularAutoCenter = true;
-
-    @Expose
-    public double circularX = 0;
-
-    @Expose
-    public double circularZ = 0;
+    public final ValueBoolean cirularAutoCenter = new ValueBoolean("cirularAutoCenter", true);
+    public final ValueDouble circularX = new ValueDouble("circularX", 0);
+    public final ValueDouble circularZ = new ValueDouble("circularZ",0);
 
     /* Speed related cache data */
     private float lastTick;
@@ -70,10 +66,6 @@ public class PathFixture extends AbstractFixture
     {
         super(duration);
 
-        InterpolationType type = InterpolationType.HERMITE;
-
-        this.interpolationPos = type;
-        this.interpolationAngle = type;
         this.speed = new KeyframeChannel();
         this.speed.insert(0, 1);
     }
@@ -91,10 +83,10 @@ public class PathFixture extends AbstractFixture
         KeyframeFixture fixture = new KeyframeFixture(duration);
 
         fixture.copy(this);
-        KeyframeInterpolation pos = this.interpolationPos.interp;
-        KeyframeInterpolation angle = this.interpolationAngle.interp;
-        KeyframeEasing posEasing = this.interpolationPos.easing;
-        KeyframeEasing angleEasing = this.interpolationAngle.easing;
+        KeyframeInterpolation pos = this.interpolation.get().interp;
+        KeyframeInterpolation angle = this.interpolationAngle.get().interp;
+        KeyframeEasing posEasing = this.interpolation.get().easing;
+        KeyframeEasing angleEasing = this.interpolationAngle.get().easing;
 
         long x;
         int i = 0;
@@ -103,21 +95,21 @@ public class PathFixture extends AbstractFixture
         {
             x = (int) (i / (c - 1F) * duration);
 
-            int index = fixture.x.insert(x, (float) point.point.x);
-            fixture.y.insert(x, (float) point.point.y);
-            fixture.z.insert(x, (float) point.point.z);
-            fixture.yaw.insert(x, point.angle.yaw);
-            fixture.pitch.insert(x, point.angle.pitch);
-            fixture.roll.insert(x, point.angle.roll);
-            fixture.fov.insert(x, point.angle.fov);
+            int index = fixture.x.get().insert(x, (float) point.point.x);
+            fixture.y.get().insert(x, (float) point.point.y);
+            fixture.z.get().insert(x, (float) point.point.z);
+            fixture.yaw.get().insert(x, point.angle.yaw);
+            fixture.pitch.get().insert(x, point.angle.pitch);
+            fixture.roll.get().insert(x, point.angle.roll);
+            fixture.fov.get().insert(x, point.angle.fov);
 
-            fixture.x.get(index).setInterpolation(pos, posEasing);
-            fixture.y.get(index).setInterpolation(pos, posEasing);
-            fixture.z.get(index).setInterpolation(pos, posEasing);
-            fixture.yaw.get(index).setInterpolation(angle, angleEasing);
-            fixture.pitch.get(index).setInterpolation(angle, angleEasing);
-            fixture.roll.get(index).setInterpolation(angle, angleEasing);
-            fixture.fov.get(index).setInterpolation(angle, angleEasing);
+            fixture.x.get().get(index).setInterpolation(pos, posEasing);
+            fixture.y.get().get(index).setInterpolation(pos, posEasing);
+            fixture.z.get().get(index).setInterpolation(pos, posEasing);
+            fixture.yaw.get().get(index).setInterpolation(angle, angleEasing);
+            fixture.pitch.get().get(index).setInterpolation(angle, angleEasing);
+            fixture.roll.get().get(index).setInterpolation(angle, angleEasing);
+            fixture.fov.get().get(index).setInterpolation(angle, angleEasing);
 
             i ++;
         }
@@ -253,7 +245,7 @@ public class PathFixture extends AbstractFixture
         }
 
         /* If use speed is enabled */
-        if (this.useSpeed && !this.disableSpeed)
+        if (this.useSpeed.get() && !this.disableSpeed)
         {
             float tick = ticks + previewPartialTick;
 
@@ -473,7 +465,7 @@ public class PathFixture extends AbstractFixture
         Position p3 = this.getPoint(index + 2);
 
         /* Interpolating the position */
-        InterpolationType interp = this.interpolationPos;
+        InterpolationType interp = this.interpolation.get();
 
         if (interp == InterpolationType.CUBIC)
         {
@@ -589,13 +581,13 @@ public class PathFixture extends AbstractFixture
 
     public Vector2d getCenter()
     {
-        if (this.cirularAutoCenter)
+        if (this.cirularAutoCenter.get())
         {
             this.calculateCenter(VECTOR);
         }
         else
         {
-            VECTOR.set(this.circularX, this.circularZ);
+            VECTOR.set(this.circularX.get(), this.circularZ.get());
         }
 
         return VECTOR;
@@ -624,23 +616,13 @@ public class PathFixture extends AbstractFixture
     {
         float yaw = 0, pitch = 0, roll = 0, fov = 0;
 
-        if (this.interpolationPos == null)
-        {
-            this.interpolationPos = InterpolationType.LINEAR;
-        }
-
-        if (this.interpolationAngle == null)
-        {
-            this.interpolationAngle = InterpolationType.LINEAR;
-        }
-
         Position p0 = this.getPoint(index - 1);
         Position p1 = this.getPoint(index);
         Position p2 = this.getPoint(index + 1);
         Position p3 = this.getPoint(index + 2);
 
         /* Interpolating the angle */
-        InterpolationType interp = this.interpolationAngle;
+        InterpolationType interp = this.interpolationAngle.get();
 
         if (interp == InterpolationType.CUBIC)
         {
@@ -672,58 +654,30 @@ public class PathFixture extends AbstractFixture
     /* Save/load methods */
 
     @Override
-    public void toJSON(JsonObject object)
-    {
-        super.toJSON(object);
-
-        object.addProperty("interpolation", this.interpolationPos.name);
-        object.addProperty("interpolationAngle", this.interpolationAngle.name);
-    }
-
-    @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        if (object.has("interpolation"))
-        {
-            this.interpolationPos = interpFromString(object.get("interpolation").getAsString());
-        }
-
-        if (object.has("interpolationAngle"))
-        {
-            this.interpolationAngle = interpFromString(object.get("interpolationAngle").getAsString());
-        }
-    }
-
-    @Override
     public void fromBytes(ByteBuf buffer)
     {
         super.fromBytes(buffer);
-
-        this.interpolationPos = interpFromInt(buffer.readByte());
-        this.interpolationAngle = interpFromInt(buffer.readByte());
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
             this.addPoint(Position.fromBytes(buffer));
         }
 
-        this.useSpeed = buffer.readBoolean();
+        this.interpolation.fromBytes(buffer);
+        this.interpolationAngle.fromBytes(buffer);
+
+        this.useSpeed.fromBytes(buffer);
         this.speed.fromBytes(buffer);
 
-        this.cirularAutoCenter = buffer.readBoolean();
-        this.circularX = buffer.readDouble();
-        this.circularZ = buffer.readDouble();
+        this.cirularAutoCenter.fromBytes(buffer);
+        this.circularX.fromBytes(buffer);
+        this.circularZ.fromBytes(buffer);
     }
 
     @Override
     public void toBytes(ByteBuf buffer)
     {
         super.toBytes(buffer);
-
-        buffer.writeByte(this.interpolationPos.ordinal());
-        buffer.writeByte(this.interpolationAngle.ordinal());
 
         buffer.writeInt(this.points.size());
 
@@ -732,12 +686,15 @@ public class PathFixture extends AbstractFixture
             pos.toBytes(buffer);
         }
 
-        buffer.writeBoolean(this.useSpeed);
+        this.interpolation.toBytes(buffer);
+        this.interpolationAngle.toBytes(buffer);
+
+        this.useSpeed.toBytes(buffer);
         this.speed.toBytes(buffer);
 
-        buffer.writeBoolean(this.cirularAutoCenter);
-        buffer.writeDouble(this.circularX);
-        buffer.writeDouble(this.circularZ);
+        this.cirularAutoCenter.toBytes(buffer);
+        this.circularX.toBytes(buffer);
+        this.circularZ.toBytes(buffer);
     }
 
     @Override
@@ -760,15 +717,15 @@ public class PathFixture extends AbstractFixture
                 this.addPoint(pos.copy());
             }
 
-            this.interpolationPos = path.interpolationPos;
-            this.interpolationAngle = path.interpolationAngle;
+            this.interpolation.copy(path.interpolation);
+            this.interpolationAngle.copy(path.interpolationAngle);
 
-            this.useSpeed = path.useSpeed;
+            this.useSpeed.copy(path.useSpeed);
             this.speed.copy(path.speed);
 
-            this.cirularAutoCenter = path.cirularAutoCenter;
-            this.circularX = path.circularX;
-            this.circularZ = path.circularZ;
+            this.cirularAutoCenter.copy(path.cirularAutoCenter);
+            this.circularX.copy(path.circularX);
+            this.circularZ.copy(path.circularZ);
         }
     }
 
@@ -787,34 +744,12 @@ public class PathFixture extends AbstractFixture
             this.points.clear();
             this.points.add(dolly.position.get().copy());
             this.points.add(position);
-            this.interpolationPos = this.interpolationAngle = InterpolationType.fromInterp(dolly.interp.get());
+            this.interpolation.set(InterpolationType.fromInterp(dolly.interp.get()));
+            this.interpolationAngle.set(InterpolationType.fromInterp(dolly.interp.get()));
         }
     }
 
     /* Interpolation */
-
-    public static InterpolationType interpFromInt(int number)
-    {
-        if (number < 0 || number >= InterpolationType.values().length)
-        {
-            return InterpolationType.LINEAR;
-        }
-
-        return InterpolationType.values()[number];
-    }
-
-    public static InterpolationType interpFromString(String string)
-    {
-        for (InterpolationType type : InterpolationType.values())
-        {
-            if (type.name.equals(string))
-            {
-                return type;
-            }
-        }
-
-        return InterpolationType.LINEAR;
-    }
 
     public static enum InterpolationType
     {
