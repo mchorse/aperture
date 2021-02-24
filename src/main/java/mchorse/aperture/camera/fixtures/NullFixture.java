@@ -63,20 +63,4 @@ public class NullFixture extends AbstractFixture
             this.previous.copy(nullFixture.previous);
         }
     }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        this.previous.toBytes(buffer);
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.previous.fromBytes(buffer);
-    }
 }

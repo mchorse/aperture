@@ -1,6 +1,5 @@
 package mchorse.aperture.camera.fixtures;
 
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.data.RenderFrame;
@@ -153,33 +152,5 @@ public class KeyframeFixture extends AbstractFixture
                 }
             }
         }
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.x.fromBytes(buffer);
-        this.y.fromBytes(buffer);
-        this.z.fromBytes(buffer);
-        this.yaw.fromBytes(buffer);
-        this.pitch.fromBytes(buffer);
-        this.roll.fromBytes(buffer);
-        this.fov.fromBytes(buffer);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        this.x.toBytes(buffer);
-        this.y.toBytes(buffer);
-        this.z.toBytes(buffer);
-        this.yaw.toBytes(buffer);
-        this.pitch.toBytes(buffer);
-        this.roll.toBytes(buffer);
-        this.fov.toBytes(buffer);
     }
 }

@@ -2,6 +2,7 @@ package mchorse.aperture.camera;
 
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.data.InterpolationType;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.CircularFixture;
@@ -267,7 +268,7 @@ public class CameraRenderer
             double distY = Math.abs(this.next.point.y - this.prev.point.y);
             double distZ = Math.abs(this.next.point.z - this.prev.point.z);
 
-            this.color.set(fixture.getColor(), false);
+            this.color.set(fixture.color.get(), false);
 
             if (this.color.getRGBColor() == 0)
             {
@@ -361,7 +362,7 @@ public class CameraRenderer
 
         Tessellator.getInstance().draw();
 
-        if (path != null && path.interpolation.get() == PathFixture.InterpolationType.CIRCULAR && path.getPoints().size() > 0)
+        if (path != null && path.interpolation.get() == InterpolationType.CIRCULAR && path.getPoints().size() > 0)
         {
             Vector2d center = path.getCenter();
             double y = 0;

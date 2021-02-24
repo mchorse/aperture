@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui.panels;
 
 import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.data.InterpolationType;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.values.ValuePosition;
@@ -153,7 +154,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
             this.circular.add(this.circularZ);
         }
 
-        if (this.fixture.interpolation.get() == PathFixture.InterpolationType.CIRCULAR)
+        if (this.fixture.interpolation.get() == InterpolationType.CIRCULAR)
         {
             this.right.add(this.circular);
         }

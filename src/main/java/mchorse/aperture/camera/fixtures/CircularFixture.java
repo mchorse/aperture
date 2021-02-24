@@ -1,6 +1,5 @@
 package mchorse.aperture.camera.fixtures;
 
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
@@ -106,29 +105,5 @@ public class CircularFixture extends AbstractFixture
             this.circles.copy(circular.circles);
             this.pitch.copy(circular.pitch);
         }
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.start.fromBytes(buffer);
-        this.offset.fromBytes(buffer);
-        this.distance.fromBytes(buffer);
-        this.circles.fromBytes(buffer);
-        this.pitch.fromBytes(buffer);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        this.start.toBytes(buffer);
-        this.offset.toBytes(buffer);
-        this.distance.toBytes(buffer);
-        this.circles.toBytes(buffer);
-        this.pitch.toBytes(buffer);
     }
 }

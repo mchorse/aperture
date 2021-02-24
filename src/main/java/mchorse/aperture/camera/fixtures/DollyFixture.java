@@ -1,6 +1,5 @@
 package mchorse.aperture.camera.fixtures;
 
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
@@ -121,29 +120,5 @@ public class DollyFixture extends IdleFixture
                 this.interp.set(function);
             }
         }
-    }
-
-    /* Save/load methods */
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.yaw.fromBytes(buffer);
-        this.pitch.fromBytes(buffer);
-        this.distance.fromBytes(buffer);
-        this.interp.fromBytes(buffer);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        this.yaw.toBytes(buffer);
-        this.pitch.toBytes(buffer);
-        this.distance.toBytes(buffer);
-        this.interp.toBytes(buffer);
     }
 }

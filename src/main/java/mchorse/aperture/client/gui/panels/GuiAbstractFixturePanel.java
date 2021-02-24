@@ -119,8 +119,8 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     {
         this.fixture = fixture;
 
-        this.name.setText(fixture.getName());
-        this.color.picker.setColor(fixture.getColor());
+        this.name.setText(fixture.name.get());
+        this.color.picker.setColor(fixture.color.get());
         this.updateDurationSettings();
     }
 

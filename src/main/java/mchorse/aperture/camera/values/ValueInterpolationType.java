@@ -3,12 +3,11 @@ package mchorse.aperture.camera.values;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.data.InterpolationType;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.config.gui.GuiConfigPanel;
 import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
-import mchorse.mclib.utils.Interpolation;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,19 +16,19 @@ import java.util.List;
 
 public class ValueInterpolationType extends Value
 {
-    private PathFixture.InterpolationType interp = PathFixture.InterpolationType.HERMITE;
+    private InterpolationType interp = InterpolationType.HERMITE;
 
     public ValueInterpolationType(String id)
     {
         super(id);
     }
 
-    public PathFixture.InterpolationType get()
+    public InterpolationType get()
     {
         return this.interp;
     }
 
-    public void set(PathFixture.InterpolationType interp)
+    public void set(InterpolationType interp)
     {
         this.interp = interp;
         this.saveLater();
@@ -44,16 +43,16 @@ public class ValueInterpolationType extends Value
     @Override
     public void setValue(Object object)
     {
-        if (object instanceof PathFixture.InterpolationType)
+        if (object instanceof InterpolationType)
         {
-            this.set((PathFixture.InterpolationType) object);
+            this.set((InterpolationType) object);
         }
     }
 
     @Override
     public void reset()
     {
-        this.interp = PathFixture.InterpolationType.HERMITE;
+        this.interp = InterpolationType.HERMITE;
     }
 
     @Override
@@ -66,7 +65,7 @@ public class ValueInterpolationType extends Value
     @Override
     public void fromJSON(JsonElement element)
     {
-        this.interp = PathFixture.InterpolationType.valueOf(element.getAsString());
+        this.interp = InterpolationType.valueOf(element.getAsString());
     }
 
     @Override
@@ -89,7 +88,7 @@ public class ValueInterpolationType extends Value
     {
         super.fromBytes(buffer);
 
-        this.interp = PathFixture.InterpolationType.values()[buffer.readInt()];
+        this.interp = InterpolationType.values()[buffer.readInt()];
     }
 
     @Override

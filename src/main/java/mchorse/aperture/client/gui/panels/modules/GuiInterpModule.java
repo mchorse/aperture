@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.panels.modules;
 
+import mchorse.aperture.camera.data.InterpolationType;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
@@ -102,24 +103,24 @@ public class GuiInterpModule extends GuiAbstractModule
 
     private void togglePosition()
     {
-        PathFixture.InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
+        InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
 
         this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolation", type));
     }
 
     private void toggleAngle()
     {
-        PathFixture.InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
+        InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
 
         this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolationAngle", type));
     }
 
-    private PathFixture.InterpolationType next(PathFixture.InterpolationType interp, GuiButtonElement button)
+    private InterpolationType next(InterpolationType interp, GuiButtonElement button)
     {
         int factor = GuiScreen.isShiftKeyDown() ? -1 : 1;
-        int index = MathUtils.cycler(interp.ordinal() + factor, 0, PathFixture.InterpolationType.values().length - 1);
+        int index = MathUtils.cycler(interp.ordinal() + factor, 0, InterpolationType.values().length - 1);
 
-        interp = PathFixture.InterpolationType.values()[index];
+        interp = InterpolationType.values()[index];
         button.label.set(interp.getKey());
         this.interps.setCurrent(interp);
         this.editor.updateProfile();

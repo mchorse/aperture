@@ -1,6 +1,5 @@
 package mchorse.aperture.camera.fixtures;
 
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.data.RenderFrame;
@@ -165,27 +164,5 @@ public class ManualFixture extends AbstractFixture
             this.speed.copy(manual.speed);
             this.frames.copy(manual.frames);
         }
-    }
-
-    /* Save/load methods */
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.shift.fromBytes(buffer);
-        this.speed.fromBytes(buffer);
-        this.frames.fromBytes(buffer);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        this.shift.toBytes(buffer);
-        this.speed.toBytes(buffer);
-        this.frames.toBytes(buffer);
     }
 }

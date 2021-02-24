@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
-import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.mclib.config.ConfigCategory;
@@ -15,10 +14,8 @@ import mchorse.mclib.config.values.ValueLong;
 import mchorse.mclib.config.values.ValueString;
 import mchorse.mclib.network.IByteBufSerializable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -97,13 +94,18 @@ public abstract class AbstractFixture implements IByteBufSerializable
         {
             String[] splits = name.split("\\.");
 
-            value = this.searchRecursively(this.category.values.get(splits[0]), splits, 0, splits[0], name);
+            value = this.searchRecursively(this.category.values.get(splits[0]), splits, 0, name);
+        }
+
+        if (value == null)
+        {
+            throw new IllegalStateException("Property by name " + name + " can't be found!");
         }
 
         return value;
     }
 
-    private IConfigValue searchRecursively(IConfigValue value, String[] splits, int i, String prefix, String name)
+    private IConfigValue searchRecursively(IConfigValue value, String[] splits, int i, String name)
     {
         if (value == null)
         {
@@ -116,9 +118,9 @@ public abstract class AbstractFixture implements IByteBufSerializable
             {
                 return child;
             }
-            else if (i + 1 < splits.length && child.getId().equals(prefix))
+            else if (i + 1 < splits.length && name.startsWith(child.getId()))
             {
-                return this.searchRecursively(child, splits, i + 1, child.getId(), name);
+                return this.searchRecursively(child, splits, i + 1, name);
             }
         }
 
@@ -127,18 +129,6 @@ public abstract class AbstractFixture implements IByteBufSerializable
 
     public void initiate()
     {}
-
-    /* Color */
-
-    public void setColor(int color)
-    {
-        this.color.set(color);
-    }
-
-    public int getColor()
-    {
-        return this.color.get();
-    }
 
     /* Duration management */
 
@@ -158,24 +148,6 @@ public abstract class AbstractFixture implements IByteBufSerializable
         return this.duration.get();
     }
 
-    /* Name management */
-
-    /**
-     * Set name
-     */
-    public void setName(String name)
-    {
-        this.name.set(name);
-    }
-
-    /**
-     * Get name
-     */
-    public String getName()
-    {
-        return this.name.get();
-    }
-
     /**
      * Get some properties from player upon creation
      */
@@ -192,11 +164,6 @@ public abstract class AbstractFixture implements IByteBufSerializable
             {
                 value.fromJSON(object.get(value.getId()));
             }
-        }
-
-        if (this.getDuration() <= 0)
-        {
-            this.setDuration(1);
         }
     }
 
@@ -216,17 +183,9 @@ public abstract class AbstractFixture implements IByteBufSerializable
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        this.name.set(ByteBufUtils.readUTF8String(buffer));
-        this.color.set(buffer.readInt());
-
-        for (int i = 0, c = buffer.readInt(); i < c; i++)
+        for (IConfigValue value : this.category.values.values())
         {
-            AbstractModifier modifier = ModifierRegistry.fromBytes(buffer);
-
-            if (modifier != null)
-            {
-                this.modifiers.add(modifier);
-            }
+            value.fromBytes(buffer);
         }
     }
 
@@ -236,33 +195,9 @@ public abstract class AbstractFixture implements IByteBufSerializable
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        ByteBufUtils.writeUTF8String(buffer, this.name.get());
-        buffer.writeInt(this.color.get());
-
-        if (this.modifiers == null)
+        for (IConfigValue value : this.category.values.values())
         {
-            buffer.writeInt(0);
-        }
-        else
-        {
-            /* Clear all null modifiers (they can appear due to 
-             * incorrect JSON parsing) */
-            Iterator<AbstractModifier> it = this.modifiers.iterator();
-
-            while (it.hasNext())
-            {
-                if (it.next() == null)
-                {
-                    it.remove();
-                }
-            }
-
-            buffer.writeInt(this.modifiers.size());
-
-            for (AbstractModifier modifier : this.modifiers)
-            {
-                ModifierRegistry.toBytes(modifier, buffer);
-            }
+            value.toBytes(buffer);
         }
     }
 

@@ -361,6 +361,7 @@ public class GuiPlaybackScrub extends GuiElement
 
             if (value >= start + 5 && (this.end == null || value <= end - 5))
             {
+                /* TODO: undo */
                 this.start.setDuration(value - start);
 
                 if (this.end != null)
@@ -369,7 +370,7 @@ public class GuiPlaybackScrub extends GuiElement
                 }
 
                 /* Update the values */
-                GuiAbstractFixturePanel<AbstractFixture> delegate = this.editor.panel.delegate;
+                GuiAbstractFixturePanel delegate = this.editor.panel.delegate;
 
                 if (delegate != null)
                 {
@@ -412,7 +413,7 @@ public class GuiPlaybackScrub extends GuiElement
 
             for (AbstractFixture fixture : this.profile.getAll())
             {
-                COLOR.set(fixture.getColor(), false);
+                COLOR.set(fixture.color.get(), false);
 
                 int color = COLOR.getRGBColor();
 
@@ -474,7 +475,7 @@ public class GuiPlaybackScrub extends GuiElement
                     this.drawGradientRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, 0x00000000, 0x44000000);
                 }
 
-                String name = fixture.getName();
+                String name = fixture.name.get();
 
                 /* Draw path's fixture separators */
                 if (fixture instanceof PathFixture)

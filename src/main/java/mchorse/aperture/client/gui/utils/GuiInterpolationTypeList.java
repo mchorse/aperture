@@ -1,6 +1,6 @@
 package mchorse.aperture.client.gui.utils;
 
-import mchorse.aperture.camera.fixtures.PathFixture.InterpolationType;
+import mchorse.aperture.camera.data.InterpolationType;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
