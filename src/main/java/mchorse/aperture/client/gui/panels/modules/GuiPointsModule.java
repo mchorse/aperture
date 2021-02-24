@@ -1,20 +1,23 @@
 package mchorse.aperture.client.gui.panels.modules;
 
+import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
-import mchorse.aperture.utils.APIcons;
+import mchorse.aperture.client.gui.utils.undo.FixturePointsChangeUndo;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.ScrollArea;
-
 import mchorse.mclib.client.gui.utils.ScrollDirection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Points GUI module
@@ -26,7 +29,7 @@ public class GuiPointsModule extends GuiAbstractModule
 {
     /* Input */
     public PathFixture path;
-    public GuiPathFixturePanel picker;
+    public Consumer<Integer> picker;
 
     /* GUI */
     public ScrollArea scroll = new ScrollArea(20);
@@ -36,32 +39,16 @@ public class GuiPointsModule extends GuiAbstractModule
      */
     public int index = 0;
 
-    public GuiPointsModule(Minecraft mc, GuiPathFixturePanel picker, GuiCameraEditor editor)
+    public GuiPointsModule(Minecraft mc, GuiCameraEditor editor, Consumer<Integer> picker)
     {
         super(mc, editor);
 
         this.picker = picker;
 
-        GuiIconElement back = new GuiIconElement(mc, Icons.SHIFT_BACKWARD, (b) ->
-        {
-            if (this.index == 0) return;
-
-            this.path.movePoint(this.index, this.index - 1);
-            this.index--;
-            this.editor.updateProfile();
-        });
-
+        GuiIconElement back = new GuiIconElement(mc, Icons.SHIFT_BACKWARD, (b) -> this.moveBack());
+        GuiIconElement forward = new GuiIconElement(mc, Icons.SHIFT_FORWARD, (b) -> this.moveForward());
         GuiIconElement add = new GuiIconElement(mc, Icons.ADD, (b) -> this.addPoint());
         GuiIconElement remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.removePoint());
-
-        GuiIconElement forward = new GuiIconElement(mc, Icons.SHIFT_FORWARD, (b) ->
-        {
-            if (this.index >= this.path.getCount() - 1) return;
-
-            this.path.movePoint(this.index, this.index + 1);
-            this.index++;
-            this.editor.updateProfile();
-        });
 
         back.flex().relative(this).x(-40);
         remove.flex().relative(this).x(-20);
@@ -72,28 +59,76 @@ public class GuiPointsModule extends GuiAbstractModule
         this.scroll.direction = ScrollDirection.HORIZONTAL;
     }
 
+    public void setIndex(int index)
+    {
+        this.index = index;
+        this.scroll.scrollIntoView(index * this.scroll.scrollItemSize);
+    }
+
+    public void moveBack()
+    {
+        if (this.index == 0)
+        {
+            return;
+        }
+
+        List<Position> positions = (List<Position>) this.path.points.getValue();
+
+        positions.add(this.index, positions.remove(this.index - 1));
+
+        int nextIndex = this.index - 1;
+
+        this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+        this.index = nextIndex;
+    }
+
+    public void moveForward()
+    {
+        if (this.index >= this.path.getCount() - 1)
+        {
+            return;
+        }
+
+        List<Position> positions = (List<Position>) this.path.points.getValue();
+
+        positions.add(this.index, positions.remove(this.index + 1));
+
+        int nextIndex = this.index - 1;
+
+        this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+        this.index = nextIndex;
+    }
+
     public void addPoint()
     {
+        List<Position> positions = (List<Position>) this.path.points.getValue();
+
         if (this.index + 1 >= this.path.getPoints().size())
         {
-            this.path.addPoint(this.editor.getPosition());
-            this.index = MathHelper.clamp(this.index + 1, 0, this.path.getCount() - 1);
+            positions.add(this.editor.getPosition());
+
+            int nextIndex = MathHelper.clamp(this.index + 1, 0, positions.size() - 1);
+
+            this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+            this.index = nextIndex;
         }
         else
         {
-            this.path.addPoint(this.editor.getPosition(), this.index + 1);
-            this.index++;
+            positions.add(this.index + 1, this.editor.getPosition());
+
+            int nextIndex = this.index + 1;
+
+            this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+            this.index = nextIndex;
         }
 
         this.scroll.setSize(this.path.getCount());
-        this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
+        this.scroll.scrollTo(this.index * this.scroll.scrollItemSize);
 
         if (this.picker != null)
         {
-            this.picker.pickPoint(this, this.index);
+            this.picker.accept(this.index);
         }
-
-        this.editor.updateProfile();
     }
 
     public void removePoint()
@@ -103,22 +138,22 @@ public class GuiPointsModule extends GuiAbstractModule
             return;
         }
 
-        this.path.removePoint(this.index);
+        List<Position> positions = (List<Position>) this.path.points.getValue();
 
-        if (this.index > 0)
-        {
-            this.index--;
-        }
+        positions.remove(this.index);
 
+        int nextIndex = this.index > 0 ? this.index - 1 : this.index;
+
+        this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+
+        this.index = nextIndex;
         this.scroll.setSize(this.path.getCount());
-        this.scroll.scrollTo((int) (this.index / (float) this.path.getCount() * this.scroll.scrollSize));
+        this.scroll.scrollTo(this.index * this.scroll.scrollItemSize);
 
         if (this.picker != null)
         {
-            this.picker.pickPoint(this, this.index);
+            this.picker.accept(this.index);
         }
-
-        this.editor.updateProfile();
     }
 
     /**
@@ -178,7 +213,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
                     if (this.picker != null)
                     {
-                        this.picker.pickPoint(this, index);
+                        this.picker.accept(index);
                     }
                 }
             }
@@ -270,13 +305,5 @@ public class GuiPointsModule extends GuiAbstractModule
         String label = I18n.format("aperture.gui.panels.path_points");
         int w = this.font.getStringWidth(label);
         this.font.drawStringWithShadow(label, this.scroll.x + this.scroll.w / 2 - w / 2, this.scroll.y - 14, 0xffffff);
-    }
-
-    /**
-     * Point picker interface
-     */
-    public static interface IPointPicker
-    {
-        public void pickPoint(GuiPointsModule module, int index);
     }
 }

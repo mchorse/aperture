@@ -29,7 +29,7 @@ public class GuiPointModule extends GuiAbstractModule
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
-            Point point = this.point.point.copy();
+            Point point = this.point.get().copy();
 
             point.x = value;
             this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
@@ -38,7 +38,7 @@ public class GuiPointModule extends GuiAbstractModule
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
-            Point point = this.point.point.copy();
+            Point point = this.point.get().copy();
 
             point.y = value;
             this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
@@ -47,7 +47,7 @@ public class GuiPointModule extends GuiAbstractModule
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
-            Point point = this.point.point.copy();
+            Point point = this.point.get().copy();
 
             point.z = value;
             this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
@@ -66,8 +66,8 @@ public class GuiPointModule extends GuiAbstractModule
     {
         this.point = point;
 
-        this.x.setValue((float) point.point.x);
-        this.y.setValue((float) point.point.y);
-        this.z.setValue((float) point.point.z);
+        this.x.setValue((float) point.get().x);
+        this.y.setValue((float) point.get().y);
+        this.z.setValue((float) point.get().z);
     }
 }

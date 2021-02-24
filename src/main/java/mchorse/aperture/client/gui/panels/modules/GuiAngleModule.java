@@ -30,7 +30,7 @@ public class GuiAngleModule extends GuiAbstractModule
 
         this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
-            Angle point = this.angle.angle.copy();
+            Angle point = this.angle.get().copy();
 
             point.yaw = value.floatValue();
             this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
@@ -39,7 +39,7 @@ public class GuiAngleModule extends GuiAbstractModule
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            Angle point = this.angle.angle.copy();
+            Angle point = this.angle.get().copy();
 
             point.pitch = value.floatValue();
             this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
@@ -48,7 +48,7 @@ public class GuiAngleModule extends GuiAbstractModule
 
         this.roll = new GuiTrackpadElement(mc, (value) ->
         {
-            Angle point = this.angle.angle.copy();
+            Angle point = this.angle.get().copy();
 
             point.roll = value.floatValue();
             this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
@@ -57,7 +57,7 @@ public class GuiAngleModule extends GuiAbstractModule
 
         this.fov = new GuiTrackpadElement(mc, (value) ->
         {
-            Angle point = this.angle.angle.copy();
+            Angle point = this.angle.get().copy();
 
             point.fov = value.floatValue();
             this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle.getId(), point));
@@ -72,9 +72,9 @@ public class GuiAngleModule extends GuiAbstractModule
     {
         this.angle = angle;
 
-        this.yaw.setValue(angle.angle.yaw);
-        this.pitch.setValue(angle.angle.pitch);
-        this.roll.setValue(angle.angle.roll);
-        this.fov.setValue(angle.angle.fov);
+        this.yaw.setValue(angle.get().yaw);
+        this.pitch.setValue(angle.get().pitch);
+        this.roll.setValue(angle.get().roll);
+        this.fov.setValue(angle.get().fov);
     }
 }

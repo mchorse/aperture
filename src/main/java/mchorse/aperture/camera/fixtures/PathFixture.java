@@ -1,12 +1,13 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.values.ValueInterpolationType;
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
+import mchorse.aperture.camera.values.ValuePositions;
 import mchorse.mclib.config.values.ValueBoolean;
 import mchorse.mclib.config.values.ValueDouble;
 import mchorse.mclib.utils.Interpolation;
@@ -31,10 +32,12 @@ public class PathFixture extends AbstractFixture
     public static final Vector2d VECTOR = new Vector2d();
 
     /**
-     * List of points in this fixture 
+     * List of points in this fixture
      */
-    @Expose
-    protected final List<Position> points = new ArrayList<Position>();
+    public final ValuePositions points = new ValuePositions("points");
+
+    public final ValueInterpolationType interpolation = new ValueInterpolationType("interpolation");
+    public final ValueInterpolationType interpolationAngle = new ValueInterpolationType("interpolationAngle");
 
     /**
      * Whether keyframe-able speed should be used for this
@@ -44,13 +47,9 @@ public class PathFixture extends AbstractFixture
     /**
      * Keyframe-able speed
      */
-    @Expose
-    public final KeyframeChannel speed;
+    public final ValueKeyframeChannel speed = new ValueKeyframeChannel("speed");
 
-    public final ValueInterpolationType interpolation = new ValueInterpolationType("interpolation");
-    public final ValueInterpolationType interpolationAngle = new ValueInterpolationType("interpolationAngle");
-
-    public final ValueBoolean cirularAutoCenter = new ValueBoolean("cirularAutoCenter", true);
+    public final ValueBoolean circularAutoCenter = new ValueBoolean("circularAutoCenter", true);
     public final ValueDouble circularX = new ValueDouble("circularX", 0);
     public final ValueDouble circularZ = new ValueDouble("circularZ",0);
 
@@ -66,8 +65,18 @@ public class PathFixture extends AbstractFixture
     {
         super(duration);
 
-        this.speed = new KeyframeChannel();
-        this.speed.insert(0, 1);
+        this.register(this.points);
+        this.register(this.interpolation);
+        this.register(this.interpolationAngle);
+
+        this.register(this.useSpeed);
+        this.register(this.speed);
+
+        this.register(this.circularAutoCenter);
+        this.register(this.circularX);
+        this.register(this.circularZ);
+
+        this.speed.get().insert(0, 1);
     }
 
     public KeyframeFixture toKeyframe()
@@ -120,7 +129,6 @@ public class PathFixture extends AbstractFixture
     @Override
     public void initiate()
     {
-        this.speed.sort();
         this.updateSpeedCache();
     }
 
@@ -130,7 +138,7 @@ public class PathFixture extends AbstractFixture
 
         this.cache.clear();
 
-        for (int i = 1, c = this.points.size(); i < c; i ++)
+        for (int i = 1, c = this.getCount(); i < c; i ++)
         {
             float target = this.calculateTarget((int) (this.getDuration() / (float) c * i));
 
@@ -151,73 +159,34 @@ public class PathFixture extends AbstractFixture
 
     public Position getPoint(int index)
     {
-        if (this.points.size() == 0)
+        int size = this.getCount();
+
+        if (size == 0)
         {
             return new Position(0, 0, 0, 0, 0);
         }
 
-        if (index >= this.points.size())
+        if (index >= size)
         {
-            return this.points.get(this.points.size() - 1);
+            return this.points.get().get(size - 1);
         }
 
         if (index < 0)
         {
-            return this.points.get(0);
+            return this.points.get().get(0);
         }
 
-        return this.points.get(index);
-    }
-
-    public boolean hasPoint(int index)
-    {
-        return !this.points.isEmpty() && index >= 0 && index < this.points.size();
+        return this.points.get().get(index);
     }
 
     public List<Position> getPoints()
     {
-        return this.points;
+        return this.points.get();
     }
 
     public int getCount()
     {
-        return this.points.size();
-    }
-
-    public void addPoint(Position point)
-    {
-        this.points.add(point);
-    }
-
-    public void addPoint(Position point, int before)
-    {
-        this.points.add(before, point);
-    }
-
-    public void movePoint(int from, int to)
-    {
-        this.points.add(to, this.points.remove(from));
-    }
-
-    public void editPoint(Position point, int index)
-    {
-        this.points.set(index, point);
-    }
-
-    public void removePoint(int index)
-    {
-        this.points.remove(index);
-    }
-
-    /**
-     * Return index of a point at given frame (relative to that path fixture, i.e. 0)  
-     */
-    public int getIndexForPoint(int frame)
-    {
-        float range = (float) frame / this.getDuration();
-        int index = (int) Math.floor(range * (this.points.size() - 1));
-
-        return MathHelper.clamp(index, 0, (int) this.getDuration());
+        return this.getCount();
     }
 
     /**
@@ -225,13 +194,13 @@ public class PathFixture extends AbstractFixture
      */
     public long getTickForPoint(int index)
     {
-        return (long) ((index / (float) (this.points.size() - 1)) * this.getDuration());
+        return (long) ((index / (float) (this.getCount() - 1)) * this.getDuration());
     }
 
     @Override
     public void fromPlayer(EntityPlayer player)
     {
-        this.addPoint(new Position(player));
+        this.points.get().add(new Position(player));
     }
 
     @Override
@@ -239,7 +208,7 @@ public class PathFixture extends AbstractFixture
     {
         long duration = this.getDuration();
 
-        if (this.points.isEmpty() || duration == 0)
+        if (this.points.get().isEmpty() || duration == 0)
         {
             return;
         }
@@ -261,7 +230,7 @@ public class PathFixture extends AbstractFixture
         }
         else
         {
-            int length = this.points.size() - 1;
+            int length = this.getCount() - 1;
             int index;
             float x;
 
@@ -330,7 +299,7 @@ public class PathFixture extends AbstractFixture
          * tries to calculate the point that is close enough to the
          * target */
         int iterations = 0;
-        int size = this.points.size() - 1;
+        int size = this.getCount() - 1;
         int index = 0;
         float progress = 0;
         float distance = 0;
@@ -441,12 +410,14 @@ public class PathFixture extends AbstractFixture
          * comments below) */
         float target = 0F;
 
+        KeyframeChannel channel = this.speed.get();
+
         for (int i = 0, c = (int) tick; i < c; i++)
         {
-            target += this.speed.interpolate(i);
+            target += channel.interpolate(i);
         }
 
-        target += this.speed.interpolate(tick) * (tick % 1);
+        target += channel.interpolate(tick) * (tick % 1);
         target /= 20F;
 
         return target;
@@ -481,7 +452,7 @@ public class PathFixture extends AbstractFixture
         }
         else if (interp == InterpolationType.CIRCULAR)
         {
-            int size = this.points.size();
+            int size = this.getCount();
 
             if (index >= size)
             {
@@ -531,7 +502,7 @@ public class PathFixture extends AbstractFixture
 
     private Vector2d calculateCircular(double mx, double mz, int index)
     {
-        int size = this.points.size();
+        int size = this.getCount();
 
         double a = 0;
         double d = 0;
@@ -548,7 +519,7 @@ public class PathFixture extends AbstractFixture
 
         for (int i = 0; i < size; i++)
         {
-            Position p = this.points.get(i);
+            Position p = this.points.get().get(i);
 
             double dx = p.point.x - mx;
             double dz = p.point.z - mz;
@@ -581,7 +552,7 @@ public class PathFixture extends AbstractFixture
 
     public Vector2d getCenter()
     {
-        if (this.cirularAutoCenter.get())
+        if (this.circularAutoCenter.get())
         {
             this.calculateCenter(VECTOR);
         }
@@ -597,14 +568,14 @@ public class PathFixture extends AbstractFixture
     {
         vector.set(0, 0);
 
-        for (Position position : this.points)
+        for (Position position : this.points.get())
         {
             vector.x += position.point.x;
             vector.y += position.point.z;
         }
 
-        vector.x /= this.points.size();
-        vector.y /= this.points.size();
+        vector.x /= this.getCount();
+        vector.y /= this.getCount();
 
         return vector;
     }
@@ -658,18 +629,14 @@ public class PathFixture extends AbstractFixture
     {
         super.fromBytes(buffer);
 
-        for (int i = 0, c = buffer.readInt(); i < c; i++)
-        {
-            this.addPoint(Position.fromBytes(buffer));
-        }
-
+        this.points.fromBytes(buffer);
         this.interpolation.fromBytes(buffer);
         this.interpolationAngle.fromBytes(buffer);
 
         this.useSpeed.fromBytes(buffer);
         this.speed.fromBytes(buffer);
 
-        this.cirularAutoCenter.fromBytes(buffer);
+        this.circularAutoCenter.fromBytes(buffer);
         this.circularX.fromBytes(buffer);
         this.circularZ.fromBytes(buffer);
     }
@@ -679,20 +646,14 @@ public class PathFixture extends AbstractFixture
     {
         super.toBytes(buffer);
 
-        buffer.writeInt(this.points.size());
-
-        for (Position pos : this.points)
-        {
-            pos.toBytes(buffer);
-        }
-
+        this.points.toBytes(buffer);
         this.interpolation.toBytes(buffer);
         this.interpolationAngle.toBytes(buffer);
 
         this.useSpeed.toBytes(buffer);
         this.speed.toBytes(buffer);
 
-        this.cirularAutoCenter.toBytes(buffer);
+        this.circularAutoCenter.toBytes(buffer);
         this.circularX.toBytes(buffer);
         this.circularZ.toBytes(buffer);
     }
@@ -712,18 +673,14 @@ public class PathFixture extends AbstractFixture
         {
             PathFixture path = (PathFixture) from;
 
-            for (Position pos : path.points)
-            {
-                this.addPoint(pos.copy());
-            }
-
+            this.points.copy(path.points);
             this.interpolation.copy(path.interpolation);
             this.interpolationAngle.copy(path.interpolationAngle);
 
             this.useSpeed.copy(path.useSpeed);
             this.speed.copy(path.speed);
 
-            this.cirularAutoCenter.copy(path.cirularAutoCenter);
+            this.circularAutoCenter.copy(path.circularAutoCenter);
             this.circularX.copy(path.circularX);
             this.circularZ.copy(path.circularZ);
         }
@@ -741,9 +698,9 @@ public class PathFixture extends AbstractFixture
 
             from.applyLast(null, position);
 
-            this.points.clear();
-            this.points.add(dolly.position.get().copy());
-            this.points.add(position);
+            this.points.reset();
+            this.points.get().add(dolly.position.get().copy());
+            this.points.get().add(position);
             this.interpolation.set(InterpolationType.fromInterp(dolly.interp.get()));
             this.interpolationAngle.set(InterpolationType.fromInterp(dolly.interp.get()));
         }

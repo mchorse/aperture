@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ValueInterpolationType extends Value
 {
-    public PathFixture.InterpolationType interp = PathFixture.InterpolationType.HERMITE;
+    private PathFixture.InterpolationType interp = PathFixture.InterpolationType.HERMITE;
 
     public ValueInterpolationType(String id)
     {

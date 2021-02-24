@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ValuePoint extends Value
 {
-    public Point point;
+    private Point point;
 
     public ValuePoint(String id, Point Point)
     {

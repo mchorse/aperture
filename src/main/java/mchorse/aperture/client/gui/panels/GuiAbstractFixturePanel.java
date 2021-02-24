@@ -1,10 +1,12 @@
 package mchorse.aperture.client.gui.panels;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.utils.TimeUtils;
+import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiColorElement;
@@ -77,6 +79,14 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     protected FixtureValueChangeUndo undo(String name, Object value)
     {
         return FixtureValueChangeUndo.create(this.editor, name, value);
+    }
+
+    public void handleUndo(IUndo<CameraProfile> undo, boolean redo)
+    {
+        if (undo instanceof FixtureValueChangeUndo && ((FixtureValueChangeUndo) undo).getName().equals(this.fixture.duration.getId()))
+        {
+            this.editor.updateValues();
+        }
     }
 
     public void setDuration(long ticks)

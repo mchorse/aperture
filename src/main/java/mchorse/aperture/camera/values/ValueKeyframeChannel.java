@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ValueKeyframeChannel extends Value
 {
-    public KeyframeChannel channel = new KeyframeChannel();
+    private KeyframeChannel channel = new KeyframeChannel();
 
     public ValueKeyframeChannel(String id)
     {

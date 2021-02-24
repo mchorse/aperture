@@ -32,7 +32,7 @@ public class GuiInterpModule extends GuiAbstractModule
 
     private GuiPathFixturePanel panel;
 
-    public GuiInterpModule(Minecraft mc, GuiPathFixturePanel panel, GuiCameraEditor editor)
+    public GuiInterpModule(Minecraft mc, GuiCameraEditor editor, GuiPathFixturePanel panel)
     {
         super(mc, editor);
 

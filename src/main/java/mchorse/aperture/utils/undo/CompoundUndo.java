@@ -36,7 +36,7 @@ public class CompoundUndo <T> implements IUndo<T>
     {
         for (IUndo<T> undo : this.undos)
         {
-            if (undo.getClass() == clazz)
+            if (undo.getClass().isAssignableFrom(clazz))
             {
                 return true;
             }

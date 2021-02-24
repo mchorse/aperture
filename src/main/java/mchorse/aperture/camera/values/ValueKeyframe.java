@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ValueKeyframe extends Value
 {
-    public Keyframe keyframe;
+    private Keyframe keyframe;
 
     public ValueKeyframe(String id, Keyframe keyframe)
     {

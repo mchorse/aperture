@@ -33,6 +33,16 @@ public class FixtureValueChangeUndo implements IUndo<CameraProfile>
         this.newValue = newValue;
     }
 
+    public int getIndex()
+    {
+        return this.index;
+    }
+
+    public String getName()
+    {
+        return this.name;
+    }
+
     public FixtureValueChangeUndo unmergable()
     {
         this.mergable = false;
@@ -43,7 +53,19 @@ public class FixtureValueChangeUndo implements IUndo<CameraProfile>
     @Override
     public boolean isMergeable(IUndo<CameraProfile> undo)
     {
-        return this.mergable && undo instanceof FixtureValueChangeUndo && ((FixtureValueChangeUndo) undo).name.equals(this.name);
+        if (!this.mergable)
+        {
+            return false;
+        }
+
+        if (undo instanceof FixtureValueChangeUndo)
+        {
+            FixtureValueChangeUndo valueUndo = (FixtureValueChangeUndo) undo;
+
+            return this.name.equals(valueUndo.getName()) && this.index == valueUndo.getIndex();
+        }
+
+        return false;
     }
 
     @Override

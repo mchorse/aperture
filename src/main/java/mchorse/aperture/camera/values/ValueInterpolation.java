@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ValueInterpolation extends Value
 {
-    public Interpolation interp = Interpolation.LINEAR;
+    private Interpolation interp = Interpolation.LINEAR;
 
     public ValueInterpolation(String id)
     {

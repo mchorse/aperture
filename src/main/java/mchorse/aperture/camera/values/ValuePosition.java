@@ -17,14 +17,20 @@ import java.util.List;
 
 public class ValuePosition extends Value
 {
-    private Position position = new Position();
+    private Position position;
     private ValuePoint pointDelegate;
     private ValueAngle angleDelegate;
 
     public ValuePosition(String id)
     {
+        this(id, new Position());
+    }
+
+    public ValuePosition(String id, Position position)
+    {
         super(id);
 
+        this.position = position;
         this.pointDelegate = new ValuePoint(id + ".point", this.position.point);
         this.angleDelegate = new ValueAngle(id + ".angle", this.position.angle);
     }

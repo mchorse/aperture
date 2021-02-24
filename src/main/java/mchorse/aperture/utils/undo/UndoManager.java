@@ -16,28 +16,28 @@ public class UndoManager<T>
     private int position = -1;
 
     private int limit = 20;
-    private Consumer<IUndo<T>> callback;
+    private IUndoListener<T> callback;
 
     public UndoManager()
     {}
 
-    public UndoManager(Consumer<IUndo<T>> callback)
+    public UndoManager(IUndoListener<T> callback)
     {
         this.callback = callback;
     }
 
-    public UndoManager(int limit, Consumer<IUndo<T>> callback)
+    public UndoManager(int limit, IUndoListener<T> callback)
     {
         this.limit = limit;
         this.callback = callback;
     }
 
-    public Consumer<IUndo<T>> getCallback()
+    public IUndoListener<T> getCallback()
     {
         return this.callback;
     }
 
-    public void setCallback(Consumer<IUndo<T>> callback)
+    public void setCallback(IUndoListener<T> callback)
     {
         this.callback = callback;
     }
@@ -120,7 +120,7 @@ public class UndoManager<T>
 
         if (this.callback != null)
         {
-            this.callback.accept(undo);
+            this.callback.handleUndo(undo, false);
         }
 
         return true;
@@ -143,7 +143,7 @@ public class UndoManager<T>
 
         if (this.callback != null)
         {
-            this.callback.accept(undo);
+            this.callback.handleUndo(undo, true);
         }
 
         return true;

@@ -149,7 +149,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
         RemapperModifier modifier = new RemapperModifier();
 
         modifier.keyframes = true;
-        modifier.channel.copy(fixture.speed);
+        modifier.channel.copy(fixture.speed.get());
 
         fixture.useSpeed.set(false);
         fixture.getModifiers().add(0, modifier);

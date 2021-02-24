@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ValueAngle extends Value
 {
-    public Angle angle;
+    private Angle angle;
 
     public ValueAngle(String id, Angle angle)
     {

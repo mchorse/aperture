@@ -25,7 +25,7 @@ public class GuiCameraEditorKeyframesGraphEditor extends GuiCameraEditorKeyframe
 
     public void setChannel(ValueKeyframeChannel channel, int color)
     {
-        this.setChannel(channel.channel, color);
+        this.setChannel(channel.get(), color);
 
         this.valueChannels.clear();
         this.valueChannels.add(channel);

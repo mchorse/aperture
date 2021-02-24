@@ -375,18 +375,23 @@ public class GuiCameraEditor extends GuiBase
         this.updateProfile();
     }
 
-    private void handleUndos(IUndo<CameraProfile> undo)
+    private void handleUndos(IUndo<CameraProfile> undo, boolean redo)
     {
-        boolean updateFixturePanel = undo instanceof FixtureValueChangeUndo;
+        int index = -1;
 
-        if (!updateFixturePanel && undo instanceof CompoundUndo)
+        if (undo instanceof FixtureValueChangeUndo)
         {
-            updateFixturePanel = ((CompoundUndo) undo).has(FixtureValueChangeUndo.class);
+            index = ((FixtureValueChangeUndo) undo).getIndex();
+        }
+        else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(FixtureValueChangeUndo.class))
+        {
+            index = ((FixtureValueChangeUndo) ((CompoundUndo) undo).getUndos().get(0)).getIndex();
         }
 
-        if (updateFixturePanel && this.panel.delegate != null)
+        if (index >= 0)
         {
-            this.panel.delegate.select(this.panel.delegate.fixture, -1);
+            this.pickCameraFixture(this.getProfile().get(index), -1);
+            this.panel.delegate.handleUndo(undo, redo);
         }
     }
 
@@ -1042,8 +1047,7 @@ public class GuiCameraEditor extends GuiBase
 
         if (this.timeline.value > offset && fixture != null)
         {
-            fixture.setDuration(this.timeline.value - offset);
-            this.updateProfile();
+            this.postUndo(FixtureValueChangeUndo.create(this, "duration", this.timeline.value - offset));
 
             this.updateValues();
             this.panel.delegate.select(fixture, 0);

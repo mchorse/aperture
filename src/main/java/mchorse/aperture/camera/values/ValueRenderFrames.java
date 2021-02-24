@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ValueRenderFrames extends Value
 {
-    public List<List<RenderFrame>> frames = new ArrayList<List<RenderFrame>>();
+    private List<List<RenderFrame>> frames = new ArrayList<List<RenderFrame>>();
 
     public ValueRenderFrames(String id)
     {
