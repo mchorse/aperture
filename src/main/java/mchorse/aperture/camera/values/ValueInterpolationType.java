@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.config.gui.GuiConfigPanel;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.Interpolation;
 import net.minecraft.client.Minecraft;
@@ -52,12 +53,8 @@ public class ValueInterpolationType extends Value
     @Override
     public void reset()
     {
-        this.interp = PathFixture.InterpolationType.LINEAR;
+        this.interp = PathFixture.InterpolationType.HERMITE;
     }
-
-    @Override
-    public void resetServer()
-    {}
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -76,6 +73,15 @@ public class ValueInterpolationType extends Value
     public JsonElement toJSON()
     {
         return new JsonPrimitive(this.interp.toString());
+    }
+
+    @Override
+    public void copy(IConfigValue value)
+    {
+        if (value instanceof ValueInterpolationType)
+        {
+            this.set(((ValueInterpolationType) value).get());
+        }
     }
 
     @Override

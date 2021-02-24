@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.config.gui.GuiConfigPanel;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,11 +51,9 @@ public class ValueAngle extends Value
 
     @Override
     public void reset()
-    {}
-
-    @Override
-    public void resetServer()
-    {}
+    {
+        this.angle.set(0, 0, 0, 70);
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -73,6 +72,15 @@ public class ValueAngle extends Value
     public JsonElement toJSON()
     {
         return this.angle.toJSON();
+    }
+
+    @Override
+    public void copy(IConfigValue value)
+    {
+        if (value instanceof ValueAngle)
+        {
+            this.set(((ValueAngle) value).get());
+        }
     }
 
     @Override

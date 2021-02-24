@@ -6,6 +6,7 @@ import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.config.gui.GuiConfigPanel;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,11 +52,9 @@ public class ValuePoint extends Value
 
     @Override
     public void reset()
-    {}
-
-    @Override
-    public void resetServer()
-    {}
+    {
+        this.point.set(0, 0, 0);
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -74,6 +73,15 @@ public class ValuePoint extends Value
     public JsonElement toJSON()
     {
         return this.point.toJSON();
+    }
+
+    @Override
+    public void copy(IConfigValue value)
+    {
+        if (value instanceof ValuePoint)
+        {
+            this.set(((ValuePoint) value).get());
+        }
     }
 
     @Override

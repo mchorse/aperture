@@ -3,9 +3,9 @@ package mchorse.aperture.camera.values;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.data.Angle;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.config.gui.GuiConfigPanel;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.Interpolation;
 import net.minecraft.client.Minecraft;
@@ -56,10 +56,6 @@ public class ValueInterpolation extends Value
     }
 
     @Override
-    public void resetServer()
-    {}
-
-    @Override
     @SideOnly(Side.CLIENT)
     public List<GuiElement> getFields(Minecraft minecraft, GuiConfigPanel guiConfigPanel)
     {
@@ -76,6 +72,15 @@ public class ValueInterpolation extends Value
     public JsonElement toJSON()
     {
         return new JsonPrimitive(this.interp.toString());
+    }
+
+    @Override
+    public void copy(IConfigValue value)
+    {
+        if (value instanceof ValueInterpolation)
+        {
+            this.set(((ValueInterpolation) value).get());
+        }
     }
 
     @Override

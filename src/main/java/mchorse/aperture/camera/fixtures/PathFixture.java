@@ -186,7 +186,7 @@ public class PathFixture extends AbstractFixture
 
     public int getCount()
     {
-        return this.getCount();
+        return this.points.get().size();
     }
 
     /**

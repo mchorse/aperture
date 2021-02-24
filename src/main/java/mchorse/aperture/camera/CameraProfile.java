@@ -271,9 +271,9 @@ public class CameraProfile implements IByteBufSerializable
      */
     public void add(AbstractFixture fixture, int index)
     {
-        if (index + 1 < this.fixtures.size())
+        if (index < this.fixtures.size())
         {
-            this.fixtures.add(index + 1, fixture);
+            this.fixtures.add(index, fixture);
         }
         else
         {
@@ -288,11 +288,7 @@ public class CameraProfile implements IByteBufSerializable
      */
     public void move(int from, int to)
     {
-        if (this.has(from) && this.has(to))
-        {
-            this.fixtures.add(to, this.fixtures.remove(from));
-            this.dirty();
-        }
+
     }
 
     /**
@@ -306,20 +302,6 @@ public class CameraProfile implements IByteBufSerializable
         {
             this.fixtures.remove(index);
             this.dirty();
-        }
-    }
-
-    /**
-     * Replace a fixture at given frame
-     */
-    public void replace(AbstractFixture fixture, int index)
-    {
-        if (this.has(index))
-        {
-            AbstractFixture present = this.get(index);
-
-            fixture.copyByReplacing(present);
-            this.fixtures.set(index, fixture);
         }
     }
 
@@ -554,7 +536,7 @@ public class CameraProfile implements IByteBufSerializable
             AbstractFixture newFixture = fixture.copy();
             newFixture.setDuration(duration - diff);
 
-            this.add(newFixture, this.fixtures.indexOf(fixture));
+            this.add(newFixture, this.fixtures.indexOf(fixture) + 1);
         }
     }
 }

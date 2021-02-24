@@ -15,13 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class Point
 {
-    @Expose
     public double x;
-
-    @Expose
     public double y;
-
-    @Expose
     public double z;
 
     /**

@@ -318,11 +318,11 @@ public abstract class AbstractFixture implements IByteBufSerializable
      */
     public final AbstractFixture copy()
     {
-        AbstractFixture modifier = this.create(this.getDuration());
+        AbstractFixture fixture = this.create(this.getDuration());
 
-        modifier.copy(this);
+        fixture.copy(this);
 
-        return modifier;
+        return fixture;
     }
 
     /**

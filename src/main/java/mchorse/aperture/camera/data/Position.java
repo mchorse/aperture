@@ -2,7 +2,6 @@ package mchorse.aperture.camera.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,10 +18,7 @@ public class Position
      */
     public static final Position ZERO = new Position(0, 0, 0, 0, 0);
 
-    @Expose
     public Point point = new Point(0, 0, 0);
-
-    @Expose
     public Angle angle = new Angle(0, 0);
 
     public static Position fromBytes(ByteBuf buffer)

@@ -32,6 +32,16 @@ public class CompoundUndo <T> implements IUndo<T>
         return this.undos;
     }
 
+    public IUndo<T> getFirst()
+    {
+        return this.undos.get(0);
+    }
+
+    public IUndo<T> getLast()
+    {
+        return this.undos.get(this.undos.size() - 1);
+    }
+
     public boolean has(Class<FixtureValueChangeUndo> clazz)
     {
         for (IUndo<T> undo : this.undos)

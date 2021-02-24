@@ -63,6 +63,11 @@ public class UndoManager<T>
 
         newUndo.redo(context);
 
+        if (this.callback != null)
+        {
+            this.callback.handleUndo(undo, true);
+        }
+
         return newUndo;
     }
 

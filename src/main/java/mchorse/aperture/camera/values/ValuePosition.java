@@ -79,11 +79,9 @@ public class ValuePosition extends Value
 
     @Override
     public void reset()
-    {}
-
-    @Override
-    public void resetServer()
-    {}
+    {
+        this.position.set(new Position());
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -105,6 +103,15 @@ public class ValuePosition extends Value
     public JsonElement toJSON()
     {
         return this.position.toJSON();
+    }
+
+    @Override
+    public void copy(IConfigValue value)
+    {
+        if (value instanceof ValuePosition)
+        {
+            this.set(((ValuePosition) value).get());
+        }
     }
 
     @Override

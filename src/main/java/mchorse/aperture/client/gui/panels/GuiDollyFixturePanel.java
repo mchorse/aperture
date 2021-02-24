@@ -81,8 +81,11 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         Position position = new Position();
 
         this.fixture.applyLast(this.editor.getProfile(), position);
-        this.fixture.position.get().copy(position);
-        this.fixture.distance.set(-this.fixture.distance.get());
+
+        this.editor.postUndo(new CompoundUndo<CameraProfile>(
+            this.undo("position", position),
+            this.undo("distance", -this.fixture.distance.get())
+        ));
 
         this.select(this.fixture, 0);
     }

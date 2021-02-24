@@ -218,10 +218,14 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
         if (duration != -1)
         {
             index = (int) ((duration / (float) fixture.getDuration()) * fixture.getCount());
-
-            this.position = this.getPosition(index);
-            this.points.index = index;
         }
+        else if (index >= fixture.getCount())
+        {
+            index = 0;
+        }
+
+        this.position = this.getPosition(index);
+        this.points.index = index;
 
         this.point.fill(this.position.getPoint());
         this.angle.fill(this.position.getAngle());

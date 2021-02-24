@@ -19,17 +19,10 @@ import net.minecraft.util.math.MathHelper;
  */
 public class Angle
 {
-    @Expose
     public float yaw;
-
-    @Expose
     public float pitch;
-
-    @Expose
     public float roll;
-
-    @Expose
-    public float fov = 70.0F;
+    public float fov = 70;
 
     public static Angle fromBytes(ByteBuf buffer)
     {

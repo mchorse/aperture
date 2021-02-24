@@ -16,6 +16,7 @@ import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
+import mchorse.aperture.client.gui.utils.undo.FixtureAddRemoveUndo;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.aperture.utils.APIcons;
@@ -44,6 +45,8 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -346,10 +349,20 @@ public class GuiCameraEditor extends GuiBase
 
     public void postUndo(IUndo<CameraProfile> undo)
     {
-        this.postUndo(undo, true);
+        this.postUndo(undo, true, false);
     }
 
     public void postUndo(IUndo<CameraProfile> undo, boolean apply)
+    {
+        this.postUndo(undo, apply, false);
+    }
+
+    public void postUndoCallback(IUndo<CameraProfile> undo)
+    {
+        this.postUndo(undo, true, true);
+    }
+
+    public void postUndo(IUndo<CameraProfile> undo, boolean apply, boolean callback)
     {
         if (undo == null)
         {
@@ -359,7 +372,7 @@ public class GuiCameraEditor extends GuiBase
         CameraProfile profile = this.getProfile();
         UndoManager<CameraProfile> undoManager = profile.undoManager;
 
-        undoManager.setCallback(null);
+        undoManager.setCallback(callback ? this::handleUndos : null);
 
         if (apply)
         {
@@ -385,13 +398,40 @@ public class GuiCameraEditor extends GuiBase
         }
         else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(FixtureValueChangeUndo.class))
         {
-            index = ((FixtureValueChangeUndo) ((CompoundUndo) undo).getUndos().get(0)).getIndex();
+            index = ((FixtureValueChangeUndo) ((CompoundUndo) undo).getFirst()).getIndex();
         }
 
         if (index >= 0)
         {
             this.pickCameraFixture(this.getProfile().get(index), -1);
             this.panel.delegate.handleUndo(undo, redo);
+        }
+
+        /* Handle adding/removing undo */
+        index = -2;
+
+        if (undo instanceof FixtureAddRemoveUndo)
+        {
+            FixtureAddRemoveUndo addRemoveUndo = (FixtureAddRemoveUndo) undo;
+
+            index = addRemoveUndo.getTargetIndex(redo);
+        }
+        else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(FixtureAddRemoveUndo.class))
+        {
+            CompoundUndo compound = (CompoundUndo) undo;
+            FixtureAddRemoveUndo addRemoveUndo = (FixtureAddRemoveUndo) (redo ? compound.getLast() : compound.getFirst());
+
+            index = addRemoveUndo.getTargetIndex(redo);
+        }
+
+        if (index >= -1)
+        {
+            CameraProfile profile = this.getProfile();
+            AbstractFixture fixture = profile.getCount() == 0 ? null : profile.get(index);
+
+            this.pickCameraFixture(fixture, -1);
+            this.updateValues();
+            this.timeline.rescale();
         }
     }
 
@@ -528,7 +568,9 @@ public class GuiCameraEditor extends GuiBase
 
                 if (this.isSyncing())
                 {
-                    this.timeline.setValueFromScrub((int) panel.currentOffset());
+                    int offset = (int) panel.currentOffset();
+
+                    this.timeline.setValueFromScrub(offset);
                 }
 
                 this.timeline.index = this.getProfile().getAll().indexOf(fixture);
@@ -557,38 +599,30 @@ public class GuiCameraEditor extends GuiBase
             return;
         }
 
+        CameraProfile profile = this.getProfile();
+
         if (this.panel.delegate == null)
         {
-            this.getProfile().add(fixture);
+            this.postUndoCallback(FixtureAddRemoveUndo.create(profile, profile.getCount(), fixture));
         }
         else
         {
             if (this.replacing)
             {
-                this.getProfile().replace(fixture, this.timeline.index);
+                AbstractFixture present = profile.get(this.timeline.index);
+
+                fixture.copyByReplacing(present);
+                this.postUndoCallback(new CompoundUndo<CameraProfile>(
+                    FixtureAddRemoveUndo.create(profile, this.timeline.index, null),
+                    FixtureAddRemoveUndo.create(profile, this.timeline.index, fixture)
+                ).unmergable());
+
                 this.replacing = false;
             }
             else
             {
-                this.getProfile().add(fixture, this.timeline.index);
+                this.postUndoCallback(FixtureAddRemoveUndo.create(profile, this.timeline.index + 1, fixture));
             }
-        }
-
-        double min = this.timeline.scale.getMinValue();
-        double max = this.timeline.scale.getMaxValue();
-
-        this.updateValues();
-        this.pickCameraFixture(fixture, 0);
-
-        long offset = this.getProfile().calculateOffset(fixture) + fixture.getDuration();
-
-        if (offset > max)
-        {
-            this.timeline.scale.view(min, offset);
-        }
-        else if (offset < min)
-        {
-            this.timeline.scale.view(offset, max);
         }
     }
 
@@ -601,11 +635,9 @@ public class GuiCameraEditor extends GuiBase
 
         if (this.getProfile().has(index))
         {
-            AbstractFixture fixture = this.getProfile().get(index).copy();
+            CameraProfile profile = this.getProfile();
 
-            this.getProfile().add(fixture);
-            this.pickCameraFixture(fixture, 0);
-            this.updateValues();
+            this.postUndoCallback(FixtureAddRemoveUndo.create(profile, index + 1, profile.get(index).copy()));
         }
     }
 
@@ -619,19 +651,10 @@ public class GuiCameraEditor extends GuiBase
 
         if (profile.has(index))
         {
-            profile.remove(index);
-            this.timeline.index--;
-
-            if (this.timeline.index >= 0)
-            {
-                this.pickCameraFixture(profile.get(this.timeline.index), 0);
-            }
-            else
-            {
-                this.pickCameraFixture(null, 0);
-            }
-
+            this.postUndo(FixtureAddRemoveUndo.create(profile, index, null));
+            this.pickCameraFixture(index - 1 >= 0 ? profile.get(index - 1) : null, -1);
             this.updateValues();
+            this.timeline.rescale();
         }
     }
 
@@ -647,23 +670,31 @@ public class GuiCameraEditor extends GuiBase
             Collections.sort(this.markers);
 
             CameraProfile profile = this.getProfile();
-            long duration = this.getProfile().getDuration();
+            List<FixtureAddRemoveUndo> fixtures = new ArrayList<FixtureAddRemoveUndo>();
+
+            long duration = profile.getDuration();
+            int i = 0;
 
             for (Integer tick : this.markers)
             {
                 long difference = tick - duration;
 
-                if (tick < duration || difference <= 0) continue;
+                if (tick < duration || difference <= 0)
+                {
+                    continue;
+                }
 
                 IdleFixture fixture = new IdleFixture(difference);
 
                 fixture.fromPlayer(this.getCamera());
-                profile.add(fixture);
+                fixtures.add(FixtureAddRemoveUndo.create(profile, profile.getCount() + i, fixture));
 
                 duration += difference;
+                i += 1;
             }
 
-            this.updateValues();
+            this.postUndoCallback(new CompoundUndo(fixtures.toArray(new IUndo[fixtures.size()])).unmergable());
+
             this.markers.clear();
         }
     }
@@ -896,11 +927,8 @@ public class GuiCameraEditor extends GuiBase
 
     public void updateDuration(AbstractFixture fixture)
     {
+        this.timeline.rescale();
         this.updateValues();
-
-        int offset = (int) (this.getProfile().calculateOffset(fixture) + fixture.getDuration());
-
-        this.timeline.scale.view(this.timeline.scale.getMinValue(), Math.max(offset, this.timeline.scale.getMaxValue()));
 
         this.profiles.updateDuration();
         this.modifiers.updateDuration();
@@ -1076,14 +1104,17 @@ public class GuiCameraEditor extends GuiBase
     private void moveTo(int direction)
     {
         CameraProfile profile = this.getProfile();
-        int index = this.timeline.index;
-        int to = index + direction;
+        int from = this.timeline.index;
+        int to = from + direction;
 
-        profile.move(index, to);
-
-        if (profile.has(to))
+        if (profile.has(from) && profile.has(to))
         {
-            this.timeline.index = to;
+            AbstractFixture fixture = profile.get(from);
+
+            this.postUndoCallback(new CompoundUndo<CameraProfile>(
+                FixtureAddRemoveUndo.create(profile, from, null),
+                FixtureAddRemoveUndo.create(profile, to, fixture)
+            ).unmergable());
         }
     }
 

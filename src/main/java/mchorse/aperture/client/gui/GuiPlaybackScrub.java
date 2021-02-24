@@ -96,6 +96,28 @@ public class GuiPlaybackScrub extends GuiElement
         this.clampScroll();
     }
 
+    public void rescale()
+    {
+        AbstractFixture fixture = this.editor.getFixture();
+
+        if (fixture != null)
+        {
+            double min = this.scale.getMinValue();
+            double max = this.scale.getMaxValue();
+
+            long offset = this.profile.calculateOffset(fixture) + fixture.getDuration();
+
+            if (offset > max)
+            {
+                this.scale.view(min, offset);
+            }
+            else if (offset < min)
+            {
+                this.scale.view(offset, max);
+            }
+        }
+    }
+
     /* Public API methods  */
 
     /**

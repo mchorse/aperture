@@ -76,10 +76,6 @@ public class ValueKeyframeChannel extends Value
     }
 
     @Override
-    public void resetServer()
-    {}
-
-    @Override
     @SideOnly(Side.CLIENT)
     public List<GuiElement> getFields(Minecraft minecraft, GuiConfigPanel guiConfigPanel)
     {
