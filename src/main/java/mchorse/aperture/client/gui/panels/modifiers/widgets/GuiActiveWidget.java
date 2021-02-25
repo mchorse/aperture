@@ -15,11 +15,11 @@ import net.minecraft.client.resources.I18n;
 
 public class GuiActiveWidget extends GuiElement
 {
-    public byte value;
+    public int value;
     public List<IKey> labels = new ArrayList<IKey>();
-    public Consumer<Byte> callback;
+    public Consumer<Integer> callback;
 
-    public GuiActiveWidget(Minecraft mc, Consumer<Byte> callback)
+    public GuiActiveWidget(Minecraft mc, Consumer<Integer> callback)
     {
         super(mc);
 

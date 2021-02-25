@@ -1,19 +1,12 @@
 package mchorse.aperture.camera;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.google.gson.annotations.Expose;
-
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.aperture.events.CameraProfileChangedEvent;
 import mchorse.aperture.utils.undo.UndoManager;
 import mchorse.mclib.network.IByteBufSerializable;
@@ -24,6 +17,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Camera profile class
@@ -54,8 +54,7 @@ public class CameraProfile implements IByteBufSerializable
     /**
      * List of profile's global camera fixtures
      */
-    @Expose
-    protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
+    public final ValueModifiers modifiers = new ValueModifiers("modifiers");
 
     /**
      * Where the camera profile is stored. Needs only on the client 
@@ -89,12 +88,7 @@ public class CameraProfile implements IByteBufSerializable
 
     public List<AbstractModifier> getModifiers()
     {
-        if (this.modifiers == null)
-        {
-            this.modifiers = new ArrayList<AbstractModifier>();
-        }
-
-        return this.modifiers;
+        return this.modifiers.get();
     }
 
     public AbstractDestination getDestination()
@@ -399,15 +393,7 @@ public class CameraProfile implements IByteBufSerializable
             }
         }
 
-        for (int i = 0, c = buffer.readInt(); i < c; i++)
-        {
-            AbstractModifier modifier = ModifierRegistry.fromBytes(buffer);
-
-            if (modifier != null)
-            {
-                this.getModifiers().add(modifier);
-            }
-        }
+        this.modifiers.fromBytes(buffer);
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
@@ -432,12 +418,7 @@ public class CameraProfile implements IByteBufSerializable
             FixtureRegistry.toBytes(fixture, buffer);
         }
 
-        buffer.writeInt(this.getModifiers().size());
-
-        for (AbstractModifier modifier : this.getModifiers())
-        {
-            ModifierRegistry.toBytes(modifier, buffer);
-        }
+        this.modifiers.toBytes(buffer);
 
         buffer.writeInt(this.curves.size());
 
@@ -491,10 +472,7 @@ public class CameraProfile implements IByteBufSerializable
             profile.fixtures.add(fixture.copy());
         }
 
-        for (AbstractModifier modifier : this.getModifiers())
-        {
-            profile.modifiers.add(modifier.copy());
-        }
+        profile.modifiers.copy(this.modifiers);
 
         for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
         {
@@ -513,7 +491,7 @@ public class CameraProfile implements IByteBufSerializable
     {
         this.exists = true;
         this.fixtures = profile.fixtures;
-        this.modifiers = profile.modifiers;
+        this.modifiers.copy(profile.modifiers);
     }
 
     public void cut(int where)

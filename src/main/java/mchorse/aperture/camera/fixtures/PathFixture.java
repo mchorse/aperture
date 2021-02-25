@@ -629,28 +629,6 @@ public class PathFixture extends AbstractFixture
     }
 
     @Override
-    public void copy(AbstractFixture from)
-    {
-        super.copy(from);
-
-        if (from instanceof PathFixture)
-        {
-            PathFixture path = (PathFixture) from;
-
-            this.points.copy(path.points);
-            this.interpolation.copy(path.interpolation);
-            this.interpolationAngle.copy(path.interpolationAngle);
-
-            this.useSpeed.copy(path.useSpeed);
-            this.speed.copy(path.speed);
-
-            this.circularAutoCenter.copy(path.circularAutoCenter);
-            this.circularX.copy(path.circularX);
-            this.circularZ.copy(path.circularZ);
-        }
-    }
-
-    @Override
     public void copyByReplacing(AbstractFixture from)
     {
         super.copyByReplacing(from);

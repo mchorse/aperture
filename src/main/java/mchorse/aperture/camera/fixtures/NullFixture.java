@@ -50,17 +50,4 @@ public class NullFixture extends AbstractFixture
     {
         return new NullFixture(duration);
     }
-
-    @Override
-    public void copy(AbstractFixture from)
-    {
-        super.copy(from);
-
-        if (from instanceof NullFixture)
-        {
-            NullFixture nullFixture = (NullFixture) from;
-
-            this.previous.copy(nullFixture.previous);
-        }
-    }
 }

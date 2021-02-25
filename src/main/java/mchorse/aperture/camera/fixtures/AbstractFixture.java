@@ -1,13 +1,13 @@
 package mchorse.aperture.camera.fixtures;
 
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.data.StructureBase;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.mclib.config.ConfigCategory;
+import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.ValueInt;
 import mchorse.mclib.config.values.ValueLong;
@@ -15,7 +15,6 @@ import mchorse.mclib.config.values.ValueString;
 import mchorse.mclib.network.IByteBufSerializable;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,17 +25,15 @@ import java.util.List;
  *
  * Every fixture have duration field.
  */
-public abstract class AbstractFixture implements IByteBufSerializable
+public abstract class AbstractFixture extends StructureBase implements IByteBufSerializable
 {
-    protected ConfigCategory category = new ConfigCategory("");
-
     /**
      * The name of this camera fixture. Added just for organization.
      */
     public final ValueString name = new ValueString("name", "");
 
     /**
-     * Custom color tint for fixtures
+     * Custom color tint for fixtures.
      */
     public final ValueInt color = new ValueInt("color", 0x000000);
 
@@ -47,26 +44,9 @@ public abstract class AbstractFixture implements IByteBufSerializable
     public final ValueLong duration = new ValueLong("duration", 1, 1, Long.MAX_VALUE);
 
     /**
-     * List of camera modifiers. 
+     * List of camera modifiers.
      */
-    @Expose
-    protected List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
-
-    /**
-     * Copy given fixture's modifiers to another fixture 
-     */
-    public static void copyModifiers(AbstractFixture from, AbstractFixture to)
-    {
-        for (AbstractModifier modifier : from.modifiers)
-        {
-            AbstractModifier copy = modifier.copy();
-
-            if (copy != null)
-            {
-                to.modifiers.add(copy);
-            }
-        }
-    }
+    public final ValueModifiers modifiers = new ValueModifiers("modifiers");
 
     /**
      * Default constructor. All subclasses must implement the same 
@@ -79,11 +59,7 @@ public abstract class AbstractFixture implements IByteBufSerializable
         this.register(this.name);
         this.register(this.color);
         this.register(this.duration);
-    }
-
-    protected void register(IConfigValue value)
-    {
-        this.category.values.put(value.getId(), value);
+        this.register(this.modifiers);
     }
 
     public IConfigValue getProperty(String name)
@@ -154,53 +130,6 @@ public abstract class AbstractFixture implements IByteBufSerializable
     public void fromPlayer(EntityPlayer player)
     {}
 
-    /* JSON (de)serialization methods */
-
-    public void fromJSON(JsonObject object)
-    {
-        for (IConfigValue value : this.category.values.values())
-        {
-            if (object.has(value.getId()))
-            {
-                value.fromJSON(object.get(value.getId()));
-            }
-        }
-    }
-
-    public void toJSON(JsonObject object)
-    {
-        for (IConfigValue value : this.category.values.values())
-        {
-            object.add(value.getId(), value.toJSON());
-        }
-    }
-
-    /* ByteBuf (de)serialization methods */
-
-    /**
-     * Read abstract fixture's properties from byte buffer 
-     */
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        for (IConfigValue value : this.category.values.values())
-        {
-            value.fromBytes(buffer);
-        }
-    }
-
-    /**
-     * Write this abstract fixture to the byte buffer 
-     */
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        for (IConfigValue value : this.category.values.values())
-        {
-            value.toBytes(buffer);
-        }
-    }
-
     /* Abstract methods */
 
     /**
@@ -245,7 +174,7 @@ public abstract class AbstractFixture implements IByteBufSerializable
      */
     public List<AbstractModifier> getModifiers()
     {
-        return this.modifiers;
+        return this.modifiers.get();
     }
 
     /**
@@ -264,17 +193,6 @@ public abstract class AbstractFixture implements IByteBufSerializable
      * Create new fixture
      */
     public abstract AbstractFixture create(long duration);
-
-    /**
-     * Copy data from another fixture
-     */
-    public void copy(AbstractFixture from)
-    {
-        AbstractFixture.copyModifiers(from, this);
-
-        this.name.copy(from.name);
-        this.color.copy(from.color);
-    }
 
     /**
      * Copy data from another fixture during replacement

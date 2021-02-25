@@ -74,22 +74,6 @@ public class DollyFixture extends IdleFixture
     }
 
     @Override
-    public void copy(AbstractFixture from)
-    {
-        super.copy(from);
-
-        if (from instanceof DollyFixture)
-        {
-            DollyFixture dolly = (DollyFixture) from;
-
-            this.yaw.copy(dolly.yaw);
-            this.pitch.copy(dolly.pitch);
-            this.distance.copy(dolly.distance);
-            this.interp.copy(dolly.interp);
-        }
-    }
-
-    @Override
     public void copyByReplacing(AbstractFixture from)
     {
         super.copyByReplacing(from);

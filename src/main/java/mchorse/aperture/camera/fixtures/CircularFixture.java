@@ -89,21 +89,4 @@ public class CircularFixture extends AbstractFixture
     {
         return new CircularFixture(duration);
     }
-
-    @Override
-    public void copy(AbstractFixture from)
-    {
-        super.copy(from);
-
-        if (from instanceof CircularFixture)
-        {
-            CircularFixture circular = (CircularFixture) from;
-
-            this.start.copy(circular.start);
-            this.offset.copy(circular.offset);
-            this.distance.copy(circular.distance);
-            this.circles.copy(circular.circles);
-            this.pitch.copy(circular.pitch);
-        }
-    }
 }

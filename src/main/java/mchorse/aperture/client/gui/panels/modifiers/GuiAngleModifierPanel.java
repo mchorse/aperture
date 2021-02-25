@@ -20,28 +20,28 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
 
         this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.yaw = value.floatValue();
+            this.modifier.angle.get().yaw = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.pitch = value.floatValue();
+            this.modifier.angle.get().pitch = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.roll = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.roll = value.floatValue();
+            this.modifier.angle.get().roll = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.roll.tooltip(IKey.lang("aperture.gui.panels.roll"));
 
         this.fov = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.fov = value.floatValue();
+            this.modifier.angle.get().fov = value.floatValue();
             this.modifiers.editor.updateProfile();
         });
         this.fov.tooltip(IKey.lang("aperture.gui.panels.fov"));
@@ -54,9 +54,9 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
     {
         super.fillData();
 
-        this.yaw.setValue(this.modifier.angle.yaw);
-        this.pitch.setValue(this.modifier.angle.pitch);
-        this.roll.setValue(this.modifier.angle.roll);
-        this.fov.setValue(this.modifier.angle.fov);
+        this.yaw.setValue(this.modifier.angle.get().yaw);
+        this.pitch.setValue(this.modifier.angle.get().pitch);
+        this.roll.setValue(this.modifier.angle.get().roll);
+        this.fov.setValue(this.modifier.angle.get().fov);
     }
 }

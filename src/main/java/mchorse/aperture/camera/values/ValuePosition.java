@@ -84,13 +84,6 @@ public class ValuePosition extends Value
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public List<GuiElement> getFields(Minecraft minecraft, GuiConfigPanel guiConfigPanel)
-    {
-        return null;
-    }
-
-    @Override
     public void fromJSON(JsonElement element)
     {
         if (element.isJsonObject())

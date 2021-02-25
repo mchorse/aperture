@@ -19,21 +19,21 @@ public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<Translat
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.translate.x = value;
+            this.modifier.translate.get().x = value;
             this.modifiers.editor.updateProfile();
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.translate.y = value;
+            this.modifier.translate.get().y = value;
             this.modifiers.editor.updateProfile();
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.translate.z = value;
+            this.modifier.translate.get().z = value;
             this.modifiers.editor.updateProfile();
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
@@ -46,8 +46,8 @@ public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<Translat
     {
         super.fillData();
 
-        this.x.setValue((float) this.modifier.translate.x);
-        this.y.setValue((float) this.modifier.translate.y);
-        this.z.setValue((float) this.modifier.translate.z);
+        this.x.setValue(this.modifier.translate.get().x);
+        this.y.setValue(this.modifier.translate.get().y);
+        this.z.setValue(this.modifier.translate.get().z);
     }
 }

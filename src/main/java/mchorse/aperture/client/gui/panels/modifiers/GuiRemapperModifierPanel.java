@@ -30,12 +30,26 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
         this.channel.flex().h(200);
         this.expression = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.expression.field.setTextColor(this.modifier.rebuildExpression(str) ? 0xffffff : 0xff2244);
+            this.expression.field.setTextColor(this.rebuildExpression(str) ? 0xffffff : 0xff2244);
             this.modifiers.editor.updateProfile();
         });
         this.expression.link("https://github.com/mchorse/aperture/wiki/Math-Expressions").tooltip(IKey.lang("aperture.gui.modifiers.panels.math"));
 
         this.fields.add(this.expression, this.keyframes);
+    }
+
+    private boolean rebuildExpression(String str)
+    {
+        try
+        {
+            this.modifier.expression.set(str);
+
+            return true;
+        }
+        catch (Exception e)
+        {}
+
+        return false;
     }
 
     public void initiate()
@@ -52,12 +66,12 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
     {
         super.fillData();
 
-        this.keyframes.toggled(this.modifier.keyframes);
+        this.keyframes.toggled(this.modifier.keyframes.get());
         this.channel.setChannel(this.modifier.channel, 0x0088ff);
-        this.expression.setText(this.modifier.expression == null ? "" : this.modifier.expression.toString());
+        this.expression.setText(this.modifier.expression.toString());
         this.expression.field.setTextColor(0xffffff);
 
-        this.toggleKeyframes(this.modifier.keyframes);
+        this.toggleKeyframes(this.modifier.keyframes.get());
     }
 
     @Override
@@ -72,10 +86,10 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
 
     private void toggleKeyframes(boolean toggled)
     {
-        this.modifier.keyframes = toggled;
+        this.modifier.keyframes.set(toggled);
 
         this.fields.removeAll();
-        this.fields.add(this.modifier.keyframes ? this.channel : this.expression, this.keyframes);
+        this.fields.add(toggled ? this.channel : this.expression, this.keyframes);
 
         if (this.getParent() != null)
         {

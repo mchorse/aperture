@@ -1,5 +1,7 @@
 package mchorse.aperture.camera.data;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
@@ -86,31 +88,49 @@ public class RenderFrame
         return frame;
     }
 
-    public void fromJSON(JsonObject object)
+    public void fromJSON(JsonElement element)
     {
-        this.x = object.get("x").getAsDouble();
-        this.y = object.get("y").getAsDouble();
-        this.z = object.get("z").getAsDouble();
-        this.yaw = object.get("yaw").getAsFloat();
-        this.pitch = object.get("pitch").getAsFloat();
-        this.roll = object.get("roll").getAsFloat();
-        this.fov = object.get("fov").getAsFloat();
-        this.pt = object.get("pt").getAsFloat();
+        if (element.isJsonArray() && element.getAsJsonArray().size() >= 8)
+        {
+            JsonArray array = element.getAsJsonArray();
+
+            this.x = array.get(0).getAsDouble();
+            this.y = array.get(1).getAsDouble();
+            this.z = array.get(2).getAsDouble();
+            this.yaw = array.get(3).getAsFloat();
+            this.pitch = array.get(4).getAsFloat();
+            this.roll = array.get(5).getAsFloat();
+            this.fov = array.get(6).getAsFloat();
+            this.pt = array.get(7).getAsFloat();
+        }
+        else if (element.isJsonObject())
+        {
+            JsonObject object = element.getAsJsonObject();
+
+            this.x = object.get("x").getAsDouble();
+            this.y = object.get("y").getAsDouble();
+            this.z = object.get("z").getAsDouble();
+            this.yaw = object.get("yaw").getAsFloat();
+            this.pitch = object.get("pitch").getAsFloat();
+            this.roll = object.get("roll").getAsFloat();
+            this.fov = object.get("fov").getAsFloat();
+            this.pt = object.get("pt").getAsFloat();
+        }
     }
 
-    public JsonObject toJSON()
+    public JsonArray toJSON()
     {
-        JsonObject object = new JsonObject();
+        JsonArray array = new JsonArray();
 
-        object.addProperty("x", this.x);
-        object.addProperty("y", this.y);
-        object.addProperty("z", this.z);
-        object.addProperty("yaw", this.yaw);
-        object.addProperty("pitch", this.pitch);
-        object.addProperty("roll", this.roll);
-        object.addProperty("fov", this.fov);
-        object.addProperty("pt", this.pt);
+        array.add(this.x);
+        array.add(this.y);
+        array.add(this.z);
+        array.add(this.yaw);
+        array.add(this.pitch);
+        array.add(this.roll);
+        array.add(this.fov);
+        array.add(this.pt);
 
-        return object;
+        return array;
     }
 }

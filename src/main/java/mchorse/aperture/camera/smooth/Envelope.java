@@ -1,90 +1,79 @@
 package mchorse.aperture.camera.smooth;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
-import mchorse.mclib.network.IByteBufSerializable;
+import mchorse.aperture.camera.data.StructureBase;
+import mchorse.aperture.camera.values.ValueInterpolation;
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
+import mchorse.mclib.config.values.ValueBoolean;
+import mchorse.mclib.config.values.ValueFloat;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
 import mchorse.mclib.utils.MathUtils;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 
-public class Envelope implements IByteBufSerializable
+public class Envelope extends StructureBase
 {
-    @Expose
-    public boolean enabled;
+    public final ValueBoolean enabled = new ValueBoolean("enabled");
+    public final ValueBoolean relative = new ValueBoolean("relative", true);
 
-    @Expose
-    public boolean relative = true;
+    public final ValueFloat startX = new ValueFloat("startX");
+    public final ValueFloat startDuration = new ValueFloat("startDuration", 10);
+    public final ValueFloat endX = new ValueFloat("endX");
+    public final ValueFloat endDuration = new ValueFloat("endDuration", 10);
 
-    @Expose
-    public float startX;
+    public final ValueInterpolation interpolation = new ValueInterpolation("interpolation");
 
-    @Expose
-    public float startDuration = 10;
+    public final ValueBoolean keyframes = new ValueBoolean("keyframes");
+    public final ValueKeyframeChannel channel = new ValueKeyframeChannel("channel");
 
-    @Expose
-    public float endX;
-
-    @Expose
-    public float endDuration = 10;
-
-    @Expose
-    public Interpolation interpolation = Interpolation.LINEAR;
-
-    @Expose
-    public boolean keyframes;
-
-    @Expose
-    public KeyframeChannel channel = this.create();
-
-    public KeyframeChannel create()
+    public Envelope()
     {
-        KeyframeChannel channel = new KeyframeChannel();
+        this.register(this.enabled);
+        this.register(this.relative);
+        this.register(this.startX);
+        this.register(this.startDuration);
+        this.register(this.endX);
+        this.register(this.endDuration);
+        this.register(this.interpolation);
+        this.register(this.keyframes);
+        this.register(this.channel);
 
-        channel.insert(0, 0);
-        channel.insert(Aperture.duration.get(), 1);
-
-        return channel;
+        this.channel.get().insert(0, 0);
+        this.channel.get().insert(Aperture.duration.get(), 1);
     }
 
-    public void copy(Envelope envelope)
+    public Envelope copy()
     {
-        this.enabled = envelope.enabled;
-        this.relative = envelope.relative;
-        this.startX = envelope.startX;
-        this.startDuration = envelope.startDuration;
-        this.endX = envelope.endX;
-        this.endDuration = envelope.endDuration;
-        this.interpolation = envelope.interpolation;
-        this.keyframes = envelope.keyframes;
-        this.channel.copy(envelope.channel);
+        Envelope envelope = new Envelope();
+
+        envelope.copy(this);
+
+        return envelope;
     }
 
     public float getStartX(long duration)
     {
-        return this.startX;
+        return this.startX.get();
     }
 
     public float getStartDuration(long duration)
     {
-        return this.startX + this.startDuration;
+        return this.startX.get() + this.startDuration.get();
     }
 
     public float getEndX(long duration)
     {
-        return this.relative ? duration - this.endX : this.endX;
+        return this.relative.get() ? duration - this.endX.get() : this.endX.get();
     }
 
     public float getEndDuration(long duration)
     {
-        return this.relative ? duration - this.endX - this.endDuration : this.endX - this.endDuration;
+        return this.relative.get() ? duration - this.endX.get() - this.endDuration.get() : this.endX.get() - this.endDuration.get();
     }
 
     public float factorEnabled(long duration, float tick)
     {
-        if (!this.enabled)
+        if (!this.enabled.get())
         {
             return 1;
         }
@@ -96,58 +85,21 @@ public class Envelope implements IByteBufSerializable
     {
         float envelope = 0;
 
-        if (this.keyframes && this.channel != null)
+        if (this.keyframes.get())
         {
-            if (!this.channel.isEmpty())
+            if (!this.channel.get().isEmpty())
             {
-                envelope = MathUtils.clamp((float) this.channel.interpolate(tick), 0, 1);
+                envelope = MathUtils.clamp((float) this.channel.get().interpolate(tick), 0, 1);
             }
         }
         else
         {
-            envelope = Interpolations.envelope(tick, this.startX, this.startX + this.startDuration, this.getEndDuration(duration), this.getEndX(duration));
-            envelope = this.interpolation.interpolate(0, 1, envelope);
+            float startX = this.startX.get();
+
+            envelope = Interpolations.envelope(tick, startX, startX + this.startDuration.get(), this.getEndDuration(duration), this.getEndX(duration));
+            envelope = this.interpolation.get().interpolate(0, 1, envelope);
         }
 
         return envelope;
-    }
-
-    public void fromJSON(JsonObject object)
-    {
-        if (this.channel == null)
-        {
-            this.channel = this.create();
-        }
-    }
-
-    public void toJSON(JsonObject object)
-    {}
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        this.enabled = buffer.readBoolean();
-        this.relative = buffer.readBoolean();
-        this.startX = buffer.readFloat();
-        this.startDuration = buffer.readFloat();
-        this.endX = buffer.readFloat();
-        this.endDuration = buffer.readFloat();
-        this.interpolation = Interpolation.values()[buffer.readInt()];
-        this.keyframes = buffer.readBoolean();
-        this.channel.fromBytes(buffer);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        buffer.writeBoolean(this.enabled);
-        buffer.writeBoolean(this.relative);
-        buffer.writeFloat(this.startX);
-        buffer.writeFloat(this.startDuration);
-        buffer.writeFloat(this.endX);
-        buffer.writeFloat(this.endDuration);
-        buffer.writeInt(this.interpolation.ordinal());
-        buffer.writeBoolean(this.keyframes);
-        this.channel.toBytes(buffer);
     }
 }

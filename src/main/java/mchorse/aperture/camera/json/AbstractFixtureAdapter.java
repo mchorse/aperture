@@ -1,9 +1,5 @@
 package mchorse.aperture.camera.json;
 
-import java.lang.reflect.Type;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -12,16 +8,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.modifiers.RemapperModifier;
 import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.mclib.utils.keyframes.Keyframe;
-import mchorse.mclib.utils.keyframes.KeyframeChannel;
+
+import java.lang.reflect.Type;
 
 /**
  * This class is responsible for serializing and deserializing 
@@ -29,20 +24,6 @@ import mchorse.mclib.utils.keyframes.KeyframeChannel;
  */
 public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, JsonDeserializer<AbstractFixture>
 {
-    /**
-     * Gson instance for building up
-     */
-    private Gson gson;
-
-    public AbstractFixtureAdapter()
-    {
-        GsonBuilder builder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
-
-        builder.registerTypeAdapter(AbstractModifier.class, new AbstractModifierAdapter());
-
-        this.gson = builder.create();
-    }
-
     /**
      * Deserialize an abstract fixture from JsonElement.
      *
@@ -148,8 +129,8 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     {
         RemapperModifier modifier = new RemapperModifier();
 
-        modifier.keyframes = true;
-        modifier.channel.copy(fixture.speed.get());
+        modifier.keyframes.set(true);
+        modifier.channel.copy(fixture.speed);
 
         fixture.useSpeed.set(false);
         fixture.getModifiers().add(0, modifier);
@@ -165,7 +146,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     @Override
     public JsonElement serialize(AbstractFixture src, Type typeOfSrc, JsonSerializationContext context)
     {
-        JsonObject object = (JsonObject) this.gson.toJsonTree(src);
+        JsonObject object = new JsonObject();
 
         object.addProperty("type", FixtureRegistry.NAME_TO_CLASS.inverse().get(src.getClass()));
         src.toJSON(object);

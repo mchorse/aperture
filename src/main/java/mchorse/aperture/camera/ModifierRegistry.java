@@ -1,16 +1,16 @@
 package mchorse.aperture.camera;
 
-import java.util.Map;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
+import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.Map;
 
 /**
  * Modifier registry
@@ -71,16 +71,6 @@ public class ModifierRegistry
     }
 
     /**
-     * Write an abstract modifier to byte buffer 
-     */
-    public static void toBytes(AbstractModifier modifier, ByteBuf buffer)
-    {
-        buffer.writeByte(getType(modifier));
-
-        modifier.toBytes(buffer);
-    }
-
-    /**
      * Read an abstract modifier from a byte buffer
      */
     public static AbstractModifier fromBytes(ByteBuf buffer)
@@ -99,6 +89,48 @@ public class ModifierRegistry
         }
 
         return null;
+    }
+
+    /**
+     * Write an abstract modifier to byte buffer
+     */
+    public static void toBytes(AbstractModifier modifier, ByteBuf buffer)
+    {
+        buffer.writeByte(getType(modifier));
+
+        modifier.toBytes(buffer);
+    }
+
+    public static AbstractModifier fromJSON(JsonObject object)
+    {
+        String type = object.has("type") && object.get("type").isJsonPrimitive() ? object.get("type").getAsString() : "";
+        Class<? extends AbstractModifier> clazz = ModifierRegistry.NAME_TO_CLASS.get(type);
+
+        if (clazz != null)
+        {
+            try
+            {
+                AbstractModifier modifier = clazz.getConstructor().newInstance();
+
+                modifier.fromJSON(object);
+
+                return modifier;
+            }
+            catch (Exception e)
+            {}
+        }
+
+        return null;
+    }
+
+    public static JsonObject toJSON(AbstractModifier modifier)
+    {
+        JsonObject object = new JsonObject();
+
+        object.addProperty("type", ModifierRegistry.NAME_TO_CLASS.inverse().get(modifier.getClass()));
+        modifier.toJSON(object);
+
+        return object;
     }
 
     /**

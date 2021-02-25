@@ -18,14 +18,14 @@ public class GuiDragModifierPanel extends GuiAbstractModifierPanel<DragModifier>
 
         this.factor = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.factor = value.floatValue();
+            this.modifier.factor.set(value.floatValue());
             this.modifiers.editor.updateProfile();
         });
         this.factor.limit(0, 1).values(0.05F, 0.01F, 0.2F).increment(0.1F).tooltip(IKey.lang("aperture.gui.modifiers.panels.factor"));
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {
-            this.modifier.active = value;
+            this.modifier.active.set(value);
             this.modifiers.editor.updateProfile();
         });
 
@@ -37,7 +37,7 @@ public class GuiDragModifierPanel extends GuiAbstractModifierPanel<DragModifier>
     {
         super.fillData();
 
-        this.factor.setValue(this.modifier.factor);
-        this.active.value = this.modifier.active;
+        this.factor.setValue(this.modifier.factor.get());
+        this.active.value = this.modifier.active.get();
     }
 }

@@ -88,13 +88,6 @@ public class ValueRenderFrames extends Value
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public List<GuiElement> getFields(Minecraft minecraft, GuiConfigPanel guiConfigPanel)
-    {
-        return null;
-    }
-
-    @Override
     public void fromJSON(JsonElement jsonElement)
     {
         if (!jsonElement.isJsonArray())
@@ -115,11 +108,11 @@ public class ValueRenderFrames extends Value
 
             for (JsonElement elemElement : element.getAsJsonArray())
             {
-                if (elemElement.isJsonObject())
+                if (elemElement.isJsonObject() || elemElement.isJsonArray())
                 {
                     RenderFrame frame = new RenderFrame();
 
-                    frame.fromJSON(elemElement.getAsJsonObject());
+                    frame.fromJSON(elemElement);
                     frames.add(frame);
                 }
             }

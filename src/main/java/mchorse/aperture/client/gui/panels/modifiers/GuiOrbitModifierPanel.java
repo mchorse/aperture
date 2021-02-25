@@ -26,28 +26,28 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
 
         this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.yaw = value.floatValue();
+            this.modifier.yaw.set(value.floatValue());
             this.modifiers.editor.updateProfile();
         });
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.pitch = value.floatValue();
+            this.modifier.pitch.set(value.floatValue());
             this.modifiers.editor.updateProfile();
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.distance = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.distance = value.floatValue();
+            this.modifier.distance.set(value.floatValue());
             this.modifiers.editor.updateProfile();
         });
         this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
 
         this.copy = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.copy_entity"), false, (b) ->
         {
-            this.modifier.copy = b.isToggled();
+            this.modifier.copy.set(b.isToggled());
             this.modifiers.editor.updateProfile();
         });
         this.copy.flex().h(20);
@@ -55,7 +55,7 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
 
         this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.modifier.selector = str;
+            this.modifier.selector.set(str);
             this.modifier.tryFindingEntity();
             this.modifiers.editor.updateProfile();
         });
@@ -69,11 +69,11 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
     {
         super.fillData();
 
-        this.yaw.setValue(this.modifier.yaw);
-        this.pitch.setValue(this.modifier.pitch);
-        this.distance.setValue(this.modifier.distance);
+        this.yaw.setValue(this.modifier.yaw.get());
+        this.pitch.setValue(this.modifier.pitch.get());
+        this.distance.setValue(this.modifier.distance.get());
 
-        this.copy.toggled(this.modifier.copy);
-        this.selector.setText(this.modifier.selector);
+        this.copy.toggled(this.modifier.copy.get());
+        this.selector.setText(this.modifier.selector.get());
     }
 }

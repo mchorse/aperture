@@ -1,14 +1,13 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.data.StructureBase;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.smooth.Envelope;
-import mchorse.mclib.network.IByteBufSerializable;
+import mchorse.aperture.camera.values.ValueEnvelope;
+import mchorse.mclib.config.ConfigCategory;
+import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.ValueBoolean;
 
 import java.util.List;
 
@@ -18,21 +17,19 @@ import java.util.List;
  * Camera modifiers are special blocks of logic which post-processes 
  * {@link Position} after it was computed by an {@link AbstractFixture}. 
  */
-public abstract class AbstractModifier implements IByteBufSerializable
+public abstract class AbstractModifier extends StructureBase
 {
     public static final Position temporary = new Position();
 
     /**
      * Whether this modifier is enabled 
      */
-    @Expose
-    public boolean enabled = true;
+    public final ValueBoolean enabled = new ValueBoolean("enabled", true);
 
     /**
      * Envelope configuration
      */
-    @Expose
-    public Envelope envelope = new Envelope();
+    public final ValueEnvelope envelope = new ValueEnvelope("envelope");
 
     /**
      * Apply camera modifiers
@@ -44,12 +41,12 @@ public abstract class AbstractModifier implements IByteBufSerializable
 
         for (AbstractModifier modifier : modifiers)
         {
-            if (!modifier.enabled)
+            if (!modifier.enabled.get())
             {
                 continue;
             }
 
-            float factor = modifier.envelope.factorEnabled(duration, offset + previewPartialTick);
+            float factor = modifier.envelope.get().factorEnabled(duration, offset + previewPartialTick);
 
             temporary.copy(pos);
             modifier.modify(ticks, offset, fixture, partialTick, previewPartialTick, profile, temporary);
@@ -59,6 +56,12 @@ public abstract class AbstractModifier implements IByteBufSerializable
                 pos.interpolate(temporary, factor);
             }
         }
+    }
+
+    public AbstractModifier()
+    {
+        this.register(this.enabled);
+        this.register(this.envelope);
     }
 
     /**
@@ -80,49 +83,4 @@ public abstract class AbstractModifier implements IByteBufSerializable
     }
 
     public abstract AbstractModifier create();
-
-    public void copy(AbstractModifier from)
-    {
-        this.enabled = from.enabled;
-        this.envelope.copy(from.envelope);
-    }
-
-    public void toJSON(JsonObject object)
-    {
-        JsonElement element = object.get("envelope");
-
-        if (this.envelope != null && element != null && element.isJsonObject())
-        {
-            this.envelope.toJSON(element.getAsJsonObject());
-        }
-    }
-
-    public void fromJSON(JsonObject object)
-    {
-        if (this.envelope == null)
-        {
-            this.envelope = new Envelope();
-
-            JsonElement element = object.get("envelope");
-
-            if (element != null && element.isJsonObject())
-            {
-                this.envelope.fromJSON(element.getAsJsonObject());
-            }
-        }
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        this.enabled = buffer.readBoolean();
-        this.envelope.fromBytes(buffer);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        buffer.writeBoolean(this.enabled);
-        this.envelope.toBytes(buffer);
-    }
 }

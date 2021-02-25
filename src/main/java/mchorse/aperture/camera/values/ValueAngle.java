@@ -56,13 +56,6 @@ public class ValueAngle extends Value
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public List<GuiElement> getFields(Minecraft minecraft, GuiConfigPanel guiConfigPanel)
-    {
-        return null;
-    }
-
-    @Override
     public void fromJSON(JsonElement element)
     {
         this.angle.fromJSON(element.getAsJsonObject());

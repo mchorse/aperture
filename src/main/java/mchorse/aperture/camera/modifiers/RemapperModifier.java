@@ -1,29 +1,20 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.values.ValueExpression;
+import mchorse.aperture.camera.values.ValueKeyframeChannel;
+import mchorse.mclib.config.values.ValueBoolean;
 import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.MathBuilder;
 import mchorse.mclib.math.Variable;
 import mchorse.mclib.utils.MathUtils;
-import mchorse.mclib.utils.keyframes.KeyframeChannel;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class RemapperModifier extends AbstractModifier
 {
-    @Expose
-    public boolean keyframes;
-
-    @Expose
-    public KeyframeChannel channel;
-
     public MathBuilder builder = new MathBuilder();
-    public IValue expression;
 
     public Variable ticks;
     public Variable offset;
@@ -32,8 +23,18 @@ public class RemapperModifier extends AbstractModifier
     public Variable progress;
     public Variable factor;
 
+    public final ValueBoolean keyframes = new ValueBoolean("keyframes");
+    public final ValueKeyframeChannel channel = new ValueKeyframeChannel("channel");
+    public final ValueExpression expression = new ValueExpression("expression", this.builder);
+
     public RemapperModifier()
     {
+        super();
+
+        this.register(this.keyframes);
+        this.register(this.channel);
+        this.register(this.expression);
+
         this.ticks = new Variable("t", 0);
         this.offset = new Variable("o", 0);
         this.partial = new Variable("pt", 0);
@@ -48,9 +49,8 @@ public class RemapperModifier extends AbstractModifier
         this.builder.register(this.progress);
         this.builder.register(this.factor);
 
-        this.channel = new KeyframeChannel();
-        this.channel.insert(0, 0);
-        this.channel.insert(Aperture.duration.get(), 1);
+        this.channel.get().insert(0, 0);
+        this.channel.get().insert(Aperture.duration.get(), 1);
     }
 
     @Override
@@ -61,13 +61,14 @@ public class RemapperModifier extends AbstractModifier
             return;
         }
 
+        IValue value = this.expression.get();
         double factor = 0;
 
-        if (this.keyframes && this.channel != null)
+        if (this.keyframes.get())
         {
-            factor = this.channel.interpolate(offset + previewPartialTick);
+            factor = this.channel.get().interpolate(offset + previewPartialTick);
         }
-        else if (!this.keyframes && this.expression != null)
+        else if (value != null)
         {
             this.ticks.set(ticks);
             this.offset.set(offset);
@@ -76,7 +77,7 @@ public class RemapperModifier extends AbstractModifier
             this.progress.set(ticks + previewPartialTick);
             this.factor.set((double) (offset + previewPartialTick) / this.duration.get());
 
-            factor = this.expression.get();
+            factor = value.get();
         }
 
         factor *= fixture.getDuration();
@@ -85,84 +86,9 @@ public class RemapperModifier extends AbstractModifier
         fixture.applyFixture((long) factor, (float) (factor % 1), profile, pos);
     }
 
-    public boolean rebuildExpression(String expression)
-    {
-        try
-        {
-            this.expression = this.builder.parse(expression);
-
-            return true;
-        }
-        catch (Exception e)
-        {}
-
-        return false;
-    }
-
     @Override
     public AbstractModifier create()
     {
         return new RemapperModifier();
-    }
-
-    @Override
-    public void copy(AbstractModifier from)
-    {
-        super.copy(from);
-
-        if (from instanceof RemapperModifier)
-        {
-            RemapperModifier modifier = (RemapperModifier) from;
-
-            this.keyframes = modifier.keyframes;
-            this.channel.copy(modifier.channel);
-            this.rebuildExpression(modifier.expression == null ? "" : modifier.expression.toString());
-        }
-    }
-
-    @Override
-    public void toJSON(JsonObject object)
-    {
-        if (this.expression != null)
-        {
-            object.addProperty("expression", this.expression.toString());
-        }
-    }
-
-    @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        if (object.has("expression"))
-        {
-            this.rebuildExpression(object.get("expression").getAsString());
-        }
-
-        if (this.channel == null)
-        {
-            this.channel = new KeyframeChannel();
-            this.channel.insert(0, 0);
-        }
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        buffer.writeBoolean(this.keyframes);
-        this.channel.toBytes(buffer);
-        ByteBufUtils.writeUTF8String(buffer, this.expression == null ? "" : this.expression.toString());
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.keyframes = buffer.readBoolean();
-        this.channel.fromBytes(buffer);
-        this.rebuildExpression(ByteBufUtils.readUTF8String(buffer));
     }
 }

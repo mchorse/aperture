@@ -1,11 +1,9 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.annotations.Expose;
-
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.mclib.config.values.ValueFloat;
 
 /**
  * Shake modifier
@@ -15,25 +13,23 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
  */
 public class ShakeModifier extends ComponentModifier
 {
-    @Expose
-    public float shake;
-
-    @Expose
-    public float shakeAmount;
+    public final ValueFloat shake = new ValueFloat("shake");
+    public final ValueFloat shakeAmount = new ValueFloat("shakeAmount");
 
     public ShakeModifier()
-    {}
-
-    public ShakeModifier(float shake, float shakeAmount)
     {
-        this.shake = shake;
-        this.shakeAmount = shakeAmount;
+        super();
+
+        this.register(this.shake);
+        this.register(this.shakeAmount);
     }
 
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        float x = (ticks + previewPartialTick) / (this.shake == 0 ? 1 : this.shake);
+        float shake = this.shake.get();
+        float amount = this.shakeAmount.get();
+        float x = (ticks + previewPartialTick) / (shake == 0 ? 1 : shake);
 
         boolean isX = this.isActive(0);
         boolean isY = this.isActive(1);
@@ -48,44 +44,44 @@ public class ShakeModifier extends ComponentModifier
             float swingX = (float) (Math.sin(x) * Math.sin(x) * Math.cos(x) * Math.cos(x / 2));
             float swingY = (float) (Math.cos(x) * Math.sin(x) * Math.sin(x));
 
-            pos.angle.yaw += swingX * this.shakeAmount;
-            pos.angle.pitch += swingY * this.shakeAmount;
+            pos.angle.yaw += swingX * amount;
+            pos.angle.pitch += swingY * amount;
         }
         else
         {
             if (isX)
             {
-                pos.point.x += Math.sin(x) * this.shakeAmount;
+                pos.point.x += Math.sin(x) * amount;
             }
 
             if (isY)
             {
-                pos.point.y -= Math.sin(x) * this.shakeAmount;
+                pos.point.y -= Math.sin(x) * amount;
             }
 
             if (isZ)
             {
-                pos.point.z += Math.cos(x) * this.shakeAmount;
+                pos.point.z += Math.cos(x) * amount;
             }
 
             if (isYaw)
             {
-                pos.angle.yaw += Math.sin(x) * this.shakeAmount;
+                pos.angle.yaw += Math.sin(x) * amount;
             }
 
             if (isPitch)
             {
-                pos.angle.pitch += Math.cos(x) * this.shakeAmount;
+                pos.angle.pitch += Math.cos(x) * amount;
             }
 
             if (isRoll)
             {
-                pos.angle.roll += Math.sin(x) * this.shakeAmount;
+                pos.angle.roll += Math.sin(x) * amount;
             }
 
             if (isFov)
             {
-                pos.angle.fov += Math.cos(x) * this.shakeAmount;
+                pos.angle.fov += Math.cos(x) * amount;
             }
         }
     }
@@ -94,37 +90,5 @@ public class ShakeModifier extends ComponentModifier
     public AbstractModifier create()
     {
         return new ShakeModifier();
-    }
-
-    @Override
-    public void copy(AbstractModifier from)
-    {
-        super.copy(from);
-
-        if (from instanceof ShakeModifier)
-        {
-            ShakeModifier modifier = (ShakeModifier) from;
-
-            this.shake = modifier.shake;
-            this.shakeAmount = modifier.shakeAmount;
-        }
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        buffer.writeFloat(this.shake);
-        buffer.writeFloat(this.shakeAmount);
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.shake = buffer.readFloat();
-        this.shakeAmount = buffer.readFloat();
     }
 }

@@ -1,12 +1,11 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.annotations.Expose;
-
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.mclib.config.values.ValueBoolean;
+import mchorse.mclib.config.values.ValueFloat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
@@ -25,29 +24,32 @@ public class OrbitModifier extends EntityModifier
     /**
      * Yaw to be added to orbit
      */
-    @Expose
-    public float yaw;
+    public final ValueFloat yaw = new ValueFloat("yaw");
 
     /**
      * Pitch to be added to orbit
      */
-    @Expose
-    public float pitch;
+    public final ValueFloat pitch = new ValueFloat("pitch");
 
     /**
      * How far away to orbit from the entity
      */
-    @Expose
-    public float distance;
+    public final ValueFloat distance = new ValueFloat("distance");
 
     /**
      * In addition, copy yaw and pitch from entity
      */
-    @Expose
-    public boolean copy;
+    public final ValueBoolean copy = new ValueBoolean("copy");
 
     public OrbitModifier()
-    {}
+    {
+        super();
+
+        this.register(this.yaw);
+        this.register(this.pitch);
+        this.register(this.distance);
+        this.register(this.copy);
+    }
 
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
@@ -64,7 +66,7 @@ public class OrbitModifier extends EntityModifier
 
         if (fixture != null)
         {
-            fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+            fixture.applyFixture(0, 0, 0, profile, this.position);
         }
         else
         {
@@ -73,11 +75,11 @@ public class OrbitModifier extends EntityModifier
 
         float yaw = 0;
         float pitch = 0;
-        float distance = this.distance;
+        float distance = this.distance.get();
         Entity entity = this.entities.get(0);
 
         /* Copy entity's yaw and pitch */
-        if (this.copy)
+        if (this.copy.get())
         {
             yaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick;
             pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
@@ -93,15 +95,15 @@ public class OrbitModifier extends EntityModifier
         float oldYaw = yaw;
 
         /* Add relative and stored yaw, pitch and distance */
-        yaw += this.yaw;
+        yaw += this.yaw.get();
         yaw += pos.angle.yaw - this.position.angle.yaw;
 
-        if (this.copy)
+        if (this.copy.get())
         {
             pitch *= Math.abs((Math.abs(oldYaw - yaw) % 360) / 360 - 0.5) * 4 - 1;
         }
 
-        pitch += this.pitch;
+        pitch += this.pitch.get();
         pitch += pos.angle.pitch - this.position.angle.pitch;
 
         distance += pos.point.z - this.position.point.z;
@@ -141,43 +143,5 @@ public class OrbitModifier extends EntityModifier
     public AbstractModifier create()
     {
         return new OrbitModifier();
-    }
-
-    @Override
-    public void copy(AbstractModifier from)
-    {
-        super.copy(from);
-
-        if (from instanceof OrbitModifier)
-        {
-            OrbitModifier modifier = (OrbitModifier) from;
-
-            this.yaw = modifier.yaw;
-            this.pitch = modifier.pitch;
-            this.distance = modifier.distance;
-            this.copy = modifier.copy;
-        }
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.yaw = buffer.readFloat();
-        this.pitch = buffer.readFloat();
-        this.distance = buffer.readFloat();
-        this.copy = buffer.readBoolean();
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        buffer.writeFloat(this.yaw);
-        buffer.writeFloat(this.pitch);
-        buffer.writeFloat(this.distance);
-        buffer.writeBoolean(this.copy);
     }
 }

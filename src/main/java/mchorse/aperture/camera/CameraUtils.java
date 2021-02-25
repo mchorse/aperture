@@ -4,12 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.data.RenderFrame;
 import mchorse.aperture.camera.json.AbstractFixtureAdapter;
-import mchorse.aperture.camera.json.AbstractModifierAdapter;
 import mchorse.aperture.camera.json.CameraProfileAdapter;
-import mchorse.aperture.camera.json.RenderFrameAdapter;
-import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.Dispatcher;
@@ -66,10 +62,7 @@ public class CameraUtils
 
         /* Serializer and deserializer */
         builder.registerTypeAdapter(AbstractFixture.class, new AbstractFixtureAdapter());
-        builder.registerTypeAdapter(AbstractModifier.class, new AbstractModifierAdapter());
         builder.registerTypeAdapter(CameraProfile.class, new CameraProfileAdapter());
-
-        builder.registerTypeAdapter(RenderFrame.class, new RenderFrameAdapter());
 
         return builder.create();
     }

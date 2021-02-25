@@ -44,7 +44,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 
         this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.modifier.selector = str;
+            this.modifier.selector.set(str);
             this.modifier.tryFindingEntity();
             this.modifiers.editor.updateProfile();
         });
@@ -52,63 +52,63 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 
         this.blockX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.block.x = value;
+            this.modifier.block.get().x = value;
             this.modifiers.editor.updateProfile();
         });
         this.blockX.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.blockY = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.block.y = value;
+            this.modifier.block.get().y = value;
             this.modifiers.editor.updateProfile();
         });
         this.blockY.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.blockZ = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.block.z = value;
+            this.modifier.block.get().z = value;
             this.modifiers.editor.updateProfile();
         });
         this.blockZ.tooltip(IKey.lang("aperture.gui.panels.z"));
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.x = value;
+            this.modifier.offset.get().x = value;
             this.modifiers.editor.updateProfile();
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.y = value;
+            this.modifier.offset.get().y = value;
             this.modifiers.editor.updateProfile();
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.z = value;
+            this.modifier.offset.get().z = value;
             this.modifiers.editor.updateProfile();
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 
         this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.relative"), false, (b) ->
         {
-            this.modifier.relative = b.isToggled();
+            this.modifier.relative.set(b.isToggled());
             this.modifiers.editor.updateProfile();
         });
         this.relative.tooltip(IKey.lang("aperture.gui.modifiers.panels.relative_tooltip"));
 
         this.atBlock = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.at_block"), false, (b) ->
         {
-            this.modifier.atBlock = b.isToggled();
+            this.modifier.atBlock.set(b.isToggled());
             this.updateVisibility(true);
             this.modifiers.editor.updateProfile();
         });
 
         this.forward = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.forward"), false, (b) ->
         {
-            this.modifier.forward = b.isToggled();
+            this.modifier.forward.set(b.isToggled());
             this.modifiers.editor.updateProfile();
         });
         this.forward.tooltip(IKey.lang("aperture.gui.modifiers.panels.forward_tooltip"));
@@ -125,16 +125,16 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     {
         super.fillData();
 
-        this.selector.setText(this.modifier.selector);
-        this.blockX.setValue((float) this.modifier.block.x);
-        this.blockY.setValue((float) this.modifier.block.y);
-        this.blockZ.setValue((float) this.modifier.block.z);
-        this.x.setValue((float) this.modifier.offset.x);
-        this.y.setValue((float) this.modifier.offset.y);
-        this.z.setValue((float) this.modifier.offset.z);
-        this.relative.toggled(this.modifier.relative);
-        this.atBlock.toggled(this.modifier.atBlock);
-        this.forward.toggled(this.modifier.forward);
+        this.selector.setText(this.modifier.selector.get());
+        this.blockX.setValue(this.modifier.block.get().x);
+        this.blockY.setValue(this.modifier.block.get().y);
+        this.blockZ.setValue(this.modifier.block.get().z);
+        this.x.setValue(this.modifier.offset.get().x);
+        this.y.setValue(this.modifier.offset.get().y);
+        this.z.setValue(this.modifier.offset.get().z);
+        this.relative.toggled(this.modifier.relative.get());
+        this.atBlock.toggled(this.modifier.atBlock.get());
+        this.forward.toggled(this.modifier.forward.get());
 
         this.updateVisibility(false);
     }
@@ -142,7 +142,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
     @Override
     public GuiContextMenu createContextMenu(GuiContext context)
     {
-        if (this.modifier.atBlock)
+        if (this.modifier.atBlock.get())
         {
             return new GuiSimpleContextMenu(this.mc)
                 .action(Icons.VISIBLE, IKey.lang("aperture.gui.panels.context.look_coords"), () -> this.rayTrace(false))
@@ -162,14 +162,14 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
             {
                 BlockPos pos = result.getBlockPos();
 
-                this.modifier.block.set(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                this.modifier.block.get().set(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
                 this.fillData();
             }
             else if (!center && result.typeOfHit != RayTraceResult.Type.MISS)
             {
                 Vec3d vec = result.hitVec;
 
-                this.modifier.block.set(vec.x, vec.y, vec.z);
+                this.modifier.block.get().set(vec.x, vec.y, vec.z);
                 this.fillData();
             }
         }
@@ -177,7 +177,7 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 
     private void updateVisibility(boolean resize)
     {
-        boolean atBlock = this.modifier.atBlock;
+        boolean atBlock = this.modifier.atBlock.get();
 
         this.row.removeFromParent();
         this.selector.removeFromParent();

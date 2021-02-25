@@ -1,12 +1,12 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.annotations.Expose;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.values.ValuePoint;
+import mchorse.mclib.config.values.ValueBoolean;
 import net.minecraft.entity.Entity;
 
 /**
@@ -17,20 +17,20 @@ import net.minecraft.entity.Entity;
  */
 public class LookModifier extends EntityModifier
 {
-    @Expose
-    public boolean relative;
-
-    @Expose
-    public boolean atBlock;
-
-    @Expose
-    public boolean forward;
-
-    @Expose
-    public Point block = new Point(0, 0, 0);
+    public final ValueBoolean relative = new ValueBoolean("relative");
+    public final ValueBoolean atBlock = new ValueBoolean("atBlock");
+    public final ValueBoolean forward = new ValueBoolean("forward");
+    public final ValuePoint block = new ValuePoint("block", new Point(0, 0, 0));
 
     public LookModifier()
-    {}
+    {
+        super();
+
+        this.register(this.relative);
+        this.register(this.atBlock);
+        this.register(this.forward);
+        this.register(this.block);
+    }
 
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
@@ -40,20 +40,23 @@ public class LookModifier extends EntityModifier
             this.tryFindingEntity();
         }
 
-        if (this.entities == null && !(this.atBlock || this.forward))
+        boolean atBlock = this.atBlock.get();
+        boolean forward = this.forward.get();
+
+        if (this.entities == null && !(atBlock || forward))
         {
             return;
         }
 
         if (fixture != null)
         {
-            if (this.forward)
+            if (forward)
             {
                 fixture.applyFixture(offset - 1, partialTick, previewPartialTick, profile, this.position);
             }
             else
             {
-                fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+                fixture.applyFixture(0, 0, 0, profile, this.position);
             }
         }
         else
@@ -65,13 +68,15 @@ public class LookModifier extends EntityModifier
         double y = 0;
         double z = 0;
 
-        if (this.atBlock)
+        if (atBlock)
         {
-            x = this.block.x;
-            y = this.block.y;
-            z = this.block.z;
+            Point block = this.block.get();
+
+            x = block.x;
+            y = block.y;
+            z = block.z;
         }
-        else if (!this.forward)
+        else if (!forward)
         {
             double sx = 0;
             double sy = 0;
@@ -90,15 +95,17 @@ public class LookModifier extends EntityModifier
             z = sz / size;
         }
 
-        x += this.offset.x;
-        y += this.offset.y;
-        z += this.offset.z;
+        Point point = this.offset.get();
+
+        x += point.x;
+        y += point.y;
+        z += point.z;
 
         double dX = x - pos.point.x;
         double dY = (y - 1.62) - pos.point.y;
         double dZ = z - pos.point.z;
 
-        if (this.forward)
+        if (forward)
         {
             dX = pos.point.x - this.position.point.x;
             dY = pos.point.y - this.position.point.y;
@@ -110,7 +117,7 @@ public class LookModifier extends EntityModifier
         float yaw = angle.yaw;
         float pitch = angle.pitch;
 
-        if (this.relative && !this.forward)
+        if (this.relative.get() && !forward)
         {
             yaw += pos.angle.yaw - this.position.angle.yaw;
             pitch += pos.angle.pitch - this.position.angle.pitch;
@@ -123,43 +130,5 @@ public class LookModifier extends EntityModifier
     public AbstractModifier create()
     {
         return new LookModifier();
-    }
-
-    @Override
-    public void copy(AbstractModifier from)
-    {
-        super.copy(from);
-
-        if (from instanceof LookModifier)
-        {
-            LookModifier modifier = (LookModifier) from;
-
-           this.relative = modifier.relative;
-           this.atBlock = modifier.atBlock;
-           this.forward = modifier.forward;
-           this.block = modifier.block.copy();
-        }
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        buffer.writeBoolean(this.relative);
-        buffer.writeBoolean(this.atBlock);
-        buffer.writeBoolean(this.forward);
-        this.block.toBytes(buffer);
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.relative = buffer.readBoolean();
-        this.atBlock = buffer.readBoolean();
-        this.forward = buffer.readBoolean();
-        this.block = Point.fromBytes(buffer);
     }
 }

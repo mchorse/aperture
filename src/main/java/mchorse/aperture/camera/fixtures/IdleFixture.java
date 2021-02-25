@@ -40,15 +40,4 @@ public class IdleFixture extends AbstractFixture
     {
         return new IdleFixture(duration);
     }
-
-    @Override
-    public void copy(AbstractFixture from)
-    {
-        super.copy(from);
-
-        if (from instanceof IdleFixture)
-        {
-            this.position.copy(((IdleFixture) from).position);
-        }
-    }
 }

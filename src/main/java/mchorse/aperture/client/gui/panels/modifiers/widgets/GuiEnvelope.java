@@ -56,7 +56,7 @@ public class GuiEnvelope extends GuiElement
 
         this.enabled = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.enabled"), (b) ->
         {
-            this.get().enabled = b.isToggled();
+            this.get().enabled.set(b.isToggled());
             this.panel.modifiers.editor.updateProfile();
         });
         this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.relative"), (b) -> this.toggleRelative(b.isToggled()));
@@ -65,31 +65,31 @@ public class GuiEnvelope extends GuiElement
 
         this.startX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().startX = TimeUtils.fromTime(value.floatValue());
+            this.get().startX.set(TimeUtils.fromTime(value.floatValue()));
             this.panel.modifiers.editor.updateProfile();
         });
         this.startX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_x"), Direction.TOP);
         this.startD = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().startDuration = TimeUtils.fromTime(value.floatValue());
+            this.get().startDuration.set(TimeUtils.fromTime(value.floatValue()));
             this.panel.modifiers.editor.updateProfile();
         });
         this.startD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_d"), Direction.TOP);
         this.endX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().endX = TimeUtils.fromTime(value.floatValue());
+            this.get().endX.set(TimeUtils.fromTime(value.floatValue()));
             this.panel.modifiers.editor.updateProfile();
         });
         this.endX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_x"), Direction.TOP);
         this.endD = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().endDuration = TimeUtils.fromTime(value.floatValue());
+            this.get().endDuration.set(TimeUtils.fromTime(value.floatValue()));
             this.panel.modifiers.editor.updateProfile();
         });
         this.endD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_d"), Direction.TOP);
         this.interps = new GuiInterpolationList(mc, (l) ->
         {
-            this.get().interpolation = l.get(0);
+            this.get().interpolation.set(l.get(0));
             this.panel.modifiers.editor.updateProfile();
         });
         this.interps.setVisible(false);
@@ -123,7 +123,7 @@ public class GuiEnvelope extends GuiElement
 
     private void toggleKeyframes(boolean toggled)
     {
-        this.get().keyframes = toggled;
+        this.get().keyframes.set(toggled);
 
         this.removeAll();
         this.row.removeAll();
@@ -179,24 +179,24 @@ public class GuiEnvelope extends GuiElement
     {
         Envelope envelope = this.get();
 
-        this.enabled.toggled(envelope.enabled);
-        this.relative.toggled(envelope.relative);
+        this.enabled.toggled(envelope.enabled.get());
+        this.relative.toggled(envelope.relative.get());
         this.fillIntervals();
-        this.interps.setCurrent(envelope.interpolation);
-        this.keyframes.toggled(envelope.keyframes);
+        this.interps.setCurrent(envelope.interpolation.get());
+        this.keyframes.toggled(envelope.keyframes.get());
         this.channel.setChannel(envelope.channel, 0x0088ff);
 
-        this.toggleKeyframes(envelope.keyframes);
+        this.toggleKeyframes(envelope.keyframes.get());
     }
 
     private void fillIntervals()
     {
         Envelope envelope = this.get();
 
-        this.startX.setValue(TimeUtils.toTime((int) envelope.startX));
-        this.startD.setValue(TimeUtils.toTime((int) envelope.startDuration));
-        this.endX.setValue(TimeUtils.toTime((int) envelope.endX));
-        this.endD.setValue(TimeUtils.toTime((int) envelope.endDuration));
+        this.startX.setValue(TimeUtils.toTime((int) envelope.startX.get()));
+        this.startD.setValue(TimeUtils.toTime((int) envelope.startDuration.get()));
+        this.endX.setValue(TimeUtils.toTime((int) envelope.endX.get()));
+        this.endD.setValue(TimeUtils.toTime((int) envelope.endDuration.get()));
     }
 
     public void updateDuration()
@@ -208,10 +208,10 @@ public class GuiEnvelope extends GuiElement
     {
         Envelope envelope = this.get();
 
-        envelope.relative = toggled;
-        envelope.endX = this.getDuration() - envelope.endX;
+        envelope.relative.set(toggled);
+        envelope.endX.set(this.getDuration() - envelope.endX.get());
 
-        this.endX.setValue(this.get().endX);
+        this.endX.setValue(this.get().endX.get());
         this.panel.modifiers.editor.updateProfile();
     }
 
@@ -227,7 +227,7 @@ public class GuiEnvelope extends GuiElement
 
     public Envelope get()
     {
-        return this.panel.modifier.envelope;
+        return this.panel.modifier.envelope.get();
     }
 
     @Override
@@ -238,7 +238,7 @@ public class GuiEnvelope extends GuiElement
             this.pickInterp.area.draw(0x88000000);
         }
 
-        if (!this.get().keyframes)
+        if (!this.get().keyframes.get())
         {
             /* Draw an approximate visualisation of the envelope */
             Tessellator tessellator = Tessellator.getInstance();
@@ -296,7 +296,7 @@ public class GuiEnvelope extends GuiElement
             this.color.set(this.startX.area.isInside(context) ? selected : regular, true);
             buffer.pos(this.area.x, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
             buffer.pos(startX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
-            this.drawFades(context, buffer, envelope.interpolation, this.startD.area, startX, startD, sy, ey);
+            this.drawFades(context, buffer, envelope.interpolation.get(), this.startD.area, startX, startD, sy, ey);
         }
 
         this.color.set(this.startD.area.isInside(context) ? selected : regular, true);
@@ -308,7 +308,7 @@ public class GuiEnvelope extends GuiElement
 
         if (endD < this.area.ex())
         {
-            this.drawFades(context, buffer, envelope.interpolation, this.endX.area, endD, endX, ey, sy);
+            this.drawFades(context, buffer, envelope.interpolation.get(), this.endX.area, endD, endX, ey, sy);
             this.color.set(this.endX.area.isInside(context) ? selected : regular, true);
             buffer.pos(endX, sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();
             buffer.pos(this.area.ex(), sy,0).color(this.color.r, this.color.g, this.color.b, this.color.a).endVertex();

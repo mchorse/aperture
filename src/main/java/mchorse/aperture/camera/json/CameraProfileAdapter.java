@@ -51,15 +51,7 @@ public class CameraProfileAdapter implements JsonDeserializer<CameraProfile>, Js
 
         if (object.has("modifiers") && object.get("modifiers").isJsonArray())
         {
-            for (JsonElement element : object.get("modifiers").getAsJsonArray())
-            {
-                AbstractModifier modifier = context.deserialize(element, AbstractModifier.class);
-
-                if (modifier != null)
-                {
-                    profile.getModifiers().add(modifier);
-                }
-            }
+            profile.modifiers.fromJSON(object.get("modifiers"));
         }
 
         if (object.has("curves") && object.get("curves").isJsonObject())
@@ -84,12 +76,12 @@ public class CameraProfileAdapter implements JsonDeserializer<CameraProfile>, Js
     public JsonElement serialize(CameraProfile src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject object = new JsonObject();
+
         JsonArray fixtures = new JsonArray();
-        JsonArray modifiers = new JsonArray();
         JsonObject curves = new JsonObject();
 
         object.add("fixtures", fixtures);
-        object.add("modifiers", modifiers);
+        object.add("modifiers", src.modifiers.toJSON());
         object.add("curves", curves);
 
         for (AbstractFixture fixture : src.getAll())
@@ -99,16 +91,6 @@ public class CameraProfileAdapter implements JsonDeserializer<CameraProfile>, Js
             if (element != null)
             {
                 fixtures.add(element);
-            }
-        }
-
-        for (AbstractModifier modifier : src.getModifiers())
-        {
-            JsonElement element = context.serialize(modifier, AbstractModifier.class);
-
-            if (element != null)
-            {
-                modifiers.add(element);
             }
         }
 

@@ -150,19 +150,4 @@ public class ManualFixture extends AbstractFixture
     {
         return new ManualFixture(duration);
     }
-
-    @Override
-    public void copy(AbstractFixture from)
-    {
-        super.copy(from);
-
-        if (from instanceof ManualFixture)
-        {
-            ManualFixture manual = (ManualFixture) from;
-
-            this.shift.copy(manual.shift);
-            this.speed.copy(manual.speed);
-            this.frames.copy(manual.frames);
-        }
-    }
 }

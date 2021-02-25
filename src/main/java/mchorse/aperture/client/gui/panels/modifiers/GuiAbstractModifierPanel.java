@@ -48,7 +48,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.envelopes = new GuiEnvelope(mc, this);
         this.enable = new GuiIconElement(mc, Icons.NONE, (b) ->
         {
-            this.modifier.enabled = !this.modifier.enabled;
+            this.modifier.enabled.set(!this.modifier.enabled.get());
             this.updateEnable();
             this.modifiers.editor.updateProfile();
         });
@@ -127,13 +127,13 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
 
     private void updateEnable()
     {
-        this.enable.both(this.modifier.enabled ? Icons.UNLOCKED : Icons.LOCKED);
+        this.enable.both(this.modifier.enabled.get() ? Icons.UNLOCKED : Icons.LOCKED);
     }
 
     @Override
     public void draw(GuiContext context)
     {
-        if (this.modifier.enabled)
+        if (this.modifier.enabled.get())
         {
             this.area.draw(0x88000000 + this.color);
         }

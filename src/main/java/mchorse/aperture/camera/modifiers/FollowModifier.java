@@ -1,14 +1,11 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.mclib.config.values.ValueBoolean;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
  * Follow modifier
@@ -19,11 +16,14 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
  */
 public class FollowModifier extends EntityModifier
 {
-    @Expose
-    public boolean relative;
+    public final ValueBoolean relative = new ValueBoolean("relative");
 
     public FollowModifier()
-    {}
+    {
+        super();
+
+        this.register(this.relative);
+    }
 
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
@@ -38,9 +38,9 @@ public class FollowModifier extends EntityModifier
             return;
         }
 
-        if (fixture != null && this.relative)
+        if (fixture != null && this.relative.get())
         {
-            fixture.applyFixture(0, 0, previewPartialTick, profile, this.position);
+            fixture.applyFixture(0, 0, 0, profile, this.position);
         }
         else
         {
@@ -63,28 +63,14 @@ public class FollowModifier extends EntityModifier
         y = y / size + pos.point.y - this.position.point.y;
         z = z / size + pos.point.z - this.position.point.z;
 
-        pos.point.set(x + this.offset.x, y + this.offset.y, z + this.offset.z);
+        Point point = this.offset.get();
+
+        pos.point.set(x + point.x, y + point.y, z + point.z);
     }
 
     @Override
     public AbstractModifier create()
     {
         return new FollowModifier();
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.relative = buffer.readBoolean();
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        buffer.writeBoolean(this.relative);
     }
 }

@@ -23,7 +23,7 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
 
         this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.modifier.selector = str;
+            this.modifier.selector.set(str);
             this.modifier.tryFindingEntity();
             this.modifiers.editor.updateProfile();
         });
@@ -31,28 +31,28 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.x = value;
+            this.modifier.offset.get().x = value;
             this.modifiers.editor.updateProfile();
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.y = value;
+            this.modifier.offset.get().y = value;
             this.modifiers.editor.updateProfile();
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.z = value;
+            this.modifier.offset.get().z = value;
             this.modifiers.editor.updateProfile();
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 
         this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.relative"), false, (b) ->
         {
-            this.modifier.relative = b.isToggled();
+            this.modifier.relative.set(b.isToggled());
             this.modifiers.editor.updateProfile();
         });
         this.relative.tooltip(IKey.lang("aperture.gui.modifiers.panels.relative_tooltip"));
@@ -65,10 +65,10 @@ public class GuiFollowModifierPanel extends GuiAbstractModifierPanel<FollowModif
     {
         super.fillData();
 
-        this.selector.setText(this.modifier.selector);
-        this.x.setValue((float) this.modifier.offset.x);
-        this.y.setValue((float) this.modifier.offset.y);
-        this.z.setValue((float) this.modifier.offset.z);
-        this.relative.toggled(this.modifier.relative);
+        this.selector.setText(this.modifier.selector.get());
+        this.x.setValue(this.modifier.offset.get().x);
+        this.y.setValue(this.modifier.offset.get().y);
+        this.z.setValue(this.modifier.offset.get().z);
+        this.relative.toggled(this.modifier.relative.get());
     }
 }

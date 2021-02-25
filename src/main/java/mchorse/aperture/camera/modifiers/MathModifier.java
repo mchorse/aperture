@@ -1,14 +1,12 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.JsonObject;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.values.ValueExpression;
 import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.MathBuilder;
 import mchorse.mclib.math.Variable;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
  * Math modifier
@@ -26,7 +24,6 @@ public class MathModifier extends ComponentModifier
 {
     private static Position position = new Position();
 
-    public IValue expression;
     public MathBuilder builder = new MathBuilder();
 
     public Variable ticks;
@@ -48,8 +45,14 @@ public class MathModifier extends ComponentModifier
     public Variable roll;
     public Variable fov;
 
+    public final ValueExpression expression = new ValueExpression("expression", this.builder);
+
     public MathModifier()
     {
+        super();
+
+        this.register(this.expression);
+
         this.ticks = new Variable("t", 0);
         this.offset = new Variable("o", 0);
         this.partial = new Variable("pt", 0);
@@ -89,24 +92,12 @@ public class MathModifier extends ComponentModifier
         this.builder.register(this.fov);
     }
 
-    public boolean rebuildExpression(String expression)
-    {
-        try
-        {
-            this.expression = this.builder.parse(expression);
-
-            return true;
-        }
-        catch (Exception e)
-        {}
-
-        return false;
-    }
-
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        if (this.expression != null)
+        IValue expression = this.expression.get();
+
+        if (expression != null)
         {
             if (fixture != null)
             {
@@ -142,43 +133,43 @@ public class MathModifier extends ComponentModifier
             if (this.isActive(0))
             {
                 this.value.set(pos.point.x);
-                pos.point.x = (float) this.expression.get();
+                pos.point.x = (float) expression.get();
             }
 
             if (this.isActive(1))
             {
                 this.value.set(pos.point.y);
-                pos.point.y = (float) this.expression.get();
+                pos.point.y = (float) expression.get();
             }
 
             if (this.isActive(2))
             {
                 this.value.set(pos.point.z);
-                pos.point.z = (float) this.expression.get();
+                pos.point.z = (float) expression.get();
             }
 
             if (this.isActive(3))
             {
                 this.value.set(pos.angle.yaw);
-                pos.angle.yaw = (float) this.expression.get();
+                pos.angle.yaw = (float) expression.get();
             }
 
             if (this.isActive(4))
             {
                 this.value.set(pos.angle.pitch);
-                pos.angle.pitch = (float) this.expression.get();
+                pos.angle.pitch = (float) expression.get();
             }
 
             if (this.isActive(5))
             {
                 this.value.set(pos.angle.roll);
-                pos.angle.roll = (float) this.expression.get();
+                pos.angle.roll = (float) expression.get();
             }
 
             if (this.isActive(6))
             {
                 this.value.set(pos.angle.fov);
-                pos.angle.fov = (float) this.expression.get();
+                pos.angle.fov = (float) expression.get();
             }
         }
     }
@@ -187,57 +178,5 @@ public class MathModifier extends ComponentModifier
     public AbstractModifier create()
     {
         return new MathModifier();
-    }
-
-    @Override
-    public void copy(AbstractModifier from)
-    {
-        super.copy(from);
-
-        if (from instanceof MathModifier)
-        {
-            MathModifier modifier = (MathModifier) from;
-
-            if (modifier.expression != null)
-            {
-                this.rebuildExpression(modifier.expression.toString());
-            }
-        }
-    }
-
-    @Override
-    public void toJSON(JsonObject object)
-    {
-        if (this.expression != null)
-        {
-            object.addProperty("expression", this.expression.toString());
-        }
-    }
-
-    @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        if (object.has("expression"))
-        {
-            this.rebuildExpression(object.get("expression").getAsString());
-        }
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        ByteBufUtils.writeUTF8String(buffer, this.expression == null ? "" : this.expression.toString());
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.rebuildExpression(ByteBufUtils.readUTF8String(buffer));
     }
 }

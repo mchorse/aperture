@@ -84,25 +84,6 @@ public class KeyframeFixture extends AbstractFixture
     }
 
     @Override
-    public void copy(AbstractFixture from)
-    {
-        super.copy(from);
-
-        if (from instanceof KeyframeFixture)
-        {
-            KeyframeFixture keyframe = (KeyframeFixture) from;
-
-            this.x.copy(keyframe.x);
-            this.y.copy(keyframe.y);
-            this.z.copy(keyframe.z);
-            this.yaw.copy(keyframe.yaw);
-            this.pitch.copy(keyframe.pitch);
-            this.roll.copy(keyframe.roll);
-            this.fov.copy(keyframe.fov);
-        }
-    }
-
-    @Override
     public void copyByReplacing(AbstractFixture from)
     {
         if (from instanceof DollyFixture)
@@ -125,7 +106,7 @@ public class KeyframeFixture extends AbstractFixture
             {
                 KeyframeFixture kf = path.toKeyframe();
 
-                this.modifiers.clear();
+                this.modifiers.get().clear();
                 this.copy(kf);
             }
         }

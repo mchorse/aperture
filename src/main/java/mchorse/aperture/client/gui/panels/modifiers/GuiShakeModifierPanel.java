@@ -21,21 +21,21 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
 
         this.shake = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.shake = value.floatValue();
+            this.modifier.shake.set(value.floatValue());
             this.modifiers.editor.updateProfile();
         });
         this.shake.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake"), Direction.BOTTOM);
 
         this.shakeAmount = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.shakeAmount = value.floatValue();
+            this.modifier.shakeAmount.set(value.floatValue());
             this.modifiers.editor.updateProfile();
         });
         this.shakeAmount.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake_amount"), Direction.BOTTOM);
 
         this.active = new GuiActiveWidget(mc, (value) ->
         {
-            this.modifier.active = value;
+            this.modifier.active.set(value);
             this.modifiers.editor.updateProfile();
         });
 
@@ -47,8 +47,8 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     {
         super.fillData();
 
-        this.shake.setValue(this.modifier.shake);
-        this.shakeAmount.setValue(this.modifier.shakeAmount);
-        this.active.value = this.modifier.active;
+        this.shake.setValue(this.modifier.shake.get());
+        this.shakeAmount.setValue(this.modifier.shakeAmount.get());
+        this.active.value = this.modifier.active.get();
     }
 }

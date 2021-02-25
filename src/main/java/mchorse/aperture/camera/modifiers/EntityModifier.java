@@ -1,16 +1,13 @@
 package mchorse.aperture.camera.modifiers;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.values.ValuePoint;
 import mchorse.aperture.utils.EntitySelector;
+import mchorse.mclib.config.values.ValueString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -40,11 +37,16 @@ public abstract class EntityModifier extends AbstractModifier
      * 
      * @link https://minecraft.gamepedia.com/Commands#Target_selector_variables
      */
-    @Expose
-    public String selector = "";
+    public final ValueString selector = new ValueString("selector", "");
+    public final ValuePoint offset = new ValuePoint("offset", new Point(0, 0, 0));
 
-    @Expose
-    public Point offset = new Point(0, 0, 0);
+    public EntityModifier()
+    {
+        super();
+
+        this.register(this.selector);
+        this.register(this.offset);
+    }
 
     /**
      * Try finding entity based on entity selector or target's UUID
@@ -53,12 +55,13 @@ public abstract class EntityModifier extends AbstractModifier
     {
         this.entities = null;
 
-        if (this.selector != null && !this.selector.isEmpty())
+        String selector = this.selector.get();
+
+        if (selector != null && !selector.isEmpty())
         {
-            String selector = this.selector;
             EntityPlayer player = Minecraft.getMinecraft().player;
 
-            if (!this.selector.contains("@"))
+            if (!selector.contains("@"))
             {
                 selector = "@e[name=" + selector + "]";
             }
@@ -107,48 +110,5 @@ public abstract class EntityModifier extends AbstractModifier
         }
 
         return this.entities == null;
-    }
-
-    /* Save/load methods */
-
-    @Override
-    public void copy(AbstractModifier from)
-    {
-        super.copy(from);
-
-        if (from instanceof EntityModifier)
-        {
-            this.selector = ((EntityModifier) from).selector;
-            this.offset.set(((EntityModifier) from).offset);
-        }
-    }
-
-    @Override
-    public void fromJSON(JsonObject object)
-    {
-        super.fromJSON(object);
-
-        if (this.offset == null)
-        {
-            this.offset = new Point(0, 0, 0);
-        }
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        super.fromBytes(buffer);
-
-        this.selector = ByteBufUtils.readUTF8String(buffer);
-        this.offset = Point.fromBytes(buffer);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        super.toBytes(buffer);
-
-        ByteBufUtils.writeUTF8String(buffer, this.selector);
-        this.offset.toBytes(buffer);
     }
 }

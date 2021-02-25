@@ -56,13 +56,6 @@ public class ValueInterpolation extends Value
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public List<GuiElement> getFields(Minecraft minecraft, GuiConfigPanel guiConfigPanel)
-    {
-        return null;
-    }
-
-    @Override
     public void fromJSON(JsonElement element)
     {
         this.interp = Interpolation.valueOf(element.getAsString());
