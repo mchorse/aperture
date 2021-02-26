@@ -438,21 +438,27 @@ public class GuiCameraEditor extends GuiBase
     public void undo()
     {
         CameraProfile profile = this.getProfile();
+        int value = this.timeline.value;
 
         if (profile != null && profile.undoManager.undo(profile))
         {
             GuiUtils.playClick();
         }
+
+        this.timeline.setValueFromScrub(value);
     }
 
     public void redo()
     {
         CameraProfile profile = this.getProfile();
+        int value = this.timeline.value;
 
         if (profile != null && profile.undoManager.redo(profile))
         {
             GuiUtils.playClick();
         }
+
+        this.timeline.setValueFromScrub(value);
     }
 
     public void exit()
@@ -1075,7 +1081,7 @@ public class GuiCameraEditor extends GuiBase
 
         if (this.timeline.value > offset && fixture != null)
         {
-            this.postUndo(FixtureValueChangeUndo.create(this, "duration", this.timeline.value - offset));
+            this.postUndo(FixtureValueChangeUndo.create(this, fixture.duration, this.timeline.value - offset));
 
             this.updateValues();
             this.panel.delegate.select(fixture, 0);

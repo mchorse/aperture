@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.panels.modifiers;
 
+import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.modifiers.AngleModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
@@ -20,29 +21,37 @@ public class GuiAngleModifierPanel extends GuiAbstractModifierPanel<AngleModifie
 
         this.yaw = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.get().yaw = value.floatValue();
-            this.modifiers.editor.updateProfile();
+            Angle angle = this.modifier.angle.get().copy();
+
+            angle.yaw = value.floatValue();
+            this.modifiers.editor.postUndo(this.undo(this.modifier.angle, angle));
         });
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
         this.pitch = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.get().pitch = value.floatValue();
-            this.modifiers.editor.updateProfile();
+            Angle angle = this.modifier.angle.get().copy();
+
+            angle.pitch = value.floatValue();
+            this.modifiers.editor.postUndo(this.undo(this.modifier.angle, angle));
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
         this.roll = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.get().roll = value.floatValue();
-            this.modifiers.editor.updateProfile();
+            Angle angle = this.modifier.angle.get().copy();
+
+            angle.roll = value.floatValue();
+            this.modifiers.editor.postUndo(this.undo(this.modifier.angle, angle));
         });
         this.roll.tooltip(IKey.lang("aperture.gui.panels.roll"));
 
         this.fov = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.angle.get().fov = value.floatValue();
-            this.modifiers.editor.updateProfile();
+            Angle angle = this.modifier.angle.get().copy();
+
+            angle.fov = value.floatValue();
+            this.modifiers.editor.postUndo(this.undo(this.modifier.angle, angle));
         });
         this.fov.tooltip(IKey.lang("aperture.gui.panels.fov"));
 

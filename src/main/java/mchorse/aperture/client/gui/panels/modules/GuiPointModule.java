@@ -32,7 +32,7 @@ public class GuiPointModule extends GuiAbstractModule
             Point point = this.point.get().copy();
 
             point.x = value;
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point, point));
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
@@ -41,7 +41,7 @@ public class GuiPointModule extends GuiAbstractModule
             Point point = this.point.get().copy();
 
             point.y = value;
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point, point));
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
@@ -50,7 +50,7 @@ public class GuiPointModule extends GuiAbstractModule
             Point point = this.point.get().copy();
 
             point.z = value;
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point.getId(), point));
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point, point));
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 

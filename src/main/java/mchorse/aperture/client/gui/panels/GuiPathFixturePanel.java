@@ -62,7 +62,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
         this.interp = new GuiInterpModule(mc, editor, this);
         this.useSpeed = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.use_speed_enable"), false, (b) ->
         {
-            this.editor.postUndo(this.undo("useSpeed", b.isToggled()));
+            this.editor.postUndo(this.undo(this.fixture.useSpeed, b.isToggled()));
 
             boolean useSpeed = this.fixture.useSpeed.get();
 
@@ -78,13 +78,13 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
 
         this.autoCenter = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.auto_center"), (b) ->
         {
-            this.editor.postUndo(this.undo("cirularAutoCenter", b.isToggled()));
+            this.editor.postUndo(this.undo(this.fixture.circularAutoCenter, b.isToggled()));
             this.updateCircular();
         });
 
-        this.circularX = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo("circularX", value)));
+        this.circularX = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo(this.fixture.circularX, value)));
         this.circularX.tooltip(IKey.lang("aperture.gui.panels.circular_x"));
-        this.circularZ = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo("circularZ", value)));
+        this.circularZ = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo(this.fixture.circularZ, value)));
         this.circularZ.tooltip(IKey.lang("aperture.gui.panels.circular_z"));
 
         this.circular = new GuiElement(mc);
@@ -261,7 +261,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
     {
         if (this.position != null)
         {
-           this.editor.postUndo(this.undo(this.position.getId(), position));
+            this.editor.postUndo(this.undo(this.position, position));
 
             super.editFixture(position);
         }

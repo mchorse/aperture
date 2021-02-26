@@ -89,10 +89,10 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
     {
         super(mc, editor);
 
-        this.shift = new GuiTrackpadElement(mc, (v) -> this.editor.postUndo(this.undo("shift", v.intValue())));
+        this.shift = new GuiTrackpadElement(mc, (v) -> this.editor.postUndo(this.undo(this.fixture.shift, v.intValue())));
         this.shift.integer().tooltip(IKey.lang("aperture.gui.panels.manual.shift"));
 
-        this.speed = new GuiTrackpadElement(mc, (v) -> this.editor.postUndo(this.undo("speed", v.floatValue())));
+        this.speed = new GuiTrackpadElement(mc, (v) -> this.editor.postUndo(this.undo(this.fixture.speed, v.floatValue())));
         this.speed.limit(0).tooltip(IKey.lang("aperture.gui.panels.manual.speed"));
 
         this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.record"), this::startRecording);
@@ -138,7 +138,7 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 
                 if (frames != null)
                 {
-                    this.editor.postUndo(this.undo("frames", frames));
+                    this.editor.postUndo(this.undo(this.fixture.frames, frames));
                 }
             }
         }

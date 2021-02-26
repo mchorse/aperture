@@ -77,12 +77,12 @@ public class GuiInterpModule extends GuiAbstractModule
         {
             if (this.pickPos)
             {
-                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolation", interp.get(0)));
+                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolation, interp.get(0)));
                 this.pos.label.set(interp.get(0).getKey());
             }
             else
             {
-                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolationAngle", interp.get(0)));
+                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolationAngle, interp.get(0)));
                 this.angle.label.set(interp.get(0).getKey());
             }
 
@@ -105,14 +105,14 @@ public class GuiInterpModule extends GuiAbstractModule
     {
         InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
 
-        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolation", type));
+        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolation, type));
     }
 
     private void toggleAngle()
     {
         InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
 
-        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, "interpolationAngle", type));
+        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolationAngle, type));
     }
 
     private InterpolationType next(InterpolationType interp, GuiButtonElement button)

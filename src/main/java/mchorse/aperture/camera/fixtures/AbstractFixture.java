@@ -62,47 +62,6 @@ public abstract class AbstractFixture extends StructureBase implements IByteBufS
         this.register(this.modifiers);
     }
 
-    public IConfigValue getProperty(String name)
-    {
-        IConfigValue value = this.category.values.get(name);
-
-        if (value == null && name.contains("."))
-        {
-            String[] splits = name.split("\\.");
-
-            value = this.searchRecursively(this.category.values.get(splits[0]), splits, 0, name);
-        }
-
-        if (value == null)
-        {
-            throw new IllegalStateException("Property by name " + name + " can't be found!");
-        }
-
-        return value;
-    }
-
-    private IConfigValue searchRecursively(IConfigValue value, String[] splits, int i, String name)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-
-        for (IConfigValue child : value.getSubValues())
-        {
-            if (child.getId().equals(name))
-            {
-                return child;
-            }
-            else if (i + 1 < splits.length && name.startsWith(child.getId()))
-            {
-                return this.searchRecursively(child, splits, i + 1, name);
-            }
-        }
-
-        return null;
-    }
-
     public void initiate()
     {}
 

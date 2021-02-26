@@ -40,7 +40,7 @@ public class GuiIdleFixturePanel extends GuiAbstractFixturePanel<IdleFixture>
     @Override
     public void editFixture(Position position)
     {
-        this.editor.postUndo(this.undo("position", position));
+        this.editor.postUndo(this.undo(this.fixture.position, position));
 
         super.editFixture(position);
     }

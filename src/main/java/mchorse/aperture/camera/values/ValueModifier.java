@@ -8,6 +8,9 @@ import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ValueModifier extends Value
 {
     private AbstractModifier modifier;
@@ -30,6 +33,19 @@ public class ValueModifier extends Value
         {
             this.modifier = modifier.copy();
         }
+    }
+
+    @Override
+    public List<IConfigValue> getSubValues()
+    {
+        List<IConfigValue> values = new ArrayList<IConfigValue>();
+
+        for (IConfigValue value : this.modifier.getProperties())
+        {
+            values.add(new ValueProxy(this.getId() + "." + value.getId(), value));
+        }
+
+        return values;
     }
 
     @Override

@@ -9,7 +9,7 @@ import mchorse.mclib.config.values.Value;
 
 public class ValueEnvelope extends Value
 {
-    public Envelope envelope;
+    private Envelope envelope;
 
     public ValueEnvelope(String id)
     {

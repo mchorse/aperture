@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ValueModifiers extends Value
 {
-    public List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
+    private List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
 
     public ValueModifiers(String id)
     {

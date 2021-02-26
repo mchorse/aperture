@@ -41,7 +41,7 @@ public class GuiCircularFixturePanel extends GuiAbstractFixturePanel<CircularFix
     @Override
     public void editFixture(Position position)
     {
-        this.editor.postUndo(this.undo("start", position.point));
+        this.editor.postUndo(this.undo(this.fixture.start, position.point));
 
         super.editFixture(position);
     }

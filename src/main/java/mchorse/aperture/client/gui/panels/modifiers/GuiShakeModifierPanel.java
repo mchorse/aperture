@@ -19,25 +19,13 @@ public class GuiShakeModifierPanel extends GuiAbstractModifierPanel<ShakeModifie
     {
         super(mc, modifier, panel);
 
-        this.shake = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.modifier.shake.set(value.floatValue());
-            this.modifiers.editor.updateProfile();
-        });
+        this.shake = new GuiTrackpadElement(mc, (value) -> this.modifiers.editor.postUndo(this.undo(this.modifier.shake, value.floatValue())));
         this.shake.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake"), Direction.BOTTOM);
 
-        this.shakeAmount = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.modifier.shakeAmount.set(value.floatValue());
-            this.modifiers.editor.updateProfile();
-        });
+        this.shakeAmount = new GuiTrackpadElement(mc, (value) -> this.modifiers.editor.postUndo(this.undo(this.modifier.shakeAmount, value.floatValue())));
         this.shakeAmount.tooltip(IKey.lang("aperture.gui.modifiers.panels.shake_amount"), Direction.BOTTOM);
 
-        this.active = new GuiActiveWidget(mc, (value) ->
-        {
-            this.modifier.active.set(value);
-            this.modifiers.editor.updateProfile();
-        });
+        this.active = new GuiActiveWidget(mc, (value) -> this.modifiers.editor.postUndo(this.undo(this.modifier.active, value)));
 
         this.fields.add(Elements.row(mc, 5, 0, 20, this.shake, this.shakeAmount), this.active);
     }

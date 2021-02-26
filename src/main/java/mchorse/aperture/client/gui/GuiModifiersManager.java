@@ -1,10 +1,13 @@
 package mchorse.aperture.client.gui;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.ModifierRegistry.ModifierInfo;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
+import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
@@ -15,6 +18,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.config.values.IConfigValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -93,7 +97,6 @@ public class GuiModifiersManager extends GuiElement
         });
         this.paste.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.paste"));
 
-
         this.buttons = new GuiElement(mc)
         {
             @Override
@@ -134,6 +137,23 @@ public class GuiModifiersManager extends GuiElement
         this.add(this.title, this.add, this.paste, this.panels, this.buttons);
 
         this.hideTooltip();
+    }
+
+    public IUndo<CameraProfile> undo(AbstractModifier modifier, IConfigValue value, Object newValue)
+    {
+        CameraProfile profile = this.editor.getProfile();
+
+        if (this.fixture != null)
+        {
+            int index = profile.getAll().indexOf(this.fixture);
+            int modifierIndex = this.fixture.modifiers.get().indexOf(modifier);
+            String name = this.fixture.modifiers.getId() + "." + modifierIndex + "." + value.getId();
+
+            return new FixtureValueChangeUndo(index, name, value.getValue(), newValue);
+        }
+
+        /* TODO: global modifiers */
+        return null;
     }
 
     public void cameraEditorOpened()

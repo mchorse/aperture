@@ -1,10 +1,13 @@
 package mchorse.aperture.client.gui.panels.modifiers;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiEnvelope;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.utils.APIcons;
+import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -12,6 +15,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 
@@ -48,9 +52,8 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.envelopes = new GuiEnvelope(mc, this);
         this.enable = new GuiIconElement(mc, Icons.NONE, (b) ->
         {
-            this.modifier.enabled.set(!this.modifier.enabled.get());
+            this.modifiers.editor.postUndo(this.undo(this.modifier.enabled, !this.modifier.enabled.get()));
             this.updateEnable();
-            this.modifiers.editor.updateProfile();
         });
         this.enable.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.lock"));
         this.remove = new GuiIconElement(mc, Icons.REMOVE, (b) -> this.modifiers.removeModifier(this));
@@ -90,6 +93,11 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.color = ModifierRegistry.CLIENT.get(this.modifier.getClass()).color.getRGBColor();
 
         this.header.add(this.title, this.buttons);
+    }
+
+    protected IUndo<CameraProfile> undo(IConfigValue property, Object value)
+    {
+        return this.modifiers.undo(this.modifier, property, value);
     }
 
     public void initiate()

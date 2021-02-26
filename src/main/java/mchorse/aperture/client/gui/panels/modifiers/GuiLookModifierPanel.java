@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.panels.modifiers;
 
+import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.modifiers.LookModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
@@ -44,72 +45,82 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
 
         this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.modifier.selector.set(str);
+            this.modifiers.editor.postUndo(this.undo(this.modifier.selector, str));
             this.modifier.tryFindingEntity();
-            this.modifiers.editor.updateProfile();
         });
         this.selector.link(TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.panels.selector"));
 
+        /* Block position */
         this.blockX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.block.get().x = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.block.get().copy();
+
+            point.x = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.block, point));
         });
         this.blockX.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.blockY = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.block.get().y = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.block.get().copy();
+
+            point.y = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.block, point));
         });
         this.blockY.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.blockZ = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.block.get().z = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.block.get().copy();
+
+            point.z = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.block, point));
         });
         this.blockZ.tooltip(IKey.lang("aperture.gui.panels.z"));
 
+        /* Offset */
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.get().x = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.offset.get().copy();
+
+            point.x = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.offset, point));
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.get().y = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.offset.get().copy();
+
+            point.y = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.offset, point));
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.offset.get().z = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.offset.get().copy();
+
+            point.z = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.offset, point));
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 
         this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.relative"), false, (b) ->
         {
-            this.modifier.relative.set(b.isToggled());
-            this.modifiers.editor.updateProfile();
+            this.modifiers.editor.postUndo(this.undo(this.modifier.relative, b.isToggled()));
         });
         this.relative.tooltip(IKey.lang("aperture.gui.modifiers.panels.relative_tooltip"));
 
         this.atBlock = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.at_block"), false, (b) ->
         {
-            this.modifier.atBlock.set(b.isToggled());
+            this.modifiers.editor.postUndo(this.undo(this.modifier.atBlock, b.isToggled()));
             this.updateVisibility(true);
-            this.modifiers.editor.updateProfile();
         });
 
         this.forward = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.forward"), false, (b) ->
         {
-            this.modifier.forward.set(b.isToggled());
-            this.modifiers.editor.updateProfile();
+            this.modifiers.editor.postUndo(this.undo(this.modifier.forward, b.isToggled()));
         });
         this.forward.tooltip(IKey.lang("aperture.gui.modifiers.panels.forward_tooltip"));
 
@@ -162,14 +173,14 @@ public class GuiLookModifierPanel extends GuiAbstractModifierPanel<LookModifier>
             {
                 BlockPos pos = result.getBlockPos();
 
-                this.modifier.block.get().set(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                this.modifiers.editor.postUndo(this.undo(this.modifier.block, new Point(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)));
                 this.fillData();
             }
             else if (!center && result.typeOfHit != RayTraceResult.Type.MISS)
             {
                 Vec3d vec = result.hitVec;
 
-                this.modifier.block.get().set(vec.x, vec.y, vec.z);
+                this.modifiers.editor.postUndo(this.undo(this.modifier.block, new Point(vec.x, vec.y, vec.z)));
                 this.fillData();
             }
         }

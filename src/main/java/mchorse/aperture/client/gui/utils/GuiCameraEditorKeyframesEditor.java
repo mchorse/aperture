@@ -95,7 +95,7 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
 
             for (int i = 0; i < undos.length; i++)
             {
-                undos[i] = FixtureValueChangeUndo.create(this.editor, this.valueChannels.get(i).getId(), this.cachedData.get(i), newCachedData.get(i));
+                undos[i] = FixtureValueChangeUndo.create(this.editor, this.valueChannels.get(i), this.cachedData.get(i), newCachedData.get(i));
             }
 
             this.editor.postUndo(new CompoundUndo<CameraProfile>(undos).unmergable(), false);
@@ -104,7 +104,7 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
         {
             ValueKeyframeChannel channel = this.valueChannels.get(0);
 
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, channel.getId(), this.cachedData.get(0), newCachedData.get(0)).unmergable(), false);
+            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, channel, this.cachedData.get(0), newCachedData.get(0)).unmergable(), false);
         }
 
         this.cachedData.clear();

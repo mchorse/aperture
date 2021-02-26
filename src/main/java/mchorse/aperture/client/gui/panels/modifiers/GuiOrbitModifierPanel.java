@@ -4,9 +4,7 @@ import mchorse.aperture.camera.modifiers.OrbitModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
-import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
@@ -24,40 +22,23 @@ public class GuiOrbitModifierPanel extends GuiAbstractModifierPanel<OrbitModifie
     {
         super(mc, modifier, modifiers);
 
-        this.yaw = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.modifier.yaw.set(value.floatValue());
-            this.modifiers.editor.updateProfile();
-        });
+        this.yaw = new GuiTrackpadElement(mc, (value) -> this.modifiers.editor.postUndo(this.undo(this.modifier.yaw, value.floatValue())));
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
-        this.pitch = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.modifier.pitch.set(value.floatValue());
-            this.modifiers.editor.updateProfile();
-        });
+        this.pitch = new GuiTrackpadElement(mc, (value) -> this.modifiers.editor.postUndo(this.undo(this.modifier.pitch, value.floatValue())));
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
-        this.distance = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.modifier.distance.set(value.floatValue());
-            this.modifiers.editor.updateProfile();
-        });
+        this.distance = new GuiTrackpadElement(mc, (value) -> this.modifiers.editor.postUndo(this.undo(this.modifier.distance, value.floatValue())));
         this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
 
-        this.copy = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.copy_entity"), false, (b) ->
-        {
-            this.modifier.copy.set(b.isToggled());
-            this.modifiers.editor.updateProfile();
-        });
+        this.copy = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.copy_entity"), false, (b) -> this.modifiers.editor.postUndo(this.undo(this.modifier.copy, b.isToggled())));
         this.copy.flex().h(20);
         this.copy.tooltip(IKey.lang("aperture.gui.modifiers.panels.copy_entity_tooltip"));
 
         this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.modifier.selector.set(str);
+            this.modifiers.editor.postUndo(this.undo(this.modifier.selector, str));
             this.modifier.tryFindingEntity();
-            this.modifiers.editor.updateProfile();
         });
         this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.panels.selector"));
 

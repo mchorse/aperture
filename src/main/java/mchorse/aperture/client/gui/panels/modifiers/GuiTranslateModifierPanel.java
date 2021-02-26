@@ -1,5 +1,6 @@
 package mchorse.aperture.client.gui.panels.modifiers;
 
+import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.modifiers.TranslateModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
@@ -19,22 +20,28 @@ public class GuiTranslateModifierPanel extends GuiAbstractModifierPanel<Translat
 
         this.x = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.translate.get().x = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.translate.get().copy();
+
+            point.x = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.translate, point));
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
         this.y = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.translate.get().y = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.translate.get().copy();
+
+            point.y = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.translate, point));
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
         this.z = new GuiTrackpadElement(mc, (value) ->
         {
-            this.modifier.translate.get().z = value;
-            this.modifiers.editor.updateProfile();
+            Point point = this.modifier.translate.get().copy();
+
+            point.z = value;
+            this.modifiers.editor.postUndo(this.undo(this.modifier.translate, point));
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 

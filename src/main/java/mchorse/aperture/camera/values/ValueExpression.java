@@ -13,12 +13,18 @@ public class ValueExpression extends Value
 {
     public IValue expression;
     public MathBuilder builder;
+    public boolean lastError;
 
     public ValueExpression(String id, MathBuilder builder)
     {
         super(id);
 
         this.builder = builder;
+    }
+
+    public boolean isErrored()
+    {
+        return this.lastError;
     }
 
     public IValue get()
@@ -44,10 +50,24 @@ public class ValueExpression extends Value
         {
             try
             {
-                this.set((String) object);
+                String string = (String) object;
+
+                if (string.isEmpty())
+                {
+                    this.expression = null;
+                }
+                else
+                {
+                    this.set((String) object);
+                }
+
+                this.lastError = false;
             }
             catch (Exception e)
-            {}
+            {
+                this.expression = null;
+                this.lastError = true;
+            }
         }
     }
 
@@ -55,6 +75,7 @@ public class ValueExpression extends Value
     public void reset()
     {
         this.expression = null;
+        this.lastError = false;
     }
 
     @Override

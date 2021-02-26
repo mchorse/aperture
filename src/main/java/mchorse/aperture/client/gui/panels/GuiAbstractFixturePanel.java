@@ -14,6 +14,7 @@ import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 
@@ -57,10 +58,10 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         this.right.flex().relative(this).x(1F).y(20).w(130).hTo(this.area, 1F).anchorX(1F)
             .column(5).vertical().stretch().scroll().height(20).padding(10);
 
-        this.name = new GuiTextElement(mc, 80, (str) -> this.editor.postUndo(this.undo("name", str)));
+        this.name = new GuiTextElement(mc, 80, (str) -> this.editor.postUndo(this.undo(this.fixture.name, str)));
         this.name.tooltip(IKey.lang("aperture.gui.panels.name_tooltip"));
 
-        this.color = new GuiColorElement(mc, (c) -> this.editor.postUndo(this.undo("color", c)));
+        this.color = new GuiColorElement(mc, (c) -> this.editor.postUndo(this.undo(this.fixture.color, c)));
         this.color.target(this).tooltip(IKey.lang("aperture.gui.panels.color_tooltip"));
         this.color.direction(Direction.RIGHT);
 
@@ -76,9 +77,9 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         this.add(this.left, this.right);
     }
 
-    protected FixtureValueChangeUndo undo(String name, Object value)
+    protected FixtureValueChangeUndo undo(IConfigValue value, Object newValue)
     {
-        return FixtureValueChangeUndo.create(this.editor, name, value);
+        return FixtureValueChangeUndo.create(this.editor, value, newValue);
     }
 
     public void handleUndo(IUndo<CameraProfile> undo, boolean redo)
@@ -102,7 +103,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
 
     protected void updateDuration(long value)
     {
-        this.editor.postUndo(this.undo("duration", value));
+        this.editor.postUndo(this.undo(this.fixture.duration, value));
         this.editor.updateDuration(this.fixture);
     }
 

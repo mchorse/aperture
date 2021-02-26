@@ -20,32 +20,14 @@ public class GuiMathModifierPanel extends GuiAbstractModifierPanel<MathModifier>
 
         this.expression = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.expression.field.setTextColor(this.rebuildExpression(str) ? 0xffffff : 0xff2244);
-            this.modifiers.editor.updateProfile();
+            this.modifiers.editor.postUndo(this.undo(this.modifier.expression, str));
+            this.expression.field.setTextColor(!this.modifier.expression.isErrored() ? 0xffffff : 0xff2244);
         });
         this.expression.link("https://github.com/mchorse/aperture/wiki/Math-Expressions").tooltip(IKey.lang("aperture.gui.modifiers.panels.math"));
 
-        this.active = new GuiActiveWidget(mc, (value) ->
-        {
-            this.modifier.active.set(value);
-            this.modifiers.editor.updateProfile();
-        });
+        this.active = new GuiActiveWidget(mc, (value) -> this.modifiers.editor.postUndo(this.undo(this.modifier.active, value)));
 
         this.fields.add(this.expression, this.active);
-    }
-
-    private boolean rebuildExpression(String str)
-    {
-        try
-        {
-            this.modifier.expression.set(str);
-
-            return true;
-        }
-        catch (Exception e)
-        {}
-
-        return false;
     }
 
     @Override
