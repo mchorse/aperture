@@ -1,9 +1,14 @@
 package mchorse.aperture.client.gui.panels.modifiers.widgets;
 
+import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.smooth.Envelope;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.utils.TimeUtils;
+import mchorse.aperture.utils.undo.CompoundUndo;
+import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
@@ -14,6 +19,7 @@ import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.Direction;
 import mchorse.mclib.utils.Interpolation;
@@ -56,8 +62,7 @@ public class GuiEnvelope extends GuiElement
 
         this.enabled = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.enabled"), (b) ->
         {
-            this.get().enabled.set(b.isToggled());
-            this.panel.modifiers.editor.updateProfile();
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().enabled, b.isToggled()));
         });
         this.relative = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.relative"), (b) -> this.toggleRelative(b.isToggled()));
         this.pickInterp = new GuiIconElement(mc, Icons.GEAR, (b) -> this.interps.toggleVisible());
@@ -65,39 +70,34 @@ public class GuiEnvelope extends GuiElement
 
         this.startX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().startX.set(TimeUtils.fromTime(value.floatValue()));
-            this.panel.modifiers.editor.updateProfile();
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().startX, (float) TimeUtils.fromTime(value.floatValue())));
         });
         this.startX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_x"), Direction.TOP);
         this.startD = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().startDuration.set(TimeUtils.fromTime(value.floatValue()));
-            this.panel.modifiers.editor.updateProfile();
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().startDuration, (float) TimeUtils.fromTime(value.floatValue())));
         });
         this.startD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.start_d"), Direction.TOP);
         this.endX = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().endX.set(TimeUtils.fromTime(value.floatValue()));
-            this.panel.modifiers.editor.updateProfile();
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().endX, (float) TimeUtils.fromTime(value.floatValue())));
         });
         this.endX.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_x"), Direction.TOP);
         this.endD = new GuiTrackpadElement(mc, (value) ->
         {
-            this.get().endDuration.set(TimeUtils.fromTime(value.floatValue()));
-            this.panel.modifiers.editor.updateProfile();
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().endDuration, (float) TimeUtils.fromTime(value.floatValue())));
         });
         this.endD.tooltip(IKey.lang("aperture.gui.modifiers.envelopes.end_d"), Direction.TOP);
         this.interps = new GuiInterpolationList(mc, (l) ->
         {
-            this.get().interpolation.set(l.get(0));
-            this.panel.modifiers.editor.updateProfile();
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().interpolation, l.get(0)));
         });
         this.interps.setVisible(false);
 
         this.keyframes = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.keyframes"), (b) ->
         {
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().interpolation, b.isToggled()));
             this.toggleKeyframes(b.isToggled());
-            this.panel.modifiers.editor.updateProfile();
         });
         this.channel = new GuiCameraEditorKeyframesGraphEditor(mc, panel.modifiers.editor);
 
@@ -121,10 +121,25 @@ public class GuiEnvelope extends GuiElement
         this.channel.flex().relative(this.enabled).y(20).wTo(this.row.area, 1F).h(200);
     }
 
+    public IUndo<CameraProfile> undo(IConfigValue value, Object newValue)
+    {
+        CameraProfile profile = this.panel.modifiers.editor.getProfile();
+        AbstractFixture fixture = this.panel.modifiers.fixture;
+
+        if (fixture != null)
+        {
+            int index = profile.getAll().indexOf(fixture);
+            int modifierIndex = fixture.modifiers.get().indexOf(this.panel.modifier);
+            String name = fixture.modifiers.getId() + "." + modifierIndex + "."  + this.panel.modifier.envelope.getId() + "." + value.getId();
+
+            return new FixtureValueChangeUndo(index, name, value.getValue(), newValue);
+        }
+
+        return null;
+    }
+
     private void toggleKeyframes(boolean toggled)
     {
-        this.get().keyframes.set(toggled);
-
         this.removeAll();
         this.row.removeAll();
 
@@ -208,11 +223,12 @@ public class GuiEnvelope extends GuiElement
     {
         Envelope envelope = this.get();
 
-        envelope.relative.set(toggled);
-        envelope.endX.set(this.getDuration() - envelope.endX.get());
+        this.panel.modifiers.editor.postUndo(new CompoundUndo<CameraProfile>(
+            this.undo(envelope.relative, toggled),
+            this.undo(envelope.endX, this.getDuration() - envelope.endX.get())
+        ));
 
         this.endX.setValue(this.get().endX.get());
-        this.panel.modifiers.editor.updateProfile();
     }
 
     public long getDuration()

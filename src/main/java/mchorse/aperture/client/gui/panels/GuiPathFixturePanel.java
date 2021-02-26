@@ -12,6 +12,7 @@ import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointsModule;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.aperture.client.gui.utils.undo.FixturePointsChangeUndo;
+import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -78,7 +79,25 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
 
         this.autoCenter = new GuiToggleElement(mc, IKey.lang("aperture.gui.panels.auto_center"), (b) ->
         {
-            this.editor.postUndo(this.undo(this.fixture.circularAutoCenter, b.isToggled()));
+            IUndo<CameraProfile> undo = this.undo(this.fixture.circularAutoCenter, b.isToggled());
+
+            if (!b.isToggled())
+            {
+                Vector2d center = this.fixture.calculateCenter(new Vector2d());
+
+                this.circularX.setValue(center.x);
+                this.circularZ.setValue(center.y);
+                this.editor.postUndo(new CompoundUndo<CameraProfile>(
+                    undo,
+                    this.undo(this.fixture.circularX, center.x),
+                    this.undo(this.fixture.circularZ, center.y)
+                ).unmergable());
+            }
+            else
+            {
+                this.editor.postUndo(undo);
+            }
+
             this.updateCircular();
         });
 
@@ -143,13 +162,6 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
 
         if (!this.autoCenter.isToggled())
         {
-            Vector2d center = this.fixture.calculateCenter(new Vector2d());
-
-            this.circularX.setValue(center.x);
-            this.circularZ.setValue(center.y);
-            this.fixture.circularX.set(center.x);
-            this.fixture.circularZ.set(center.y);
-
             this.circular.add(this.circularX);
             this.circular.add(this.circularZ);
         }
@@ -239,8 +251,12 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
         this.speed.setChannel(fixture.speed, 0x0088ff);
         this.speed.setVisible(this.fixture.useSpeed.get());
 
-        this.points.index = index;
+        this.autoCenter.toggled(this.fixture.circularAutoCenter.get());
+        this.circularX.setValue(this.fixture.circularX.get());
+        this.circularZ.setValue(this.fixture.circularZ.get());
         this.updateCircular();
+
+        this.points.index = index;
     }
 
     @Override

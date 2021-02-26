@@ -95,7 +95,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.header.add(this.title, this.buttons);
     }
 
-    protected IUndo<CameraProfile> undo(IConfigValue property, Object value)
+    public IUndo<CameraProfile> undo(IConfigValue property, Object value)
     {
         return this.modifiers.undo(this.modifier, property, value);
     }
