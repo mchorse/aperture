@@ -24,6 +24,21 @@ public class ValuePositions extends Value
         super(id);
     }
 
+    public List<Position> get()
+    {
+        return this.position;
+    }
+
+    public void set(List<Position> positions)
+    {
+        this.position.clear();
+
+        for (Position position : positions)
+        {
+            this.position.add(position.copy());
+        }
+    }
+
     @Override
     public List<IConfigValue> getSubValues()
     {
@@ -38,21 +53,6 @@ public class ValuePositions extends Value
         }
 
         return list;
-    }
-
-    public List<Position> get()
-    {
-        return this.position;
-    }
-
-    public void set(List<Position> positions)
-    {
-        this.position.clear();
-
-        for (Position position : positions)
-        {
-            this.position.add(position.copy());
-        }
     }
 
     @Override

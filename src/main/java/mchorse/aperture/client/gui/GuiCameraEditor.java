@@ -18,6 +18,7 @@ import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.utils.undo.FixtureAddRemoveUndo;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
+import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.aperture.utils.APIcons;
 import mchorse.aperture.utils.undo.CompoundUndo;
@@ -405,6 +406,7 @@ public class GuiCameraEditor extends GuiBase
         {
             this.pickCameraFixture(this.getProfile().get(index), -1);
             this.panel.delegate.handleUndo(undo, redo);
+            this.modifiers.handleUndo(undo, redo);
         }
 
         /* Handle adding/removing undo */

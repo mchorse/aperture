@@ -26,6 +26,8 @@ public class Envelope extends StructureBase
     public final ValueBoolean keyframes = new ValueBoolean("keyframes");
     public final ValueKeyframeChannel channel = new ValueKeyframeChannel("channel");
 
+    public boolean visible;
+
     public Envelope()
     {
         this.register(this.enabled);
@@ -49,6 +51,17 @@ public class Envelope extends StructureBase
         envelope.copy(this);
 
         return envelope;
+    }
+
+    @Override
+    public void copy(StructureBase base)
+    {
+        super.copy(base);
+
+        if (base instanceof Envelope)
+        {
+            this.visible = ((Envelope) base).visible;
+        }
     }
 
     public float getStartX(long duration)

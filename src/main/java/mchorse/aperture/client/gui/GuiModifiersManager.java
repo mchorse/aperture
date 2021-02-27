@@ -7,6 +7,8 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
+import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
+import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
@@ -149,7 +151,7 @@ public class GuiModifiersManager extends GuiElement
             int modifierIndex = this.fixture.modifiers.get().indexOf(modifier);
             String name = this.fixture.modifiers.getId() + "." + modifierIndex + "." + value.getId();
 
-            return new FixtureValueChangeUndo(index, name, value.getValue(), newValue);
+            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, name, value.getValue(), newValue);
         }
 
         /* TODO: global modifiers */
@@ -311,5 +313,24 @@ public class GuiModifiersManager extends GuiElement
         }
 
         super.draw(context);
+    }
+
+    public void handleUndo(IUndo<CameraProfile> undo, boolean redo)
+    {
+        int scroll = -1;
+
+        if (undo instanceof ModifierValueChangeUndo)
+        {
+            scroll = ((ModifierValueChangeUndo) undo).getPanelScroll();
+        }
+        else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(ModifierValueChangeUndo.class))
+        {
+            scroll = ((ModifierValueChangeUndo) ((CompoundUndo<CameraProfile>) undo).getFirst()).getPanelScroll();
+        }
+
+        if (scroll >= 0)
+        {
+            this.panels.scroll.scrollTo(scroll);
+        }
     }
 }

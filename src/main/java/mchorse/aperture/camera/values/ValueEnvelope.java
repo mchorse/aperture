@@ -7,6 +7,9 @@ import mchorse.aperture.camera.smooth.Envelope;
 import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ValueEnvelope extends Value
 {
     private Envelope envelope;
@@ -31,6 +34,12 @@ public class ValueEnvelope extends Value
     public void set(Envelope envelope)
     {
         this.envelope.copy(envelope);
+    }
+
+    @Override
+    public List<IConfigValue> getSubValues()
+    {
+        return new ArrayList<IConfigValue>(this.envelope.getProperties());
     }
 
     @Override

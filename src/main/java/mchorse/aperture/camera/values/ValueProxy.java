@@ -5,6 +5,8 @@ import io.netty.buffer.ByteBuf;
 import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
+import java.util.List;
+
 public class ValueProxy extends Value
 {
     private IConfigValue proxy;
@@ -19,6 +21,26 @@ public class ValueProxy extends Value
     public IConfigValue getProxy()
     {
         return this.proxy;
+    }
+
+    @Override
+    public List<IConfigValue> getSubValues()
+    {
+        List<IConfigValue> list = this.proxy.getSubValues();
+
+        for (int i = 0; i < list.size(); i++)
+        {
+            IConfigValue value = list.get(i);
+
+            if (value instanceof ValueProxy)
+            {
+                continue;
+            }
+
+            list.set(i, new ValueProxy(this.getId() + "." + value.getId(), value));
+        }
+
+        return list;
     }
 
     @Override

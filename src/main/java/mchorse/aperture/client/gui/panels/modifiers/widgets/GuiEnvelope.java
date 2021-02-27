@@ -6,6 +6,7 @@ import mchorse.aperture.camera.smooth.Envelope;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
+import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
 import mchorse.aperture.utils.TimeUtils;
 import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.aperture.utils.undo.IUndo;
@@ -132,7 +133,7 @@ public class GuiEnvelope extends GuiElement
             int modifierIndex = fixture.modifiers.get().indexOf(this.panel.modifier);
             String name = fixture.modifiers.getId() + "." + modifierIndex + "."  + this.panel.modifier.envelope.getId() + "." + value.getId();
 
-            return new FixtureValueChangeUndo(index, name, value.getValue(), newValue);
+            return new ModifierValueChangeUndo(index, this.panel.modifiers.panels.scroll.scroll, name, value.getValue(), newValue);
         }
 
         return null;

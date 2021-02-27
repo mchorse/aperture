@@ -5,7 +5,6 @@ import mchorse.aperture.camera.ModifierRegistry;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiEnvelope;
-import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.utils.APIcons;
 import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -64,7 +63,11 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.moveDown.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.move_down"));
         this.copy = new GuiIconElement(mc, Icons.COPY, (b) -> this.modifiers.setClipboard(this.modifier));
         this.copy.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.copy"));
-        this.envelope = new GuiIconElement(mc, APIcons.ENVELOPE, (b) -> this.toggleEnvelopes());
+        this.envelope = new GuiIconElement(mc, APIcons.ENVELOPE, (b) ->
+        {
+            this.modifier.envelope.get().visible = !this.modifier.envelope.get().visible;
+            this.updateEnvelopes();
+        });
         this.envelope.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.envelope"));
 
         this.header = new GuiElement(mc);
@@ -108,6 +111,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     public void fillData()
     {
         this.envelopes.fillData();
+        this.updateEnvelopes();
         this.updateEnable();
     }
 
@@ -116,21 +120,25 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.envelopes.updateDuration();
     }
 
-    private void toggleEnvelopes()
+    private void updateEnvelopes()
     {
-        if (this.envelopes.hasParent())
+        this.envelopes.removeFromParent();
+        this.fields.removeFromParent();
+
+        if (this.modifier.envelope.get().visible)
         {
-            this.envelopes.removeFromParent();
-            this.add(this.fields);
+            this.add(this.envelopes);
         }
         else
         {
-            this.fields.removeFromParent();
-            this.add(this.envelopes);
+            this.add(this.fields);
         }
 
-        this.parent.resize();
-        this.envelopes.wasToggled();
+        if (this.parent != null)
+        {
+            this.parent.resize();
+            this.envelopes.wasToggled();
+        }
     }
 
     private void updateEnable()
