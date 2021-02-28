@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
@@ -20,10 +21,47 @@ import java.lang.reflect.Type;
 
 /**
  * This class is responsible for serializing and deserializing 
- * registered camera fixtures to JSON.
+ * registered camera fixtures to byte buffer and JSON.
  */
-public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, JsonDeserializer<AbstractFixture>
+public class FixtureSerializer
 {
+    /**
+     * Write a camera fixture to byte buffer
+     */
+    public static void toBytes(AbstractFixture fixture, ByteBuf buffer)
+    {
+        byte type = FixtureRegistry.CLASS_TO_ID.get(fixture.getClass());
+
+        buffer.writeByte(type);
+        buffer.writeLong(fixture.getDuration());
+
+        fixture.toBytes(buffer);
+    }
+
+    /**
+     * Create an abstract camera fixture out of byte buffer
+     */
+    public static AbstractFixture fromBytes(ByteBuf buffer)
+    {
+        byte type = buffer.readByte();
+        long duration = buffer.readLong();
+
+        try
+        {
+            AbstractFixture fixture = FixtureRegistry.fromType(type, duration);
+
+            fixture.fromBytes(buffer);
+
+            return fixture;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /**
      * Deserialize an abstract fixture from JsonElement.
      *
@@ -31,10 +69,8 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
      * from the type (which is mapped to a class). It also responsible for
      * setting the target for follow and look fixtures.
      */
-    @Override
-    public AbstractFixture deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public static AbstractFixture fromJSON(JsonObject object)
     {
-        JsonObject object = json.getAsJsonObject();
         AbstractFixture fixture = null;
 
         if (object.has("type"))
@@ -60,7 +96,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
             {
                 if (object.has("perPointDuration") && object.get("perPointDuration").getAsBoolean())
                 {
-                    return this.convertToKeyframe((PathFixture) fixture, object.getAsJsonArray("points"));
+                    return convertToKeyframe((PathFixture) fixture, object.getAsJsonArray("points"));
                 }
                 else if (object.has("useFactor"))
                 {
@@ -68,7 +104,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
 
                     if (useFactor.isJsonPrimitive() && useFactor.getAsBoolean())
                     {
-                        this.convertUseFactorToRemapper((PathFixture) fixture, object);
+                        convertUseFactorToRemapper((PathFixture) fixture, object);
                     }
                 }
             }
@@ -81,7 +117,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
      * Since I removed per-point duration from path fixture, I suppose I should
      * add a feature to not completely lose that data...
      */
-    private AbstractFixture convertToKeyframe(PathFixture fixture, JsonArray points)
+    private static AbstractFixture convertToKeyframe(PathFixture fixture, JsonArray points)
     {
         if (points.size() != fixture.getCount())
         {
@@ -125,7 +161,7 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
     /**
      * Convert use factor option to a remapper modifier
      */
-    private void convertUseFactorToRemapper(PathFixture fixture, JsonObject object)
+    private static void convertUseFactorToRemapper(PathFixture fixture, JsonObject object)
     {
         RemapperModifier modifier = new RemapperModifier();
 
@@ -143,13 +179,12 @@ public class AbstractFixtureAdapter implements JsonSerializer<AbstractFixture>, 
      * a type key (for later ability to deserialize exact type of the JSON
      * element) and target key for look and follow fixtures.
      */
-    @Override
-    public JsonElement serialize(AbstractFixture src, Type typeOfSrc, JsonSerializationContext context)
+    public static JsonObject toJSON(AbstractFixture fixtre)
     {
         JsonObject object = new JsonObject();
 
-        object.addProperty("type", FixtureRegistry.NAME_TO_CLASS.inverse().get(src.getClass()));
-        src.toJSON(object);
+        object.addProperty("type", FixtureRegistry.NAME_TO_CLASS.inverse().get(fixtre.getClass()));
+        fixtre.toJSON(object);
 
         return object;
     }

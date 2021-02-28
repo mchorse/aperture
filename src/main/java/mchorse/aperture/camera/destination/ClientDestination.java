@@ -62,7 +62,7 @@ public class ClientDestination extends AbstractDestination
         try
         {
             String json = FileUtils.readFileToString(new File(ClientProxy.getClientCameras(), this.filename + ".json"), Charset.defaultCharset());
-            CameraProfile newProfile = CameraUtils.cameraJSONBuilder(false).fromJson(json, CameraProfile.class);
+            CameraProfile newProfile = CameraUtils.readProfileFromJSON(json);
 
             newProfile.setDestination(this);
             newProfile.dirty = false;

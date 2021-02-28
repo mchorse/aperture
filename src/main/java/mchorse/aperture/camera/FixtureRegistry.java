@@ -72,43 +72,6 @@ public class FixtureRegistry
     }
 
     /**
-     * Write a camera fixture to byte buffer 
-     */
-    public static void toBytes(AbstractFixture fixture, ByteBuf buffer)
-    {
-        byte type = CLASS_TO_ID.get(fixture.getClass());
-
-        buffer.writeByte(type);
-        buffer.writeLong(fixture.getDuration());
-
-        fixture.toBytes(buffer);
-    }
-
-    /**
-     * Create an abstract camera fixture out of byte buffer
-     */
-    public static AbstractFixture fromBytes(ByteBuf buffer)
-    {
-        byte type = buffer.readByte();
-        long duration = buffer.readLong();
-
-        try
-        {
-            AbstractFixture fixture = fromType(type, duration);
-
-            fixture.fromBytes(buffer);
-
-            return fixture;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    /**
      * Register given camera fixture
      */
     public static void register(String name, Class<? extends AbstractFixture> clazz)

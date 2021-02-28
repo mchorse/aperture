@@ -1,11 +1,13 @@
 package mchorse.aperture.camera;
 
-import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.data.StructureBase;
 import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.values.ValueCurves;
+import mchorse.aperture.camera.values.ValueFixtures;
 import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.aperture.events.CameraProfileChangedEvent;
 import mchorse.aperture.utils.undo.UndoManager;
@@ -18,7 +20,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ import java.util.regex.Pattern;
  * camera fixtures that can be used to playback the camera movement and can be
  * loaded/saved to the disk.
  */
-public class CameraProfile implements IByteBufSerializable
+public class CameraProfile extends StructureBase
 {
     /**
      * Pattern for finding numbered
@@ -42,14 +43,12 @@ public class CameraProfile implements IByteBufSerializable
     /**
      * Curves
      */
-    @Expose
-    protected Map<String, KeyframeChannel> curves = new HashMap<String, KeyframeChannel>();
+    public final ValueCurves curves = new ValueCurves("curves");
 
     /**
      * List of profile's camera fixtures
      */
-    @Expose
-    protected List<AbstractFixture> fixtures = new ArrayList<AbstractFixture>();
+    public final ValueFixtures fixtures = new ValueFixtures("fixtures");
 
     /**
      * List of profile's global camera fixtures
@@ -78,12 +77,23 @@ public class CameraProfile implements IByteBufSerializable
 
     public CameraProfile(AbstractDestination destination)
     {
+        super();
+
         this.destination = destination;
+
+        this.register(this.curves);
+        this.register(this.fixtures);
+        this.register(this.modifiers);
     }
 
     public Map<String, KeyframeChannel> getCurves()
     {
-        return this.curves;
+        return this.curves.get();
+    }
+
+    public List<AbstractFixture> getFixtures()
+    {
+        return this.fixtures.get();
     }
 
     public List<AbstractModifier> getModifiers()
@@ -109,7 +119,7 @@ public class CameraProfile implements IByteBufSerializable
     {
         long duration = 0;
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (AbstractFixture fixture : this.getFixtures())
         {
             duration += fixture.getDuration();
         }
@@ -119,7 +129,7 @@ public class CameraProfile implements IByteBufSerializable
 
     public void initiate()
     {
-        for (AbstractFixture fixture : this.fixtures)
+        for (AbstractFixture fixture : this.getFixtures())
         {
             fixture.initiate();
         }
@@ -148,7 +158,7 @@ public class CameraProfile implements IByteBufSerializable
     {
         long tick = 0;
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (AbstractFixture fixture : this.getFixtures())
         {
             if (fixture == target)
             {
@@ -168,7 +178,7 @@ public class CameraProfile implements IByteBufSerializable
     {
         long sum = 0;
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (AbstractFixture fixture : this.getFixtures())
         {
             long duration = fixture.getDuration();
             sum += duration;
@@ -200,7 +210,7 @@ public class CameraProfile implements IByteBufSerializable
         long pos = 0;
         AbstractFixture out = null;
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (AbstractFixture fixture : this.getFixtures())
         {
             if (tick < pos)
             {
@@ -219,7 +229,7 @@ public class CameraProfile implements IByteBufSerializable
      */
     public int getCount()
     {
-        return this.fixtures.size();
+        return this.getFixtures().size();
     }
 
     /**
@@ -227,7 +237,7 @@ public class CameraProfile implements IByteBufSerializable
      */
     public AbstractFixture get(int index)
     {
-        return this.has(index) ? this.fixtures.get(index) : null;
+        return this.has(index) ? this.getFixtures().get(index) : null;
     }
 
     /**
@@ -235,20 +245,7 @@ public class CameraProfile implements IByteBufSerializable
      */
     public boolean has(int index)
     {
-        return index >= 0 && index < this.fixtures.size();
-    }
-
-    /**
-     * Get all of the fixtures
-     */
-    public List<AbstractFixture> getAll()
-    {
-        if (this.fixtures == null)
-        {
-            this.fixtures = new ArrayList<AbstractFixture>();
-        }
-
-        return this.fixtures;
+        return index >= 0 && index < this.getCount();
     }
 
     /**
@@ -256,7 +253,7 @@ public class CameraProfile implements IByteBufSerializable
      */
     public void add(AbstractFixture fixture)
     {
-        this.fixtures.add(fixture);
+        this.getFixtures().add(fixture);
         this.dirty();
     }
 
@@ -265,24 +262,16 @@ public class CameraProfile implements IByteBufSerializable
      */
     public void add(AbstractFixture fixture, int index)
     {
-        if (index < this.fixtures.size())
+        if (index < this.getCount())
         {
-            this.fixtures.add(index, fixture);
+            this.getFixtures().add(index, fixture);
         }
         else
         {
-            this.fixtures.add(fixture);
+            this.getFixtures().add(fixture);
         }
 
         this.dirty();
-    }
-
-    /**
-     * Move fixture on index {@code from} to index {@code to}
-     */
-    public void move(int from, int to)
-    {
-
     }
 
     /**
@@ -290,23 +279,13 @@ public class CameraProfile implements IByteBufSerializable
      */
     public void remove(int index)
     {
-        int size = this.fixtures.size();
+        int size = this.getCount();
 
-        if (size != 0 && index >= 0 && index < size)
+        if (index >= 0 && index < size)
         {
-            this.fixtures.remove(index);
+            this.getFixtures().remove(index);
             this.dirty();
         }
-    }
-
-    /**
-     * Reset camera profile (remove all fixtures in profile)
-     */
-    public void reset()
-    {
-        this.getAll().clear();
-        this.getModifiers().clear();
-        this.dirty();
     }
 
     /**
@@ -315,7 +294,7 @@ public class CameraProfile implements IByteBufSerializable
     @SideOnly(Side.CLIENT)
     public void applyCurves(long progress, float partialTick)
     {
-        KeyframeChannel channel = this.curves.get("brightness");
+        KeyframeChannel channel = this.curves.get().get("brightness");
 
         if (channel != null && !channel.isEmpty())
         {
@@ -346,7 +325,7 @@ public class CameraProfile implements IByteBufSerializable
         int index = 0;
         long originalProgress = progress;
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (AbstractFixture fixture : this.getFixtures())
         {
             long duration = fixture.getDuration();
 
@@ -356,12 +335,12 @@ public class CameraProfile implements IByteBufSerializable
             index += 1;
         }
 
-        if (index >= this.fixtures.size())
+        if (index >= this.getCount())
         {
             return;
         }
 
-        AbstractFixture fixture = this.fixtures.get(index);
+        AbstractFixture fixture = this.getFixtures().get(index);
 
         if (progress == 0)
         {
@@ -374,58 +353,6 @@ public class CameraProfile implements IByteBufSerializable
         {
             AbstractModifier.applyModifiers(this, fixture, originalProgress, progress, partialTick, previewPartialTick, position);
             AbstractModifier.applyModifiers(this, null, originalProgress, originalProgress, partialTick, previewPartialTick, position);
-        }
-    }
-
-    /**
-     * Read camera profile from a byte buffer 
-     */
-    @Override
-    public void fromBytes(ByteBuf buffer)
-    {
-        for (int i = 0, c = buffer.readInt(); i < c; i++)
-        {
-            AbstractFixture fixture = FixtureRegistry.fromBytes(buffer);
-
-            if (fixture != null)
-            {
-                this.fixtures.add(fixture);
-            }
-        }
-
-        this.modifiers.fromBytes(buffer);
-
-        for (int i = 0, c = buffer.readInt(); i < c; i++)
-        {
-            String key = ByteBufUtils.readUTF8String(buffer);
-            KeyframeChannel channel = new KeyframeChannel();
-
-            channel.fromBytes(buffer);
-            this.curves.put(key, channel);
-        }
-    }
-
-    /**
-     * Write camera profile to a byte buffer 
-     */
-    @Override
-    public void toBytes(ByteBuf buffer)
-    {
-        buffer.writeInt(this.fixtures.size());
-
-        for (AbstractFixture fixture : this.fixtures)
-        {
-            FixtureRegistry.toBytes(fixture, buffer);
-        }
-
-        this.modifiers.toBytes(buffer);
-
-        buffer.writeInt(this.curves.size());
-
-        for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
-        {
-            ByteBufUtils.writeUTF8String(buffer, entry.getKey());
-            entry.getValue().toBytes(buffer);
         }
     }
 
@@ -466,22 +393,7 @@ public class CameraProfile implements IByteBufSerializable
         AbstractDestination dest = AbstractDestination.fromResourceLocation(new ResourceLocation(path.getResourceDomain(), filename));
         CameraProfile profile = new CameraProfile(dest);
 
-        /* Copy fixtures */
-        for (AbstractFixture fixture : this.getAll())
-        {
-            profile.fixtures.add(fixture.copy());
-        }
-
-        profile.modifiers.copy(this.modifiers);
-
-        for (Map.Entry<String, KeyframeChannel> entry : this.curves.entrySet())
-        {
-            KeyframeChannel channel = new KeyframeChannel();
-
-            channel.copy(entry.getValue());
-            profile.curves.put(entry.getKey(), channel);
-        }
-
+        profile.copy(this);
         profile.initiate();
 
         return profile;
@@ -490,31 +402,7 @@ public class CameraProfile implements IByteBufSerializable
     public void copyFrom(CameraProfile profile)
     {
         this.exists = true;
-        this.fixtures = profile.fixtures;
+        this.fixtures.copy(profile.fixtures);
         this.modifiers.copy(profile.modifiers);
-    }
-
-    public void cut(int where)
-    {
-        AbstractFixture fixture = this.atTick(where);
-
-        if (fixture != null)
-        {
-            long offset = this.calculateOffset(fixture);
-            long duration = fixture.getDuration();
-            long diff = where - offset;
-
-            if (diff <= 0 || diff >= duration)
-            {
-                return;
-            }
-
-            fixture.setDuration(diff);
-
-            AbstractFixture newFixture = fixture.copy();
-            newFixture.setDuration(duration - diff);
-
-            this.add(newFixture, this.fixtures.indexOf(fixture) + 1);
-        }
     }
 }

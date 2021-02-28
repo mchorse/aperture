@@ -24,7 +24,7 @@ public class NullFixture extends AbstractFixture
     @Override
     public void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        List<AbstractFixture> list = profile.getAll();
+        List<AbstractFixture> list = profile.getFixtures();
         int index = list.indexOf(this);
 
         if (index != -1)

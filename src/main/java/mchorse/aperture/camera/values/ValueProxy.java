@@ -32,12 +32,24 @@ public class ValueProxy extends Value
         {
             IConfigValue value = list.get(i);
 
-            if (value instanceof ValueProxy)
+            while (value instanceof ValueProxy)
             {
-                continue;
+                value = ((ValueProxy) value).getProxy();
             }
 
-            list.set(i, new ValueProxy(this.getId() + "." + value.getId(), value));
+            String id = this.getId() + ".";
+            String parentId = this.proxy.getId() + ".";
+
+            if (value.getId().startsWith(parentId))
+            {
+                id += value.getId().substring(parentId.length());
+            }
+            else
+            {
+                id += value.getId();
+            }
+
+            list.set(i, new ValueProxy(id, value));
         }
 
         return list;

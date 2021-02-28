@@ -6,7 +6,6 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
-import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.GuiUtils;
@@ -77,12 +76,12 @@ public class GuiInterpModule extends GuiAbstractModule
         {
             if (this.pickPos)
             {
-                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolation, interp.get(0)));
+                this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.interpolation, interp.get(0)));
                 this.pos.label.set(interp.get(0).getKey());
             }
             else
             {
-                this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolationAngle, interp.get(0)));
+                this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.interpolationAngle, interp.get(0)));
                 this.angle.label.set(interp.get(0).getKey());
             }
 
@@ -105,14 +104,14 @@ public class GuiInterpModule extends GuiAbstractModule
     {
         InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
 
-        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolation, type));
+        this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.interpolation, type));
     }
 
     private void toggleAngle()
     {
         InterpolationType type = this.next(this.fixture.interpolation.get(), this.pos);
 
-        this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.interpolationAngle, type));
+        this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.interpolationAngle, type));
     }
 
     private InterpolationType next(InterpolationType interp, GuiButtonElement button)

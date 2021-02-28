@@ -1,11 +1,10 @@
 package mchorse.aperture.camera;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import mchorse.aperture.Aperture;
-import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.json.AbstractFixtureAdapter;
-import mchorse.aperture.camera.json.CameraProfileAdapter;
+import mchorse.aperture.camera.destination.AbstractDestination;
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.capabilities.camera.ICamera;
 import mchorse.aperture.network.Dispatcher;
@@ -43,28 +42,6 @@ public class CameraUtils
         }
 
         return new File(file, filename + ".json");
-    }
-
-    /**
-     * Get a camera JSON builder. This will include custom serializers for some
-     * of the camera fixture classes. Also custom serializers.
-     */
-    public static Gson cameraJSONBuilder(boolean pretty)
-    {
-        GsonBuilder builder = new GsonBuilder();
-
-        if (pretty)
-        {
-            builder.setPrettyPrinting();
-        }
-
-        builder.excludeFieldsWithoutExposeAnnotation();
-
-        /* Serializer and deserializer */
-        builder.registerTypeAdapter(AbstractFixture.class, new AbstractFixtureAdapter());
-        builder.registerTypeAdapter(CameraProfile.class, new CameraProfileAdapter());
-
-        return builder.create();
     }
 
     /**
@@ -134,7 +111,22 @@ public class CameraUtils
 
     public static CameraProfile readProfile(String filename) throws Exception
     {
-        return cameraJSONBuilder(true).fromJson(readCameraProfile(filename), CameraProfile.class);
+        return readProfileFromJSON(readCameraProfile(filename));
+    }
+
+    public static CameraProfile readProfileFromJSON(String json) throws Exception
+    {
+        CameraProfile profile = new CameraProfile(null);
+        JsonElement element = new JsonParser().parse(json);
+
+        if (!element.isJsonObject())
+        {
+            return profile;
+        }
+
+        profile.fromJSON(element.getAsJsonObject());
+
+        return profile;
     }
 
     /**
@@ -194,7 +186,11 @@ public class CameraUtils
      */
     public static String toJSON(CameraProfile profile)
     {
-        return JsonUtils.jsonToPretty(cameraJSONBuilder(true).toJsonTree(profile, CameraProfile.class));
+        JsonObject object = new JsonObject();
+
+        profile.toJSON(object);
+
+        return JsonUtils.jsonToPretty(object);
     }
 
     /**

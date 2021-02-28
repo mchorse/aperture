@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.data.Point;
 import mchorse.aperture.camera.values.ValuePoint;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
@@ -32,7 +33,7 @@ public class GuiPointModule extends GuiAbstractModule
             Point point = this.point.get().copy();
 
             point.x = value;
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point, point));
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.point, point));
         });
         this.x.tooltip(IKey.lang("aperture.gui.panels.x"));
 
@@ -41,7 +42,7 @@ public class GuiPointModule extends GuiAbstractModule
             Point point = this.point.get().copy();
 
             point.y = value;
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point, point));
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.point, point));
         });
         this.y.tooltip(IKey.lang("aperture.gui.panels.y"));
 
@@ -50,7 +51,7 @@ public class GuiPointModule extends GuiAbstractModule
             Point point = this.point.get().copy();
 
             point.z = value;
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.point, point));
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.point, point));
         });
         this.z.tooltip(IKey.lang("aperture.gui.panels.z"));
 

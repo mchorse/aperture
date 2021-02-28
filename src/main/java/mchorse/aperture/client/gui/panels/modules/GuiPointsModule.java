@@ -1,10 +1,12 @@
 package mchorse.aperture.client.gui.panels.modules;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.undo.FixturePointsChangeUndo;
-import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
+import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -59,6 +61,17 @@ public class GuiPointsModule extends GuiAbstractModule
         this.scroll.direction = ScrollDirection.HORIZONTAL;
     }
 
+    private IUndo<CameraProfile> undo(GuiCameraEditor editor, int index, int nextIndex, List<Position> positions)
+    {
+        CameraProfile profile = editor.getProfile();
+        AbstractFixture fixture = editor.getFixture();
+        int fixtureIndex = profile.getFixtures().indexOf(fixture);
+
+        String name = profile.fixtures.getId() + "." + fixtureIndex + "." + this.path.points.getId();
+
+        return new FixturePointsChangeUndo(fixtureIndex, name, index, nextIndex, this.path.points.getValue(), positions).unmergable();
+    }
+
     public void setIndex(int index)
     {
         this.index = index;
@@ -78,7 +91,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
         int nextIndex = this.index - 1;
 
-        this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+        this.editor.postUndo(this.undo(this.editor, this.index, nextIndex, positions));
         this.index = nextIndex;
     }
 
@@ -95,7 +108,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
         int nextIndex = this.index - 1;
 
-        this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+        this.editor.postUndo(this.undo(this.editor, this.index, nextIndex, positions));
         this.index = nextIndex;
     }
 
@@ -109,7 +122,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
             int nextIndex = MathHelper.clamp(this.index + 1, 0, positions.size() - 1);
 
-            this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+            this.editor.postUndo(this.undo(this.editor, this.index, nextIndex, positions));
             this.index = nextIndex;
         }
         else
@@ -118,7 +131,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
             int nextIndex = this.index + 1;
 
-            this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+            this.editor.postUndo(this.undo(this.editor, this.index, nextIndex, positions));
             this.index = nextIndex;
         }
 
@@ -144,7 +157,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
         int nextIndex = this.index > 0 ? this.index - 1 : this.index;
 
-        this.editor.postUndo(FixturePointsChangeUndo.create(this.editor, this.path.points.getId(), this.index, nextIndex, positions).unmergable());
+        this.editor.postUndo(this.undo(this.editor, this.index, nextIndex, positions));
 
         this.index = nextIndex;
         this.scroll.setSize(this.path.getCount());

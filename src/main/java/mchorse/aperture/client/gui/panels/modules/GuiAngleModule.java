@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels.modules;
 import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.values.ValueAngle;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
@@ -33,7 +34,7 @@ public class GuiAngleModule extends GuiAbstractModule
             Angle point = this.angle.get().copy();
 
             point.yaw = value.floatValue();
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle, point));
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.angle, point));
         });
         this.yaw.tooltip(IKey.lang("aperture.gui.panels.yaw"));
 
@@ -42,7 +43,7 @@ public class GuiAngleModule extends GuiAbstractModule
             Angle point = this.angle.get().copy();
 
             point.pitch = value.floatValue();
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle, point));
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.angle, point));
         });
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
@@ -51,7 +52,7 @@ public class GuiAngleModule extends GuiAbstractModule
             Angle point = this.angle.get().copy();
 
             point.roll = value.floatValue();
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle, point));
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.angle, point));
         });
         this.roll.tooltip(IKey.lang("aperture.gui.panels.roll"));
 
@@ -60,7 +61,7 @@ public class GuiAngleModule extends GuiAbstractModule
             Angle point = this.angle.get().copy();
 
             point.fov = value.floatValue();
-            this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.angle, point));
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.angle, point));
         });
         this.fov.tooltip(IKey.lang("aperture.gui.panels.fov"));
 

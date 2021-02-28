@@ -581,7 +581,7 @@ public class GuiCameraEditor extends GuiBase
                     this.timeline.setValueFromScrub(offset);
                 }
 
-                this.timeline.index = this.getProfile().getAll().indexOf(fixture);
+                this.timeline.index = this.getProfile().getFixtures().indexOf(fixture);
             }
             else
             {
@@ -727,7 +727,30 @@ public class GuiCameraEditor extends GuiBase
      */
     private void cutFixture()
     {
-        this.getProfile().cut(this.timeline.value);
+        int where = this.timeline.value;
+
+        CameraProfile profile = this.getProfile();
+        AbstractFixture fixture = profile.atTick(where);
+
+        if (fixture != null)
+        {
+            long offset = profile.calculateOffset(fixture);
+            long duration = fixture.getDuration();
+            long diff = where - offset;
+
+            if (diff <= 0 || diff >= duration)
+            {
+                return;
+            }
+
+            /* TODO: undo */
+            fixture.setDuration(diff);
+
+            AbstractFixture newFixture = fixture.copy();
+
+            newFixture.setDuration(duration - diff);
+            profile.add(newFixture, profile.getFixtures().indexOf(fixture) + 1);
+        }
     }
 
     /**
@@ -790,7 +813,7 @@ public class GuiCameraEditor extends GuiBase
         }
         else if (this.panel.delegate != null)
         {
-            this.timeline.index = profile.getAll().indexOf(this.getFixture());
+            this.timeline.index = profile.getFixtures().indexOf(this.getFixture());
         }
 
         return isSame;
@@ -1083,7 +1106,7 @@ public class GuiCameraEditor extends GuiBase
 
         if (this.timeline.value > offset && fixture != null)
         {
-            this.postUndo(FixtureValueChangeUndo.create(this, fixture.duration, this.timeline.value - offset));
+            this.postUndo(GuiAbstractFixturePanel.undo(this, fixture.duration, this.timeline.value - offset));
 
             this.updateValues();
             this.panel.delegate.select(fixture, 0);

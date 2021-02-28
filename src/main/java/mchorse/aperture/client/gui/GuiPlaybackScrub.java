@@ -240,7 +240,7 @@ public class GuiPlaybackScrub extends GuiElement
 
                     if (left || right)
                     {
-                        int index = this.profile.getAll().indexOf(fixture);
+                        int index = this.profile.getFixtures().indexOf(fixture);
 
                         if (left && index > 0)
                         {
@@ -262,7 +262,7 @@ public class GuiPlaybackScrub extends GuiElement
                 /* Select camera fixture */
                 if (!this.dragging)
                 {
-                    int index = this.profile.getAll().indexOf(fixture);
+                    int index = this.profile.getFixtures().indexOf(fixture);
 
                     this.editor.pickCameraFixture(fixture, tick - offset);
                     this.index = index;
@@ -411,7 +411,7 @@ public class GuiPlaybackScrub extends GuiElement
 
             this.drawTickMarks(y, h);
 
-            for (AbstractFixture fixture : this.profile.getAll())
+            for (AbstractFixture fixture : this.profile.getFixtures())
             {
                 COLOR.set(fixture.color.get(), false);
 

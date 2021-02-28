@@ -43,6 +43,20 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     public GuiColorElement color;
     private GuiTrackpadElement duration;
 
+    public static FixtureValueChangeUndo undo(GuiCameraEditor editor, IConfigValue property, Object newValue)
+    {
+        return undo(editor, property, property.getValue(), newValue);
+    }
+
+    public static FixtureValueChangeUndo undo(GuiCameraEditor editor, IConfigValue property, Object oldValue, Object newValue)
+    {
+        CameraProfile profile = editor.getProfile();
+        AbstractFixture fixture = editor.getFixture();
+        int index = profile.getFixtures().indexOf(fixture);
+
+        return new FixtureValueChangeUndo(index, profile.fixtures.getId() + "." + index + "." + property.getId(), oldValue, newValue);
+    }
+
     public GuiAbstractFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
         super(mc);
@@ -79,7 +93,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
 
     protected FixtureValueChangeUndo undo(IConfigValue value, Object newValue)
     {
-        return FixtureValueChangeUndo.create(this.editor, value, newValue);
+        return undo(this.editor, value, newValue);
     }
 
     public void handleUndo(IUndo<CameraProfile> undo, boolean redo)

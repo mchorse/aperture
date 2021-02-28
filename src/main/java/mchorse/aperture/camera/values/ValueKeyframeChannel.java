@@ -17,11 +17,18 @@ import java.util.List;
 
 public class ValueKeyframeChannel extends Value
 {
-    private KeyframeChannel channel = new KeyframeChannel();
+    private KeyframeChannel channel;
 
     public ValueKeyframeChannel(String id)
     {
+        this(id, new KeyframeChannel());
+    }
+
+    public ValueKeyframeChannel(String id, KeyframeChannel channel)
+    {
         super(id);
+
+        this.channel = channel;
     }
 
     public KeyframeChannel get()

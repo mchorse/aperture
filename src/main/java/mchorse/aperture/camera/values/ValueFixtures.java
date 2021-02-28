@@ -4,35 +4,35 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.json.ModifierSerializer;
-import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.json.FixtureSerializer;
 import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValueModifiers extends Value
+public class ValueFixtures extends Value
 {
-    private List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
+    private List<AbstractFixture> fixtures = new ArrayList<AbstractFixture>();
 
-    public ValueModifiers(String id)
+    public ValueFixtures(String id)
     {
         super(id);
     }
 
-    public List<AbstractModifier> get()
+    public List<AbstractFixture> get()
     {
-        return this.modifiers;
+        return this.fixtures;
     }
 
-    public void set(List<AbstractModifier> modifiers)
+    public void set(List<AbstractFixture> fixtures)
     {
-        this.modifiers.clear();
+        this.fixtures.clear();
 
-        for (AbstractModifier modifier : modifiers)
+        for (AbstractFixture fixture : fixtures)
         {
-            this.modifiers.add(modifier.copy());
+            this.fixtures.add(fixture.copy());
         }
     }
 
@@ -42,9 +42,9 @@ public class ValueModifiers extends Value
         List<IConfigValue> values = new ArrayList<IConfigValue>();
         int i = 0;
 
-        for (AbstractModifier modifier : this.modifiers)
+        for (AbstractFixture fixture : this.fixtures)
         {
-            values.add(new ValueModifier(this.getId() + "." + i, modifier));
+            values.add(new ValueFixture(this.getId() + "." + i, fixture));
 
             i += 1;
         }
@@ -55,14 +55,14 @@ public class ValueModifiers extends Value
     @Override
     public Object getValue()
     {
-        List<AbstractModifier> modifiers = new ArrayList<AbstractModifier>();
+        List<AbstractFixture> fixtures = new ArrayList<AbstractFixture>();
 
-        for (AbstractModifier modifier : this.modifiers)
+        for (AbstractFixture fixture : this.fixtures)
         {
-            modifiers.add(modifier.copy());
+            fixtures.add(fixture.copy());
         }
 
-        return modifiers;
+        return fixtures;
     }
 
     @Override
@@ -72,9 +72,9 @@ public class ValueModifiers extends Value
         {
             List list = (List) object;
 
-            if (list.isEmpty() || list.get(0) instanceof AbstractModifier)
+            if (list.isEmpty() || list.get(0) instanceof AbstractFixture)
             {
-                this.set((List<AbstractModifier>) list);
+                this.set((List<AbstractFixture>) list);
             }
         }
     }
@@ -82,15 +82,15 @@ public class ValueModifiers extends Value
     @Override
     public void reset()
     {
-        this.modifiers.clear();
+        this.fixtures.clear();
     }
 
     @Override
     public void copy(IConfigValue value)
     {
-        if (value instanceof ValueModifiers)
+        if (value instanceof ValueFixtures)
         {
-            this.set(((ValueModifiers) value).get());
+            this.set(((ValueFixtures) value).get());
         }
     }
 
@@ -104,7 +104,7 @@ public class ValueModifiers extends Value
 
         JsonArray array = element.getAsJsonArray();
 
-        this.modifiers.clear();
+        this.fixtures.clear();
 
         for (JsonElement jsonElement : array)
         {
@@ -114,11 +114,11 @@ public class ValueModifiers extends Value
             }
 
             JsonObject object = jsonElement.getAsJsonObject();
-            AbstractModifier modifier = ModifierSerializer.fromJSON(object);
+            AbstractFixture fixture = FixtureSerializer.fromJSON(object);
 
-            if (modifier != null)
+            if (fixture != null)
             {
-                this.modifiers.add(modifier);
+                this.fixtures.add(fixture);
             }
         }
     }
@@ -128,9 +128,9 @@ public class ValueModifiers extends Value
     {
         JsonArray array = new JsonArray();
 
-        for (AbstractModifier modifier : this.modifiers)
+        for (AbstractFixture fixture : this.fixtures)
         {
-            array.add(ModifierSerializer.toJSON(modifier));
+            array.add(FixtureSerializer.toJSON(fixture));
         }
 
         return array;
@@ -141,15 +141,15 @@ public class ValueModifiers extends Value
     {
         super.fromBytes(buffer);
 
-        this.modifiers.clear();
+        this.fixtures.clear();
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            AbstractModifier modifier = ModifierSerializer.fromBytes(buffer);
+            AbstractFixture fixture = FixtureSerializer.fromBytes(buffer);
 
-            if (modifier != null)
+            if (fixture != null)
             {
-                this.modifiers.add(modifier);
+                this.fixtures.add(fixture);
             }
         }
     }
@@ -159,11 +159,11 @@ public class ValueModifiers extends Value
     {
         super.toBytes(buffer);
 
-        buffer.writeInt(this.modifiers.size());
+        buffer.writeInt(this.fixtures.size());
 
-        for (AbstractModifier modifier : this.modifiers)
+        for (AbstractFixture fixture : this.fixtures)
         {
-            ModifierSerializer.toBytes(modifier, buffer);
+            FixtureSerializer.toBytes(fixture, buffer);
         }
     }
 }

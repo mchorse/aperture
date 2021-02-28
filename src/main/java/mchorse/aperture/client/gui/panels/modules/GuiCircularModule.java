@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui.panels.modules;
 
 import mchorse.aperture.camera.fixtures.CircularFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
+import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
@@ -28,16 +28,16 @@ public class GuiCircularModule extends GuiAbstractModule
     {
         super(mc, editor);
 
-        this.offset = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.offset, value.floatValue())));
+        this.offset = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.offset, value.floatValue())));
         this.offset.tooltip(IKey.lang("aperture.gui.panels.offset"));
 
-        this.pitch = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.pitch, value.floatValue())));
+        this.pitch = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.pitch, value.floatValue())));
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.pitch"));
 
-        this.circles = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.circles, value.floatValue())));
+        this.circles = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.circles, value.floatValue())));
         this.circles.tooltip(IKey.lang("aperture.gui.panels.circles"));
 
-        this.distance = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(FixtureValueChangeUndo.create(this.editor, this.fixture.distance, value.floatValue())));
+        this.distance = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.fixture.distance, value.floatValue())));
         this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
 
         this.flex().column(5).vertical().stretch().height(20);

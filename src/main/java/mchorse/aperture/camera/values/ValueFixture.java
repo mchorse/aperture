@@ -3,35 +3,35 @@ package mchorse.aperture.camera.values;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.json.ModifierSerializer;
-import mchorse.aperture.camera.modifiers.AbstractModifier;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.json.FixtureSerializer;
 import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValueModifier extends Value
+public class ValueFixture extends Value
 {
-    private AbstractModifier modifier;
+    private AbstractFixture fixture;
 
-    public ValueModifier(String id, AbstractModifier modifier)
+    public ValueFixture(String id, AbstractFixture fixture)
     {
         super(id);
 
-        this.modifier = modifier;
+        this.fixture = fixture;
     }
 
-    public AbstractModifier get()
+    public AbstractFixture get()
     {
-        return this.modifier;
+        return this.fixture;
     }
 
-    public void set(AbstractModifier modifier)
+    public void set(AbstractFixture fixture)
     {
-        if (modifier != null)
+        if (fixture != null)
         {
-            this.modifier = modifier.copy();
+            this.fixture = fixture.copy();
         }
     }
 
@@ -40,7 +40,7 @@ public class ValueModifier extends Value
     {
         List<IConfigValue> values = new ArrayList<IConfigValue>();
 
-        for (IConfigValue value : this.modifier.getProperties())
+        for (IConfigValue value : this.fixture.getProperties())
         {
             values.add(new ValueProxy(this.getId() + "." + value.getId(), value));
         }
@@ -51,30 +51,30 @@ public class ValueModifier extends Value
     @Override
     public Object getValue()
     {
-        return this.modifier.copy();
+        return this.fixture.copy();
     }
 
     @Override
     public void setValue(Object object)
     {
-        if (object instanceof AbstractModifier)
+        if (object instanceof AbstractFixture)
         {
-            this.set((AbstractModifier) object);
+            this.set((AbstractFixture) object);
         }
     }
 
     @Override
     public void reset()
     {
-        this.modifier = null;
+        this.fixture = null;
     }
 
     @Override
     public void copy(IConfigValue value)
     {
-        if (value instanceof ValueModifier)
+        if (value instanceof ValueFixture)
         {
-            this.setValue(((ValueModifier) value).get());
+            this.setValue(((ValueFixture) value).get());
         }
     }
 
@@ -87,18 +87,18 @@ public class ValueModifier extends Value
         }
 
         JsonObject object = element.getAsJsonObject();
-        AbstractModifier modifier = ModifierSerializer.fromJSON(object);
+        AbstractFixture fixture = FixtureSerializer.fromJSON(object);
 
-        if (modifier != null)
+        if (fixture != null)
         {
-            this.modifier = modifier;
+            this.fixture = fixture;
         }
     }
 
     @Override
     public JsonElement toJSON()
     {
-        return ModifierSerializer.toJSON(this.modifier);
+        return FixtureSerializer.toJSON(this.fixture);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ValueModifier extends Value
     {
         super.fromBytes(buffer);
 
-        this.modifier = ModifierSerializer.fromBytes(buffer);
+        this.fixture = FixtureSerializer.fromBytes(buffer);
     }
 
     @Override
@@ -114,6 +114,6 @@ public class ValueModifier extends Value
     {
         super.toBytes(buffer);
 
-        ModifierSerializer.toBytes(this.modifier, buffer);
+        FixtureSerializer.toBytes(this.fixture, buffer);
     }
 }

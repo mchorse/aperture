@@ -59,7 +59,7 @@ public class UndoManager<T>
      */
     public IUndo<T> pushApplyUndo(IUndo<T> undo, T context)
     {
-            IUndo<T> newUndo = this.pushUndo(undo);
+        IUndo<T> newUndo = this.pushUndo(undo);
 
         newUndo.redo(context);
 

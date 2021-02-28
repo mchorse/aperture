@@ -252,7 +252,7 @@ public class CameraRenderer
 
         int i = 0;
 
-        for (AbstractFixture fixture : profile.getAll())
+        for (AbstractFixture fixture : profile.getFixtures())
         {
             if (fixture instanceof PathFixture)
             {

@@ -1,6 +1,5 @@
 package mchorse.aperture.utils.undo;
 
-import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class CompoundUndo <T> implements IUndo<T>
     {
         for (IUndo<T> undo : this.undos)
         {
-            if (undo.getClass().isAssignableFrom(clazz))
+            if (clazz.isAssignableFrom(undo.getClass()))
             {
                 return true;
             }

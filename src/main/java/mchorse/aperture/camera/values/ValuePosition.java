@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ValuePosition extends Value
@@ -38,7 +39,12 @@ public class ValuePosition extends Value
     @Override
     public List<IConfigValue> getSubValues()
     {
-        return ImmutableList.of(this.pointDelegate, this.angleDelegate);
+        List<IConfigValue> values = new ArrayList<IConfigValue>();
+
+        values.add(this.pointDelegate);
+        values.add(this.angleDelegate);
+
+        return values;
     }
 
     public ValuePoint getPoint()

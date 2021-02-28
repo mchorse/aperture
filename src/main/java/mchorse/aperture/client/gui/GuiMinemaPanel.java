@@ -164,7 +164,7 @@ public class GuiMinemaPanel extends GuiElement
 
             if (fixture != null)
             {
-                text += "-" + (this.editor.getProfile().getAll().indexOf(fixture) + 1);
+                text += "-" + (this.editor.getProfile().getFixtures().indexOf(fixture) + 1);
             }
         }
 

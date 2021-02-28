@@ -129,14 +129,17 @@ public class GuiEnvelope extends GuiElement
 
         if (fixture != null)
         {
-            int index = profile.getAll().indexOf(fixture);
+            int index = profile.getFixtures().indexOf(fixture);
             int modifierIndex = fixture.modifiers.get().indexOf(this.panel.modifier);
-            String name = fixture.modifiers.getId() + "." + modifierIndex + "."  + this.panel.modifier.envelope.getId() + "." + value.getId();
+            String name = profile.fixtures.getId() + "." + index + "." + fixture.modifiers.getId() + "." + modifierIndex + "."  + this.panel.modifier.envelope.getId() + "." + value.getId();
 
             return new ModifierValueChangeUndo(index, this.panel.modifiers.panels.scroll.scroll, name, value.getValue(), newValue);
         }
 
-        return null;
+        int modifierIndex = profile.modifiers.get().indexOf(this.panel.modifier);
+        String name = profile.modifiers.getId() + "." + modifierIndex + "."  + this.panel.modifier.envelope.getId() + "." + value.getId();
+
+        return new ModifierValueChangeUndo(-1, this.panel.modifiers.panels.scroll.scroll, name, value.getValue(), newValue);
     }
 
     private void toggleKeyframes(boolean toggled)
@@ -357,5 +360,11 @@ public class GuiEnvelope extends GuiElement
         float factor = value / (float) duration;
 
         return this.area.x + (int) (factor * this.area.w);
+    }
+
+    public void updateVisibility()
+    {
+        this.panel.modifiers.editor.postUndo(this.undo(this.get().visible, !this.get().visible.get()), false, false);
+        this.get().visible.set(!this.get().visible.get());
     }
 }

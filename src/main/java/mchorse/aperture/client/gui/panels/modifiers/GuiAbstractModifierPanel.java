@@ -65,7 +65,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.copy.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.copy"));
         this.envelope = new GuiIconElement(mc, APIcons.ENVELOPE, (b) ->
         {
-            this.modifier.envelope.get().visible = !this.modifier.envelope.get().visible;
+            this.envelopes.updateVisibility();
             this.updateEnvelopes();
         });
         this.envelope.tooltip(IKey.lang("aperture.gui.modifiers.tooltips.envelope"));
@@ -125,7 +125,7 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.envelopes.removeFromParent();
         this.fields.removeFromParent();
 
-        if (this.modifier.envelope.get().visible)
+        if (this.modifier.envelope.get().visible.get())
         {
             this.add(this.envelopes);
         }
