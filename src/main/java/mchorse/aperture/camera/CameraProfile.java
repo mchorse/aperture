@@ -73,7 +73,7 @@ public class CameraProfile extends StructureBase
     /**
      * Undo manager that tracks changes made to this camera profile
      */
-    public UndoManager<CameraProfile> undoManager = new UndoManager<CameraProfile>();
+    public UndoManager<CameraProfile> undoManager = new UndoManager<CameraProfile>(30);
 
     public CameraProfile(AbstractDestination destination)
     {

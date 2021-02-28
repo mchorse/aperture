@@ -21,6 +21,11 @@ public class UndoManager<T>
     public UndoManager()
     {}
 
+    public UndoManager(int limit)
+    {
+        this.limit = limit;
+    }
+
     public UndoManager(IUndoListener<T> callback)
     {
         this.callback = callback;
