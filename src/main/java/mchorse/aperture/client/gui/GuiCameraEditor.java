@@ -407,10 +407,14 @@ public class GuiCameraEditor extends GuiBase
     private void handleUndos(IUndo<CameraProfile> undo, boolean redo)
     {
         int index = -1;
+        String name = "";
 
         if (undo instanceof FixtureValueChangeUndo)
         {
-            index = ((FixtureValueChangeUndo) undo).getIndex();
+            FixtureValueChangeUndo value = (FixtureValueChangeUndo) undo;
+
+            index = value.getIndex();
+            name = value.getName();
         }
         else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(FixtureValueChangeUndo.class))
         {
@@ -422,6 +426,20 @@ public class GuiCameraEditor extends GuiBase
             this.pickCameraFixture(this.getProfile().get(index), -1);
             this.panel.delegate.handleUndo(undo, redo);
             this.modifiers.handleUndo(undo, redo);
+        }
+
+        if (name.contains("modifiers"))
+        {
+            this.hidePopups(this.modifiers, true);
+        }
+        else if (name.startsWith("curves"))
+        {
+            this.hidePopups(this.profiles, true);
+
+            if (!this.profiles.curves.isVisible())
+            {
+                this.profiles.toggleKeyframes();
+            }
         }
 
         /* Handle adding/removing undo */
@@ -1059,15 +1077,18 @@ public class GuiCameraEditor extends GuiBase
 
     private void hidePopups(GuiElement exception)
     {
-        boolean was = exception.isVisible();
+        this.hidePopups(exception, !exception.isVisible());
+    }
 
+    private void hidePopups(GuiElement exception, boolean visible)
+    {
         this.profiles.setVisible(false);
         this.config.setVisible(false);
         this.modifiers.setVisible(false);
         this.fixtures.setVisible(false);
         this.minema.setVisible(false);
 
-        exception.setVisible(!was);
+        exception.setVisible(visible);
     }
 
     /**

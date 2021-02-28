@@ -61,6 +61,17 @@ public class GuiGraphView extends mchorse.mclib.client.gui.framework.elements.ke
     }
 
     @Override
+    protected void resetMouseReleased(GuiContext context)
+    {
+        if (!this.moving && this.keyframeEditor.getUndo() == 100)
+        {
+            this.keyframeEditor.cancelUndo();
+        }
+
+        super.resetMouseReleased(context);
+    }
+
+    @Override
     protected void moveNoKeyframe(GuiContext context, Keyframe frame, double x, double y)
     {
         if (this.editor != null)

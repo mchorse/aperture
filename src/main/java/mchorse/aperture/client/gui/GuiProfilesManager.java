@@ -196,7 +196,7 @@ public class GuiProfilesManager extends GuiElement
         dest.rename(name);
     }
 
-    private void toggleKeyframes()
+    public void toggleKeyframes()
     {
         boolean profiles = this.profiles.isVisible();
 

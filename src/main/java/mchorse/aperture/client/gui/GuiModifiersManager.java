@@ -7,6 +7,7 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
+import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
 import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.aperture.utils.undo.IUndo;
@@ -180,7 +181,15 @@ public class GuiModifiersManager extends GuiElement
 
     public IUndo<CameraProfile> undo(AbstractModifier modifier, IConfigValue value, Object newValue)
     {
+        CameraProfile profile = this.editor.getProfile();
         String name = this.getModifierPath(modifier) + "." + value.getId();
+
+        if (this.fixture != null)
+        {
+            int index = profile.getFixtures().indexOf(this.fixture);
+
+            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, name, value.getValue(), newValue);
+        }
 
         return new ModifierValueChangeUndo(-1, this.panels.scroll.scroll, name, value.getValue(), newValue);
     }

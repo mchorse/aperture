@@ -66,6 +66,11 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
         return keyframe;
     }
 
+    public int getUndo()
+    {
+        return this.type;
+    }
+
     public void updateConverter()
     {
         this.setConverter(CONVERTER);
@@ -125,6 +130,12 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
             this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, channel.getId(), this.cachedData.get(0), newCachedData.get(0)).unmergable(), false);
         }
 
+        this.cachedData.clear();
+    }
+
+    public void cancelUndo()
+    {
+        this.type = -1;
         this.cachedData.clear();
     }
 
