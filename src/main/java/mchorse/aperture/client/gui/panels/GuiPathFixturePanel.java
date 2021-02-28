@@ -5,6 +5,7 @@ import mchorse.aperture.camera.data.InterpolationType;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.values.ValuePosition;
+import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
@@ -248,7 +249,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
         this.updateSpeedPanel();
 
         this.speed.graph.setDuration(fixture.getDuration());
-        this.speed.setChannel(fixture.speed, 0x0088ff);
+        this.speed.setChannel(new ValueProxy(this.editor.getFixturePath(this.fixture) + "." + fixture.speed.getId(), fixture.speed), 0x0088ff);
         this.speed.setVisible(this.fixture.useSpeed.get());
 
         this.autoCenter.toggled(this.fixture.circularAutoCenter.get());

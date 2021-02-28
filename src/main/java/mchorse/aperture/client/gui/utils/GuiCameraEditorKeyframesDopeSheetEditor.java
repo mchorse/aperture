@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
+import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiKeyframeFixturePanel;
 import mchorse.mclib.client.gui.framework.elements.keyframes.GuiSheet;
@@ -39,9 +40,13 @@ public class GuiCameraEditorKeyframesDopeSheetEditor extends GuiCameraEditorKeyf
 
         this.valueChannels.clear();
 
+        String prefix = this.editor.getFixturePath(fixture);
+
         for (int i = 0; i < fixture.channels.length; i++)
         {
-            this.valueChannels.add(fixture.channels[i]);
+            ValueProxy proxy = new ValueProxy(prefix + "." + fixture.channels[i].getId(), fixture.channels[i]);
+
+            this.valueChannels.add(proxy);
             sheets.add(new GuiSheet(String.valueOf(i), panel.titles[i + 1], panel.colors[i], fixture.channels[i].get()));
         }
 

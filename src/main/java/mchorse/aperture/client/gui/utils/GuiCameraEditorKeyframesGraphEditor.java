@@ -1,7 +1,9 @@
 package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.camera.values.ValueKeyframeChannel;
+import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 
@@ -23,19 +25,21 @@ public class GuiCameraEditorKeyframesGraphEditor extends GuiCameraEditorKeyframe
         return new GuiGraphView(mc, this, this::fillData);
     }
 
-    public void setChannel(ValueKeyframeChannel channel, int color)
+    public void setChannel(IConfigValue value, int color)
     {
-        this.setChannel(channel.get(), color);
+        ValueKeyframeChannel keyframe = this.get(value);
 
-        this.valueChannels.clear();
-        this.valueChannels.add(channel);
-    }
+        if (keyframe == null)
+        {
+            throw new IllegalStateException("Given value doesn't have a keyframe channel! " + value.getClass().getSimpleName());
+        }
 
-    public void setChannel(KeyframeChannel channel, int color)
-    {
         this.graph.clearSelection();
-        this.graph.setChannel(channel, color);
+        this.graph.setChannel(keyframe.get(), color);
         this.interpolations.setVisible(false);
         this.frameButtons.setVisible(false);
+
+        this.valueChannels.clear();
+        this.valueChannels.add(value);
     }
 }

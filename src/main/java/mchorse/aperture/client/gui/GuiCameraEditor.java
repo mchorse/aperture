@@ -12,6 +12,7 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
@@ -346,6 +347,20 @@ public class GuiCameraEditor extends GuiBase
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.ouside"), Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.looping"), Keyboard.KEY_L, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.interactive"), Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(modes);
+    }
+
+    public String getFixturePath(AbstractFixture fixture)
+    {
+        CameraProfile profile = this.getProfile();
+
+        if (fixture != null)
+        {
+            int index = profile.getFixtures().indexOf(fixture);
+
+            return profile.fixtures.getId() + "." + index;
+        }
+
+        return "error";
     }
 
     public void postUndo(IUndo<CameraProfile> undo)

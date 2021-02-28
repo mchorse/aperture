@@ -2,7 +2,9 @@ package mchorse.aperture.client.gui.panels.modifiers.widgets;
 
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.smooth.Envelope;
+import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
@@ -197,13 +199,14 @@ public class GuiEnvelope extends GuiElement
     public void fillData()
     {
         Envelope envelope = this.get();
+        String name = this.panel.modifiers.getModifierPath(this.panel.modifier) + "." + this.panel.modifier.envelope.getId() + "." + envelope.channel.getId();
 
         this.enabled.toggled(envelope.enabled.get());
         this.relative.toggled(envelope.relative.get());
         this.fillIntervals();
         this.interps.setCurrent(envelope.interpolation.get());
         this.keyframes.toggled(envelope.keyframes.get());
-        this.channel.setChannel(envelope.channel, 0x0088ff);
+        this.channel.setChannel(new ValueProxy(name, envelope.channel), 0x0088ff);
 
         this.toggleKeyframes(envelope.keyframes.get());
     }

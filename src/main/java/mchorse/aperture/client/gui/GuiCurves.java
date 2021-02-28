@@ -1,5 +1,8 @@
 package mchorse.aperture.client.gui;
 
+import mchorse.aperture.camera.CameraProfile;
+import mchorse.aperture.camera.values.ValueCurves;
+import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -37,13 +40,16 @@ public class GuiCurves extends GuiElement
 
     public void update()
     {
-        Map<String, KeyframeChannel> channels = this.editor.getProfile().getCurves();
-        KeyframeChannel channel = channels.get("brightness");
+        String main = "brightness";
+
+        CameraProfile profile = this.editor.getProfile();
+        ValueCurves channels = profile.curves;
+        KeyframeChannel channel = channels.get().get(main);
 
         if (channel == null)
         {
             channel = new KeyframeChannel();
-            channels.put("brightness", channel);
+            channels.get().put(main, channel);
         }
 
         if (this.keyframes.graph.sheet.channel == channel)
@@ -52,7 +58,7 @@ public class GuiCurves extends GuiElement
         }
 
         this.updateDuration();
-        this.keyframes.setChannel(channel, 0xff1493);
+        this.keyframes.setChannel(profile.getProperty(profile.curves.getId() + "." + main), 0xff1493);
     }
 
     @Override

@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui.panels;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.values.ValueKeyframeChannel;
+import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
@@ -116,7 +117,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
 
         if (channel != null)
         {
-            this.graph.setChannel(channel, this.colors[id - 1]);
+            String name = this.editor.getFixturePath(this.fixture) + "." + channel.getId();
+
+            this.graph.setChannel(new ValueProxy(name, channel), this.colors[id - 1]);
         }
     }
 

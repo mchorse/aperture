@@ -145,6 +145,22 @@ public class GuiModifiersManager extends GuiElement
 
     /* Undo/redo */
 
+    public String getModifierPath(AbstractModifier modifier)
+    {
+        CameraProfile profile = this.editor.getProfile();
+
+        if (this.fixture != null)
+        {
+            int modifierIndex = this.fixture.modifiers.get().indexOf(modifier);
+
+            return this.editor.getFixturePath(this.fixture) + "." + this.fixture.modifiers.getId() + "." + modifierIndex;
+        }
+
+        int modifierIndex = profile.modifiers.get().indexOf(modifier);
+
+        return profile.modifiers.getId() + "." + modifierIndex;
+    }
+
     public IUndo<CameraProfile> undo(List<AbstractModifier> modifiers)
     {
         CameraProfile profile = this.editor.getProfile();
@@ -164,19 +180,7 @@ public class GuiModifiersManager extends GuiElement
 
     public IUndo<CameraProfile> undo(AbstractModifier modifier, IConfigValue value, Object newValue)
     {
-        CameraProfile profile = this.editor.getProfile();
-
-        if (this.fixture != null)
-        {
-            int index = profile.getFixtures().indexOf(this.fixture);
-            int modifierIndex = this.fixture.modifiers.get().indexOf(modifier);
-            String name = profile.fixtures.getId() + "." + index + "." + this.fixture.modifiers.getId() + "." + modifierIndex + "." + value.getId();
-
-            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, name, value.getValue(), newValue);
-        }
-
-        int modifierIndex = profile.modifiers.get().indexOf(modifier);
-        String name = profile.modifiers.getId() + "." + modifierIndex + "." + value.getId();
+        String name = this.getModifierPath(modifier) + "." + value.getId();
 
         return new ModifierValueChangeUndo(-1, this.panels.scroll.scroll, name, value.getValue(), newValue);
     }
