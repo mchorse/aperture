@@ -2,18 +2,8 @@ package mchorse.aperture.camera.values;
 
 import com.google.gson.JsonElement;
 import io.netty.buffer.ByteBuf;
-import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.config.gui.GuiConfigPanel;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
-import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ValueKeyframeChannel extends Value
 {
@@ -42,22 +32,6 @@ public class ValueKeyframeChannel extends Value
     }
 
     @Override
-    public List<IConfigValue> getSubValues()
-    {
-        List<IConfigValue> list = new ArrayList<IConfigValue>();
-        int i = 0;
-
-        for (Keyframe keyframe : this.channel.getKeyframes())
-        {
-            list.add(new ValueKeyframe(this.getId() + "." + i, keyframe));
-
-            i += 1;
-        }
-
-        return list;
-    }
-
-    @Override
     public Object getValue()
     {
         KeyframeChannel channel = new KeyframeChannel();
@@ -83,7 +57,7 @@ public class ValueKeyframeChannel extends Value
     }
 
     @Override
-    public void fromJSON(JsonElement element)
+    public void valueFromJSON(JsonElement element)
     {
         if (element.isJsonArray())
         {
@@ -93,13 +67,13 @@ public class ValueKeyframeChannel extends Value
     }
 
     @Override
-    public JsonElement toJSON()
+    public JsonElement valueToJSON()
     {
         return this.channel.toJSON();
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValueKeyframeChannel)
         {

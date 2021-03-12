@@ -2,14 +2,11 @@ package mchorse.aperture.client.gui;
 
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.values.ValueCurves;
-import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
-
-import java.util.Map;
 
 public class GuiCurves extends GuiElement
 {
@@ -44,12 +41,12 @@ public class GuiCurves extends GuiElement
 
         CameraProfile profile = this.editor.getProfile();
         ValueCurves channels = profile.curves;
-        KeyframeChannel channel = channels.get().get(main);
+        KeyframeChannel channel = channels.get(main);
 
         if (channel == null)
         {
             channel = new KeyframeChannel();
-            channels.get().put(main, channel);
+            channels.put(main, channel);
         }
 
         if (this.keyframes.graph.sheet.channel == channel)
@@ -58,7 +55,7 @@ public class GuiCurves extends GuiElement
         }
 
         this.updateDuration();
-        this.keyframes.setChannel(profile.getProperty(profile.curves.getId() + "." + main), 0xff1493);
+        this.keyframes.setChannel(profile.getProperty(profile.curves.id + "." + main), 0xff1493);
     }
 
     @Override

@@ -1,10 +1,5 @@
 package mchorse.aperture.camera.fixtures;
 
-import java.util.List;
-
-import com.google.gson.annotations.Expose;
-
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
@@ -24,8 +19,7 @@ public class NullFixture extends AbstractFixture
     @Override
     public void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
-        List<AbstractFixture> list = profile.getFixtures();
-        int index = list.indexOf(this);
+        int index = profile.fixtures.indexOf(this);
 
         if (index != -1)
         {

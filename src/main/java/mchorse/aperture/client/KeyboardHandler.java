@@ -233,7 +233,7 @@ public class KeyboardHandler
                 camera.set(player.rotationYaw, -player.rotationPitch);
             }
 
-            camera.enabled.category.config.save();
+            camera.enabled.getConfig().save();
         }
     }
 

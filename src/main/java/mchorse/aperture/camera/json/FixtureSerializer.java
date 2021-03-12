@@ -1,13 +1,8 @@
 package mchorse.aperture.camera.json;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -16,8 +11,6 @@ import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.RemapperModifier;
 import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.mclib.utils.keyframes.Keyframe;
-
-import java.lang.reflect.Type;
 
 /**
  * This class is responsible for serializing and deserializing 
@@ -119,7 +112,7 @@ public class FixtureSerializer
      */
     private static AbstractFixture convertToKeyframe(PathFixture fixture, JsonArray points)
     {
-        if (points.size() != fixture.getCount())
+        if (points.size() != fixture.size())
         {
             return fixture;
         }
@@ -127,7 +120,7 @@ public class FixtureSerializer
         KeyframeFixture keys = fixture.toKeyframe();
         int x = 0;
 
-        for (int i = 0, c = fixture.getCount(); i < c; i++)
+        for (int i = 0, c = fixture.size(); i < c; i++)
         {
             JsonObject point = points.get(i).getAsJsonObject();
 
@@ -169,7 +162,7 @@ public class FixtureSerializer
         modifier.channel.copy(fixture.speed);
 
         fixture.useSpeed.set(false);
-        fixture.getModifiers().add(0, modifier);
+        fixture.modifiers.add(0, modifier);
     }
 
     /**

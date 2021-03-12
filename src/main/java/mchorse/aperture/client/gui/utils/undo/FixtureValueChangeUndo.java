@@ -2,7 +2,7 @@ package mchorse.aperture.client.gui.utils.undo;
 
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.utils.undo.IUndo;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 
 public class FixtureValueChangeUndo implements IUndo<CameraProfile>
 {
@@ -70,7 +70,7 @@ public class FixtureValueChangeUndo implements IUndo<CameraProfile>
     @Override
     public void undo(CameraProfile context)
     {
-        IConfigValue value = context.getProperty(this.name);
+        Value value = context.getProperty(this.name);
 
         value.setValue(this.oldValue);
     }
@@ -78,7 +78,7 @@ public class FixtureValueChangeUndo implements IUndo<CameraProfile>
     @Override
     public void redo(CameraProfile context)
     {
-        IConfigValue value = context.getProperty(this.name);
+        Value value = context.getProperty(this.name);
 
         value.setValue(this.newValue);
     }

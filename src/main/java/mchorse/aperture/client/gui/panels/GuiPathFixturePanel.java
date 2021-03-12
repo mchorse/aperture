@@ -5,7 +5,6 @@ import mchorse.aperture.camera.data.InterpolationType;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.values.ValuePosition;
-import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiInterpModule;
@@ -22,7 +21,7 @@ import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
@@ -202,7 +201,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
 
     private ValuePosition getPosition(int index)
     {
-        IConfigValue value = this.fixture.points.getSubValues().get(index);
+        Value value = this.fixture.points.getSubValues().get(index);
 
         return value instanceof ValuePosition ? (ValuePosition) value : null;
     }
@@ -231,9 +230,9 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
 
         if (duration != -1)
         {
-            index = (int) ((duration / (float) fixture.getDuration()) * fixture.getCount());
+            index = (int) ((duration / (float) fixture.getDuration()) * fixture.size());
         }
-        else if (index >= fixture.getCount())
+        else if (index >= fixture.size())
         {
             index = 0;
         }
@@ -249,7 +248,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
         this.updateSpeedPanel();
 
         this.speed.graph.setDuration(fixture.getDuration());
-        this.speed.setChannel(new ValueProxy(this.editor.getFixturePath(this.fixture) + "." + fixture.speed.getId(), fixture.speed), 0x0088ff);
+        this.speed.setChannel(fixture.speed, 0x0088ff);
         this.speed.setVisible(this.fixture.useSpeed.get());
 
         this.autoCenter.toggled(this.fixture.circularAutoCenter.get());

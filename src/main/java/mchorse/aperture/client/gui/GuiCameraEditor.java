@@ -12,14 +12,12 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
-import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.utils.undo.FixtureAddRemoveUndo;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
-import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.aperture.utils.APIcons;
 import mchorse.aperture.utils.undo.CompoundUndo;
@@ -47,8 +45,6 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -349,20 +345,6 @@ public class GuiCameraEditor extends GuiBase
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.interactive"), Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(modes);
     }
 
-    public String getFixturePath(AbstractFixture fixture)
-    {
-        CameraProfile profile = this.getProfile();
-
-        if (fixture != null)
-        {
-            int index = profile.getFixtures().indexOf(fixture);
-
-            return profile.fixtures.getId() + "." + index;
-        }
-
-        return "error";
-    }
-
     public void postUndo(IUndo<CameraProfile> undo)
     {
         this.postUndo(undo, true, false);
@@ -462,7 +444,7 @@ public class GuiCameraEditor extends GuiBase
         if (index >= -1)
         {
             CameraProfile profile = this.getProfile();
-            AbstractFixture fixture = profile.getCount() == 0 ? null : profile.get(index);
+            AbstractFixture fixture = profile.size() == 0 ? null : profile.get(index);
 
             this.pickCameraFixture(fixture, -1);
             this.updateValues();
@@ -614,7 +596,7 @@ public class GuiCameraEditor extends GuiBase
                     this.timeline.setValueFromScrub(offset);
                 }
 
-                this.timeline.index = this.getProfile().getFixtures().indexOf(fixture);
+                this.timeline.index = this.getProfile().fixtures.indexOf(fixture);
             }
             else
             {
@@ -644,7 +626,7 @@ public class GuiCameraEditor extends GuiBase
 
         if (this.panel.delegate == null)
         {
-            this.postUndoCallback(FixtureAddRemoveUndo.create(profile, profile.getCount(), fixture));
+            this.postUndoCallback(FixtureAddRemoveUndo.create(profile, profile.size(), fixture));
         }
         else
         {
@@ -728,7 +710,7 @@ public class GuiCameraEditor extends GuiBase
                 IdleFixture fixture = new IdleFixture(difference);
 
                 fixture.fromPlayer(this.getCamera());
-                fixtures.add(FixtureAddRemoveUndo.create(profile, profile.getCount() + i, fixture));
+                fixtures.add(FixtureAddRemoveUndo.create(profile, profile.size() + i, fixture));
 
                 duration += difference;
                 i += 1;
@@ -782,7 +764,7 @@ public class GuiCameraEditor extends GuiBase
             AbstractFixture newFixture = fixture.copy();
 
             newFixture.setDuration(duration - diff);
-            profile.add(newFixture, profile.getFixtures().indexOf(fixture) + 1);
+            profile.add(newFixture, profile.fixtures.indexOf(fixture) + 1);
         }
     }
 
@@ -846,7 +828,7 @@ public class GuiCameraEditor extends GuiBase
         }
         else if (this.panel.delegate != null)
         {
-            this.timeline.index = profile.getFixtures().indexOf(this.getFixture());
+            this.timeline.index = profile.fixtures.indexOf(this.getFixture());
         }
 
         return isSame;
@@ -1030,7 +1012,7 @@ public class GuiCameraEditor extends GuiBase
         Position position = new Position(this.getCamera());
         AbstractFixture fixture = this.getFixture();
 
-        if (fixture != null && !fixture.getModifiers().isEmpty())
+        if (fixture != null && fixture.modifiers.size() != 0)
         {
             Position withModifiers = new Position();
             this.getProfile().applyProfile(this.timeline.value, 0, withModifiers);

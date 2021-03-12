@@ -1,6 +1,5 @@
 package mchorse.aperture.camera;
 
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.data.StructureBase;
 import mchorse.aperture.camera.destination.AbstractDestination;
@@ -11,18 +10,13 @@ import mchorse.aperture.camera.values.ValueFixtures;
 import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.aperture.events.CameraProfileChangedEvent;
 import mchorse.aperture.utils.undo.UndoManager;
-import mchorse.mclib.network.IByteBufSerializable;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,21 +80,6 @@ public class CameraProfile extends StructureBase
         this.register(this.modifiers);
     }
 
-    public Map<String, KeyframeChannel> getCurves()
-    {
-        return this.curves.get();
-    }
-
-    public List<AbstractFixture> getFixtures()
-    {
-        return this.fixtures.get();
-    }
-
-    public List<AbstractModifier> getModifiers()
-    {
-        return this.modifiers.get();
-    }
-
     public AbstractDestination getDestination()
     {
         return this.destination;
@@ -119,9 +98,9 @@ public class CameraProfile extends StructureBase
     {
         long duration = 0;
 
-        for (AbstractFixture fixture : this.getFixtures())
+        for (int i = 0; i < this.fixtures.size(); i++)
         {
-            duration += fixture.getDuration();
+            duration += this.fixtures.get(i).getDuration();
         }
 
         return duration;
@@ -129,9 +108,9 @@ public class CameraProfile extends StructureBase
 
     public void initiate()
     {
-        for (AbstractFixture fixture : this.getFixtures())
+        for (int i = 0; i < this.fixtures.size(); i++)
         {
-            fixture.initiate();
+            this.fixtures.get(i).initiate();
         }
     }
 
@@ -158,8 +137,10 @@ public class CameraProfile extends StructureBase
     {
         long tick = 0;
 
-        for (AbstractFixture fixture : this.getFixtures())
+        for (int i = 0; i < this.fixtures.size(); i++)
         {
+            AbstractFixture fixture = this.fixtures.get(i);
+
             if (fixture == target)
             {
                 break;
@@ -178,8 +159,10 @@ public class CameraProfile extends StructureBase
     {
         long sum = 0;
 
-        for (AbstractFixture fixture : this.getFixtures())
+        for (int i = 0; i < this.fixtures.size(); i++)
         {
+            AbstractFixture fixture = this.fixtures.get(i);
+
             long duration = fixture.getDuration();
             sum += duration;
 
@@ -210,8 +193,10 @@ public class CameraProfile extends StructureBase
         long pos = 0;
         AbstractFixture out = null;
 
-        for (AbstractFixture fixture : this.getFixtures())
+        for (int i = 0; i < this.fixtures.size(); i++)
         {
+            AbstractFixture fixture = this.fixtures.get(i);
+
             if (tick < pos)
             {
                 break;
@@ -227,9 +212,9 @@ public class CameraProfile extends StructureBase
     /**
      * Get the amount of fixtures in current profile
      */
-    public int getCount()
+    public int size()
     {
-        return this.getFixtures().size();
+        return this.fixtures.size();
     }
 
     /**
@@ -237,7 +222,7 @@ public class CameraProfile extends StructureBase
      */
     public AbstractFixture get(int index)
     {
-        return this.has(index) ? this.getFixtures().get(index) : null;
+        return this.has(index) ? this.fixtures.get(index) : null;
     }
 
     /**
@@ -245,7 +230,7 @@ public class CameraProfile extends StructureBase
      */
     public boolean has(int index)
     {
-        return index >= 0 && index < this.getCount();
+        return index >= 0 && index < this.size();
     }
 
     /**
@@ -253,7 +238,7 @@ public class CameraProfile extends StructureBase
      */
     public void add(AbstractFixture fixture)
     {
-        this.getFixtures().add(fixture);
+        this.fixtures.add(fixture);
         this.dirty();
     }
 
@@ -262,13 +247,13 @@ public class CameraProfile extends StructureBase
      */
     public void add(AbstractFixture fixture, int index)
     {
-        if (index < this.getCount())
+        if (index < this.size())
         {
-            this.getFixtures().add(index, fixture);
+            this.fixtures.add(index, fixture);
         }
         else
         {
-            this.getFixtures().add(fixture);
+            this.fixtures.add(fixture);
         }
 
         this.dirty();
@@ -279,11 +264,11 @@ public class CameraProfile extends StructureBase
      */
     public void remove(int index)
     {
-        int size = this.getCount();
+        int size = this.size();
 
         if (index >= 0 && index < size)
         {
-            this.getFixtures().remove(index);
+            this.fixtures.remove(index);
             this.dirty();
         }
     }
@@ -294,7 +279,7 @@ public class CameraProfile extends StructureBase
     @SideOnly(Side.CLIENT)
     public void applyCurves(long progress, float partialTick)
     {
-        KeyframeChannel channel = this.curves.get().get("brightness");
+        KeyframeChannel channel = this.curves.get("brightness");
 
         if (channel != null && !channel.isEmpty())
         {
@@ -325,8 +310,9 @@ public class CameraProfile extends StructureBase
         int index = 0;
         long originalProgress = progress;
 
-        for (AbstractFixture fixture : this.getFixtures())
+        for (int i = 0; i < this.fixtures.size(); i++)
         {
+            AbstractFixture fixture = this.fixtures.get(i);
             long duration = fixture.getDuration();
 
             if (progress < duration) break;
@@ -335,12 +321,12 @@ public class CameraProfile extends StructureBase
             index += 1;
         }
 
-        if (index >= this.getCount())
+        if (index >= this.size())
         {
             return;
         }
 
-        AbstractFixture fixture = this.getFixtures().get(index);
+        AbstractFixture fixture = this.fixtures.get(index);
 
         if (progress == 0)
         {

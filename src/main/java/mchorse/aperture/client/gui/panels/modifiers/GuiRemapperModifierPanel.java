@@ -2,7 +2,6 @@ package mchorse.aperture.client.gui.panels.modifiers;
 
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.RemapperModifier;
-import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
 import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
@@ -54,10 +53,8 @@ public class GuiRemapperModifierPanel extends GuiAbstractModifierPanel<RemapperM
     {
         super.fillData();
 
-        String name = this.modifiers.getModifierPath(this.modifier) + "." + this.modifier.channel.getId();
-
         this.keyframes.toggled(this.modifier.keyframes.get());
-        this.channel.setChannel(new ValueProxy(name, this.modifier.channel), 0x0088ff);
+        this.channel.setChannel(this.modifier.channel, 0x0088ff);
         this.expression.setText(this.modifier.expression.toString());
         this.expression.field.setTextColor(0xffffff);
 

@@ -1,20 +1,10 @@
 package mchorse.aperture.camera.values;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
-import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.config.gui.GuiConfigPanel;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ValuePosition extends Value
 {
@@ -32,19 +22,11 @@ public class ValuePosition extends Value
         super(id);
 
         this.position = position;
-        this.pointDelegate = new ValuePoint(id + ".point", this.position.point);
-        this.angleDelegate = new ValueAngle(id + ".angle", this.position.angle);
-    }
+        this.pointDelegate = new ValuePoint("point", this.position.point);
+        this.angleDelegate = new ValueAngle("angle", this.position.angle);
 
-    @Override
-    public List<IConfigValue> getSubValues()
-    {
-        List<IConfigValue> values = new ArrayList<IConfigValue>();
-
-        values.add(this.pointDelegate);
-        values.add(this.angleDelegate);
-
-        return values;
+        this.addSubValue(this.pointDelegate);
+        this.addSubValue(this.angleDelegate);
     }
 
     public ValuePoint getPoint()
@@ -105,7 +87,7 @@ public class ValuePosition extends Value
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValuePosition)
         {
@@ -116,16 +98,12 @@ public class ValuePosition extends Value
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        super.fromBytes(buffer);
-
         this.position.set(Position.fromBytes(buffer));
     }
 
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        super.toBytes(buffer);
-
         this.position.toBytes(buffer);
     }
 }

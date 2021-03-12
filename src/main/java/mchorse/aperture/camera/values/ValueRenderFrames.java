@@ -4,13 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.RenderFrame;
-import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.config.gui.GuiConfigPanel;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +82,7 @@ public class ValueRenderFrames extends Value
     }
 
     @Override
-    public void fromJSON(JsonElement jsonElement)
+    public void valueFromJSON(JsonElement jsonElement)
     {
         if (!jsonElement.isJsonArray())
         {
@@ -122,7 +116,7 @@ public class ValueRenderFrames extends Value
     }
 
     @Override
-    public JsonElement toJSON()
+    public JsonElement valueToJSON()
     {
         JsonArray array = new JsonArray();
 
@@ -142,7 +136,7 @@ public class ValueRenderFrames extends Value
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValueRenderFrames)
         {

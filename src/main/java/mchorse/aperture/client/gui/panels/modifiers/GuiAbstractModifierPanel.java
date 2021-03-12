@@ -14,7 +14,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 
@@ -98,9 +98,9 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         this.header.add(this.title, this.buttons);
     }
 
-    public IUndo<CameraProfile> undo(IConfigValue property, Object value)
+    public IUndo<CameraProfile> undo(Value property, Object value)
     {
-        return this.modifiers.undo(this.modifier, property, value);
+        return this.modifiers.undo(property, value);
     }
 
     public void initiate()

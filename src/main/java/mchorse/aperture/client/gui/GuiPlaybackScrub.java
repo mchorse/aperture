@@ -240,7 +240,7 @@ public class GuiPlaybackScrub extends GuiElement
 
                     if (left || right)
                     {
-                        int index = this.profile.getFixtures().indexOf(fixture);
+                        int index = this.profile.fixtures.indexOf(fixture);
 
                         if (left && index > 0)
                         {
@@ -262,7 +262,7 @@ public class GuiPlaybackScrub extends GuiElement
                 /* Select camera fixture */
                 if (!this.dragging)
                 {
-                    int index = this.profile.getFixtures().indexOf(fixture);
+                    int index = this.profile.fixtures.indexOf(fixture);
 
                     this.editor.pickCameraFixture(fixture, tick - offset);
                     this.index = index;
@@ -402,7 +402,6 @@ public class GuiPlaybackScrub extends GuiElement
 
             /* Draw fixtures */
             int pos = 0;
-            int i = 0;
             boolean drawnMarker = false;
             int leftMarginMarker = 0;
             int rightMarginMarker = 0;
@@ -411,8 +410,10 @@ public class GuiPlaybackScrub extends GuiElement
 
             this.drawTickMarks(y, h);
 
-            for (AbstractFixture fixture : this.profile.getFixtures())
+            for (int i = 0; i < this.profile.fixtures.size(); i++)
             {
+                AbstractFixture fixture = this.profile.fixtures.get(i);
+
                 COLOR.set(fixture.color.get(), false);
 
                 int color = COLOR.getRGBColor();
@@ -429,7 +430,6 @@ public class GuiPlaybackScrub extends GuiElement
                 if (rightMargin < this.area.x)
                 {
                     pos += fixture.getDuration();
-                    i++;
 
                     continue;
                 }
@@ -486,7 +486,7 @@ public class GuiPlaybackScrub extends GuiElement
                     COLOR.b *= 0.89F;
 
                     PathFixture path = (PathFixture) fixture;
-                    int c = path.getCount() - 1;
+                    int c = path.size() - 1;
                     int highlight = COLOR.getRGBAColor();
 
                     if (c > 1)
@@ -536,7 +536,6 @@ public class GuiPlaybackScrub extends GuiElement
                 }
 
                 pos += fixture.getDuration();
-                i++;
             }
 
             if (this.editor.creating)

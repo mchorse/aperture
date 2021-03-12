@@ -7,7 +7,6 @@ import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
-import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
 import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.aperture.utils.undo.IUndo;
@@ -21,7 +20,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -146,52 +145,31 @@ public class GuiModifiersManager extends GuiElement
 
     /* Undo/redo */
 
-    public String getModifierPath(AbstractModifier modifier)
-    {
-        CameraProfile profile = this.editor.getProfile();
-
-        if (this.fixture != null)
-        {
-            int modifierIndex = this.fixture.modifiers.get().indexOf(modifier);
-
-            return this.editor.getFixturePath(this.fixture) + "." + this.fixture.modifiers.getId() + "." + modifierIndex;
-        }
-
-        int modifierIndex = profile.modifiers.get().indexOf(modifier);
-
-        return profile.modifiers.getId() + "." + modifierIndex;
-    }
-
     public IUndo<CameraProfile> undo(List<AbstractModifier> modifiers)
     {
         CameraProfile profile = this.editor.getProfile();
 
         if (this.fixture != null)
         {
-            int index = profile.getFixtures().indexOf(this.fixture);
-            String name = profile.fixtures.getId() + "." + index + "." + this.fixture.modifiers.getId();
+            int index = profile.fixtures.indexOf(this.fixture);
 
-            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, name, this.fixture.modifiers.getValue(), modifiers).unmergable();
+            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, this.fixture.modifiers.getPath(), this.fixture.modifiers.getValue(), modifiers).unmergable();
         }
 
-        String name = profile.modifiers.getId();
-
-        return new ModifierValueChangeUndo(-1, this.panels.scroll.scroll, name, profile.modifiers.getValue(), modifiers).unmergable();
+        return new ModifierValueChangeUndo(-1, this.panels.scroll.scroll, profile.modifiers.getPath(), profile.modifiers.getValue(), modifiers).unmergable();
     }
 
-    public IUndo<CameraProfile> undo(AbstractModifier modifier, IConfigValue value, Object newValue)
+    public IUndo<CameraProfile> undo(Value value, Object newValue)
     {
         CameraProfile profile = this.editor.getProfile();
-        String name = this.getModifierPath(modifier) + "." + value.getId();
+        int index = -1;
 
         if (this.fixture != null)
         {
-            int index = profile.getFixtures().indexOf(this.fixture);
-
-            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, name, value.getValue(), newValue);
+            index = profile.fixtures.indexOf(this.fixture);
         }
 
-        return new ModifierValueChangeUndo(-1, this.panels.scroll.scroll, name, value.getValue(), newValue);
+        return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, value.getPath(), value.getValue(), newValue);
     }
 
     public void handleUndo(IUndo<CameraProfile> undo, boolean redo)
@@ -265,8 +243,10 @@ public class GuiModifiersManager extends GuiElement
             return;
         }
 
-        for (AbstractModifier modifier : modifiers.get())
+        for (int i = 0; i < modifiers.size(); i ++)
         {
+            AbstractModifier modifier = modifiers.get(i);
+
             this.addModifierPanel(modifier);
         }
     }
@@ -311,7 +291,7 @@ public class GuiModifiersManager extends GuiElement
 
         this.editor.postUndo(this.undo(modifiers), false, false);
 
-        value.get().add(modifier);
+        value.add(modifier);
         this.addModifierPanel(modifier);
     }
 
@@ -338,7 +318,7 @@ public class GuiModifiersManager extends GuiElement
 
         this.editor.postUndo(this.undo(modifiers), false, false);
         this.panels.getChildren().add(to, this.panels.getChildren().remove(index));
-        value.get().add(to, value.get().remove(index));
+        value.add(to, value.remove(index));
         this.resize();
 
         this.modified = true;
@@ -348,13 +328,13 @@ public class GuiModifiersManager extends GuiElement
     {
         ValueModifiers value = this.getModifiers();
         List<AbstractModifier> modifiers = (List<AbstractModifier>) this.getModifiers().getValue();
-        int index = value.get().indexOf(panel.modifier);
+        int index = value.indexOf(panel.modifier);
 
         modifiers.remove(index);
 
         this.editor.postUndo(this.undo(modifiers), false, false);
         this.panels.getChildren().remove(panel);
-        value.get().remove(index);
+        value.remove(index);
         this.resize();
 
         this.modified = true;

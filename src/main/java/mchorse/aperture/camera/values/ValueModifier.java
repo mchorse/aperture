@@ -3,9 +3,9 @@ package mchorse.aperture.camera.values;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.json.ModifierSerializer;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
 import java.util.ArrayList;
@@ -19,7 +19,22 @@ public class ValueModifier extends Value
     {
         super(id);
 
+        this.assign(modifier);
+    }
+
+    public void assign(AbstractModifier modifier)
+    {
         this.modifier = modifier;
+
+        this.removeAllSubValues();
+
+        if (modifier != null)
+        {
+            for (Value value : modifier.getProperties())
+            {
+                this.addSubValue(value);
+            }
+        }
     }
 
     public AbstractModifier get()
@@ -31,21 +46,8 @@ public class ValueModifier extends Value
     {
         if (modifier != null)
         {
-            this.modifier = modifier.copy();
+            this.assign(modifier.copy());
         }
-    }
-
-    @Override
-    public List<IConfigValue> getSubValues()
-    {
-        List<IConfigValue> values = new ArrayList<IConfigValue>();
-
-        for (IConfigValue value : this.modifier.getProperties())
-        {
-            values.add(new ValueProxy(this.getId() + "." + value.getId(), value));
-        }
-
-        return values;
     }
 
     @Override
@@ -66,11 +68,11 @@ public class ValueModifier extends Value
     @Override
     public void reset()
     {
-        this.modifier = null;
+        this.assign(null);
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValueModifier)
         {
@@ -91,7 +93,7 @@ public class ValueModifier extends Value
 
         if (modifier != null)
         {
-            this.modifier = modifier;
+            this.assign(modifier);
         }
     }
 
@@ -104,16 +106,12 @@ public class ValueModifier extends Value
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        super.fromBytes(buffer);
-
-        this.modifier = ModifierSerializer.fromBytes(buffer);
+        this.assign(ModifierSerializer.fromBytes(buffer));
     }
 
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        super.toBytes(buffer);
-
         ModifierSerializer.toBytes(this.modifier, buffer);
     }
 }

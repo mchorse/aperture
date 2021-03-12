@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.json.FixtureSerializer;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
 import java.util.ArrayList;
@@ -21,6 +20,56 @@ public class ValueFixtures extends Value
         super(id);
     }
 
+    public void add(AbstractFixture fixture)
+    {
+        this.fixtures.add(fixture);
+        this.addSubValue(new ValueFixture(String.valueOf(this.fixtures.size() - 1), fixture));
+    }
+
+    public void add(int index, AbstractFixture fixture)
+    {
+        this.fixtures.add(index, fixture);
+        this.sync();
+    }
+
+    public AbstractFixture remove(int index)
+    {
+        AbstractFixture fixture = this.fixtures.remove(index);
+
+        this.sync();
+
+        return fixture;
+    }
+
+    public AbstractFixture get(int index)
+    {
+        return this.fixtures.get(index);
+    }
+
+    public int size()
+    {
+        return this.fixtures.size();
+    }
+
+    public int indexOf(AbstractFixture fixture)
+    {
+        return this.fixtures.indexOf(fixture);
+    }
+
+    public void sync()
+    {
+        this.removeAllSubValues();
+
+        int i = 0;
+
+        for (AbstractFixture fixture : this.fixtures)
+        {
+            this.addSubValue(new ValueFixture(String.valueOf(i), fixture));
+
+            i += 1;
+        }
+    }
+
     public List<AbstractFixture> get()
     {
         return this.fixtures;
@@ -28,28 +77,12 @@ public class ValueFixtures extends Value
 
     public void set(List<AbstractFixture> fixtures)
     {
-        this.fixtures.clear();
+        this.reset();
 
         for (AbstractFixture fixture : fixtures)
         {
-            this.fixtures.add(fixture.copy());
+            this.add(fixture.copy());
         }
-    }
-
-    @Override
-    public List<IConfigValue> getSubValues()
-    {
-        List<IConfigValue> values = new ArrayList<IConfigValue>();
-        int i = 0;
-
-        for (AbstractFixture fixture : this.fixtures)
-        {
-            values.add(new ValueFixture(this.getId() + "." + i, fixture));
-
-            i += 1;
-        }
-
-        return values;
     }
 
     @Override
@@ -83,10 +116,11 @@ public class ValueFixtures extends Value
     public void reset()
     {
         this.fixtures.clear();
+        this.removeAllSubValues();
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValueFixtures)
         {
@@ -104,7 +138,7 @@ public class ValueFixtures extends Value
 
         JsonArray array = element.getAsJsonArray();
 
-        this.fixtures.clear();
+        this.reset();
 
         for (JsonElement jsonElement : array)
         {
@@ -118,7 +152,7 @@ public class ValueFixtures extends Value
 
             if (fixture != null)
             {
-                this.fixtures.add(fixture);
+                this.add(fixture);
             }
         }
     }
@@ -139,9 +173,7 @@ public class ValueFixtures extends Value
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        super.fromBytes(buffer);
-
-        this.fixtures.clear();
+        this.reset();
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
@@ -149,7 +181,7 @@ public class ValueFixtures extends Value
 
             if (fixture != null)
             {
-                this.fixtures.add(fixture);
+                this.add(fixture);
             }
         }
     }
@@ -157,8 +189,6 @@ public class ValueFixtures extends Value
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        super.toBytes(buffer);
-
         buffer.writeInt(this.fixtures.size());
 
         for (AbstractFixture fixture : this.fixtures)

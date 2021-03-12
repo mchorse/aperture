@@ -203,8 +203,6 @@ public class Aperture
         minemaDefaultProfileName = builder.category("minema").getBoolean("default_profile_name", false);
 
         builder.getCategory().markClientSide();
-
-        event.modules.add(builder.build());
     }
 
     @EventHandler

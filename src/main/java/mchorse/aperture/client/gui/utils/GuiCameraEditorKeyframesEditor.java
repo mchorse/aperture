@@ -3,7 +3,6 @@ package mchorse.aperture.client.gui.utils;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.values.ValueKeyframeChannel;
-import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
@@ -16,7 +15,7 @@ import mchorse.mclib.client.gui.framework.elements.keyframes.IAxisConverter;
 import mchorse.mclib.client.gui.framework.elements.keyframes.Selection;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
@@ -34,7 +33,7 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
     public static final AxisConverter CONVERTER = new AxisConverter();
 
     protected GuiCameraEditor editor;
-    protected List<IConfigValue> valueChannels = new ArrayList<IConfigValue>();
+    protected List<Value> valueChannels = new ArrayList<Value>();
 
     private List<Object> cachedData = new ArrayList<Object>();
     private int type = -1;
@@ -50,20 +49,9 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
         this.easing.keys().register(IKey.lang("aperture.gui.panels.keys.graph_easing"), Keyboard.KEY_RBRACKET, this::toggleEasing).held(Keyboard.KEY_LCONTROL).category(GuiAbstractFixturePanel.CATEGORY).active(editor::isFlightDisabled);
     }
 
-    protected ValueKeyframeChannel get(IConfigValue value)
+    protected ValueKeyframeChannel get(Value value)
     {
-        ValueKeyframeChannel keyframe = null;
-
-        if (value instanceof ValueProxy && ((ValueProxy) value).getProxy() instanceof ValueKeyframeChannel)
-        {
-            keyframe = (ValueKeyframeChannel) ((ValueProxy) value).getProxy();
-        }
-        else if (value instanceof ValueKeyframeChannel)
-        {
-            keyframe = (ValueKeyframeChannel) value;
-        }
-
-        return keyframe;
+        return value instanceof ValueKeyframeChannel ? (ValueKeyframeChannel) value : null;
     }
 
     public int getUndo()
@@ -92,7 +80,7 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
 
             this.cachedData.clear();
 
-            for (IConfigValue channel : this.valueChannels)
+            for (Value channel : this.valueChannels)
             {
                 this.cachedData.add(channel.getValue());
             }
@@ -107,7 +95,7 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
 
         List<Object> newCachedData = new ArrayList<Object>();
 
-        for (IConfigValue channel : this.valueChannels)
+        for (Value channel : this.valueChannels)
         {
             newCachedData.add(channel.getValue());
         }
@@ -118,16 +106,16 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
 
             for (int i = 0; i < undos.length; i++)
             {
-                undos[i] = GuiAbstractFixturePanel.undo(this.editor, this.valueChannels.get(i).getId(), this.cachedData.get(i), newCachedData.get(i));
+                undos[i] = GuiAbstractFixturePanel.undo(this.editor, this.valueChannels.get(i), this.cachedData.get(i), newCachedData.get(i));
             }
 
             this.editor.postUndo(new CompoundUndo<CameraProfile>(undos).unmergable(), false);
         }
         else
         {
-            IConfigValue channel = this.valueChannels.get(0);
+            Value channel = this.valueChannels.get(0);
 
-            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, channel.getId(), this.cachedData.get(0), newCachedData.get(0)).unmergable(), false);
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, channel, this.cachedData.get(0), newCachedData.get(0)).unmergable(), false);
         }
 
         this.cachedData.clear();

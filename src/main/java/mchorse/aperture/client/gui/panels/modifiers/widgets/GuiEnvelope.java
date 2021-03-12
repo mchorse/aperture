@@ -2,12 +2,9 @@ package mchorse.aperture.client.gui.panels.modifiers.widgets;
 
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
-import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.smooth.Envelope;
-import mchorse.aperture.camera.values.ValueProxy;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
-import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
 import mchorse.aperture.utils.TimeUtils;
 import mchorse.aperture.utils.undo.CompoundUndo;
@@ -22,7 +19,7 @@ import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.Direction;
 import mchorse.mclib.utils.Interpolation;
@@ -124,24 +121,18 @@ public class GuiEnvelope extends GuiElement
         this.channel.flex().relative(this.enabled).y(20).wTo(this.row.area, 1F).h(200);
     }
 
-    public IUndo<CameraProfile> undo(IConfigValue value, Object newValue)
+    public IUndo<CameraProfile> undo(Value value, Object newValue)
     {
         CameraProfile profile = this.panel.modifiers.editor.getProfile();
         AbstractFixture fixture = this.panel.modifiers.fixture;
+        int index = -1;
 
         if (fixture != null)
         {
-            int index = profile.getFixtures().indexOf(fixture);
-            int modifierIndex = fixture.modifiers.get().indexOf(this.panel.modifier);
-            String name = profile.fixtures.getId() + "." + index + "." + fixture.modifiers.getId() + "." + modifierIndex + "."  + this.panel.modifier.envelope.getId() + "." + value.getId();
-
-            return new ModifierValueChangeUndo(index, this.panel.modifiers.panels.scroll.scroll, name, value.getValue(), newValue);
+            index = profile.fixtures.indexOf(fixture);
         }
 
-        int modifierIndex = profile.modifiers.get().indexOf(this.panel.modifier);
-        String name = profile.modifiers.getId() + "." + modifierIndex + "."  + this.panel.modifier.envelope.getId() + "." + value.getId();
-
-        return new ModifierValueChangeUndo(-1, this.panel.modifiers.panels.scroll.scroll, name, value.getValue(), newValue);
+        return new ModifierValueChangeUndo(index, this.panel.modifiers.panels.scroll.scroll, value.getPath(), value.getValue(), newValue);
     }
 
     private void toggleKeyframes(boolean toggled)
@@ -199,14 +190,13 @@ public class GuiEnvelope extends GuiElement
     public void fillData()
     {
         Envelope envelope = this.get();
-        String name = this.panel.modifiers.getModifierPath(this.panel.modifier) + "." + this.panel.modifier.envelope.getId() + "." + envelope.channel.getId();
 
         this.enabled.toggled(envelope.enabled.get());
         this.relative.toggled(envelope.relative.get());
         this.fillIntervals();
         this.interps.setCurrent(envelope.interpolation.get());
         this.keyframes.toggled(envelope.keyframes.get());
-        this.channel.setChannel(new ValueProxy(name, envelope.channel), 0x0088ff);
+        this.channel.setChannel(envelope.channel, 0x0088ff);
 
         this.toggleKeyframes(envelope.keyframes.get());
     }

@@ -2,8 +2,7 @@ package mchorse.aperture.camera.data;
 
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
-import mchorse.mclib.config.ConfigCategory;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 import mchorse.mclib.network.IByteBufSerializable;
 
 import java.util.Collection;
@@ -14,27 +13,27 @@ import java.util.Collection;
  */
 public abstract class StructureBase implements IByteBufSerializable
 {
-    protected ConfigCategory category = new ConfigCategory("");
+    protected Value category = new Value("");
 
-    protected void register(IConfigValue value)
+    protected void register(Value value)
     {
-        this.category.values.put(value.getId(), value);
+        this.category.addSubValue(value);
     }
 
-    public Collection<IConfigValue> getProperties()
+    public Collection<Value> getProperties()
     {
-        return this.category.values.values();
+        return this.category.getSubValues();
     }
 
-    public IConfigValue getProperty(String name)
+    public Value getProperty(String name)
     {
-        IConfigValue value = this.category.values.get(name);
+        Value value = this.category.getSubValue(name);
 
         if (value == null && name.contains("."))
         {
             String[] splits = name.split("\\.");
 
-            value = this.searchRecursively(this.category.values.get(splits[0]), splits, 0, name);
+            value = this.searchRecursively(splits, name);
         }
 
         if (value == null)
@@ -45,38 +44,30 @@ public abstract class StructureBase implements IByteBufSerializable
         return value;
     }
 
-    private IConfigValue searchRecursively(IConfigValue value, String[] splits, int i, String name)
+    private Value searchRecursively(String[] splits, String name)
     {
-        if (value == null)
+        int i = 0;
+        Value current = this.category.getSubValue(splits[i]);
+
+        while (current != null && i < splits.length - 1)
+        {
+            i += 1;
+            current = current.getSubValue(splits[i]);
+        }
+
+        if (current == null)
         {
             return null;
         }
 
-        for (IConfigValue child : value.getSubValues())
-        {
-            if (child.getId().equals(name))
-            {
-                return child;
-            }
-            else if (i + 1 < splits.length && name.startsWith(child.getId()))
-            {
-                IConfigValue searched = this.searchRecursively(child, splits, i + 1, name);
-
-                if (searched != null)
-                {
-                    return searched;
-                }
-            }
-        }
-
-        return null;
+        return current.getPath().equals(name) ? current : null;
     }
 
     public void copy(StructureBase base)
     {
-        for (IConfigValue value : this.category.values.values())
+        for (Value value : this.category.getSubValues())
         {
-            IConfigValue from = base.category.values.get(value.getId());
+            Value from = base.category.getSubValue(value.id);
 
             if (from != null)
             {
@@ -89,20 +80,20 @@ public abstract class StructureBase implements IByteBufSerializable
 
     public void fromJSON(JsonObject object)
     {
-        for (IConfigValue value : this.category.values.values())
+        for (Value value : this.category.getSubValues())
         {
-            if (object.has(value.getId()))
+            if (object.has(value.id))
             {
-                value.fromJSON(object.get(value.getId()));
+                value.fromJSON(object.get(value.id));
             }
         }
     }
 
     public void toJSON(JsonObject object)
     {
-        for (IConfigValue value : this.category.values.values())
+        for (Value value : this.category.getSubValues())
         {
-            object.add(value.getId(), value.toJSON());
+            object.add(value.id, value.toJSON());
         }
     }
 
@@ -114,7 +105,7 @@ public abstract class StructureBase implements IByteBufSerializable
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        for (IConfigValue value : this.category.values.values())
+        for (Value value : this.category.getSubValues())
         {
             value.fromBytes(buffer);
         }
@@ -126,7 +117,7 @@ public abstract class StructureBase implements IByteBufSerializable
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        for (IConfigValue value : this.category.values.values())
+        for (Value value : this.category.getSubValues())
         {
             value.toBytes(buffer);
         }

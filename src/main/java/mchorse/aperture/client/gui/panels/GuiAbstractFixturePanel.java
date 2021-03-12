@@ -14,7 +14,7 @@ import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 
@@ -43,27 +43,18 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
     public GuiColorElement color;
     private GuiTrackpadElement duration;
 
-    public static FixtureValueChangeUndo undo(GuiCameraEditor editor, IConfigValue property, Object newValue)
+    public static FixtureValueChangeUndo undo(GuiCameraEditor editor, Value property, Object newValue)
     {
         return undo(editor, property, property.getValue(), newValue);
     }
 
-    public static FixtureValueChangeUndo undo(GuiCameraEditor editor, IConfigValue property, Object oldValue, Object newValue)
+    public static FixtureValueChangeUndo undo(GuiCameraEditor editor, Value property, Object oldValue, Object newValue)
     {
         CameraProfile profile = editor.getProfile();
         AbstractFixture fixture = editor.getFixture();
-        int index = profile.getFixtures().indexOf(fixture);
+        int index = profile.fixtures.indexOf(fixture);
 
-        return new FixtureValueChangeUndo(index, profile.fixtures.getId() + "." + index + "." + property.getId(), oldValue, newValue);
-    }
-
-    public static FixtureValueChangeUndo undo(GuiCameraEditor editor, String name, Object oldValue, Object newValue)
-    {
-        CameraProfile profile = editor.getProfile();
-        AbstractFixture fixture = editor.getFixture();
-        int index = profile.getFixtures().indexOf(fixture);
-
-        return new FixtureValueChangeUndo(index, name, oldValue, newValue);
+        return new FixtureValueChangeUndo(index, property.getPath(), oldValue, newValue);
     }
 
     public GuiAbstractFixturePanel(Minecraft mc, GuiCameraEditor editor)
@@ -100,14 +91,14 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         this.add(this.left, this.right);
     }
 
-    protected FixtureValueChangeUndo undo(IConfigValue value, Object newValue)
+    protected FixtureValueChangeUndo undo(Value value, Object newValue)
     {
         return undo(this.editor, value, newValue);
     }
 
     public void handleUndo(IUndo<CameraProfile> undo, boolean redo)
     {
-        if (undo instanceof FixtureValueChangeUndo && ((FixtureValueChangeUndo) undo).getName().equals(this.fixture.duration.getId()))
+        if (undo instanceof FixtureValueChangeUndo && ((FixtureValueChangeUndo) undo).getName().equals(this.fixture.duration.id))
         {
             this.editor.updateValues();
         }

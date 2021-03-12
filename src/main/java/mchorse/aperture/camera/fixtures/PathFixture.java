@@ -81,7 +81,7 @@ public class PathFixture extends AbstractFixture
 
     public KeyframeFixture toKeyframe()
     {
-        int c = this.getCount();
+        int c = this.size();
 
         if (c <= 1)
         {
@@ -98,10 +98,11 @@ public class PathFixture extends AbstractFixture
         KeyframeEasing angleEasing = this.interpolationAngle.get().easing;
 
         long x;
-        int i = 0;
 
-        for (Position point : this.getPoints())
+        for (int i = 0; i < this.size(); i++)
         {
+            Position point = this.points.get(i);
+
             x = (int) (i / (c - 1F) * duration);
 
             int index = fixture.x.get().insert(x, (float) point.point.x);
@@ -119,8 +120,6 @@ public class PathFixture extends AbstractFixture
             fixture.pitch.get().get(index).setInterpolation(angle, angleEasing);
             fixture.roll.get().get(index).setInterpolation(angle, angleEasing);
             fixture.fov.get().get(index).setInterpolation(angle, angleEasing);
-
-            i ++;
         }
 
         return fixture;
@@ -138,7 +137,7 @@ public class PathFixture extends AbstractFixture
 
         this.cache.clear();
 
-        for (int i = 1, c = this.getCount(); i < c; i ++)
+        for (int i = 1, c = this.size(); i < c; i ++)
         {
             float target = this.calculateTarget((int) (this.getDuration() / (float) c * i));
 
@@ -159,7 +158,7 @@ public class PathFixture extends AbstractFixture
 
     public Position getPoint(int index)
     {
-        int size = this.getCount();
+        int size = this.size();
 
         if (size == 0)
         {
@@ -168,25 +167,20 @@ public class PathFixture extends AbstractFixture
 
         if (index >= size)
         {
-            return this.points.get().get(size - 1);
+            return this.points.get(size - 1);
         }
 
         if (index < 0)
         {
-            return this.points.get().get(0);
+            return this.points.get(0);
         }
 
-        return this.points.get().get(index);
+        return this.points.get(index);
     }
 
-    public List<Position> getPoints()
+    public int size()
     {
-        return this.points.get();
-    }
-
-    public int getCount()
-    {
-        return this.points.get().size();
+        return this.points.size();
     }
 
     /**
@@ -194,13 +188,13 @@ public class PathFixture extends AbstractFixture
      */
     public long getTickForPoint(int index)
     {
-        return (long) ((index / (float) (this.getCount() - 1)) * this.getDuration());
+        return (long) ((index / (float) (this.size() - 1)) * this.getDuration());
     }
 
     @Override
     public void fromPlayer(EntityPlayer player)
     {
-        this.points.get().add(new Position(player));
+        this.points.add(new Position(player));
     }
 
     @Override
@@ -208,7 +202,7 @@ public class PathFixture extends AbstractFixture
     {
         long duration = this.getDuration();
 
-        if (this.points.get().isEmpty() || duration == 0)
+        if (this.points.size() == 0 || duration == 0)
         {
             return;
         }
@@ -230,7 +224,7 @@ public class PathFixture extends AbstractFixture
         }
         else
         {
-            int length = this.getCount() - 1;
+            int length = this.size() - 1;
             int index;
             float x;
 
@@ -299,7 +293,7 @@ public class PathFixture extends AbstractFixture
          * tries to calculate the point that is close enough to the
          * target */
         int iterations = 0;
-        int size = this.getCount() - 1;
+        int size = this.size() - 1;
         int index = 0;
         float progress = 0;
         float distance = 0;
@@ -452,7 +446,7 @@ public class PathFixture extends AbstractFixture
         }
         else if (interp == InterpolationType.CIRCULAR)
         {
-            int size = this.getCount();
+            int size = this.size();
 
             if (index >= size)
             {
@@ -502,7 +496,7 @@ public class PathFixture extends AbstractFixture
 
     private Vector2d calculateCircular(double mx, double mz, int index)
     {
-        int size = this.getCount();
+        int size = this.size();
 
         double a = 0;
         double d = 0;
@@ -519,7 +513,7 @@ public class PathFixture extends AbstractFixture
 
         for (int i = 0; i < size; i++)
         {
-            Position p = this.points.get().get(i);
+            Position p = this.points.get(i);
 
             double dx = p.point.x - mx;
             double dz = p.point.z - mz;
@@ -568,14 +562,16 @@ public class PathFixture extends AbstractFixture
     {
         vector.set(0, 0);
 
-        for (Position position : this.points.get())
+        for (int i = 0; i < this.size(); i++)
         {
+            Position position = this.points.get(i);
+
             vector.x += position.point.x;
             vector.y += position.point.z;
         }
 
-        vector.x /= this.getCount();
-        vector.y /= this.getCount();
+        vector.x /= this.size();
+        vector.y /= this.size();
 
         return vector;
     }
@@ -609,9 +605,9 @@ public class PathFixture extends AbstractFixture
             roll = (float) Interpolations.cubicHermite(p0.angle.roll, p1.angle.roll, p2.angle.roll, p3.angle.roll, progress);
             fov = (float) Interpolations.cubicHermite(p0.angle.fov, p1.angle.fov, p2.angle.fov, p3.angle.fov, progress);
         }
-        else if (interp.interp != null)
+        else
         {
-            Interpolation func = interp.function;
+            Interpolation func = interp.function == null ? Interpolation.LINEAR : interp.function;
 
             yaw = func.interpolate(p1.angle.yaw, p2.angle.yaw, progress);
             pitch = func.interpolate(p1.angle.pitch, p2.angle.pitch, progress);
@@ -641,8 +637,8 @@ public class PathFixture extends AbstractFixture
             from.applyLast(null, position);
 
             this.points.reset();
-            this.points.get().add(dolly.position.get().copy());
-            this.points.get().add(position);
+            this.points.add(dolly.position.get().copy());
+            this.points.add(position);
             this.interpolation.set(InterpolationType.fromInterp(dolly.interp.get()));
             this.interpolationAngle.set(InterpolationType.fromInterp(dolly.interp.get()));
         }

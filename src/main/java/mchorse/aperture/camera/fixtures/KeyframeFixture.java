@@ -102,11 +102,11 @@ public class KeyframeFixture extends AbstractFixture
         {
             PathFixture path = (PathFixture) from;
 
-            if (path.getPoints().size() > 1)
+            if (path.size() > 1)
             {
                 KeyframeFixture kf = path.toKeyframe();
 
-                this.modifiers.get().clear();
+                this.modifiers.reset();
                 this.copy(kf);
             }
         }

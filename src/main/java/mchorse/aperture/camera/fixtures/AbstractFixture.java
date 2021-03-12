@@ -1,14 +1,11 @@
 package mchorse.aperture.camera.fixtures;
 
-import com.google.gson.JsonObject;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.data.StructureBase;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.values.ValueModifiers;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.ValueInt;
 import mchorse.mclib.config.values.ValueLong;
 import mchorse.mclib.config.values.ValueString;
@@ -127,14 +124,6 @@ public abstract class AbstractFixture extends StructureBase implements IByteBufS
      */
     public void preApplyFixture(long ticks, Position pos)
     {}
-
-    /**
-     * Get modifiers 
-     */
-    public List<AbstractModifier> getModifiers()
-    {
-        return this.modifiers.get();
-    }
 
     /**
      * Clone this fixture

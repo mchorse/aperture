@@ -65,11 +65,9 @@ public class GuiPointsModule extends GuiAbstractModule
     {
         CameraProfile profile = editor.getProfile();
         AbstractFixture fixture = editor.getFixture();
-        int fixtureIndex = profile.getFixtures().indexOf(fixture);
+        int fixtureIndex = profile.fixtures.indexOf(fixture);
 
-        String name = profile.fixtures.getId() + "." + fixtureIndex + "." + this.path.points.getId();
-
-        return new FixturePointsChangeUndo(fixtureIndex, name, index, nextIndex, this.path.points.getValue(), positions).unmergable();
+        return new FixturePointsChangeUndo(fixtureIndex, this.path.points.getPath(), index, nextIndex, this.path.points.getValue(), positions).unmergable();
     }
 
     public void setIndex(int index)
@@ -97,7 +95,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
     public void moveForward()
     {
-        if (this.index >= this.path.getCount() - 1)
+        if (this.index >= this.path.size() - 1)
         {
             return;
         }
@@ -116,7 +114,7 @@ public class GuiPointsModule extends GuiAbstractModule
     {
         List<Position> positions = (List<Position>) this.path.points.getValue();
 
-        if (this.index + 1 >= this.path.getPoints().size())
+        if (this.index + 1 >= this.path.size())
         {
             positions.add(this.editor.getPosition());
 
@@ -135,7 +133,7 @@ public class GuiPointsModule extends GuiAbstractModule
             this.index = nextIndex;
         }
 
-        this.scroll.setSize(this.path.getCount());
+        this.scroll.setSize(this.path.size());
         this.scroll.scrollTo(this.index * this.scroll.scrollItemSize);
 
         if (this.picker != null)
@@ -146,7 +144,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
     public void removePoint()
     {
-        if (this.path.getPoints().size() == 1 && this.index >= 0)
+        if (this.path.points.size() == 1 && this.index >= 0)
         {
             return;
         }
@@ -160,7 +158,7 @@ public class GuiPointsModule extends GuiAbstractModule
         this.editor.postUndo(this.undo(this.editor, this.index, nextIndex, positions));
 
         this.index = nextIndex;
-        this.scroll.setSize(this.path.getCount());
+        this.scroll.setSize(this.path.size());
         this.scroll.scrollTo(this.index * this.scroll.scrollItemSize);
 
         if (this.picker != null)
@@ -177,7 +175,7 @@ public class GuiPointsModule extends GuiAbstractModule
     {
         this.path = path;
         this.index = 0;
-        this.scroll.setSize(path.getCount());
+        this.scroll.setSize(path.size());
         this.scroll.clamp();
     }
 
@@ -217,7 +215,7 @@ public class GuiPointsModule extends GuiAbstractModule
             else if (context.mouseButton == 0)
             {
                 int index = this.scroll.getIndex(mouseX, mouseY);
-                int size = this.path.getCount();
+                int size = this.path.size();
 
                 if (index >= 0 && index < size)
                 {
@@ -271,7 +269,7 @@ public class GuiPointsModule extends GuiAbstractModule
 
         int x = this.scroll.x;
         int y = this.scroll.y;
-        int c = this.path.getCount();
+        int c = this.path.size();
 
         /* Draw background and buttons */
         Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.h, 0x88000000);

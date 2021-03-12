@@ -5,11 +5,8 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.data.StructureBase;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.values.ValueEnvelope;
-import mchorse.mclib.config.ConfigCategory;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.mclib.config.values.ValueBoolean;
-
-import java.util.List;
 
 /**
  * Abstract camera modifier
@@ -37,10 +34,12 @@ public abstract class AbstractModifier extends StructureBase
     public static void applyModifiers(CameraProfile profile, AbstractFixture fixture, long ticks, long offset, float partialTick, float previewPartialTick, Position pos)
     {
         long duration = fixture == null ? profile.getDuration() : fixture.getDuration();
-        List<AbstractModifier> modifiers = fixture == null ? profile.getModifiers() : fixture.getModifiers();
+        ValueModifiers modifiers = fixture == null ? profile.modifiers : fixture.modifiers;
 
-        for (AbstractModifier modifier : modifiers)
+        for (int i = 0; i < modifiers.size(); i++)
         {
+            AbstractModifier modifier = modifiers.get(i);
+
             if (!modifier.enabled.get())
             {
                 continue;

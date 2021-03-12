@@ -2,17 +2,8 @@ package mchorse.aperture.camera.values;
 
 import com.google.gson.JsonElement;
 import io.netty.buffer.ByteBuf;
-import mchorse.aperture.camera.data.Angle;
 import mchorse.aperture.camera.data.Point;
-import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.config.gui.GuiConfigPanel;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.List;
 
 public class ValuePoint extends Value
 {
@@ -57,19 +48,19 @@ public class ValuePoint extends Value
     }
 
     @Override
-    public void fromJSON(JsonElement element)
+    public void valueFromJSON(JsonElement element)
     {
         this.point.fromJSON(element.getAsJsonObject());
     }
 
     @Override
-    public JsonElement toJSON()
+    public JsonElement valueToJSON()
     {
         return this.point.toJSON();
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValuePoint)
         {

@@ -4,55 +4,59 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.data.Position;
-import mchorse.mclib.client.gui.framework.elements.GuiElement;
-import mchorse.mclib.config.gui.GuiConfigPanel;
-import mchorse.mclib.config.values.IConfigValue;
+import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.mclib.config.values.Value;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ValuePositions extends Value
 {
-    private List<Position> position = new ArrayList<Position>();
+    private List<Position> positions = new ArrayList<Position>();
 
     public ValuePositions(String id)
     {
         super(id);
     }
 
-    public List<Position> get()
+    public void add(Position position)
     {
-        return this.position;
+        this.positions.add(position);
+        this.addSubValue(new ValuePosition(String.valueOf(this.positions.size() - 1), position));
+    }
+
+    public Position get(int index)
+    {
+        return this.positions.get(index);
+}
+
+    public int size()
+    {
+        return this.positions.size();
+    }
+
+    public void sync()
+    {
+        this.removeAllSubValues();
+
+        int i = 0;
+
+        for (Position position : this.positions)
+        {
+            this.addSubValue(new ValuePosition(String.valueOf(i), position));
+
+            i += 1;
+        }
     }
 
     public void set(List<Position> positions)
     {
-        this.position.clear();
+        this.reset();
 
         for (Position position : positions)
         {
-            this.position.add(position.copy());
+            this.add(position.copy());
         }
-    }
-
-    @Override
-    public List<IConfigValue> getSubValues()
-    {
-        List<IConfigValue> list = new ArrayList<IConfigValue>();
-        int i = 0;
-
-        for (Position position : this.position)
-        {
-            list.add(new ValuePosition(this.getId() + "." + i, position));
-
-            i += 1;
-        }
-
-        return list;
     }
 
     @Override
@@ -60,7 +64,7 @@ public class ValuePositions extends Value
     {
         List<Position> positions = new ArrayList<Position>();
 
-        for (Position position : this.position)
+        for (Position position : this.positions)
         {
             positions.add(position.copy());
         }
@@ -85,7 +89,8 @@ public class ValuePositions extends Value
     @Override
     public void reset()
     {
-        this.position.clear();
+        this.positions.clear();
+        this.removeAllSubValues();
     }
 
     @Override
@@ -93,7 +98,7 @@ public class ValuePositions extends Value
     {
         if (element.isJsonArray())
         {
-            this.position.clear();
+            this.reset();
 
             JsonArray array = element.getAsJsonArray();
 
@@ -104,7 +109,7 @@ public class ValuePositions extends Value
                     Position position = new Position();
 
                     position.fromJSON(child.getAsJsonObject());
-                    this.position.add(position);
+                    this.add(position);
                 }
             }
         }
@@ -115,7 +120,7 @@ public class ValuePositions extends Value
     {
         JsonArray array = new JsonArray();
 
-        for (Position position : this.position)
+        for (Position position : this.positions)
         {
             array.add(position.toJSON());
         }
@@ -124,35 +129,31 @@ public class ValuePositions extends Value
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValuePositions)
         {
-            this.set(((ValuePositions) value).get());
+            this.set(((ValuePositions) value).positions);
         }
     }
 
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        super.fromBytes(buffer);
-
-        this.position.clear();
+        this.reset();
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
-            this.position.add(Position.fromBytes(buffer));
+            this.add(Position.fromBytes(buffer));
         }
     }
 
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        super.toBytes(buffer);
+        buffer.writeInt(this.positions.size());
 
-        buffer.writeInt(this.position.size());
-
-        for (Position position : this.position)
+        for (Position position : this.positions)
         {
             position.toBytes(buffer);
         }

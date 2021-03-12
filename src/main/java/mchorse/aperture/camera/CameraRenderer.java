@@ -72,7 +72,7 @@ public class CameraRenderer
     public void toggleRender()
     {
         Aperture.profileRender.set(!Aperture.profileRender.get());
-        Aperture.profileRender.category.config.save();
+        Aperture.profileRender.getConfig().save();
     }
 
     /**
@@ -232,7 +232,7 @@ public class CameraRenderer
         CameraProfile profile = ClientProxy.control.currentProfile;
         CameraRunner runner = ClientProxy.runner;
 
-        boolean badProfile = profile == null || profile.getCount() < 1;
+        boolean badProfile = profile == null || profile.size() < 1;
 
         if (!Aperture.profileRender.get()) return;
         if (runner.isRunning()) return;
@@ -250,10 +250,11 @@ public class CameraRenderer
         GlStateManager.enableBlend();
         GL11.glLineWidth(4);
 
-        int i = 0;
 
-        for (AbstractFixture fixture : profile.getFixtures())
+        for (int i = 0; i < profile.fixtures.size(); i++)
         {
+            AbstractFixture fixture = profile.fixtures.get(i);
+
             if (fixture instanceof PathFixture)
             {
                 ((PathFixture) fixture).disableSpeed();
@@ -287,8 +288,6 @@ public class CameraRenderer
             {
                 ((PathFixture) fixture).reenableSpeed();
             }
-
-            i++;
         }
 
         GlStateManager.disableBlend();
@@ -329,7 +328,7 @@ public class CameraRenderer
         if (fixture instanceof PathFixture)
         {
             path = (PathFixture) fixture;
-            size = path.getPoints().size();
+            size = path.size();
         }
 
         final int p = 15;
@@ -362,17 +361,17 @@ public class CameraRenderer
 
         Tessellator.getInstance().draw();
 
-        if (path != null && path.interpolation.get() == InterpolationType.CIRCULAR && path.getPoints().size() > 0)
+        if (path != null && path.interpolation.get() == InterpolationType.CIRCULAR && path.size() > 0)
         {
             Vector2d center = path.getCenter();
             double y = 0;
 
-            for (Position position : path.getPoints())
+            for (int i = 0; i < path.size(); i++)
             {
-                y += position.point.y;
+                y += path.points.get(i).point.y;
             }
 
-            y /= path.getPoints().size();
+            y /= path.size();
 
             /* Draw anchor */
             GL11.glPointSize(10);
@@ -395,7 +394,7 @@ public class CameraRenderer
 
         if (path != null)
         {
-            for (int i = 1; i < path.getPoints().size() - 1; i++)
+            for (int i = 1; i < path.size() - 1; i++)
             {
                 fixture.applyFixture(path.getTickForPoint(i), 0, profile, prev);
 

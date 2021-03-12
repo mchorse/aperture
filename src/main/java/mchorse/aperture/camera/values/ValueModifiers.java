@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.json.ModifierSerializer;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 
 import java.util.ArrayList;
@@ -21,35 +20,69 @@ public class ValueModifiers extends Value
         super(id);
     }
 
-    public List<AbstractModifier> get()
+    public void add(AbstractModifier modifier)
     {
-        return this.modifiers;
+        this.modifiers.add(modifier);
+        this.addSubValue(new ValueModifier(String.valueOf(this.modifiers.size() - 1), modifier));
     }
 
-    public void set(List<AbstractModifier> modifiers)
+    public void add(int index, AbstractModifier modifier)
     {
-        this.modifiers.clear();
-
-        for (AbstractModifier modifier : modifiers)
-        {
-            this.modifiers.add(modifier.copy());
-        }
+        this.modifiers.add(index, modifier);
+        this.sync();
     }
 
-    @Override
-    public List<IConfigValue> getSubValues()
+    public AbstractModifier remove(int index)
     {
-        List<IConfigValue> values = new ArrayList<IConfigValue>();
+        AbstractModifier modifier = this.modifiers.remove(index);
+
+        this.sync();
+
+        return modifier;
+    }
+
+    public AbstractModifier get(int index)
+    {
+        return this.modifiers.get(index);
+    }
+
+    public int size()
+    {
+        return this.modifiers.size();
+    }
+
+    public int indexOf(AbstractModifier modifier)
+    {
+        return this.modifiers.indexOf(modifier);
+    }
+
+    public void sync()
+    {
+        this.removeAllSubValues();
+
         int i = 0;
 
         for (AbstractModifier modifier : this.modifiers)
         {
-            values.add(new ValueModifier(this.getId() + "." + i, modifier));
+            this.addSubValue(new ValueModifier(String.valueOf(i), modifier));
 
             i += 1;
         }
+    }
 
-        return values;
+    /* public List<AbstractModifier> get()
+    {
+        return this.modifiers;
+    } */
+
+    public void set(List<AbstractModifier> modifiers)
+    {
+        this.reset();
+
+        for (AbstractModifier modifier : modifiers)
+        {
+            this.add(modifier.copy());
+        }
     }
 
     @Override
@@ -83,19 +116,20 @@ public class ValueModifiers extends Value
     public void reset()
     {
         this.modifiers.clear();
+        this.removeAllSubValues();
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValueModifiers)
         {
-            this.set(((ValueModifiers) value).get());
+            this.set(((ValueModifiers) value).modifiers);
         }
     }
 
     @Override
-    public void fromJSON(JsonElement element)
+    public void valueFromJSON(JsonElement element)
     {
         if (!element.isJsonArray())
         {
@@ -104,7 +138,7 @@ public class ValueModifiers extends Value
 
         JsonArray array = element.getAsJsonArray();
 
-        this.modifiers.clear();
+        this.reset();
 
         for (JsonElement jsonElement : array)
         {
@@ -118,13 +152,13 @@ public class ValueModifiers extends Value
 
             if (modifier != null)
             {
-                this.modifiers.add(modifier);
+                this.add(modifier);
             }
         }
     }
 
     @Override
-    public JsonElement toJSON()
+    public JsonElement valueToJSON()
     {
         JsonArray array = new JsonArray();
 
@@ -141,7 +175,7 @@ public class ValueModifiers extends Value
     {
         super.fromBytes(buffer);
 
-        this.modifiers.clear();
+        this.reset();
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
         {
@@ -149,7 +183,7 @@ public class ValueModifiers extends Value
 
             if (modifier != null)
             {
-                this.modifiers.add(modifier);
+                this.add(modifier);
             }
         }
     }

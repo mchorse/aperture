@@ -3,7 +3,6 @@ package mchorse.aperture.camera.values;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import io.netty.buffer.ByteBuf;
-import mchorse.mclib.config.values.IConfigValue;
 import mchorse.mclib.config.values.Value;
 import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.MathBuilder;
@@ -79,7 +78,7 @@ public class ValueExpression extends Value
     }
 
     @Override
-    public void copy(IConfigValue value)
+    public void copy(Value value)
     {
         if (value instanceof ValueExpression)
         {
@@ -88,7 +87,7 @@ public class ValueExpression extends Value
     }
 
     @Override
-    public void fromJSON(JsonElement element)
+    public void valueFromJSON(JsonElement element)
     {
         if (element.isJsonPrimitive())
         {
@@ -97,7 +96,7 @@ public class ValueExpression extends Value
     }
 
     @Override
-    public JsonElement toJSON()
+    public JsonElement valueToJSON()
     {
         return new JsonPrimitive(this.expression == null ? "" : this.expression.toString());
     }

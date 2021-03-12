@@ -82,7 +82,7 @@ public class DollyFixture extends IdleFixture
         {
             PathFixture path = (PathFixture) from;
 
-            if (path.getCount() != 2)
+            if (path.size() != 2)
             {
                 return;
             }
