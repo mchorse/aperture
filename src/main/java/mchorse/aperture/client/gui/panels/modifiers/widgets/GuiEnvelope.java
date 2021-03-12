@@ -96,7 +96,7 @@ public class GuiEnvelope extends GuiElement
 
         this.keyframes = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.keyframes"), (b) ->
         {
-            this.panel.modifiers.editor.postUndo(this.undo(this.get().interpolation, b.isToggled()));
+            this.panel.modifiers.editor.postUndo(this.undo(this.get().keyframes, b.isToggled()));
             this.toggleKeyframes(b.isToggled());
         });
         this.channel = new GuiCameraEditorKeyframesGraphEditor(mc, panel.modifiers.editor);
