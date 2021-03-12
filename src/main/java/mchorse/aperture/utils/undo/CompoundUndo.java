@@ -45,7 +45,7 @@ public class CompoundUndo <T> implements IUndo<T>
         {
             IUndo<T> undo = this.undos.get(i);
 
-            if (undo.getClass().isAssignableFrom(clazz))
+            if (clazz.isAssignableFrom(undo.getClass()))
             {
                 return undo;
             }
@@ -67,7 +67,7 @@ public class CompoundUndo <T> implements IUndo<T>
         {
             IUndo<T> undo = this.undos.get(i);
 
-            if (undo.getClass().isAssignableFrom(clazz))
+            if (clazz.isAssignableFrom(undo.getClass()))
             {
                 return undo;
             }
@@ -91,10 +91,8 @@ public class CompoundUndo <T> implements IUndo<T>
         return false;
     }
 
-    /**
-     * Mark this undo unmergable
-     */
-    public CompoundUndo<T> unmergable()
+    @Override
+    public IUndo<T> noMerging()
     {
         this.mergable = false;
 

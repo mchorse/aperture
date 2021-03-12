@@ -9,6 +9,11 @@ package mchorse.aperture.utils.undo;
 public interface IUndo <T>
 {
     /**
+     * Mark undo as unmergable
+     */
+    public IUndo<T> noMerging();
+
+    /**
      * Check whether a given undo is compatible with whatever
      * data it might be storing
      */

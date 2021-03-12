@@ -125,6 +125,7 @@ public class GuiEnvelope extends GuiElement
     {
         CameraProfile profile = this.panel.modifiers.editor.getProfile();
         AbstractFixture fixture = this.panel.modifiers.fixture;
+        int cursor = this.panel.modifiers.editor.timeline.value;
         int index = -1;
 
         if (fixture != null)
@@ -132,7 +133,7 @@ public class GuiEnvelope extends GuiElement
             index = profile.fixtures.indexOf(fixture);
         }
 
-        return new ModifierValueChangeUndo(index, this.panel.modifiers.panels.scroll.scroll, value.getPath(), value.getValue(), newValue);
+        return new ModifierValueChangeUndo(index, this.panel.modifiers.panels.scroll.scroll, value.getPath(), value.getValue(), newValue).cursor(cursor);
     }
 
     private void toggleKeyframes(boolean toggled)

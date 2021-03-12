@@ -91,7 +91,7 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
                     undo,
                     this.undo(this.fixture.circularX, center.x),
                     this.undo(this.fixture.circularZ, center.y)
-                ).unmergable());
+                ).noMerging());
             }
             else
             {

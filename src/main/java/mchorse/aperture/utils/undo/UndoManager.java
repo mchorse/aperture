@@ -49,6 +49,16 @@ public class UndoManager<T>
 
     /* Getters */
 
+    public IUndo<T> getCurrentUndo()
+    {
+        if (this.position >= 0 && this.position < this.undos.size())
+        {
+            return this.undos.get(this.position);
+        }
+
+        return null;
+    }
+
     public int getCurrentUndos()
     {
         return this.position + 1;
@@ -80,7 +90,7 @@ public class UndoManager<T>
     {
         IUndo<T> present = this.position == -1 ? null : this.undos.get(this.position);
 
-        if (present != null && present.isMergeable(undo))
+        if (present != null && (present.isMergeable(undo) && undo.isMergeable(present)))
         {
             this.removeConsequent();
             present.merge(undo);

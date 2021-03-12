@@ -1,16 +1,20 @@
 package mchorse.aperture.client.gui.panels;
 
+import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.KeyframeFixture;
 import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
+import mchorse.aperture.utils.undo.CompoundUndo;
+import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import net.minecraft.client.Minecraft;
 
 public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
@@ -125,16 +129,30 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     {
         long tick = this.editor.timeline.value - this.currentOffset();
 
-        /* TODO: undo */
-        this.fixture.x.get().insert(tick, position.point.x);
-        this.fixture.y.get().insert(tick, position.point.y);
-        this.fixture.z.get().insert(tick, position.point.z);
-        this.fixture.yaw.get().insert(tick, position.angle.yaw);
-        this.fixture.pitch.get().insert(tick, position.angle.pitch);
-        this.fixture.roll.get().insert(tick, position.angle.roll);
-        this.fixture.fov.get().insert(tick, position.angle.fov);
+        CompoundUndo<CameraProfile> undo = new CompoundUndo<CameraProfile>(
+            this.undoKeyframes(this.fixture.x, tick, position.point.x),
+            this.undoKeyframes(this.fixture.y, tick, position.point.y),
+            this.undoKeyframes(this.fixture.z, tick, position.point.z),
+            this.undoKeyframes(this.fixture.yaw, tick, position.angle.yaw),
+            this.undoKeyframes(this.fixture.pitch, tick, position.angle.pitch),
+            this.undoKeyframes(this.fixture.roll, tick, position.angle.roll),
+            this.undoKeyframes(this.fixture.fov, tick, position.angle.fov)
+        );
 
-        this.editor.updateProfile();
+        this.editor.postUndo(undo, false);
+    }
+
+    private IUndo<CameraProfile> undoKeyframes(ValueKeyframeChannel channel, long tick, double value)
+    {
+        KeyframeChannel c = (KeyframeChannel) channel.getValue();
+
+        c.insert(tick, value);
+
+        IUndo<CameraProfile> undo = this.undo(channel, c);
+
+        channel.get().insert(tick, value);
+
+        return undo;
     }
 
     @Override

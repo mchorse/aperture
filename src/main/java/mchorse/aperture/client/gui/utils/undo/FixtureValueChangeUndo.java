@@ -4,7 +4,7 @@ import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.config.values.Value;
 
-public class FixtureValueChangeUndo implements IUndo<CameraProfile>
+public class FixtureValueChangeUndo extends CameraProfileUndo
 {
     public int index;
     public String name;
@@ -31,7 +31,8 @@ public class FixtureValueChangeUndo implements IUndo<CameraProfile>
         return this.name;
     }
 
-    public FixtureValueChangeUndo unmergable()
+    @Override
+    public IUndo<CameraProfile> noMerging()
     {
         this.mergable = false;
 

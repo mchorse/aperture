@@ -2,17 +2,18 @@ package mchorse.aperture.client.gui.utils.undo;
 
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
+import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.utils.undo.IUndo;
 
-public class FixtureAddRemoveUndo implements IUndo<CameraProfile>
+public class FixtureAddRemoveUndo extends CameraProfileUndo
 {
     private int index;
     private AbstractFixture fixture;
     private AbstractFixture lastFixture;
 
-    public static FixtureAddRemoveUndo create(CameraProfile profile, int index, AbstractFixture fixture)
+    public static IUndo<CameraProfile> create(GuiCameraEditor editor, CameraProfile profile, int index, AbstractFixture fixture)
     {
-        return new FixtureAddRemoveUndo(index, fixture, profile.get(index));
+        return new FixtureAddRemoveUndo(index, fixture, profile.get(index)).cursor(editor.timeline.value);
     }
 
     public FixtureAddRemoveUndo(int index, AbstractFixture fixture, AbstractFixture lastFixture)
@@ -40,6 +41,12 @@ public class FixtureAddRemoveUndo implements IUndo<CameraProfile>
     public boolean isRemove()
     {
         return this.fixture == null;
+    }
+
+    @Override
+    public IUndo<CameraProfile> noMerging()
+    {
+        return this;
     }
 
     @Override

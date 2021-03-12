@@ -8,6 +8,7 @@ import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.utils.TimeUtils;
 import mchorse.aperture.utils.undo.CompoundUndo;
+import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.keyframes.GuiKeyframeElement;
 import mchorse.mclib.client.gui.framework.elements.keyframes.GuiKeyframesEditor;
@@ -91,6 +92,8 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
 
     private void submitUndo()
     {
+        int oldValue = this.type;
+
         this.type = -1;
 
         List<Object> newCachedData = new ArrayList<Object>();
@@ -102,20 +105,20 @@ public abstract class GuiCameraEditorKeyframesEditor<E extends GuiKeyframeElemen
 
         if (newCachedData.size() > 1)
         {
-            FixtureValueChangeUndo[] undos = new FixtureValueChangeUndo[newCachedData.size()];
+            IUndo<CameraProfile>[] undos = new IUndo[newCachedData.size()];
 
             for (int i = 0; i < undos.length; i++)
             {
                 undos[i] = GuiAbstractFixturePanel.undo(this.editor, this.valueChannels.get(i), this.cachedData.get(i), newCachedData.get(i));
             }
 
-            this.editor.postUndo(new CompoundUndo<CameraProfile>(undos).unmergable(), false);
+            this.editor.postUndo(new CompoundUndo<CameraProfile>(undos).noMerging(), false);
         }
         else
         {
             Value channel = this.valueChannels.get(0);
 
-            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, channel, this.cachedData.get(0), newCachedData.get(0)).unmergable(), false);
+            this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, channel, this.cachedData.get(0), newCachedData.get(0)).noMerging(), false);
         }
 
         this.cachedData.clear();

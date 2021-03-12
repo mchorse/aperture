@@ -148,20 +148,22 @@ public class GuiModifiersManager extends GuiElement
     public IUndo<CameraProfile> undo(List<AbstractModifier> modifiers)
     {
         CameraProfile profile = this.editor.getProfile();
+        int cursor = this.editor.timeline.value;
 
         if (this.fixture != null)
         {
             int index = profile.fixtures.indexOf(this.fixture);
 
-            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, this.fixture.modifiers.getPath(), this.fixture.modifiers.getValue(), modifiers).unmergable();
+            return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, this.fixture.modifiers.getPath(), this.fixture.modifiers.getValue(), modifiers).cursor(cursor).noMerging();
         }
 
-        return new ModifierValueChangeUndo(-1, this.panels.scroll.scroll, profile.modifiers.getPath(), profile.modifiers.getValue(), modifiers).unmergable();
+        return new ModifierValueChangeUndo(-1, this.panels.scroll.scroll, profile.modifiers.getPath(), profile.modifiers.getValue(), modifiers).cursor(cursor).noMerging();
     }
 
     public IUndo<CameraProfile> undo(Value value, Object newValue)
     {
         CameraProfile profile = this.editor.getProfile();
+        int cursor = this.editor.timeline.value;
         int index = -1;
 
         if (this.fixture != null)
@@ -169,7 +171,7 @@ public class GuiModifiersManager extends GuiElement
             index = profile.fixtures.indexOf(this.fixture);
         }
 
-        return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, value.getPath(), value.getValue(), newValue);
+        return new ModifierValueChangeUndo(index, this.panels.scroll.scroll, value.getPath(), value.getValue(), newValue).cursor(cursor);
     }
 
     public void handleUndo(IUndo<CameraProfile> undo, boolean redo)
