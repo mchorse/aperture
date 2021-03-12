@@ -7,6 +7,9 @@ import java.util.List;
 
 /**
  * Compound undo
+ *
+ * This generalized undo element allows to undo/redo multiple undo/redos
+ * at a time
  */
 public class CompoundUndo <T> implements IUndo<T>
 {
@@ -31,14 +34,48 @@ public class CompoundUndo <T> implements IUndo<T>
         return this.undos;
     }
 
-    public IUndo<T> getFirst()
+    /**
+     * Get first undo matching given class
+     */
+    public IUndo<T> getFirst(Class<? extends IUndo<T>> clazz)
     {
-        return this.undos.get(0);
+        int i = 0;
+
+        while (i < this.undos.size())
+        {
+            IUndo<T> undo = this.undos.get(i);
+
+            if (undo.getClass().isAssignableFrom(clazz))
+            {
+                return undo;
+            }
+
+            i += 1;
+        }
+
+        return null;
     }
 
-    public IUndo<T> getLast()
+    /**
+     * Get last undo matching given class
+     */
+    public IUndo<T> getLast(Class<? extends IUndo<T>> clazz)
     {
-        return this.undos.get(this.undos.size() - 1);
+        int i = this.undos.size() - 1;
+
+        while (i >= 0)
+        {
+            IUndo<T> undo = this.undos.get(i);
+
+            if (undo.getClass().isAssignableFrom(clazz))
+            {
+                return undo;
+            }
+
+            i -= 1;
+        }
+
+        return null;
     }
 
     public boolean has(Class<FixtureValueChangeUndo> clazz)
@@ -54,6 +91,9 @@ public class CompoundUndo <T> implements IUndo<T>
         return false;
     }
 
+    /**
+     * Mark this undo unmergable
+     */
     public CompoundUndo<T> unmergable()
     {
         this.mergable = false;
@@ -64,7 +104,22 @@ public class CompoundUndo <T> implements IUndo<T>
     @Override
     public boolean isMergeable(IUndo<T> undo)
     {
-        return this.mergable && undo instanceof CompoundUndo && ((CompoundUndo<T>) undo).undos.size() == this.undos.size();
+        if (this.mergable && undo instanceof CompoundUndo && ((CompoundUndo<T>) undo).undos.size() == this.undos.size())
+        {
+            CompoundUndo<T> compound = (CompoundUndo<T>) undo;
+
+            for (int i = 0; i < this.undos.size(); i++)
+            {
+                if (!this.undos.get(i).isMergeable(compound.undos.get(i)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override

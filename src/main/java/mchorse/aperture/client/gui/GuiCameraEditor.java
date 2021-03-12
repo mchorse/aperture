@@ -400,7 +400,7 @@ public class GuiCameraEditor extends GuiBase
         }
         else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(FixtureValueChangeUndo.class))
         {
-            index = ((FixtureValueChangeUndo) ((CompoundUndo) undo).getFirst()).getIndex();
+            index = ((FixtureValueChangeUndo) ((CompoundUndo) undo).getFirst(FixtureValueChangeUndo.class)).getIndex();
         }
 
         if (index >= 0)
@@ -436,7 +436,7 @@ public class GuiCameraEditor extends GuiBase
         else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(FixtureAddRemoveUndo.class))
         {
             CompoundUndo compound = (CompoundUndo) undo;
-            FixtureAddRemoveUndo addRemoveUndo = (FixtureAddRemoveUndo) (redo ? compound.getLast() : compound.getFirst());
+            FixtureAddRemoveUndo addRemoveUndo = (FixtureAddRemoveUndo) (redo ? compound.getLast(FixtureAddRemoveUndo.class) : compound.getFirst(FixtureAddRemoveUndo.class));
 
             index = addRemoveUndo.getTargetIndex(redo);
         }
@@ -758,13 +758,16 @@ public class GuiCameraEditor extends GuiBase
                 return;
             }
 
-            /* TODO: undo */
-            fixture.setDuration(diff);
-
             AbstractFixture newFixture = fixture.copy();
 
             newFixture.setDuration(duration - diff);
-            profile.add(newFixture, profile.fixtures.indexOf(fixture) + 1);
+
+            int index = profile.fixtures.indexOf(fixture);
+
+            this.postUndoCallback(new CompoundUndo<CameraProfile>(
+                new FixtureValueChangeUndo(index, fixture.duration.getPath(), duration, diff),
+                new FixtureAddRemoveUndo(index + 1, newFixture, null)
+            ).unmergable());
         }
     }
 

@@ -182,7 +182,7 @@ public class GuiModifiersManager extends GuiElement
         }
         else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(ModifierValueChangeUndo.class))
         {
-            scroll = ((ModifierValueChangeUndo) ((CompoundUndo<CameraProfile>) undo).getFirst()).getPanelScroll();
+            scroll = ((ModifierValueChangeUndo) ((CompoundUndo<CameraProfile>) undo).getFirst(ModifierValueChangeUndo.class)).getPanelScroll();
         }
 
         if (scroll >= 0)
