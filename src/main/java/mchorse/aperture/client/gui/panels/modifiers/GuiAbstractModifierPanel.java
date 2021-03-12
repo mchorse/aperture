@@ -103,6 +103,9 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
         return this.modifiers.undo(property, value);
     }
 
+    public void handleUndo(IUndo<CameraProfile> undo, boolean redo)
+    {}
+
     public void initiate()
     {
         this.envelopes.initiate();

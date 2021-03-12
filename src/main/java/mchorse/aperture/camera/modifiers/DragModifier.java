@@ -32,6 +32,17 @@ public class DragModifier extends ComponentModifier
         this.register(this.factor);
     }
 
+    public void reset(Position position)
+    {
+        this.x = position.point.x;
+        this.y = position.point.y;
+        this.z = position.point.z;
+        this.yaw = position.angle.yaw;
+        this.pitch = position.angle.pitch;
+        this.roll = position.angle.roll;
+        this.fov = position.angle.fov;
+    }
+
     @Override
     public void modify(long ticks, long offset, AbstractFixture fixture, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {

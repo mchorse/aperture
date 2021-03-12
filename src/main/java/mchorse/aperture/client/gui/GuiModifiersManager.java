@@ -191,6 +191,14 @@ public class GuiModifiersManager extends GuiElement
         {
             this.panels.scroll.scrollTo(scroll);
         }
+
+        for (IGuiElement element : this.panels.getChildren())
+        {
+            if (element instanceof GuiAbstractModifierPanel)
+            {
+                ((GuiAbstractModifierPanel) element).handleUndo(undo, redo);
+            }
+        }
     }
 
     public void cameraEditorOpened()
