@@ -118,6 +118,19 @@ public class Angle
     }
 
     @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Angle)
+        {
+            Angle angle = (Angle) obj;
+
+            return this.yaw == angle.yaw && this.pitch == angle.pitch && this.roll == angle.roll && this.fov == angle.fov;
+        }
+
+        return super.equals(obj);
+    }
+
+    @Override
     public String toString()
     {
         return MoreObjects.toStringHelper(this).addValue(this.yaw).addValue(this.pitch).addValue(this.roll).addValue(this.fov).toString();

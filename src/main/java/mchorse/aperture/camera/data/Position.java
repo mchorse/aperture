@@ -120,6 +120,19 @@ public class Position
     }
 
     @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Position)
+        {
+            Position position = (Position) obj;
+
+            return this.angle.equals(position.angle) && this.point.equals(position.point);
+        }
+
+        return super.equals(obj);
+    }
+
+    @Override
     public String toString()
     {
         return MoreObjects.toStringHelper(this).addValue(this.point).addValue(this.angle).toString();

@@ -124,6 +124,11 @@ public class GuiCameraEditor extends GuiBase
     public Position position = new Position(0, 0, 0, 0, 0);
 
     /**
+     * Last position
+     */
+    public Position lastPosition = new Position(0, 0, 0, 0, 0);
+
+    /**
      * Map of created fixture panels
      */
     public Map<Class<? extends AbstractFixture>, GuiAbstractFixturePanel<? extends AbstractFixture>> panels = new HashMap<>();
@@ -267,7 +272,7 @@ public class GuiCameraEditor extends GuiBase
         this.moveForward.tooltip(IKey.lang("aperture.gui.tooltips.move_up"));
         this.moveDuration = new GuiIconElement(mc, Icons.SHIFT_TO, (b) -> this.shiftDurationToCursor());
         this.moveDuration.tooltip(IKey.lang("aperture.gui.tooltips.move_duration"));
-        this.copyPosition = new GuiIconElement(mc, Icons.MOVE_TO, (b) -> this.editFixture());
+        this.copyPosition = new GuiIconElement(mc, Icons.MOVE_TO, (b) -> this.editFixture(false));
         this.copyPosition.tooltip(IKey.lang("aperture.gui.tooltips.copy_position"));
         this.moveBackward = new GuiIconElement(mc, Icons.SHIFT_BACKWARD, (b) -> this.moveTo(-1));
         this.moveBackward.tooltip(IKey.lang("aperture.gui.tooltips.move_down"));
@@ -324,7 +329,7 @@ public class GuiCameraEditor extends GuiBase
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.deselect"), Keyboard.KEY_D, () -> this.pickCameraFixture(null, 0)).active(active).category(fixture);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.shift"), Keyboard.KEY_M, this::shiftDurationToCursor).active(active).category(fixture);
-        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.copy"), Keyboard.KEY_B, this::editFixture).active(active).category(fixture);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.copy"), Keyboard.KEY_B, () -> this.editFixture(false)).active(active).category(fixture);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.fixture.cut"), Keyboard.KEY_C, () -> this.cut.clickItself(this.context)).held(Keyboard.KEY_LMENU).active(active).category(fixture);
 
         for (byte i = 0; i < FixtureRegistry.getNextId(); i ++)
@@ -804,6 +809,8 @@ public class GuiCameraEditor extends GuiBase
                 {
                     undo.noMerging();
                 }
+
+
             }
         }
 
@@ -1121,13 +1128,19 @@ public class GuiCameraEditor extends GuiBase
         this.timeline.setValueFromScrub(this.timeline.value - 1);
     }
 
-    private void editFixture()
+    private void editFixture(boolean checkForBeingStatic)
     {
+        Position current = this.getPosition();
+
         if (this.panel.delegate != null)
         {
-            this.panel.delegate.editFixture(this.getPosition());
+            if (!checkForBeingStatic || !this.lastPosition.equals(current))
+            {
+                this.panel.delegate.editFixture(current);
+            }
         }
 
+        this.lastPosition.set(current);
         this.haveScrubbed();
     }
 
@@ -1325,7 +1338,7 @@ public class GuiCameraEditor extends GuiBase
 
             if (this.isSyncing() && this.haveScrubbed)
             {
-                this.editFixture();
+                this.editFixture(true);
             }
         }
 

@@ -94,6 +94,19 @@ public class Point
     }
 
     @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Point)
+        {
+            Point point = (Point) obj;
+
+            return this.x == point.x && this.y == point.y && this.z == point.z;
+        }
+
+        return super.equals(obj);
+    }
+
+    @Override
     public String toString()
     {
         return MoreObjects.toStringHelper(this).addValue(this.x).addValue(this.y).addValue(this.z).toString();
