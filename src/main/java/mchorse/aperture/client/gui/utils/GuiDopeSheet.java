@@ -1,6 +1,7 @@
 package mchorse.aperture.client.gui.utils;
 
 import mchorse.aperture.client.gui.GuiCameraEditor;
+import mchorse.mclib.client.gui.framework.elements.keyframes.Selection;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import net.minecraft.client.Minecraft;
@@ -73,9 +74,14 @@ public class GuiDopeSheet extends mchorse.mclib.client.gui.framework.elements.ke
     @Override
     protected void resetMouseReleased(GuiContext context)
     {
-        if (this.moving && this.keyframeEditor.getUndo() == 100)
+        if (this.keyframeEditor.getUndo() == 100)
         {
-            this.keyframeEditor.cancelUndo();
+            Keyframe keyframe = this.getCurrent();
+
+            if (!this.moving || this.which == Selection.NOT_SELECTED || this.which.getX(keyframe) == this.lastT)
+            {
+                this.keyframeEditor.cancelUndo();
+            }
         }
 
         super.resetMouseReleased(context);

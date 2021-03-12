@@ -8,6 +8,7 @@ import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.utils.TimeUtils;
+import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -306,7 +307,7 @@ public class GuiPlaybackScrub extends GuiElement
     {
         if (this.resize)
         {
-            this.profile.dirty();
+            this.editor.markLastNoMerging();
             this.editor.updateValues();
         }
 
@@ -361,12 +362,16 @@ public class GuiPlaybackScrub extends GuiElement
 
             if (value >= start + 5 && (this.end == null || value <= end - 5))
             {
-                /* TODO: undo */
-                this.start.setDuration(value - start);
-
                 if (this.end != null)
                 {
-                    this.end.setDuration(end - value);
+                    this.editor.postUndo(new CompoundUndo<CameraProfile>(
+                        GuiAbstractFixturePanel.undo(this.editor, this.start.duration, value - start),
+                        GuiAbstractFixturePanel.undo(this.editor, this.end.duration, end - value)
+                    ));
+                }
+                else
+                {
+                    this.editor.postUndo(GuiAbstractFixturePanel.undo(this.editor, this.start.duration, value - start));
                 }
 
                 /* Update the values */

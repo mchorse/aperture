@@ -407,7 +407,10 @@ public class GuiCameraEditor extends GuiBase
         }
         else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(FixtureValueChangeUndo.class))
         {
-            index = ((FixtureValueChangeUndo) ((CompoundUndo) undo).getFirst(FixtureValueChangeUndo.class)).getIndex();
+            FixtureValueChangeUndo value = (FixtureValueChangeUndo) ((CompoundUndo) undo).getFirst(FixtureValueChangeUndo.class);
+
+            index = value.getIndex();
+            name = value.getName();
         }
 
         if (index >= 0)
@@ -415,6 +418,11 @@ public class GuiCameraEditor extends GuiBase
             this.pickCameraFixture(this.getProfile().get(index), -1);
             this.panel.delegate.handleUndo(undo, redo);
             this.modifiers.handleUndo(undo, redo);
+
+            if (name.endsWith("duration"))
+            {
+                this.updateValues();
+            }
         }
 
         if (name.contains("modifiers"))
@@ -471,6 +479,16 @@ public class GuiCameraEditor extends GuiBase
         if (cursor >= 0 && this.timeline.value != cursor)
         {
             this.timeline.setValueFromScrub(cursor);
+        }
+    }
+
+    public void markLastNoMerging()
+    {
+        IUndo<CameraProfile> undo = this.getProfile().undoManager.getCurrentUndo();
+
+        if (undo != null)
+        {
+            undo.noMerging();
         }
     }
 
@@ -801,16 +819,16 @@ public class GuiCameraEditor extends GuiBase
             this.flight.setFlightEnabled(flight);
 
             /* Marking latest undo as unmergeable */
-            if (this.isSyncing() && !flight)
+            if (this.isSyncing())
             {
-                IUndo<CameraProfile> undo = this.getProfile().undoManager.getCurrentUndo();
-
-                if (undo != null)
+                if (!flight)
                 {
-                    undo.noMerging();
+                    this.markLastNoMerging();
                 }
-
-
+                else
+                {
+                    this.lastPosition.set(Position.ZERO);
+                }
             }
         }
 
