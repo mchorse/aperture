@@ -37,6 +37,7 @@ public class ClientHandlerCameraProfileList extends ClientMessageHandler<PacketC
             }
 
             manager.profiles.filter("", true);
+            manager.profiles.list.sort();
 
             if (ClientProxy.control.currentProfile == null)
             {

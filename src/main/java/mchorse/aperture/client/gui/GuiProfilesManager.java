@@ -172,6 +172,7 @@ public class GuiProfilesManager extends GuiElement
 
             this.profiles.filter("", true);
             this.profiles.list.add(profile);
+            this.profiles.list.sort();
             this.editor.setProfile(profile);
         }
     }
@@ -287,13 +288,14 @@ public class GuiProfilesManager extends GuiElement
             }
 
             this.profiles.list.setIndex(lastIndex);
+            this.profiles.list.scroll.scrollIntoView(this.profiles.list.getIndex(), this.profiles.list.scroll.scrollItemSize);
             this.pickProfile(this.profiles.list.getCurrentFirst());
         }
     }
 
     public void selectProfile(CameraProfile profile)
     {
-        this.profiles.list.setCurrent(profile);
+        this.profiles.list.setCurrentScroll(profile);
     }
 
     /**
@@ -306,6 +308,7 @@ public class GuiProfilesManager extends GuiElement
         if (profile != null)
         {
             profile.getDestination().setFilename(to);
+            this.profiles.list.sort();
         }
     }
 
@@ -342,6 +345,7 @@ public class GuiProfilesManager extends GuiElement
             }
 
             this.profiles.filter("", true);
+            this.profiles.list.sort();
             this.selectProfile(ClientProxy.control.currentProfile);
         }
     }
@@ -360,6 +364,7 @@ public class GuiProfilesManager extends GuiElement
 
         profile.exists = false;
         this.profiles.list.add(profile);
+        this.profiles.list.sort();
     }
 
     public void addProfile(CameraProfile newProfile)
@@ -376,6 +381,7 @@ public class GuiProfilesManager extends GuiElement
         }
 
         this.profiles.list.add(newProfile);
+        this.profiles.list.sort();
         this.editor.setProfile(newProfile);
     }
 
