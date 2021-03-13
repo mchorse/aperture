@@ -19,6 +19,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.function.Supplier;
+
 /**
  * Profile runner
  *
@@ -58,6 +60,7 @@ public class CameraRunner
     /* Used by camera renderer */
     public float yaw = 0.0F;
     public float pitch = 0.0F;
+    public Supplier<Long> duration;
 
     /* Profile access methods */
 
@@ -75,13 +78,18 @@ public class CameraRunner
 
     public void toggle(CameraProfile profile, long ticks)
     {
+        this.toggle(profile, ticks, null);
+    }
+
+    public void toggle(CameraProfile profile, long ticks, Supplier<Long> duration)
+    {
         if (this.isRunning)
         {
             this.stop();
         }
         else
         {
-            this.start(profile, ticks);
+            this.start(profile, ticks, duration);
         }
     }
 
@@ -94,13 +102,21 @@ public class CameraRunner
     }
 
     /**
+     * Start the profile runner from the first tick
+     */
+    public void start(CameraProfile profile, long ticks)
+    {
+        this.start(profile, ticks, null);
+    }
+
+    /**
      * Start the profile runner. This method also responsible for setting
      * important values before starting the run (like setting duration, and
      * reseting ticks).
      */
-    public void start(CameraProfile profile, long start)
+    public void start(CameraProfile profile, long start, Supplier<Long> duration)
     {
-        if (profile == null || profile.size() == 0)
+        if (profile == null)
         {
             return;
         }
@@ -126,6 +142,7 @@ public class CameraRunner
 
         this.isRunning = true;
         this.ticks = start;
+        this.duration = duration;
     }
 
     /**
@@ -143,6 +160,7 @@ public class CameraRunner
 
         this.isRunning = false;
         this.profile = null;
+        this.duration = null;
 
         ClientProxy.control.resetRoll();
     }
@@ -194,7 +212,8 @@ public class CameraRunner
             return;
         }
 
-        long duration = this.profile.getDuration();
+        long profileDuration = this.profile.getDuration();
+        long duration = this.duration == null ? profileDuration : this.duration.get();
         long progress = this.ticks;
 
         if (progress >= duration)
@@ -218,7 +237,11 @@ public class CameraRunner
             double prevZ = this.position.point.z;
 
             this.profile.applyCurves(progress, event.renderTickTime);
-            this.profile.applyProfile(progress, event.renderTickTime, this.position);
+
+            if (progress < profileDuration)
+            {
+                this.profile.applyProfile(progress, event.renderTickTime, this.position);
+            }
 
             EntityPlayer player = this.mc.player;
             Point point = this.position.point;

@@ -1225,7 +1225,7 @@ public class GuiCameraEditor extends GuiBase
     public void togglePlayback()
     {
         this.setFlight(false);
-        this.runner.toggle(this.getProfile(), this.timeline.value);
+        this.runner.toggle(this.getProfile(), this.timeline.value, () -> Math.max(this.getProfile().getDuration(), this.maxScrub));
         this.updatePlauseButton();
 
         this.playing = this.runner.isRunning();
