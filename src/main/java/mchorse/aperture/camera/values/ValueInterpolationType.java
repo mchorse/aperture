@@ -50,13 +50,21 @@ public class ValueInterpolationType extends Value
     @Override
     public void valueFromJSON(JsonElement element)
     {
-        this.interp = InterpolationType.valueOf(element.getAsString());
+        for (InterpolationType type : InterpolationType.values())
+        {
+            if (type.name.equals(element.getAsString()))
+            {
+                this.interp = type;
+
+                break;
+            }
+        }
     }
 
     @Override
     public JsonElement valueToJSON()
     {
-        return new JsonPrimitive(this.interp.toString());
+        return new JsonPrimitive(this.interp.name);
     }
 
     @Override
