@@ -101,11 +101,6 @@ public class GuiEnvelope extends GuiElement
         });
         this.channel = new GuiCameraEditorKeyframesGraphEditor(mc, panel.modifiers.editor);
 
-        this.startX.limit(0);
-        this.startD.limit(0);
-        this.endX.limit(0);
-        this.endD.limit(0);
-
         this.enabled.flex().reset();
         this.relative.flex().reset();
 
@@ -175,9 +170,9 @@ public class GuiEnvelope extends GuiElement
         this.channel.graph.resetView();
         this.channel.updateConverter();
 
-        TimeUtils.configure(this.startX, 0);
+        TimeUtils.configure(this.startX, Integer.MIN_VALUE);
         TimeUtils.configure(this.startD, 0);
-        TimeUtils.configure(this.endX, 0);
+        TimeUtils.configure(this.endX, Integer.MIN_VALUE);
         TimeUtils.configure(this.endD, 0);
 
         this.fillIntervals();

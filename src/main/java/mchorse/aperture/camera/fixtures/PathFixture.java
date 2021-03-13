@@ -20,6 +20,7 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.vecmath.Vector2d;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -642,6 +643,48 @@ public class PathFixture extends AbstractFixture
             this.interpolation.set(InterpolationType.fromInterp(dolly.interp.get()));
             this.interpolationAngle.set(InterpolationType.fromInterp(dolly.interp.get()));
         }
+    }
+
+    @Override
+    protected void breakDownFixture(AbstractFixture original, long offset)
+    {
+        super.breakDownFixture(original, offset);
+
+        if (this.points.size() < 2)
+        {
+            return;
+        }
+
+        PathFixture fixture = (PathFixture) original;
+        Position position = new Position();
+
+        original.applyFixture(offset, 0, null, position);
+
+        float factor = (offset / (float) original.getDuration()) * (this.size() - 1);
+        int originalPoints = (int) Math.ceil(factor);
+        int thisPoints = (int) Math.floor(factor);
+
+        List<Position> oP = new ArrayList<Position>();
+        List<Position> tP = new ArrayList<Position>();
+
+        for (int i = 0; i < originalPoints; i++)
+        {
+            oP.add(fixture.points.get(i).copy());
+        }
+
+        oP.add(position.copy());
+
+        for (int i = this.points.size() - 1; i > thisPoints; i--)
+        {
+            tP.add(this.points.get(i).copy());
+        }
+
+        tP.add(position.copy());
+
+        Collections.reverse(tP);
+
+        fixture.points.set(oP);
+        this.points.set(tP);
     }
 
     public static class CachedPosition

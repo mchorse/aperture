@@ -82,4 +82,9 @@ public abstract class AbstractModifier extends StructureBase
     }
 
     public abstract AbstractModifier create();
+
+    public void breakDown(AbstractModifier original, long offset, long duration)
+    {
+        this.envelope.get().breakDown(original.envelope.get(), offset, duration);
+    }
 }

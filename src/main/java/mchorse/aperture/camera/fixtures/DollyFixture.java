@@ -105,4 +105,25 @@ public class DollyFixture extends IdleFixture
             }
         }
     }
+
+    @Override
+    protected void breakDownFixture(AbstractFixture original, long offset)
+    {
+        super.breakDownFixture(original, offset);
+
+        DollyFixture dolly = (DollyFixture) original;
+        Position position = new Position();
+
+        original.applyFixture(offset, 0, 0, null, position);
+
+        Point point = dolly.position.get().point;
+        double dx = point.x - position.point.x;
+        double dy = point.y - position.point.y;
+        double dz = point.z - position.point.z;
+        float distance = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        this.position.set(position);
+        this.distance.set(dolly.distance.get() - distance);
+        dolly.distance.set(distance);
+    }
 }

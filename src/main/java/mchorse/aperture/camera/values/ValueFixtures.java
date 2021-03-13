@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ValueFixtures extends Value
 {
-    private List<AbstractFixture> fixtures = new ArrayList<AbstractFixture>();
+    private List<ValueFixture> fixtures = new ArrayList<ValueFixture>();
 
     public ValueFixtures(String id)
     {
@@ -22,28 +22,30 @@ public class ValueFixtures extends Value
 
     public void add(AbstractFixture fixture)
     {
-        this.fixtures.add(fixture);
-        this.addSubValue(new ValueFixture(String.valueOf(this.fixtures.size() - 1), fixture));
+        ValueFixture value = new ValueFixture(String.valueOf(this.fixtures.size()), fixture);
+
+        this.fixtures.add(value);
+        this.addSubValue(value);
     }
 
     public void add(int index, AbstractFixture fixture)
     {
-        this.fixtures.add(index, fixture);
+        this.fixtures.add(index, new ValueFixture("", fixture));
         this.sync();
     }
 
     public AbstractFixture remove(int index)
     {
-        AbstractFixture fixture = this.fixtures.remove(index);
+        ValueFixture fixture = this.fixtures.remove(index);
 
         this.sync();
 
-        return fixture;
+        return fixture.get();
     }
 
     public AbstractFixture get(int index)
     {
-        return this.fixtures.get(index);
+        return this.fixtures.get(index).get();
     }
 
     public int size()
@@ -53,35 +55,46 @@ public class ValueFixtures extends Value
 
     public int indexOf(AbstractFixture fixture)
     {
-        return this.fixtures.indexOf(fixture);
+        for (int i = 0; i < this.fixtures.size(); i++)
+        {
+            if (fixture == this.fixtures.get(i).get())
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public void sync()
     {
+        List<ValueFixture> fixtures = new ArrayList<ValueFixture>();
+
         this.removeAllSubValues();
 
-        int i = 0;
-
-        for (AbstractFixture fixture : this.fixtures)
+        for (int i = 0; i < this.fixtures.size(); i++)
         {
-            this.addSubValue(new ValueFixture(String.valueOf(i), fixture));
+            ValueFixture fixture = new ValueFixture(String.valueOf(i), this.fixtures.get(i).get());
 
-            i += 1;
+            this.addSubValue(fixture);
+            fixtures.add(fixture);
         }
+
+        this.fixtures = fixtures;
     }
 
-    public List<AbstractFixture> get()
+    public List<ValueFixture> get()
     {
         return this.fixtures;
     }
 
-    public void set(List<AbstractFixture> fixtures)
+    public void set(List<ValueFixture> fixtures)
     {
         this.reset();
 
-        for (AbstractFixture fixture : fixtures)
+        for (ValueFixture fixture : fixtures)
         {
-            this.add(fixture.copy());
+            this.add(fixture.get().copy());
         }
     }
 
@@ -90,9 +103,9 @@ public class ValueFixtures extends Value
     {
         List<AbstractFixture> fixtures = new ArrayList<AbstractFixture>();
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (ValueFixture fixture : this.fixtures)
         {
-            fixtures.add(fixture.copy());
+            fixtures.add(fixture.get().copy());
         }
 
         return fixtures;
@@ -105,9 +118,9 @@ public class ValueFixtures extends Value
         {
             List list = (List) object;
 
-            if (list.isEmpty() || list.get(0) instanceof AbstractFixture)
+            if (list.isEmpty() || list.get(0) instanceof ValueFixture)
             {
-                this.set((List<AbstractFixture>) list);
+                this.set((List<ValueFixture>) list);
             }
         }
     }
@@ -124,7 +137,7 @@ public class ValueFixtures extends Value
     {
         if (value instanceof ValueFixtures)
         {
-            this.set(((ValueFixtures) value).get());
+            this.set(((ValueFixtures) value).fixtures);
         }
     }
 
@@ -162,9 +175,9 @@ public class ValueFixtures extends Value
     {
         JsonArray array = new JsonArray();
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (ValueFixture fixture : this.fixtures)
         {
-            array.add(FixtureSerializer.toJSON(fixture));
+            array.add(FixtureSerializer.toJSON(fixture.get()));
         }
 
         return array;
@@ -191,9 +204,9 @@ public class ValueFixtures extends Value
     {
         buffer.writeInt(this.fixtures.size());
 
-        for (AbstractFixture fixture : this.fixtures)
+        for (ValueFixture fixture : this.fixtures)
         {
-            FixtureSerializer.toBytes(fixture, buffer);
+            FixtureSerializer.toBytes(fixture.get(), buffer);
         }
     }
 }

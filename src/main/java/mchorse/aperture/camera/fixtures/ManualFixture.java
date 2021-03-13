@@ -39,7 +39,7 @@ public class ManualFixture extends AbstractFixture
             return 1000000000;
         }
 
-        return (int) (this.frames.get().size() / speed + this.shift.get());
+        return (int) ((this.frames.get().size() + this.shift.get()) / speed);
     }
 
     @Override
@@ -149,5 +149,13 @@ public class ManualFixture extends AbstractFixture
     public AbstractFixture create(long duration)
     {
         return new ManualFixture(duration);
+    }
+
+    @Override
+    protected void breakDownFixture(AbstractFixture original, long offset)
+    {
+        super.breakDownFixture(original, offset);
+
+        this.shift.set((int) (this.shift.get() - offset * this.speed.get()));
     }
 }

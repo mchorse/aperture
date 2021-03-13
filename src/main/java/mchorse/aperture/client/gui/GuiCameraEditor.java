@@ -778,12 +778,12 @@ public class GuiCameraEditor extends GuiBase
         int where = this.timeline.value;
 
         CameraProfile profile = this.getProfile();
-        AbstractFixture fixture = profile.atTick(where);
+        AbstractFixture current = profile.atTick(where);
 
-        if (fixture != null)
+        if (current != null)
         {
-            long offset = profile.calculateOffset(fixture);
-            long duration = fixture.getDuration();
+            long offset = profile.calculateOffset(current);
+            long duration = current.getDuration();
             long diff = where - offset;
 
             if (diff <= 0 || diff >= duration)
@@ -791,14 +791,20 @@ public class GuiCameraEditor extends GuiBase
                 return;
             }
 
-            AbstractFixture newFixture = fixture.copy();
+            AbstractFixture fixture = current.copy();
+            AbstractFixture newFixture = fixture.breakDown(diff);
 
-            newFixture.setDuration(duration - diff);
+            if (newFixture == null)
+            {
+                return;
+            }
 
-            int index = profile.fixtures.indexOf(fixture);
+            fixture.setDuration(diff);
+
+            int index = profile.fixtures.indexOf(current);
 
             this.postUndoCallback(new CompoundUndo<CameraProfile>(
-                new FixtureValueChangeUndo(index, fixture.duration.getPath(), duration, diff).cursor(this.timeline.value),
+                new FixtureValueChangeUndo(index, profile.fixtures.getPath() + "." + index, current.copy(), fixture).cursor(this.timeline.value),
                 new FixtureAddRemoveUndo(index + 1, newFixture, null).cursor(this.timeline.value)
             ).noMerging());
         }

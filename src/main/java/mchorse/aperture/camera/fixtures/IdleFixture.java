@@ -1,6 +1,5 @@
 package mchorse.aperture.camera.fixtures;
 
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.values.ValuePosition;

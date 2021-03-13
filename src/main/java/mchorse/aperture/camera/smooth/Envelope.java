@@ -105,4 +105,24 @@ public class Envelope extends StructureBase
 
         return envelope;
     }
+
+    public void breakDown(Envelope original, long offset, long duration)
+    {
+        if (original.relative.get())
+        {
+            original.endX.set(original.endX.get() - (duration - offset));
+        }
+        else
+        {
+            original.endX.set(original.endX.get() + offset);
+        }
+
+        this.channel.get().moveX(-offset);
+        this.startX.set(this.startX.get() - offset);
+
+        if (!this.relative.get())
+        {
+            this.endX.set(this.endX.get() - offset);
+        }
+    }
 }

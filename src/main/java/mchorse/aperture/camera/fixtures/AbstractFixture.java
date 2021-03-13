@@ -150,4 +150,33 @@ public abstract class AbstractFixture extends StructureBase implements IByteBufS
         this.copy(from);
         this.setDuration(from.getDuration());
     }
+
+    /**
+     * Breakdown this fixture into another piece starting at given offset
+     */
+    public AbstractFixture breakDown(long offset)
+    {
+        long duration = this.getDuration();
+
+        if (offset <= 0 || offset >= duration)
+        {
+            return null;
+        }
+
+        AbstractFixture fixture = this.copy();
+
+        fixture.setDuration(duration - offset);
+
+        for (int i = 0; i < fixture.modifiers.size(); i++)
+        {
+            fixture.modifiers.get(i).breakDown(this.modifiers.get(i), offset, duration);
+        }
+
+        fixture.breakDownFixture(this, offset);
+
+        return fixture;
+    }
+
+    protected void breakDownFixture(AbstractFixture original, long offset)
+    {}
 }

@@ -89,4 +89,18 @@ public class CircularFixture extends AbstractFixture
     {
         return new CircularFixture(duration);
     }
+
+    @Override
+    protected void breakDownFixture(AbstractFixture original, long offset)
+    {
+        super.breakDownFixture(original, offset);
+
+        CircularFixture circular = (CircularFixture) original;
+
+        float newCircles = circular.circles.get() * (offset / (float) original.getDuration());
+
+        this.offset.set(circular.offset.get() + newCircles);
+        this.circles.set(circular.circles.get() - newCircles);
+        circular.circles.set(newCircles);
+    }
 }

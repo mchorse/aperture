@@ -91,4 +91,12 @@ public class RemapperModifier extends AbstractModifier
     {
         return new RemapperModifier();
     }
+
+    @Override
+    public void breakDown(AbstractModifier original, long offset, long duration)
+    {
+        super.breakDown(original, offset, duration);
+
+        this.channel.get().moveX(-offset);
+    }
 }

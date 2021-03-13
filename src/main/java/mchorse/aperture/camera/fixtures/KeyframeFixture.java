@@ -134,4 +134,15 @@ public class KeyframeFixture extends AbstractFixture
             }
         }
     }
+
+    @Override
+    protected void breakDownFixture(AbstractFixture original, long offset)
+    {
+        super.breakDownFixture(original, offset);
+
+        for (ValueKeyframeChannel channel : this.channels)
+        {
+            channel.get().moveX(-offset);
+        }
+    }
 }
