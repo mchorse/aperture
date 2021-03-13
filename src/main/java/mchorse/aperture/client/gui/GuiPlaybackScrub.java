@@ -127,16 +127,15 @@ public class GuiPlaybackScrub extends GuiElement
     public void setProfile(CameraProfile profile)
     {
         boolean same = this.profile == profile;
+        int duration = Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub);
 
         this.profile = profile;
         this.index = -1;
 
-        this.set(0, Math.max(profile == null ? 0 : (int) profile.getDuration(), this.editor.maxScrub));
+        this.set(0, duration);
         this.value = MathHelper.clamp(this.value, this.min, this.max);
 
-        long duration = profile == null ? 0 : profile.getDuration();
-
-        if (!same && duration > 0 && this.area.w != 0)
+        if (profile != null && this.area.w != 0)
         {
             this.scale.view(this.min, duration);
         }
