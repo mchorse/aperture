@@ -22,6 +22,7 @@ import mchorse.mclib.math.Variable;
  */
 public class MathModifier extends ComponentModifier
 {
+    private static Position current = new Position();
     private static Position position = new Position();
 
     public MathBuilder builder = new MathBuilder();
@@ -99,20 +100,28 @@ public class MathModifier extends ComponentModifier
 
         if (expression != null)
         {
+            int step = 1;
+
             if (fixture != null)
             {
-                fixture.applyFixture(offset + (offset == 0 ? 1 : -1), previewPartialTick, profile, position);
+                fixture.applyFixture(offset, partialTick, previewPartialTick, profile, current);
+                AbstractModifier.applyModifiers(profile, fixture, ticks, offset, partialTick, previewPartialTick, this, current);
+
+                fixture.applyFixture(offset + step, partialTick, previewPartialTick, profile, position);
+                AbstractModifier.applyModifiers(profile, fixture, ticks + step, offset + step, partialTick, previewPartialTick, this, position);
             }
             else
             {
-                profile.applyProfile(ticks +  + (offset == 0 ? 1 : -1), previewPartialTick, position, false);
+                profile.applyProfile(ticks, partialTick, previewPartialTick, current, true, this);
+                profile.applyProfile(ticks + step, partialTick, previewPartialTick, position, true, this);
             }
 
-            double dx = pos.point.x - position.point.x;
-            double dy = pos.point.y - position.point.y;
-            double dz = pos.point.z - position.point.z;
+            double dx = current.point.x - position.point.x;
+            double dy = current.point.y - position.point.y;
+            double dz = current.point.z - position.point.z;
+            double velocity = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-            this.velocity.set(Math.sqrt(dx * dx + dy * dy + dz * dz));
+            this.velocity.set(velocity);
 
             this.ticks.set(ticks);
             this.offset.set(offset);

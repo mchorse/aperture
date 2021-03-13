@@ -34,8 +34,12 @@ public class NullFixture extends AbstractFixture
             long target = previous ? fixture.getDuration() : 0;
             long offset = profile.calculateOffset(fixture);
 
-            fixture.applyFixture(target, 0, 0, profile, pos);
-            AbstractModifier.applyModifiers(profile, fixture, offset, target, 0, 0, pos);
+            fixture.applyFixture(target, partialTick, previewPartialTick, profile, pos);
+
+            if (AbstractModifier.applyModifiers(profile, fixture, offset, target, 0, 0, null, pos))
+            {
+                AbstractModifier.applyModifiers(profile, null, offset, target, 0, 0, null, pos);
+            }
         }
     }
 

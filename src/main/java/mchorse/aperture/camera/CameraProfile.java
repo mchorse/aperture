@@ -294,18 +294,18 @@ public class CameraProfile extends StructureBase
 
     public void applyProfile(long progress, float partialTick, float previewPartialTick, Position position)
     {
-        this.applyProfile(progress, partialTick, previewPartialTick, position, true);
+        this.applyProfile(progress, partialTick, previewPartialTick, position, true, null);
     }
 
     public void applyProfile(long progress, float partialTick, Position position, boolean modifiers)
     {
-        this.applyProfile(progress, partialTick, partialTick, position, modifiers);
+        this.applyProfile(progress, partialTick, partialTick, position, modifiers, null);
     }
 
     /**
      * Apply camera profile transformation at given time on passed position
      */
-    public void applyProfile(long progress, float partialTick, float previewPartialTick, Position position, boolean modifiers)
+    public void applyProfile(long progress, float partialTick, float previewPartialTick, Position position, boolean modifiers, AbstractModifier target)
     {
         int index = 0;
         long originalProgress = progress;
@@ -328,17 +328,11 @@ public class CameraProfile extends StructureBase
 
         AbstractFixture fixture = this.fixtures.get(index);
 
-        if (progress == 0)
-        {
-            fixture.preApplyFixture(progress, position);
-        }
-
         fixture.applyFixture(progress, partialTick, previewPartialTick, this, position);
 
-        if (modifiers)
+        if (modifiers && AbstractModifier.applyModifiers(this, fixture, originalProgress, progress, partialTick, previewPartialTick, target, position))
         {
-            AbstractModifier.applyModifiers(this, fixture, originalProgress, progress, partialTick, previewPartialTick, position);
-            AbstractModifier.applyModifiers(this, null, originalProgress, originalProgress, partialTick, previewPartialTick, position);
+            AbstractModifier.applyModifiers(this, null, originalProgress, originalProgress, partialTick, previewPartialTick, target, position);
         }
     }
 

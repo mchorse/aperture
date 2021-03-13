@@ -31,7 +31,7 @@ public abstract class AbstractModifier extends StructureBase
     /**
      * Apply camera modifiers
      */
-    public static void applyModifiers(CameraProfile profile, AbstractFixture fixture, long ticks, long offset, float partialTick, float previewPartialTick, Position pos)
+    public static boolean applyModifiers(CameraProfile profile, AbstractFixture fixture, long ticks, long offset, float partialTick, float previewPartialTick, AbstractModifier target, Position pos)
     {
         long duration = fixture == null ? profile.getDuration() : fixture.getDuration();
         ValueModifiers modifiers = fixture == null ? profile.modifiers : fixture.modifiers;
@@ -39,6 +39,11 @@ public abstract class AbstractModifier extends StructureBase
         for (int i = 0; i < modifiers.size(); i++)
         {
             AbstractModifier modifier = modifiers.get(i);
+
+            if (modifier == target)
+            {
+                return false;
+            }
 
             if (!modifier.enabled.get())
             {
@@ -55,6 +60,8 @@ public abstract class AbstractModifier extends StructureBase
                 pos.interpolate(temporary, factor);
             }
         }
+
+        return true;
     }
 
     public AbstractModifier()

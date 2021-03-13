@@ -120,12 +120,6 @@ public abstract class AbstractFixture extends StructureBase implements IByteBufS
     }
 
     /**
-     * Before applying this fixture
-     */
-    public void preApplyFixture(long ticks, Position pos)
-    {}
-
-    /**
      * Clone this fixture
      */
     public final AbstractFixture copy()
