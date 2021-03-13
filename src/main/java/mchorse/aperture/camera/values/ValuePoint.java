@@ -48,13 +48,13 @@ public class ValuePoint extends Value
     }
 
     @Override
-    public void valueFromJSON(JsonElement element)
+    public void fromJSON(JsonElement element)
     {
         this.point.fromJSON(element.getAsJsonObject());
     }
 
     @Override
-    public JsonElement valueToJSON()
+    public JsonElement toJSON()
     {
         return this.point.toJSON();
     }

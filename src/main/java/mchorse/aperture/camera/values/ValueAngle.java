@@ -48,13 +48,13 @@ public class ValueAngle extends Value
     }
 
     @Override
-    public void valueFromJSON(JsonElement element)
+    public void fromJSON(JsonElement element)
     {
         this.angle.fromJSON(element.getAsJsonObject());
     }
 
     @Override
-    public JsonElement valueToJSON()
+    public JsonElement toJSON()
     {
         return this.angle.toJSON();
     }

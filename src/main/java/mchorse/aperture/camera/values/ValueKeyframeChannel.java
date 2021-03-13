@@ -57,17 +57,22 @@ public class ValueKeyframeChannel extends Value
     }
 
     @Override
-    public void valueFromJSON(JsonElement element)
+    public void fromJSON(JsonElement element)
     {
         if (element.isJsonArray())
         {
             this.channel.fromJSON(element.getAsJsonArray());
             this.channel.sort();
         }
+        else if (element.isJsonObject() && element.getAsJsonObject().has("keyframes") && element.getAsJsonObject().get("keyframes").isJsonArray())
+        {
+            this.channel.fromJSON(element.getAsJsonObject().get("keyframes").getAsJsonArray());
+            this.channel.sort();
+        }
     }
 
     @Override
-    public JsonElement valueToJSON()
+    public JsonElement toJSON()
     {
         return this.channel.toJSON();
     }
@@ -84,16 +89,12 @@ public class ValueKeyframeChannel extends Value
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        super.fromBytes(buffer);
-
         this.channel.fromBytes(buffer);
     }
 
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        super.toBytes(buffer);
-
         this.channel.toBytes(buffer);
     }
 }

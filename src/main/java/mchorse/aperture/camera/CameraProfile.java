@@ -40,14 +40,14 @@ public class CameraProfile extends StructureBase
     public final ValueCurves curves = new ValueCurves("curves");
 
     /**
-     * List of profile's camera fixtures
-     */
-    public final ValueFixtures fixtures = new ValueFixtures("fixtures");
-
-    /**
      * List of profile's global camera fixtures
      */
     public final ValueModifiers modifiers = new ValueModifiers("modifiers");
+
+    /**
+     * List of profile's camera fixtures
+     */
+    public final ValueFixtures fixtures = new ValueFixtures("fixtures");
 
     /**
      * Where the camera profile is stored. Needs only on the client 
@@ -76,8 +76,8 @@ public class CameraProfile extends StructureBase
         this.destination = destination;
 
         this.register(this.curves);
-        this.register(this.fixtures);
         this.register(this.modifiers);
+        this.register(this.fixtures);
     }
 
     public AbstractDestination getDestination()

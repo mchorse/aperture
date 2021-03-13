@@ -129,7 +129,7 @@ public class ValueModifiers extends Value
     }
 
     @Override
-    public void valueFromJSON(JsonElement element)
+    public void fromJSON(JsonElement element)
     {
         if (!element.isJsonArray())
         {
@@ -158,7 +158,7 @@ public class ValueModifiers extends Value
     }
 
     @Override
-    public JsonElement valueToJSON()
+    public JsonElement toJSON()
     {
         JsonArray array = new JsonArray();
 
@@ -173,8 +173,6 @@ public class ValueModifiers extends Value
     @Override
     public void fromBytes(ByteBuf buffer)
     {
-        super.fromBytes(buffer);
-
         this.reset();
 
         for (int i = 0, c = buffer.readInt(); i < c; i++)
@@ -191,8 +189,6 @@ public class ValueModifiers extends Value
     @Override
     public void toBytes(ByteBuf buffer)
     {
-        super.toBytes(buffer);
-
         buffer.writeInt(this.modifiers.size());
 
         for (AbstractModifier modifier : this.modifiers)
