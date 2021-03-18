@@ -28,7 +28,8 @@ aperture.config.comments:
         letter_box: Mostrar caixa postal (também conhecidas como barras pretas) que estreitam ou ampliam a foto da câmera como referência
         aspect_ratio: Relação de aspecto para o recurso de caixa postal do editor de câmera
         hide_chat: Quando ativada, esta opção oculta o bate-papo, o que pode ser bastante incômodo ao ajustar os ângulos da câmera
-        
+        seconds: Quando habilitada, esta opção usará segundos, em vez de tiques, para exibir e editar no editor da câmera.
+
     flight:
         forward: Mover a câmera para frente
         backward: Mover a câmera para trás
@@ -59,3 +60,6 @@ aperture.config.comments:
 
     minema:
         default_profile_name: Se o nome do arquivo de saída deve ser o nome do perfil da câmera, ao invés da data atual
+
+op_access.config.comments.aperture:
+    camera_editor: Jogadores não OP podem usar o editor de câmera?
