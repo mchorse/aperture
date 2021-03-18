@@ -39,6 +39,7 @@ aperture.config:
         letter_box: Caixa postal
         aspect_ratio: Proporção da tela
         hide_chat: Ocultar chat
+        seconds: Usar segundos
 
     flight:
         title: Modo de voo
@@ -79,3 +80,9 @@ aperture.config:
         tooltip: Opções relacionadas à integração do Minema
         
         default_profile_name: Nome do perfil da Câmera
+
+op_access.config.aperture:
+    title: Aperture
+    tooltip: Opções de acesso OP do Aperture
+
+    camera_editor: Editor de Câmera
