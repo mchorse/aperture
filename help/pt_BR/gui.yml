@@ -66,6 +66,7 @@ aperture.gui:
     editor:
         f1: Pressione F1 para mostrar a GUI novamente...
         speed: Velocidade
+        distance: Distância
 
         keys:
             fixture:
@@ -98,6 +99,8 @@ aperture.gui:
                 prev_fixture: Ir para o suporte anterior
                 next: Ir para o próximo frame
                 prev: Ir para o frame anterior
+                undo: Desfazer
+                redo: Refazer
 
     fixtures:
         idle: Parado
@@ -128,6 +131,8 @@ aperture.gui:
         orbit_description: Conecta a câmera a uma entidade ou entidades, mas usando controles semelhantes à órbita
         drag: Levar
         drag_description: Suaviza as propriedades da câmera ativada usando interpolação linear entre o valor atual e o anterior
+        remapper: Remapear
+        remapper_description: Remapeia a progressão do aparelho com base em determinada expressão ou quadros-chave
         
         enabled: Habilitado
 
@@ -159,6 +164,8 @@ aperture.gui:
             factor: Fator linear (entre 0 e 1), quanto menor o valor, mais suavizará
             
             marth: Expressão matemática\n\nClique em "?" para obter mais informações sobre variáveis e funções...
+            
+            keyframes: Habilitar Keyframes
             
         envelopes:
             start_x: Ponto de partida
@@ -221,18 +228,19 @@ aperture.gui:
         offset: Deslocamento
         circles: Círculos
         distance: Distância
+        
+        auto_center: Centralizar
+        circular_x: Ponto central X
+        circular_z: Ponto central Z
 
         path_points: Pontos de caminho
         position: Posição
         angle: Ângulo
         circle: Círculo
+        circular: Circular
         selector: Seletor de destino da entidade (você também pode inserir a tag de nome da entidade em vez do seletor de destino)\n\nClique no botão "?" para obter mais informações sobre a sintaxe...
-        per_point: Duração por ponto
-
         use_speed: Controle de velocidade
         use_speed_enable: Habilitado
-        use_factor: Uso do Fator
-        use_factor_tooltip: Quando habilitado, ele usará a curva de velocidade para o percurso manual do caminho. 0 é o início e 1 é o fim.
 
         all: Todos
         previous: Anterior
@@ -248,6 +256,7 @@ aperture.gui:
             yaw: "Direção horizontal (rotação, medida em graus) na qual o dolly vai viajar"
             pitch: "Direção vertical (inclinação, medida em graus) na qual o dolly vai viajar"
             speed: "Velocidade linear: %s blocos/s."
+            reverse: "Troque de lugar começando no fim, porque inverta-o"
         
         keys:
             title: Painel de acessório atual
@@ -261,3 +270,7 @@ aperture.gui:
             
             previous: Alternar opção anterior
             record_manual: Comece a registrar o movimento manual
+
+        context:
+            look_coords: Obter coordenadas de entidade/bloco no cursor
+            look_block: Obtenha as coordenadas do bloco central no cursor
