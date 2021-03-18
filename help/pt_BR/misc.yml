@@ -4,3 +4,5 @@ aperture.misc:
     profile_info_current: "{6}Atual %s \"%s\" (%st, %s suportes)"
     server: Servidor
     client: Cliente
+
+mclib.interpolations.circular: Circular
