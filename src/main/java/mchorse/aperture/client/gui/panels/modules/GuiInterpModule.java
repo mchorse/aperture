@@ -7,10 +7,13 @@ import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.utils.GuiInterpolationTypeList;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
+import mchorse.mclib.client.gui.framework.tooltips.InterpolationTooltip;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.IInterpolation;
 import mchorse.mclib.utils.MathUtils;
+import mchorse.mclib.utils.keyframes.KeyframeInterpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
@@ -31,6 +34,18 @@ public class GuiInterpModule extends GuiAbstractModule
     public boolean pickPos = false;
 
     private GuiPathFixturePanel panel;
+
+    private IInterpolation getInterp(InterpolationType type)
+    {
+        IInterpolation function = type.function;
+
+        if (type == InterpolationType.HERMITE)
+        {
+            function = KeyframeInterpolations.HERMITE;
+        }
+
+        return function;
+    }
 
     public GuiInterpModule(Minecraft mc, GuiCameraEditor editor, GuiPathFixturePanel panel)
     {
@@ -54,6 +69,7 @@ public class GuiInterpModule extends GuiAbstractModule
                 this.interps.resize();
             }
         });
+        this.pos.tooltip(new InterpolationTooltip(1F, 0, () -> this.getInterp(this.fixture.interpolation.get()), null));
 
         this.angle = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
@@ -71,6 +87,7 @@ public class GuiInterpModule extends GuiAbstractModule
                 this.interps.resize();
             }
         });
+        this.angle.tooltip(new InterpolationTooltip(1F, 0, () -> this.getInterp(this.fixture.interpolationAngle.get()), null));
 
         this.interps = new GuiInterpolationTypeList(mc, (interp) ->
         {
@@ -88,7 +105,7 @@ public class GuiInterpModule extends GuiAbstractModule
             this.panel.interpolationWasUpdated(this.pickPos);
             this.interps.removeFromParent();
         });
-        this.interps.markIgnored();
+        this.interps.tooltip(new InterpolationTooltip(1F, 0, () -> this.getInterp(this.pickPos ? this.fixture.interpolation.get() : this.fixture.interpolationAngle.get()), null)).markIgnored();
 
         this.interps.flex().y(1F).w(1F).h(96);
 

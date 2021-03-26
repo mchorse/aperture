@@ -13,6 +13,7 @@ import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiInterpolationList;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
+import mchorse.mclib.client.gui.framework.tooltips.InterpolationTooltip;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.InterpolationRenderer;
@@ -48,6 +49,8 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         this.pitch = new GuiTrackpadElement(mc, (value) -> this.editor.postUndo(this.undo(this.fixture.pitch, value.floatValue())));
         this.pitch.tooltip(IKey.lang("aperture.gui.panels.dolly.pitch"));
 
+        InterpolationTooltip tooltip = new InterpolationTooltip(1F, 0F, () -> this.fixture.interp.get(), null);
+
         this.pickInterp = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
             if (this.interps.hasParent())
@@ -63,6 +66,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
                 this.interps.resize();
             }
         });
+        this.pickInterp.tooltip(tooltip);
 
         this.interps = new GuiInterpolationList(mc, (interp) ->
         {
@@ -71,7 +75,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
             this.interps.removeFromParent();
             this.editor.updateProfile();
         });
-        this.interps.markIgnored().flex().y(1F).w(1F).h(96);
+        this.interps.tooltip(tooltip).markIgnored().flex().y(1F).w(1F).h(96);
 
         this.right.add(this.point, this.angle);
         this.left.add(Elements.label(IKey.lang("aperture.gui.fixtures.dolly")).background(0x88000000), Elements.row(mc, 0, 0, 20, this.distance, this.reverse), this.yaw, this.pitch, this.pickInterp);
@@ -128,10 +132,5 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         GuiDraw.drawTextBackground(this.font, label, this.area.mx(this.font.getStringWidth(label)), this.area.ey() - this.font.FONT_HEIGHT - 20, 0xffffff, 0x88000000);
 
         super.draw(context);
-
-        if (this.pickInterp.area.isInside(context) || (this.interps.canBeSeen() && this.interps.area.isInside(context)))
-        {
-            InterpolationRenderer.drawInterpolationPreview(this.fixture.interp.get(), context, this.pickInterp.area.ex() + 10, this.pickInterp.area.y, 0F, 0F, 40);
-        }
     }
 }

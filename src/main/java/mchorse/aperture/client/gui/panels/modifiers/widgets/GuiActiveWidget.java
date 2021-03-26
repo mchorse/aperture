@@ -1,17 +1,15 @@
 package mchorse.aperture.client.gui.panels.modifiers.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
 import mchorse.mclib.McLib;
-import mchorse.mclib.client.gui.framework.GuiTooltip;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.resources.I18n;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class GuiActiveWidget extends GuiElement
 {

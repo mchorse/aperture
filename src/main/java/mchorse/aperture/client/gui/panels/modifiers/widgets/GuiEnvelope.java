@@ -15,6 +15,7 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiInterpolationList;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.tooltips.InterpolationTooltip;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
@@ -60,6 +61,8 @@ public class GuiEnvelope extends GuiElement
 
         this.panel = panel;
 
+        InterpolationTooltip tooltip = new InterpolationTooltip(0F, 0F, () -> this.get().interpolation.get(), null);
+
         this.enabled = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.enabled"), (b) ->
         {
             this.panel.modifiers.editor.postUndo(this.undo(this.get().enabled, b.isToggled()));
@@ -92,7 +95,7 @@ public class GuiEnvelope extends GuiElement
         {
             this.panel.modifiers.editor.postUndo(this.undo(this.get().interpolation, l.get(0)));
         });
-        this.interps.setVisible(false);
+        this.interps.tooltip(tooltip).setVisible(false);
 
         this.keyframes = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.panels.keyframes"), (b) ->
         {
@@ -190,7 +193,7 @@ public class GuiEnvelope extends GuiElement
         this.enabled.toggled(envelope.enabled.get());
         this.relative.toggled(envelope.relative.get());
         this.fillIntervals();
-        this.interps.setCurrent(envelope.interpolation.get());
+        this.interps.setCurrentScroll(envelope.interpolation.get());
         this.keyframes.toggled(envelope.keyframes.get());
         this.channel.setChannel(envelope.channel, 0x0088ff);
 
