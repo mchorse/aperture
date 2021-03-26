@@ -15,6 +15,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.client.gui.utils.InterpolationRenderer;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -127,5 +128,10 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         GuiDraw.drawTextBackground(this.font, label, this.area.mx(this.font.getStringWidth(label)), this.area.ey() - this.font.FONT_HEIGHT - 20, 0xffffff, 0x88000000);
 
         super.draw(context);
+
+        if (this.pickInterp.area.isInside(context) || (this.interps.canBeSeen() && this.interps.area.isInside(context)))
+        {
+            InterpolationRenderer.drawInterpolationPreview(this.fixture.interp.get(), context, this.pickInterp.area.ex() + 10, this.pickInterp.area.y, 0F, 0F, 40);
+        }
     }
 }

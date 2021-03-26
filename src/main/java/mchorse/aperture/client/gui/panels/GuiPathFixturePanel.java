@@ -20,8 +20,11 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.InterpolationRenderer;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.Value;
+import mchorse.mclib.utils.IInterpolation;
+import mchorse.mclib.utils.keyframes.KeyframeInterpolations;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
@@ -301,5 +304,26 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
         }
 
         super.draw(context);
+
+        if (this.interp.pos.area.isInside(context) || (this.interp.pickPos && this.interp.interps.canBeSeen() && this.interp.interps.area.isInside(context)))
+        {
+            this.renderInterpolation(context, this.fixture.interpolation.get(), this.interp.pos);
+        }
+        else if (this.interp.angle.area.isInside(context) || (!this.interp.pickPos && this.interp.interps.canBeSeen() && this.interp.interps.area.isInside(context)))
+        {
+            this.renderInterpolation(context, this.fixture.interpolationAngle.get(), this.interp.angle);
+        }
+    }
+
+    private void renderInterpolation(GuiContext context, InterpolationType type, GuiElement element)
+    {
+        IInterpolation function = type.function;
+
+        if (type == InterpolationType.HERMITE)
+        {
+            function = KeyframeInterpolations.HERMITE;
+        }
+
+        InterpolationRenderer.drawInterpolationPreview(function, context, element.area.ex() + 10, element.area.y, 0F, 0F, 40);
     }
 }

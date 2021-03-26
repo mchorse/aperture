@@ -256,7 +256,7 @@ aperture.gui:
             yaw: "Horizontal direction (yaw, measured in degrees) in which dolly will travel"
             pitch: "Vertical direction (pitch, measured in degrees) in which dolly will travel"
             speed: "Linear speed: %s blocks/s."
-            reverse: "Switch places beginning end, because reverse it"
+            reverse: "Switch places beginning end, basically reverse it"
 
         keys:
             title: Current fixture panel
