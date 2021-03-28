@@ -55,14 +55,16 @@ public class GuiInterpModule extends GuiAbstractModule
 
         this.pos = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
-            if (this.interps.hasParent())
+            if (this.interps.hasParent() && this.pickPos)
             {
                 this.interps.removeFromParent();
             }
             else
             {
+                this.interps.removeFromParent();
+
                 this.pickPos = true;
-                this.interps.setCurrent(this.fixture.interpolation.get());
+                this.interps.setCurrentScroll(this.fixture.interpolation.get());
 
                 this.getParentContainer().add(this.interps);
                 this.interps.flex().relative(this.pos);
@@ -73,14 +75,16 @@ public class GuiInterpModule extends GuiAbstractModule
 
         this.angle = new GuiButtonElement(mc, IKey.lang(""), (b) ->
         {
-            if (this.interps.hasParent())
+            if (this.interps.hasParent() && !this.pickPos)
             {
                 this.interps.removeFromParent();
             }
             else
             {
+                this.interps.removeFromParent();
+
                 this.pickPos = false;
-                this.interps.setCurrent(this.fixture.interpolationAngle.get());
+                this.interps.setCurrentScroll(this.fixture.interpolationAngle.get());
 
                 this.getParentContainer().add(this.interps);
                 this.interps.flex().relative(this.angle);
@@ -103,7 +107,6 @@ public class GuiInterpModule extends GuiAbstractModule
             }
 
             this.panel.interpolationWasUpdated(this.pickPos);
-            this.interps.removeFromParent();
         });
         this.interps.tooltip(new InterpolationTooltip(1F, 0, () -> this.getInterp(this.pickPos ? this.fixture.interpolation.get() : this.fixture.interpolationAngle.get()), null)).markIgnored();
 

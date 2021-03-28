@@ -72,7 +72,6 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         {
             this.editor.postUndo(this.undo(this.fixture.interp, interp.get(0)));
             this.pickInterp.label.set(interp.get(0).getKey());
-            this.interps.removeFromParent();
             this.editor.updateProfile();
         });
         this.interps.tooltip(tooltip).markIgnored().flex().y(1F).w(1F).h(96);
@@ -107,6 +106,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         this.pitch.setValue(fixture.pitch.get());
         this.distance.setValue(fixture.distance.get());
 
+        this.interps.removeFromParent();
         this.interps.setCurrent(fixture.interp.get());
         this.pickInterp.label.set(fixture.interp.get().getKey());
     }
