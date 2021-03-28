@@ -54,7 +54,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         AbstractFixture fixture = editor.getFixture();
         int index = profile.fixtures.indexOf(fixture);
 
-        return new FixtureValueChangeUndo(index, property.getPath(), oldValue, newValue).cursor(editor.timeline.value);
+        return new FixtureValueChangeUndo(index, property.getPath(), oldValue, newValue).view(editor.timeline);
     }
 
     public GuiAbstractFixturePanel(Minecraft mc, GuiCameraEditor editor)

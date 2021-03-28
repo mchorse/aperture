@@ -65,10 +65,9 @@ public class GuiPointsModule extends GuiAbstractModule
     {
         CameraProfile profile = editor.getProfile();
         AbstractFixture fixture = editor.getFixture();
-        int cursor = this.editor.timeline.value;
         int fixtureIndex = profile.fixtures.indexOf(fixture);
 
-        return new FixturePointsChangeUndo(fixtureIndex, this.path.points.getPath(), index, nextIndex, this.path.points.getValue(), positions).cursor(cursor).noMerging();
+        return new FixturePointsChangeUndo(fixtureIndex, this.path.points.getPath(), index, nextIndex, this.path.points.getValue(), positions).view(this.editor.timeline).noMerging();
     }
 
     public void setIndex(int index)

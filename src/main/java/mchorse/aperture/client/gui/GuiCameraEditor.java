@@ -395,6 +395,8 @@ public class GuiCameraEditor extends GuiBase
     private void handleUndos(IUndo<CameraProfile> undo, boolean redo)
     {
         int cursor = -1;
+        double min = -1;
+        double max = -1;
         int index = -1;
         String name = "";
 
@@ -466,19 +468,32 @@ public class GuiCameraEditor extends GuiBase
             this.timeline.rescale();
         }
 
-        /* Handle cursor */
+        /* Handle viewport */
         if (undo instanceof CameraProfileUndo)
         {
-            cursor = ((CameraProfileUndo) undo).cursor;
+            CameraProfileUndo profileUndo = (CameraProfileUndo) undo;
+
+            cursor = profileUndo.cursor;
+            min = profileUndo.viewMin;
+            max = profileUndo.viewMax;
         }
         else if (undo instanceof CompoundUndo && ((CompoundUndo) undo).has(CameraProfileUndo.class))
         {
-            cursor = ((CameraProfileUndo) ((CompoundUndo) undo).getFirst(CameraProfileUndo.class)).cursor;
+            CameraProfileUndo profileUndo = (CameraProfileUndo) ((CompoundUndo) undo).getFirst(CameraProfileUndo.class);
+
+            cursor = profileUndo.cursor;
+            min = profileUndo.viewMin;
+            max = profileUndo.viewMax;
         }
 
         if (cursor >= 0 && this.timeline.value != cursor)
         {
             this.timeline.setValueFromScrub(cursor);
+        }
+
+        if (min >= 0 && max >= 0)
+        {
+            this.timeline.scale.view(min, max);
         }
     }
 
@@ -804,8 +819,8 @@ public class GuiCameraEditor extends GuiBase
             int index = profile.fixtures.indexOf(current);
 
             this.postUndoCallback(new CompoundUndo<CameraProfile>(
-                new FixtureValueChangeUndo(index, profile.fixtures.getPath() + "." + index, current.copy(), fixture).cursor(this.timeline.value),
-                new FixtureAddRemoveUndo(index + 1, newFixture, null).cursor(this.timeline.value)
+                new FixtureValueChangeUndo(index, profile.fixtures.getPath() + "." + index, current.copy(), fixture).view(this.timeline),
+                new FixtureAddRemoveUndo(index + 1, newFixture, null).view(this.timeline)
             ).noMerging());
         }
     }

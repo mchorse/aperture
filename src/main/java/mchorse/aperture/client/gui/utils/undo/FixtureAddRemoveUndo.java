@@ -13,7 +13,7 @@ public class FixtureAddRemoveUndo extends CameraProfileUndo
 
     public static IUndo<CameraProfile> create(GuiCameraEditor editor, CameraProfile profile, int index, AbstractFixture fixture)
     {
-        return new FixtureAddRemoveUndo(index, fixture, profile.get(index)).cursor(editor.timeline.value);
+        return new FixtureAddRemoveUndo(index, fixture, profile.get(index)).view(editor.timeline);
     }
 
     public FixtureAddRemoveUndo(int index, AbstractFixture fixture, AbstractFixture lastFixture)
