@@ -128,11 +128,7 @@ public class GuiProfilesManager extends GuiElement
             return;
         }
 
-        CameraProfile profile = new CameraProfile(AbstractDestination.create(name));
-
-        this.profiles.filter("", true);
-        this.profiles.list.add(profile);
-        this.editor.setProfile(profile);
+        this.addProfile(AbstractDestination.create(name), true);
     }
 
     private void dupe()
@@ -146,16 +142,16 @@ public class GuiProfilesManager extends GuiElement
 
         GuiModal.addFullModal(this, () ->
         {
-            String filename = entry.getDestination().getFilename();
+            AbstractDestination destination = entry.getDestination();
             GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.dupe_modal"), (name) ->
             {
-                if (!name.equals(filename))
+                if (!this.hasCameraProfile(destination))
                 {
                     this.dupe(name);
                 }
             });
 
-            return modal.filename().setValue(filename);
+            return modal.filename().setValue(destination.getFilename());
         });
     }
 
@@ -352,19 +348,26 @@ public class GuiProfilesManager extends GuiElement
 
     public void addProfile(AbstractDestination destination)
     {
-        for (CameraProfile profile : this.profiles.list.getList())
+        this.addProfile(destination, false);
+    }
+
+    public void addProfile(AbstractDestination destination, boolean exists)
+    {
+        if (this.hasCameraProfile(destination))
         {
-            if (profile.getDestination().equals(destination))
-            {
-                return;
-            }
+            return;
         }
 
         CameraProfile profile = new CameraProfile(destination);
 
-        profile.exists = false;
+        profile.exists = exists;
         this.profiles.list.add(profile);
         this.profiles.list.sort();
+
+        if (exists)
+        {
+            this.editor.setProfile(profile);
+        }
     }
 
     public void addProfile(CameraProfile newProfile)
@@ -383,6 +386,19 @@ public class GuiProfilesManager extends GuiElement
         this.profiles.list.add(newProfile);
         this.profiles.list.sort();
         this.editor.setProfile(newProfile);
+    }
+
+    private boolean hasCameraProfile(AbstractDestination destination)
+    {
+        for (CameraProfile profile : this.profiles.list.getList())
+        {
+            if (profile.getDestination().equals(destination))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
