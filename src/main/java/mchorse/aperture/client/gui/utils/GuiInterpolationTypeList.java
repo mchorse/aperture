@@ -23,8 +23,7 @@ public class GuiInterpolationTypeList extends GuiListElement<InterpolationType>
             this.add(interp);
         }
 
-        this.sort();
-        this.background();
+        this.background().cancelScrollEdge().sort();
     }
 
     @Override
