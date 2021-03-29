@@ -51,7 +51,7 @@ public class GuiPlaybackScrub extends GuiElement
 
     private boolean firstTime;
 
-    public boolean selectingLoop;
+    public int selectingLoop = -1;
     public int loopMin = 0;
     public int loopMax = 0;
 
@@ -253,8 +253,9 @@ public class GuiPlaybackScrub extends GuiElement
             {
                 if (GuiScreen.isCtrlKeyDown())
                 {
-                    this.selectingLoop = true;
-                    this.loopMin = this.loopMax = this.fromGraphX(mouseX);
+                    this.selectingLoop = 0;
+                    this.loopMin = this.fromGraphX(mouseX);
+                    this.verifyLoopMinMax();
                 }
                 else
                 {
@@ -264,6 +265,25 @@ public class GuiPlaybackScrub extends GuiElement
             }
             else if (context.mouseButton == 1 && this.profile != null)
             {
+                if (GuiScreen.isCtrlKeyDown())
+                {
+                    boolean same = this.loopMin == this.loopMax;
+
+                    this.selectingLoop = 1;
+                    this.loopMax = this.fromGraphX(mouseX);
+
+                    if (same)
+                    {
+                        this.loopMin = this.loopMax;
+                    }
+                    else
+                    {
+                        this.verifyLoopMinMax();
+                    }
+
+                    return false;
+                }
+
                 int tick = this.fromGraphX(mouseX);
 
                 if (this.editor.creating)
@@ -313,8 +333,15 @@ public class GuiPlaybackScrub extends GuiElement
             }
             else if (context.mouseButton == 2)
             {
-                this.scrolling = true;
-                this.lastX = mouseX;
+                if (GuiScreen.isCtrlKeyDown())
+                {
+                    this.loopMin = this.loopMax = 0;
+                }
+                else
+                {
+                    this.scrolling = true;
+                    this.lastX = mouseX;
+                }
             }
         }
 
@@ -353,7 +380,7 @@ public class GuiPlaybackScrub extends GuiElement
             this.editor.updateValues();
         }
 
-        if (this.selectingLoop)
+        if (this.selectingLoop >= 0)
         {
             this.verifyLoopMinMax();
         }
@@ -362,7 +389,7 @@ public class GuiPlaybackScrub extends GuiElement
         this.resize = false;
         this.dragging = false;
         this.scrolling = false;
-        this.selectingLoop = false;
+        this.selectingLoop = -1;
     }
 
     /**
@@ -381,9 +408,13 @@ public class GuiPlaybackScrub extends GuiElement
         {
             this.setValueFromScrub(this.fromGraphX(mouseX));
         }
-        else if (this.selectingLoop)
+        else if (this.selectingLoop == 0)
         {
-            this.loopMax = this.fromGraphX(mouseX);
+            this.loopMin = MathUtils.clamp(this.fromGraphX(mouseX), 0, this.loopMax);
+        }
+        else if (this.selectingLoop == 1)
+        {
+            this.loopMax = MathUtils.clamp(this.fromGraphX(mouseX), this.loopMin, Math.max(this.editor.maxScrub, (int) this.editor.getProfile().getDuration()));
         }
 
         if (this.scrolling)
