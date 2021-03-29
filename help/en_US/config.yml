@@ -29,7 +29,7 @@ aperture.config:
         tooltip: Config options which are used within camera editor
 
         sync: Sync mode
-        loop: Loop fixture
+        loop: Loop playback
         overlay: Enable overlay
         overlay_rl: Overlay path
         f1_tooltip: F1 hide tooltip

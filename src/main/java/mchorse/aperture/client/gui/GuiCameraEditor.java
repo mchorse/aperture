@@ -314,6 +314,7 @@ public class GuiCameraEditor extends GuiBase
         IKey fixture = IKey.lang("aperture.gui.editor.keys.fixture.title");
         IKey modes = IKey.lang("aperture.gui.editor.keys.modes.title");
         IKey editor = IKey.lang("aperture.gui.editor.keys.editor.title");
+        IKey looping = IKey.lang("aperture.gui.editor.keys.looping.title");
         Supplier<Boolean> active = this::isFlightDisabled;
 
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.editor.toggle"), Keyboard.KEY_F1, () -> this.top.toggleVisible()).category(editor);
@@ -347,8 +348,11 @@ public class GuiCameraEditor extends GuiBase
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.vertical"), Keyboard.KEY_V, () -> this.flight.toggleMovementType()).active(() -> this.flight.isFlightEnabled()).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.sync"), Keyboard.KEY_S, () -> this.cameraOptions.sync.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.ouside"), Keyboard.KEY_O, () -> this.cameraOptions.outside.clickItself(this.context)).active(active).category(modes);
-        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.looping"), Keyboard.KEY_L, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(modes);
         this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.interactive"), Keyboard.KEY_I, () -> this.creation.clickItself(this.context)).active(active).category(modes);
+
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.modes.looping"), Keyboard.KEY_L, () -> this.cameraOptions.loop.clickItself(this.context)).active(active).category(looping);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.looping.set_min"), Keyboard.KEY_LBRACKET, () -> this.timeline.setLoopMin(this.timeline.value)).active(active).category(looping);
+        this.root.keys().register(IKey.lang("aperture.gui.editor.keys.looping.set_max"), Keyboard.KEY_RBRACKET, () -> this.timeline.setLoopMax(this.timeline.value)).active(active).category(looping);
     }
 
     public void postUndo(IUndo<CameraProfile> undo)
@@ -1356,13 +1360,28 @@ public class GuiCameraEditor extends GuiBase
         }
 
         /* Loop fixture */
-        if (Aperture.editorLoop.get() && this.runner.isRunning() && !this.minema.isRecording() && fixture != null)
+        if (Aperture.editorLoop.get() && this.runner.isRunning() && !this.minema.isRecording())
         {
-            long target = this.getProfile().calculateOffset(fixture) + fixture.getDuration();
+            long min = -1;
+            long max = -1;
 
-            if (this.runner.ticks >= target - 1)
+            if (fixture != null)
             {
-                this.timeline.setValueFromScrub((int) (target - fixture.getDuration()));
+                min = this.getProfile().calculateOffset(fixture);
+                max = min + fixture.getDuration();
+            }
+
+            if (this.timeline.loopMin != this.timeline.loopMax && this.timeline.loopMin >= 0 && this.timeline.loopMin < this.timeline.loopMax)
+            {
+                min = this.timeline.loopMin;
+                max = this.timeline.loopMax;
+            }
+
+            max = Math.min(max, Math.max(this.getProfile().getDuration(), this.maxScrub));
+
+            if (min >= 0 && max >= 0 && min < max && this.runner.ticks >= max - 1)
+            {
+                this.timeline.setValueFromScrub((int) min);
             }
         }
 

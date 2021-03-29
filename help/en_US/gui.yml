@@ -85,7 +85,7 @@ aperture.gui:
                 vertical: Switch flight type
                 sync: Toggle sync mode
                 ouside: Toggle outside mode
-                looping: Toggle fixture looping
+                looping: Toggle playback looping
                 interactive: Toggle interactive mode
 
             editor:
@@ -101,6 +101,12 @@ aperture.gui:
                 prev: Jump to previous frame
                 undo: Undo
                 redo: Redo
+
+            looping:
+                title: Looping
+
+                set_min: Set start (In) looping position
+                set_max: Set end (Out) looping position
 
     fixtures:
         idle: Idle

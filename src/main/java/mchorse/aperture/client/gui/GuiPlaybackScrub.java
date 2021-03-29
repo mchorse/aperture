@@ -18,6 +18,7 @@ import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -49,6 +50,10 @@ public class GuiPlaybackScrub extends GuiElement
     private AbstractFixture end;
 
     private boolean firstTime;
+
+    public boolean selectingLoop;
+    public int loopMin = 0;
+    public int loopMax = 0;
 
     public GuiPlaybackScrub(Minecraft mc, GuiCameraEditor editor, CameraProfile profile)
     {
@@ -121,6 +126,31 @@ public class GuiPlaybackScrub extends GuiElement
 
     /* Public API methods  */
 
+    public void setLoopMin(int min)
+    {
+        if (min <= this.loopMax)
+        {
+            this.loopMin = min;
+        }
+    }
+
+    public void setLoopMax(int max)
+    {
+        if (max >= this.loopMin)
+        {
+            this.loopMax = max;
+        }
+    }
+
+    private void verifyLoopMinMax()
+    {
+        int min = this.loopMin;
+        int max = this.loopMax;
+
+        this.loopMin = Math.min(min, max);
+        this.loopMax = Math.max(min, max);
+    }
+
     /**
      * Set profile and update values which depends on camera profile
      */
@@ -138,6 +168,11 @@ public class GuiPlaybackScrub extends GuiElement
         if (profile != null && this.area.w != 0)
         {
             this.scale.view(this.min, duration);
+        }
+
+        if (!same)
+        {
+            this.loopMin = this.loopMax = 0;
         }
     }
 
@@ -216,8 +251,16 @@ public class GuiPlaybackScrub extends GuiElement
         {
             if (context.mouseButton == 0)
             {
-                this.scrubbing = true;
-                this.setValueFromScrub(this.fromGraphX(mouseX));
+                if (GuiScreen.isCtrlKeyDown())
+                {
+                    this.selectingLoop = true;
+                    this.loopMin = this.loopMax = this.fromGraphX(mouseX);
+                }
+                else
+                {
+                    this.scrubbing = true;
+                    this.setValueFromScrub(this.fromGraphX(mouseX));
+                }
             }
             else if (context.mouseButton == 1 && this.profile != null)
             {
@@ -310,10 +353,16 @@ public class GuiPlaybackScrub extends GuiElement
             this.editor.updateValues();
         }
 
+        if (this.selectingLoop)
+        {
+            this.verifyLoopMinMax();
+        }
+
         this.scrubbing = false;
         this.resize = false;
         this.dragging = false;
         this.scrolling = false;
+        this.selectingLoop = false;
     }
 
     /**
@@ -331,6 +380,10 @@ public class GuiPlaybackScrub extends GuiElement
         if (this.scrubbing)
         {
             this.setValueFromScrub(this.fromGraphX(mouseX));
+        }
+        else if (this.selectingLoop)
+        {
+            this.loopMax = this.fromGraphX(mouseX);
         }
 
         if (this.scrolling)
@@ -549,6 +602,25 @@ public class GuiPlaybackScrub extends GuiElement
                     int mx = this.toGraphX(marker);
 
                     Gui.drawRect(mx, y + 5, mx + 1, y + h - 1,0xaaff0000);
+                }
+            }
+
+            if (this.loopMin != this.loopMax)
+            {
+                int min = Math.min(this.loopMin, this.loopMax);
+                int max = Math.max(this.loopMin, this.loopMax);
+
+                int minX = this.toGraphX(min);
+                int maxX = this.toGraphX(max);
+
+                if (maxX >= this.area.x + 1 && minX < this.area.ex() - 1)
+                {
+                    minX = MathUtils.clamp(minX, this.area.x + 1, this.area.ex() - 1);
+                    maxX = MathUtils.clamp(maxX, this.area.x + 1, this.area.ex() - 1);
+
+                    GuiDraw.drawVerticalGradientRect(minX, this.area.y, maxX, this.area.ey(), 0x0000ffff, 0xaa0088ff);
+                    Gui.drawRect(minX, this.area.y, minX + 1, this.area.ey(), 0xff88ffff);
+                    Gui.drawRect(maxX - 1, this.area.y, maxX, this.area.ey(), 0xff88ffff);
                 }
             }
 

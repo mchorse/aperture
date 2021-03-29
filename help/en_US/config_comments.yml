@@ -18,7 +18,7 @@ aperture.config.comments:
 
     editor:
         sync: Enables syncing of camera's position in camera editor, which previews current camera profile
-        loop: Loops playback of currently selected fixture
+        loop: Loops playback of currently selected fixture or looping region (you can use [ and ] keys to select the region, or Ctrl + click drag on the timeline)
         overlay: Enables camera editor overlay
         overlay_rl: Resource location path to the texture which will be used as overlay
         f1_tooltip: Show the tooltip in the bottom left corner which explains how to show back the GUI
