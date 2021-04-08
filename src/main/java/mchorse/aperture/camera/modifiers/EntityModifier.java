@@ -8,6 +8,9 @@ import mchorse.mclib.config.values.ValueString;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Iterator;
 import java.util.List;
@@ -57,28 +60,34 @@ public abstract class EntityModifier extends AbstractModifier
 
         String selector = this.selector.get();
 
-        if (selector != null && !selector.isEmpty())
+        if (selector != null && !selector.isEmpty() && FMLCommonHandler.instance().getSide() == Side.CLIENT)
         {
-            EntityPlayer player = Minecraft.getMinecraft().player;
+            this.tryFindingEntityClient(selector);
+        }
+    }
 
-            if (!selector.contains("@"))
-            {
-                selector = "@e[name=" + selector + "]";
-            }
+    @SideOnly(Side.CLIENT)
+    private void tryFindingEntityClient(String selector)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().player;
 
-            try
-            {
-                this.entities = EntitySelector.matchEntities(player, selector, Entity.class);
+        if (!selector.contains("@"))
+        {
+            selector = "@e[name=" + selector + "]";
+        }
 
-                if (this.entities.isEmpty())
-                {
-                    this.entities = null;
-                }
-            }
-            catch (Exception e)
+        try
+        {
+            this.entities = EntitySelector.matchEntities(player, selector, Entity.class);
+
+            if (this.entities.isEmpty())
             {
                 this.entities = null;
             }
+        }
+        catch (Exception e)
+        {
+            this.entities = null;
         }
     }
 

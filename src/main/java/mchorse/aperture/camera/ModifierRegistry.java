@@ -2,8 +2,6 @@ package mchorse.aperture.camera;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.gson.JsonObject;
-import io.netty.buffer.ByteBuf;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.resources.I18n;
