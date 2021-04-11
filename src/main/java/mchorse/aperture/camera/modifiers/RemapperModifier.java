@@ -75,9 +75,9 @@ public class RemapperModifier extends AbstractModifier
             this.partial.set(previewPartialTick);
             this.duration.set(fixture.getDuration());
             this.progress.set(ticks + previewPartialTick);
-            this.factor.set((double) (offset + previewPartialTick) / this.duration.get());
+            this.factor.set((double) (offset + previewPartialTick) / this.duration.get().doubleValue());
 
-            factor = value.get();
+            factor = value.get().doubleValue();
         }
 
         factor *= fixture.getDuration();

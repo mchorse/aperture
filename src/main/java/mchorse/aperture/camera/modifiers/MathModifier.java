@@ -128,7 +128,7 @@ public class MathModifier extends ComponentModifier
             this.partial.set(previewPartialTick);
             this.duration.set(fixture == null ? profile.getDuration() : fixture.getDuration());
             this.progress.set(ticks + previewPartialTick);
-            this.factor.set((double) (offset + previewPartialTick) / this.duration.get());
+            this.factor.set((double) (offset + previewPartialTick) / this.duration.get().doubleValue());
 
             this.x.set(pos.point.x);
             this.y.set(pos.point.y);
@@ -142,43 +142,43 @@ public class MathModifier extends ComponentModifier
             if (this.isActive(0))
             {
                 this.value.set(pos.point.x);
-                pos.point.x = (float) expression.get();
+                pos.point.x = expression.get().doubleValue();
             }
 
             if (this.isActive(1))
             {
                 this.value.set(pos.point.y);
-                pos.point.y = (float) expression.get();
+                pos.point.y = expression.get().doubleValue();
             }
 
             if (this.isActive(2))
             {
                 this.value.set(pos.point.z);
-                pos.point.z = (float) expression.get();
+                pos.point.z = expression.get().doubleValue();
             }
 
             if (this.isActive(3))
             {
                 this.value.set(pos.angle.yaw);
-                pos.angle.yaw = (float) expression.get();
+                pos.angle.yaw = (float) expression.get().doubleValue();
             }
 
             if (this.isActive(4))
             {
                 this.value.set(pos.angle.pitch);
-                pos.angle.pitch = (float) expression.get();
+                pos.angle.pitch = (float) expression.get().doubleValue();
             }
 
             if (this.isActive(5))
             {
                 this.value.set(pos.angle.roll);
-                pos.angle.roll = (float) expression.get();
+                pos.angle.roll = (float) expression.get().doubleValue();
             }
 
             if (this.isActive(6))
             {
                 this.value.set(pos.angle.fov);
-                pos.angle.fov = (float) expression.get();
+                pos.angle.fov = (float) expression.get().doubleValue();
             }
         }
     }
