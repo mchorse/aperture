@@ -154,11 +154,11 @@ public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> exten
     {
         if (this.modifier.enabled.get())
         {
-            this.area.draw(0x88000000 + this.color);
+            this.area.draw(ColorUtils.HALF_BLACK + this.color);
         }
         else
         {
-            ColorUtils.bindColor(0x88000000 + this.color);
+            ColorUtils.bindColor(ColorUtils.HALF_BLACK + this.color);
             Icons.DISABLED.renderArea(this.area.x, this.area.y, this.area.w, this.area.h);
         }
 

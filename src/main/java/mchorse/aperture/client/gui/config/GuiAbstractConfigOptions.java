@@ -17,7 +17,7 @@ public abstract class GuiAbstractConfigOptions extends GuiElement
 
         this.editor = editor;
 
-        this.add(Elements.label(this.getTitle()).background(0x88000000));
+        this.add(Elements.label(this.getTitle()).background());
         this.flex().column(5).vertical().stretch().height(20).padding(10);
     }
 

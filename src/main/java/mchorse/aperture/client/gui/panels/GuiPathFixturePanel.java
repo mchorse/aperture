@@ -111,14 +111,14 @@ public class GuiPathFixturePanel extends GuiAbstractFixturePanel<PathFixture>
 
         this.circular = new GuiElement(mc);
         this.circular.flex().column(5).vertical().stretch().height(20);
-        this.circular.add(Elements.label(IKey.lang("aperture.gui.panels.circular")).background(0x88000000), this.autoCenter);
+        this.circular.add(Elements.label(IKey.lang("aperture.gui.panels.circular")).background(), this.autoCenter);
 
         this.points.flex().relative(this.left.flex()).x(1F, 40).y(1F, -30).wTo(this.right.flex(), -80).h(20);
         this.speed.flex().relative(this).y(0.55F, 0).w(1F).h(0.45F);
         this.left.flex().w(140);
 
         this.left.add(this.interp);
-        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.use_speed")).background(0x88000000), this.useSpeed);
+        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.use_speed")).background(), this.useSpeed);
         this.left.markContainer();
         this.right.add(this.point, this.angle);
 

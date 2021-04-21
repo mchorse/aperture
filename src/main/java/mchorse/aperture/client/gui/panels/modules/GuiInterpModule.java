@@ -113,8 +113,8 @@ public class GuiInterpModule extends GuiAbstractModule
         this.interps.flex().y(1F).w(1F).h(96);
 
         this.flex().column(5).vertical().stretch().height(20);
-        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.pos);
-        this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.angle);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(), this.pos);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(), this.angle);
 
         this.keys().register(IKey.lang("aperture.gui.panels.keys.path_position"), Keyboard.KEY_P, this::togglePosition).held(Keyboard.KEY_LCONTROL).active(editor::isFlightDisabled).category(GuiAbstractFixturePanel.CATEGORY);
         this.keys().register(IKey.lang("aperture.gui.panels.keys.path_angle"), Keyboard.KEY_A, this::toggleAngle).held(Keyboard.KEY_LCONTROL).active(editor::isFlightDisabled).category(GuiAbstractFixturePanel.CATEGORY);

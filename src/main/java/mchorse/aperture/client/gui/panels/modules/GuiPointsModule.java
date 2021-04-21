@@ -13,6 +13,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.ScrollArea;
 import mchorse.mclib.client.gui.utils.ScrollDirection;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
@@ -272,7 +273,7 @@ public class GuiPointsModule extends GuiAbstractModule
         int c = this.path.size();
 
         /* Draw background and buttons */
-        Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.h, 0x88000000);
+        Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.h, ColorUtils.HALF_BLACK);
         GuiDraw.scissor(this.scroll.x, this.scroll.y, this.scroll.w, this.scroll.h, context);
 
         for (int i = 0; i < c; i++)
@@ -297,18 +298,18 @@ public class GuiPointsModule extends GuiAbstractModule
             int bx = this.scroll.x + (int) (this.scroll.scroll / (float) (this.scroll.scrollSize - this.scroll.w) * (mw - scroll));
             int by = y + this.scroll.h + 2;
 
-            Gui.drawRect(bx, by, bx + scroll, by + 2, 0x88000000);
+            Gui.drawRect(bx, by, bx + scroll, by + 2, ColorUtils.HALF_BLACK);
         }
 
         /* Overlay "shadows" for informing the user that  */
         if (this.scroll.scroll > 0 && this.scroll.scrollSize >= this.scroll.w - 40)
         {
-            GuiDraw.drawHorizontalGradientRect(x, y, x + 4, y + this.scroll.h, 0x88000000, 0x0, 0);
+            GuiDraw.drawHorizontalGradientRect(x, y, x + 4, y + this.scroll.h, ColorUtils.HALF_BLACK, 0, 0);
         }
 
         if (this.scroll.scroll < this.scroll.scrollSize - this.scroll.w && this.scroll.scrollSize >= this.scroll.w)
         {
-            GuiDraw.drawHorizontalGradientRect(x + this.scroll.w - 4, y, x + this.scroll.w, y + this.scroll.h, 0x0, 0x88000000, 0);
+            GuiDraw.drawHorizontalGradientRect(x + this.scroll.w - 4, y, x + this.scroll.w, y + this.scroll.h, 0, ColorUtils.HALF_BLACK, 0);
         }
 
         super.draw(context);

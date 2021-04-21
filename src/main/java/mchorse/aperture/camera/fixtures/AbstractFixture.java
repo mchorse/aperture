@@ -32,7 +32,7 @@ public abstract class AbstractFixture extends StructureBase implements IByteBufS
     /**
      * Custom color tint for fixtures.
      */
-    public final ValueInt color = new ValueInt("color", 0x000000);
+    public final ValueInt color = new ValueInt("color", 0);
 
     /**
      * Duration of this fixture. Represented in ticks. There are 20 ticks in a

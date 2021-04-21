@@ -4,6 +4,7 @@ import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -63,7 +64,7 @@ public class GuiActiveWidget extends GuiElement
     {
         super.draw(context);
 
-        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, 0x88000000);
+        Gui.drawRect(this.area.x, this.area.y, this.area.x + this.area.w, this.area.y + this.area.h, ColorUtils.HALF_BLACK);
         int w = (this.area.w / 7);
 
         for (int i = 0; i < 7; i++)
@@ -86,7 +87,7 @@ public class GuiActiveWidget extends GuiElement
             }
             else if (isHover)
             {
-                Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, 0x88000000 + McLib.primaryColor.get());
+                Gui.drawRect(x, this.area.y, right, this.area.y + this.area.h, ColorUtils.HALF_BLACK + McLib.primaryColor.get());
             }
 
             this.drawCenteredString(this.font, this.labels.get(i).get(), x + w / 2, this.area.my() - this.font.FONT_HEIGHT / 2, 0xffffff);

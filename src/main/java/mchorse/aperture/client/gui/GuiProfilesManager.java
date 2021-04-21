@@ -84,7 +84,7 @@ public class GuiProfilesManager extends GuiElement
         this.curves.flex().relative(this).set(0, 28, 0, 0).w(1F).h(1, -28);
         this.curves.setVisible(false);
 
-        GuiLabel label = Elements.label(IKey.lang("aperture.gui.profiles.title")).background(0x88000000);
+        GuiLabel label = Elements.label(IKey.lang("aperture.gui.profiles.title")).background();
 
         label.flex().relative(this).set(10, 10, 0, 20);
 

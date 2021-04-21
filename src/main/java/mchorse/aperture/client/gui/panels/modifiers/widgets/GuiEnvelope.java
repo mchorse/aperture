@@ -22,6 +22,7 @@ import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.Color;
+import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.Direction;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Interpolations;
@@ -246,7 +247,7 @@ public class GuiEnvelope extends GuiElement
     {
         if (this.interps.isVisible())
         {
-            this.pickInterp.area.draw(0x88000000);
+            this.pickInterp.area.draw(ColorUtils.HALF_BLACK);
         }
 
         if (!this.get().keyframes.get())

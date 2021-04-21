@@ -87,7 +87,7 @@ public abstract class GuiAbstractFixturePanel<T extends AbstractFixture> extends
         });
         this.duration.tooltip(IKey.lang("aperture.gui.panels.duration"));
 
-        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.name")).background(0x88000000), this.name, this.color, this.duration);
+        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.name")).background(), this.name, this.color, this.duration);
         this.add(this.left, this.right);
     }
 

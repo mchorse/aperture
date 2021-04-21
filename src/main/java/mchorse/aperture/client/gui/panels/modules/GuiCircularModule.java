@@ -41,7 +41,7 @@ public class GuiCircularModule extends GuiAbstractModule
         this.distance.tooltip(IKey.lang("aperture.gui.panels.distance"));
 
         this.flex().column(5).vertical().stretch().height(20);
-        this.add(Elements.label(IKey.lang("aperture.gui.panels.circle")).background(0x88000000), this.offset, this.pitch, this.circles, this.distance);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.circle")).background(), this.offset, this.pitch, this.circles, this.distance);
     }
 
     public void fill(CircularFixture fixture)

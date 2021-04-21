@@ -21,6 +21,7 @@ import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.Value;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -100,7 +101,7 @@ public class GuiModifiersManager extends GuiElement
             @Override
             public void draw(GuiContext context)
             {
-                this.area.draw(0x88000000);
+                this.area.draw(ColorUtils.HALF_BLACK);
 
                 super.draw(context);
             }
@@ -135,7 +136,7 @@ public class GuiModifiersManager extends GuiElement
         this.add.flex().relative(this).set(0, 4, 20, 20).x(1, -30);
         this.paste.flex().relative(this.add).set(-20, 0, 20, 20);
 
-        this.title = Elements.label(IKey.lang(this.stringGlobal)).background(0x88000000);
+        this.title = Elements.label(IKey.lang(this.stringGlobal)).background();
         this.title.flex().relative(this).set(10, 10, 0, 20);
 
         this.add(this.title, this.add, this.paste, this.panels, this.buttons);
@@ -375,7 +376,7 @@ public class GuiModifiersManager extends GuiElement
 
         if (this.buttons.isVisible())
         {
-            this.add.area.draw(0x88000000);
+            this.add.area.draw(ColorUtils.HALF_BLACK);
         }
 
         super.draw(context);

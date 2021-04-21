@@ -89,7 +89,7 @@ public class GuiMinemaPanel extends GuiElement
         this.fields.flex().relative(this.flex()).w(1F).column(5).vertical().stretch().height(20).padding(10);
         this.flex().hTo(this.fields.flex(), 1F);
 
-        this.fields.add(Elements.label(IKey.lang("aperture.gui.minema.title"), 12).background(0x88000000));
+        this.fields.add(Elements.label(IKey.lang("aperture.gui.minema.title"), 12).background());
         this.fields.add(this.name, this.mode);
         this.fields.add(this.leftRight = Elements.row(mc, 5, 0, 20, this.left, this.right));
         this.fields.add(this.setLeftRight = Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight));

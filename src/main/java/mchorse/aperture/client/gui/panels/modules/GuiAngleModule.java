@@ -66,7 +66,7 @@ public class GuiAngleModule extends GuiAbstractModule
         this.fov.tooltip(IKey.lang("aperture.gui.panels.fov"));
 
         this.flex().column(5).vertical().stretch().height(20);
-        this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(0x88000000), this.yaw, this.pitch, this.roll, this.fov);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.angle")).background(), this.yaw, this.pitch, this.roll, this.fov);
     }
 
     public void fill(ValueAngle angle)

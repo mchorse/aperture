@@ -60,7 +60,7 @@ public class GuiPointModule extends GuiAbstractModule
         this.z.values(0.1F);
 
         this.flex().column(5).vertical().stretch().height(20);
-        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(0x88000000), this.x, this.y, this.z);
+        this.add(Elements.label(IKey.lang("aperture.gui.panels.position")).background(), this.x, this.y, this.z);
     }
 
     public void fill(ValuePoint point)

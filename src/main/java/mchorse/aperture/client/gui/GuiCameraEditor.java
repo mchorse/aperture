@@ -34,6 +34,7 @@ import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.client.gui.utils.resizers.IResizer;
+import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -1484,7 +1485,7 @@ public class GuiCameraEditor extends GuiBase
         int x = this.width - 18;
         int y = 22;
 
-        Gui.drawRect(this.width - (this.isSyncing() ? 20 : 0) - (this.flight.isFlightEnabled() ? 20 : 0), y - 2, this.width, y + 18, 0x88000000);
+        Gui.drawRect(this.width - (this.isSyncing() ? 20 : 0) - (this.flight.isFlightEnabled() ? 20 : 0), y - 2, this.width, y + 18, ColorUtils.HALF_BLACK);
         GlStateManager.color(1, 1, 1, 1);
 
         if (this.isSyncing())

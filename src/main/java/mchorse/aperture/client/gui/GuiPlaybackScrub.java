@@ -15,6 +15,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Scale;
 import mchorse.mclib.utils.Color;
+import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -560,7 +561,7 @@ public class GuiPlaybackScrub extends GuiElement
                 if (selected)
                 {
                     this.drawGradientRect(leftMargin + 1, y + 5, rightMargin, y + 12, 0x000088ff, 0x880088ff);
-                    this.drawGradientRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, 0x00000000, 0x44000000);
+                    this.drawGradientRect(leftMargin + 1, y + 15, rightMargin, y + h - 1, 0, 0x44000000);
                 }
 
                 String name = fixture.name.get();
@@ -660,12 +661,12 @@ public class GuiPlaybackScrub extends GuiElement
 
             if (this.scale.getMinValue() > this.min + bias)
             {
-                GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, 0x88000000, 0x00000000, 0);
+                GuiDraw.drawHorizontalGradientRect(x + 2, y + h - 5, x + 22, y + h, ColorUtils.HALF_BLACK, 0, 0);
             }
 
             if (this.scale.getMaxValue() < this.max - bias)
             {
-                GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0x00000000, 0x88000000, 0);
+                GuiDraw.drawHorizontalGradientRect(x + w - 22, y + h - 5, x + w - 2, y + h, 0, ColorUtils.HALF_BLACK, 0);
             }
 
             /* Draw end marker and also shadow of area where there is no  */
@@ -673,7 +674,7 @@ public class GuiPlaybackScrub extends GuiElement
 
             if (stopX < this.area.ex() - 2)
             {
-                this.drawGradientRect(stopX + 1, y + h / 2, x + w - 1, y + h, 0x00, 0x88000000);
+                this.drawGradientRect(stopX + 1, y + h / 2, x + w - 1, y + h, 0, ColorUtils.HALF_BLACK);
                 Gui.drawRect(stopX, y + h / 2, stopX + 1, y + h, 0xaaffffff);
             }
 
@@ -738,7 +739,7 @@ public class GuiPlaybackScrub extends GuiElement
             int xx = this.toGraphX(j);
             String value = TimeUtils.formatTime(j);
 
-            GuiDraw.drawTextBackground(this.font, value, xx - this.font.getStringWidth(value) / 2, y, 0xffffff, 0x88000000, 2);
+            GuiDraw.drawTextBackground(this.font, value, xx - this.font.getStringWidth(value) / 2, y, 0xffffff, ColorUtils.HALF_BLACK, 2);
             Gui.drawRect(xx, y + h / 2, xx + 1, y + h, 0x66ffffff);
         }
     }

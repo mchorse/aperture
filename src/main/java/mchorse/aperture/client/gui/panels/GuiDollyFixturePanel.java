@@ -18,6 +18,7 @@ import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.InterpolationRenderer;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
@@ -77,7 +78,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         this.interps.tooltip(tooltip).markIgnored().flex().y(1F).w(1F).h(96);
 
         this.right.add(this.point, this.angle);
-        this.left.add(Elements.label(IKey.lang("aperture.gui.fixtures.dolly")).background(0x88000000), Elements.row(mc, 0, 0, 20, this.distance, this.reverse), this.yaw, this.pitch, this.pickInterp);
+        this.left.add(Elements.label(IKey.lang("aperture.gui.fixtures.dolly")).background(), Elements.row(mc, 0, 0, 20, this.distance, this.reverse), this.yaw, this.pitch, this.pickInterp);
     }
 
     private void reverse()
@@ -129,7 +130,7 @@ public class GuiDollyFixturePanel extends GuiAbstractFixturePanel<DollyFixture>
         double speed = this.fixture.distance.get() / (this.fixture.getDuration() / 20D);
         String label = I18n.format("aperture.gui.panels.dolly.speed", GuiTrackpadElement.FORMAT.format(speed));
 
-        GuiDraw.drawTextBackground(this.font, label, this.area.mx(this.font.getStringWidth(label)), this.area.ey() - this.font.FONT_HEIGHT - 20, 0xffffff, 0x88000000);
+        GuiDraw.drawTextBackground(this.font, label, this.area.mx(this.font.getStringWidth(label)), this.area.ey() - this.font.FONT_HEIGHT - 20, 0xffffff, ColorUtils.HALF_BLACK);
 
         super.draw(context);
     }

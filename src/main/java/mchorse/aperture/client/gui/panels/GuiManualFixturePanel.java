@@ -98,7 +98,7 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
         this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.record"), this::startRecording);
         this.record.tooltip(IKey.lang("aperture.gui.panels.manual.record"));
 
-        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.manual.title")).background(0x88000000), this.shift, this.speed, this.record);
+        this.left.add(Elements.label(IKey.lang("aperture.gui.panels.manual.title")).background(), this.shift, this.speed, this.record);
 
         this.keys().register(IKey.lang("aperture.gui.panels.keys.record_manual"), Keyboard.KEY_R, () -> this.record.clickItself(GuiBase.getCurrent())).held(Keyboard.KEY_LCONTROL).active(editor::isFlightDisabled).category(CATEGORY);
     }
