@@ -355,7 +355,7 @@ public class GuiMinemaPanel extends GuiElement {
         if (this.originButton.isToggled())
         {
             this.trackingInitialPos[0] = this.trackingX.value;
-            this.trackingInitialPos[1] = this.trackingY.value - 0.9 * 1.8;
+            this.trackingInitialPos[1] = this.trackingY.value - 1.62;
             this.trackingInitialPos[2] = this.trackingZ.value;
         }
         else if (this.trackingInitialPos[0] == 0 && this.trackingInitialPos[1] == 0 && this.trackingInitialPos[2] == 0)
@@ -386,6 +386,7 @@ public class GuiMinemaPanel extends GuiElement {
         try
         {
             FileWriter file = new FileWriter(MinemaAPI.getCapturePath().toURI().getPath() +(this.getFilename().equals("") ?  this.format.format(new Date(System.currentTimeMillis())) : this.getFilename() )+ ".json");
+
             file.write(this.trackingData.toString());
             file.close();
             System.out.println("Successfully created the tracking data file.");
