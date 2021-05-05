@@ -3,6 +3,7 @@ package mchorse.aperture.client.gui;
 import info.ata4.minecraft.minema.MinemaAPI;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
+import mchorse.aperture.camera.CameraExporter;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
@@ -66,8 +67,7 @@ public class GuiMinemaPanel extends GuiElement {
     private boolean waiting;
     private int start;
     private int end;
-    private JsonArray trackingData = new JsonArray();
-    private double[] trackingInitialPos = {0,0,0};
+    private CameraExporter trackingExporter = new CameraExporter();
 
     private long lastUpdate;
     private String lastName;
@@ -107,19 +107,31 @@ public class GuiMinemaPanel extends GuiElement {
         });
         this.tracking.tooltip(IKey.lang("aperture.gui.minema.tracking_tooltip"));
 
-        this.originButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.modifiers.tracking_origin_title"), null);
+        this.originButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_origin_title"), (b) ->
+        {
+            this.trackingExporter.setRelativeOrigin(b.isToggled());
+        });
         this.originButton.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
         this.trackingElements = new GuiElement(mc);
         this.trackingElements.flex().column(2).stretch().vertical().height(3);
 
-        this.trackingX = new GuiTrackpadElement(mc, (Consumer<Double>) null);
+        this.trackingX = new GuiTrackpadElement(mc, (value) ->
+        {
+            this.trackingExporter.setOriginX(value.doubleValue());
+        });
         this.trackingX.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_x"));
 
-        this.trackingY = new GuiTrackpadElement(mc, (Consumer<Double>) null);
+        this.trackingY = new GuiTrackpadElement(mc,  (value) ->
+        {
+            this.trackingExporter.setOriginY(value.doubleValue());
+        });
         this.trackingY.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_y"));
 
-        this.trackingZ = new GuiTrackpadElement(mc, (Consumer<Double>) null);
+        this.trackingZ = new GuiTrackpadElement(mc,  (value) ->
+        {
+            this.trackingExporter.setOriginZ(value.doubleValue());
+        });
         this.trackingZ.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_z"));
 
         this.originTitle = Elements.label(IKey.lang("aperture.gui.minema.tracking_origin_title"), 20).anchor(0, 1F);
@@ -291,15 +303,12 @@ public class GuiMinemaPanel extends GuiElement {
             this.editor.root.setVisible(true);
             this.recording = this.waiting = false;
 
-            if (this.trackingData.size()!=0)
+            if (this.trackingExporter.building)
             {
-                exportTrackingData();
+                this.trackingExporter.exportTrackingData((this.getFilename().equals("") ? this.format.format(new Date(System.currentTimeMillis())) : this.getFilename())+ ".json");
             }
 
-            this.trackingData = new JsonArray();
-            this.trackingInitialPos[0] = 0;
-            this.trackingInitialPos[1] = 0;
-            this.trackingInitialPos[2] = 0;
+            this.trackingExporter.reset();
         }
     }
 
@@ -321,7 +330,7 @@ public class GuiMinemaPanel extends GuiElement {
         }
         else if (this.tracking.isToggled() && this.isRunning())
         {
-            this.writeTrackingdata();
+            this.trackingExporter.addFrame(this.editor.getRunner().getPosition());
         }
 
         if (this.waiting) {
@@ -339,60 +348,6 @@ public class GuiMinemaPanel extends GuiElement {
 
         if (Aperture.debugTicks.get()) {
             this.font.drawStringWithShadow(String.valueOf(ticks + partialTicks), 0, 0, 0xffffff);
-        }
-    }
-
-    private void writeTrackingdata()
-    {
-        Position position = this.editor.getRunner().getPosition();
-        JsonArray frame = new JsonArray();
-        JsonObject frameData = new JsonObject();
-        JsonArray positionData = new JsonArray();
-        JsonArray angleData = new JsonArray();
-
-        if (this.originButton.isToggled())
-        {
-            this.trackingInitialPos[0] = this.trackingX.value;
-            this.trackingInitialPos[1] = this.trackingY.value - 1.62;
-            this.trackingInitialPos[2] = this.trackingZ.value;
-        }
-        else if (this.trackingInitialPos[0] == 0 && this.trackingInitialPos[1] == 0 && this.trackingInitialPos[2] == 0)
-        {
-            this.trackingInitialPos[0] = position.point.x;
-            this.trackingInitialPos[1] = position.point.y;
-            this.trackingInitialPos[2] = position.point.z;
-        }
-
-        positionData.add(position.point.x - this.trackingInitialPos[0]);
-        positionData.add(position.point.y - this.trackingInitialPos[1]);
-        positionData.add(position.point.z - this.trackingInitialPos[2]);
-
-        angleData.add(position.angle.fov);
-        angleData.add(position.angle.roll);
-        angleData.add(position.angle.yaw);
-        angleData.add(position.angle.pitch);
-
-        frameData.add("position", positionData);
-        frameData.add("angle", angleData);
-
-        frame.add(frameData);
-        this.trackingData.add(frame);
-    }
-
-    private void exportTrackingData()
-    {
-        try
-        {
-            FileWriter file = new FileWriter(MinemaAPI.getCapturePath().toURI().getPath() +(this.getFilename().equals("") ?  this.format.format(new Date(System.currentTimeMillis())) : this.getFilename() )+ ".json");
-
-            file.write(this.trackingData.toString());
-            file.close();
-            System.out.println("Successfully created the tracking data file.");
-        }
-        catch (IOException e)
-        {
-            System.out.println("An error occurred during writing the tracking data file.");
-            e.printStackTrace();
         }
     }
 

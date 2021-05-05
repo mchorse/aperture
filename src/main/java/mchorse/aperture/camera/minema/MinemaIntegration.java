@@ -17,6 +17,10 @@ public class MinemaIntegration
         return Loader.isModLoaded(Minema.MODID);
     }
 
+    /**
+     * This method checks whether the mod Minema is available
+     * @return true if minema is available
+     */
     public static boolean isAvailable()
     {
         if (!isLoaded())
