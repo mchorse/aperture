@@ -1,12 +1,15 @@
 package mchorse.aperture.camera;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.MinemaAPI;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.minema.MinemaIntegration;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Optional;
 
 import java.io.FileWriter;
@@ -22,7 +25,8 @@ public class CameraExporter
     private boolean relativeOrigin = false;
     private JsonArray trackingData = new JsonArray();
     private double[] trackingInitialPos = {0,0,0};
-    private int heldframes = 1; //to determine double frames with minema's held frames
+    private int heldframes = 0; //to determine double frames with minema's held frames
+
     public boolean building = false;
 
     public void setRelativeOrigin(boolean state)
@@ -55,7 +59,7 @@ public class CameraExporter
         this.trackingInitialPos[1] = 0;
         this.trackingInitialPos[2] = 0;
         this.building = false;
-        this.heldframes = 1;
+        this.heldframes = 0;
     }
 
     @Optional.Method(modid = Minema.MODID)
@@ -70,6 +74,26 @@ public class CameraExporter
             this.trackingInitialPos[0] = position.point.x;
             this.trackingInitialPos[1] = position.point.y;
             this.trackingInitialPos[2] = position.point.z;
+        }
+
+        if (!building) //execute once at the beginning of exporting
+        {
+            if (MinemaIntegration.isAvailable())
+            {
+                JsonObject informationWrapper = new JsonObject();
+                JsonObject information = new JsonObject();
+                JsonArray resolution = new JsonArray();
+
+                resolution.add(Minema.instance.getConfig().frameWidth.get());
+                resolution.add(Minema.instance.getConfig().frameHeight.get());
+
+                information.add("fps", new JsonPrimitive(Minema.instance.getConfig().frameRate.get()));
+                information.add("resolution", resolution);
+
+                informationWrapper.add("information", information);
+
+                this.trackingData.add(informationWrapper);
+            }
         }
 
         positionData.add(position.point.x - this.trackingInitialPos[0]);
@@ -88,6 +112,8 @@ public class CameraExporter
         {
             if (Minema.instance.getConfig().heldFrames.get()>1)
             {
+                this.heldframes = (this.heldframes<Minema.instance.getConfig().heldFrames.get()) ? this.heldframes + 1 : 1;
+
                 if (this.heldframes>1)
                 {
                     JsonObject prevFrame = this.trackingData.get(this.trackingData.size()-1).getAsJsonObject();
@@ -96,7 +122,6 @@ public class CameraExporter
 
                     if (prevAngleData.equals(angleData) && prevPositionData.equals(positionData))
                     {
-                        this.heldframes++;
                         return;
                     }
                     else
@@ -104,8 +129,6 @@ public class CameraExporter
                         this.heldframes = 1;
                     }
                 }
-
-                this.heldframes = (this.heldframes<Minema.instance.getConfig().heldFrames.get()) ? this.heldframes + 1 : 1;
             }
         }
 
