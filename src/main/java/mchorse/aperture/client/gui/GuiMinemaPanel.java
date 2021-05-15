@@ -9,6 +9,8 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
 import mchorse.aperture.capabilities.camera.Camera;
+import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
+import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -41,7 +43,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
-public class GuiMinemaPanel extends GuiElement {
+public class GuiMinemaPanel extends GuiElement
+{
     public GuiCameraEditor editor;
 
     public GuiElement fields;
@@ -57,9 +60,13 @@ public class GuiMinemaPanel extends GuiElement {
     public GuiTrackpadElement trackingX;
     public GuiTrackpadElement trackingY;
     public GuiTrackpadElement trackingZ;
+    public GuiTextHelpElement selector;
     public GuiLabel originTitle;
     public GuiElement originRow;
+    public GuiElement originElements;
+    public GuiElement selectorElement;
     public GuiElement trackingElements;
+    public GuiElement nestedTrackingElements;
     public GuiButtonElement record;
 
     private GuiElement leftRight;
@@ -76,7 +83,8 @@ public class GuiMinemaPanel extends GuiElement {
     private String lastName;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
-    public GuiMinemaPanel(Minecraft mc, GuiCameraEditor editor) {
+    public GuiMinemaPanel(Minecraft mc, GuiCameraEditor editor)
+    {
         super(mc);
 
         this.editor = editor;
@@ -116,8 +124,24 @@ public class GuiMinemaPanel extends GuiElement {
         });
         this.originButton.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
+        this.nestedTrackingElements = new GuiElement(mc);
+        this.nestedTrackingElements.flex().column(2).stretch().vertical().height(3);
+
         this.trackingElements = new GuiElement(mc);
         this.trackingElements.flex().column(2).stretch().vertical().height(3);
+
+        this.originElements = new GuiElement(mc);
+        this.originElements.flex().column(2).stretch().vertical().height(3);
+
+        this.selectorElement = new GuiElement(mc);
+        this.selectorElement.flex().column(2).stretch().vertical().height(1);
+
+        this.selector = new GuiTextHelpElement(mc, 500, (str) ->
+        {
+            this.trackingExporter.selector = str;
+            this.trackingExporter.tryFindingEntity(str);
+        });
+        this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.minema.tracking_entity_selector"));
 
         this.trackingX = new GuiTrackpadElement(mc, (value) ->
         {
@@ -141,6 +165,10 @@ public class GuiMinemaPanel extends GuiElement {
         this.originTitle.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
         this.originRow = Elements.row(mc,2, this.trackingX, this.trackingY, this.trackingZ);
+
+        this.originElements.add(this.originButton, this.originRow);
+
+        this.nestedTrackingElements.add(this.originElements, this.selector);
 
         this.trackingElements.add(this.tracking);
 
@@ -177,56 +205,62 @@ public class GuiMinemaPanel extends GuiElement {
 
     private void updateButtons()
     {
-        this.originTitle.removeFromParent();
-        this.originButton.removeFromParent();
-        this.originRow.removeFromParent();
+        this.nestedTrackingElements.removeFromParent();
 
         if (this.tracking.isToggled())
         {
-            this.trackingElements.add(this.originButton);
-            this.trackingElements.add(this.originRow);
+            this.trackingElements.add(this.nestedTrackingElements);
         }
 
         this.getParent().resize();
     }
 
-    public void setProfile(CameraProfile profile) {
+    public void setProfile(CameraProfile profile)
+    {
         this.left.setValue(0);
         this.right.setValue(profile == null ? 30 : profile.getDuration());
     }
 
-    private void switchMode(GuiButtonElement element) {
+    private void switchMode(GuiButtonElement element)
+    {
         this.recordingMode = RecordingMode.values()[this.mode.getValue()];
 
         this.leftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
         this.setLeftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
     }
 
-    public boolean isRecording() {
+    public boolean isRecording()
+    {
         return this.recording;
     }
 
-    private boolean isRunning() {
+    private boolean isRunning()
+    {
         return this.editor.getRunner().isRunning();
     }
 
-    private String getFilename() {
+    private String getFilename()
+    {
         String text = this.name.field.getText();
 
-        if (!text.isEmpty()) {
+        if (!text.isEmpty())
+        {
             return text;
         }
 
-        if (!Aperture.minemaDefaultProfileName.get()) {
+        if (!Aperture.minemaDefaultProfileName.get())
+        {
             return "";
         }
 
         text = this.editor.getProfile().getDestination().getFilename();
 
-        if (this.recordingMode == RecordingMode.FIXTURE) {
+        if (this.recordingMode == RecordingMode.FIXTURE)
+        {
             AbstractFixture fixture = this.editor.getFixture();
 
-            if (fixture != null) {
+            if (fixture != null)
+            {
                 text += "-" + (this.editor.getProfile().fixtures.indexOf(fixture) + 1);
             }
         }
@@ -234,23 +268,28 @@ public class GuiMinemaPanel extends GuiElement {
         return text;
     }
 
-    private void calculateLeft(GuiButtonElement button) {
+    private void calculateLeft(GuiButtonElement button)
+    {
         int right = (int) (this.left.value + this.right.value);
 
         this.left.setValue(this.editor.timeline.value);
         this.right.setValue(right - this.left.value);
     }
 
-    private void calculateRight(GuiButtonElement button) {
+    private void calculateRight(GuiButtonElement button)
+    {
         this.right.setValue(this.editor.timeline.value - this.left.value);
     }
 
-    private void openMovies(GuiButtonElement button) {
+    private void openMovies(GuiButtonElement button)
+    {
         MinemaIntegration.openMovies();
     }
 
-    private void startRecording(GuiButtonElement button) {
-        if (this.isRunning() || MinemaIntegration.isRecording()) {
+    private void startRecording(GuiButtonElement button)
+    {
+        if (this.isRunning() || MinemaIntegration.isRecording())
+        {
             return;
         }
 
@@ -258,25 +297,32 @@ public class GuiMinemaPanel extends GuiElement {
         this.start = (int) this.left.value;
         this.end = this.start + (int) this.right.value;
 
-        if (this.recordingMode == RecordingMode.FIXTURE && this.editor.panel.delegate != null) {
+        if (this.recordingMode == RecordingMode.FIXTURE && this.editor.panel.delegate != null)
+        {
             AbstractFixture fixture = this.editor.panel.delegate.fixture;
 
             this.start = (int) this.editor.getProfile().calculateOffset(fixture);
             this.end = (int) (this.start + fixture.getDuration());
-        } else if (this.recordingMode == RecordingMode.FULL) {
+        }
+        else if (this.recordingMode == RecordingMode.FULL)
+        {
             this.start = 0;
             this.end = (int) this.editor.getProfile().getDuration();
         }
 
-        if (this.end - this.start <= 0) {
+        if (this.end - this.start <= 0)
+        {
             return;
         }
 
         MinemaIntegration.setName(this.getFilename());
 
-        try {
+        try
+        {
             MinemaIntegration.toggleRecording(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, IKey.str(MinemaIntegration.getMessage(e))));
 
             return;
@@ -291,14 +337,18 @@ public class GuiMinemaPanel extends GuiElement {
         this.recording = this.waiting = true;
     }
 
-    public void stop() {
-        if (this.recording) {
-            try {
+    public void stop()
+    {
+        if (this.recording)
+        {
+            try
+            {
                 MinemaIntegration.toggleRecording(false);
-            } catch (Exception e) {
             }
+            catch (Exception e) {}
 
-            if (this.isRunning()) {
+            if (this.isRunning())
+            {
                 this.editor.togglePlayback();
             }
 
@@ -319,11 +369,13 @@ public class GuiMinemaPanel extends GuiElement {
      */
     public void minema(int ticks, float partialTicks)
     {
-        if (!this.recording) {
+        if (!this.recording)
+        {
             return;
         }
 
-        if (!MinemaIntegration.isRecording()) {
+        if (!MinemaIntegration.isRecording())
+        {
             this.stop();
 
             GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, IKey.lang("aperture.gui.minema.premature_stop")));
@@ -332,23 +384,31 @@ public class GuiMinemaPanel extends GuiElement {
         }
         else if (this.tracking.isToggled() && this.isRunning())
         {
-            this.trackingExporter.addFrame(this.editor.getRunner().getPosition());
+            this.trackingExporter.build(this.editor.getRunner().getPosition(), partialTicks);
         }
 
-        if (this.waiting) {
-            if (!this.isRunning() && partialTicks == 0) {
+        if (this.waiting)
+        {
+            if (!this.isRunning() && partialTicks == 0)
+            {
                 this.editor.togglePlayback();
                 this.waiting = false;
             }
-        } else {
-            if (this.isRunning() && ticks >= this.end) {
+        }
+        else
+        {
+            if (this.isRunning() && ticks >= this.end)
+            {
                 this.editor.togglePlayback();
-            } else if (!this.isRunning()) {
+            }
+            else if (!this.isRunning())
+            {
                 this.stop();
             }
         }
 
-        if (Aperture.debugTicks.get()) {
+        if (Aperture.debugTicks.get())
+        {
             this.font.drawStringWithShadow(String.valueOf(ticks + partialTicks), 0, 0, 0xffffff);
         }
     }
