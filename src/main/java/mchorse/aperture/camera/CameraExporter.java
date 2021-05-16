@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -37,14 +38,10 @@ public class CameraExporter
     private double[] trackingInitialPos = {0,0,0};
     private int heldframes = 0; //to determine double frames with minema's held frames
     private int heldframesEntity = 0; //to determine double frames with minema's held frames for entities (maybe redundant?)
+    private List<Entity> entities = new ArrayList<>();
 
     public boolean building = false;
     public String selector; //for entities
-
-    /**
-     * Target entities
-     */
-    public List<Entity> entities;
 
     public void setRelativeOrigin(boolean state)
     {
@@ -97,7 +94,7 @@ public class CameraExporter
 
             this.wrapper.add("camera-tracking", this.trackingData);
 
-            if(this.entities != null)
+            if(!this.entities.isEmpty())
             {
                 this.wrapper.add("entities", this.entityData);
             }
@@ -137,12 +134,6 @@ public class CameraExporter
         {
             this.tryFindingEntity(this.selector);
         }
-
-        if (this.entities == null)
-        {
-            return;
-        }
-
 
         for (Entity entity : this.entities)
         {
@@ -268,36 +259,35 @@ public class CameraExporter
      */
     public void tryFindingEntity(String selector)
     {
-        this.entities = null;
+        this.entities.clear();
 
         if (selector != null && !selector.isEmpty() && FMLCommonHandler.instance().getSide() == Side.CLIENT)
         {
-            this.tryFindingEntityClient(selector);
+            String[] selectorArray = selector.split(" - ");
+            System.out.println(selectorArray);
+
+            this.tryFindingEntityClient(selectorArray);
+            System.out.println(this.entities != null ? this.entities.size() : "null");
         }
     }
 
     @SideOnly(Side.CLIENT)
-    private void tryFindingEntityClient(String selector)
+    private void tryFindingEntityClient(String[] selectorArray)
     {
         EntityPlayer player = Minecraft.getMinecraft().player;
 
-        if (!selector.contains("@"))
+        for (String selector : selectorArray)
         {
-            selector = "@e[name=" + selector + "]";
-        }
-
-        try
-        {
-            this.entities = EntitySelector.matchEntities(player, selector, Entity.class);
-
-            if (this.entities.isEmpty())
+            if (!selector.contains("@"))
             {
-                this.entities = null;
+                selector = "@e[name=" + selector + "]";
             }
-        }
-        catch (Exception e)
-        {
-            this.entities = null;
+
+            try
+            {
+                this.entities.addAll(EntitySelector.matchEntities(player, selector, Entity.class));
+            }
+            catch (Exception e) { }
         }
     }
 
@@ -306,7 +296,7 @@ public class CameraExporter
      */
     protected boolean checkForDead()
     {
-        if (this.entities == null)
+        if (this.entities.isEmpty())
         {
             return true;
         }
@@ -323,11 +313,6 @@ public class CameraExporter
             }
         }
 
-        if (this.entities.isEmpty())
-        {
-            this.entities = null;
-        }
-
-        return this.entities == null;
+        return this.entities.isEmpty();
     }
 }

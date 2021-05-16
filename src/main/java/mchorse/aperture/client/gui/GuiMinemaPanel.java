@@ -1,19 +1,14 @@
 package mchorse.aperture.client.gui;
 
-import info.ata4.minecraft.minema.MinemaAPI;
 import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraExporter;
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
-<<<<<<< HEAD
-=======
 import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
->>>>>>> added entity tracking code
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -27,16 +22,11 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDrawable;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
-import mchorse.mclib.client.gui.utils.Label;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.config.values.ValueBoolean;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -58,9 +48,9 @@ public class GuiMinemaPanel extends GuiElement
     public GuiButtonElement movies;
     public GuiToggleElement tracking;
     public GuiToggleElement originButton;
-    public GuiTrackpadElement trackingX;
-    public GuiTrackpadElement trackingY;
-    public GuiTrackpadElement trackingZ;
+    public GuiTrackpadElement originX;
+    public GuiTrackpadElement originY;
+    public GuiTrackpadElement originZ;
     public GuiTextHelpElement selector;
     public GuiLabel originTitle;
     public GuiElement originRow;
@@ -122,6 +112,12 @@ public class GuiMinemaPanel extends GuiElement
         this.originButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_origin_title"), (b) ->
         {
             this.trackingExporter.setRelativeOrigin(b.isToggled());
+            if(b.isToggled())
+            {
+                this.trackingExporter.setOriginX(this.originX.value);
+                this.trackingExporter.setOriginY(this.originY.value);
+                this.trackingExporter.setOriginZ(this.originZ.value);
+            }
         });
         this.originButton.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
@@ -144,28 +140,28 @@ public class GuiMinemaPanel extends GuiElement
         });
         this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.minema.tracking_entity_selector"));
 
-        this.trackingX = new GuiTrackpadElement(mc, (value) ->
+        this.originX = new GuiTrackpadElement(mc, (value) ->
         {
             this.trackingExporter.setOriginX(value.doubleValue());
         });
-        this.trackingX.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_x"));
+        this.originX.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_x"));
 
-        this.trackingY = new GuiTrackpadElement(mc,  (value) ->
+        this.originY = new GuiTrackpadElement(mc,  (value) ->
         {
             this.trackingExporter.setOriginY(value.doubleValue());
         });
-        this.trackingY.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_y"));
+        this.originY.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_y"));
 
-        this.trackingZ = new GuiTrackpadElement(mc,  (value) ->
+        this.originZ = new GuiTrackpadElement(mc,  (value) ->
         {
             this.trackingExporter.setOriginZ(value.doubleValue());
         });
-        this.trackingZ.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_z"));
+        this.originZ.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_z"));
 
         this.originTitle = Elements.label(IKey.lang("aperture.gui.minema.tracking_origin_title"), 20).anchor(0, 1F);
         this.originTitle.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
-        this.originRow = Elements.row(mc,2, this.trackingX, this.trackingY, this.trackingZ);
+        this.originRow = Elements.row(mc,2, this.originX, this.originY, this.originZ);
 
         this.originElements.add(this.originButton, this.originRow);
 
@@ -222,15 +218,9 @@ public class GuiMinemaPanel extends GuiElement
         this.right.setValue(profile == null ? 30 : profile.getDuration());
     }
 
-<<<<<<< HEAD
     private void switchMode(GuiCirculateElement b)
     {
         this.recordingMode = RecordingMode.values()[b.getValue()];
-=======
-    private void switchMode(GuiButtonElement element)
-    {
-        this.recordingMode = RecordingMode.values()[this.mode.getValue()];
->>>>>>> added entity tracking code
 
         this.leftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
         this.setLeftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);

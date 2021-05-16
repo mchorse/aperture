@@ -19,7 +19,6 @@ import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import mchorse.aperture.utils.TimeUtils;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
