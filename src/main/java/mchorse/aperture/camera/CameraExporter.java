@@ -12,6 +12,7 @@ import mchorse.aperture.camera.minema.MinemaIntegration;
 import mchorse.aperture.utils.EntitySelector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
@@ -135,6 +136,11 @@ public class CameraExporter
             this.tryFindingEntity(this.selector);
         }
 
+        if (!this.entities.isEmpty() && MinemaIntegration.isAvailable() && Minema.instance.getConfig().heldFrames.get() > 1)
+        {
+            this.heldframesEntity = (this.heldframesEntity < Minema.instance.getConfig().heldFrames.get()) ? this.heldframesEntity + 1 : 1;
+        }
+
         for (Entity entity : this.entities)
         {
             JsonArray entityFrameArray = new JsonArray();
@@ -150,33 +156,51 @@ public class CameraExporter
 
             JsonObject frame = new JsonObject();
             JsonArray positionData = new JsonArray();
+            JsonArray angleData = new JsonArray();
 
             positionData.add(x - this.trackingInitialPos[0]);
             positionData.add(y - this.trackingInitialPos[1]);
             positionData.add(z - this.trackingInitialPos[2]);
             frame.add("position", positionData);
 
+            if (entity instanceof EntityLivingBase)
+            {
+                double bodyYaw = ((EntityLivingBase) entity).prevRenderYawOffset + (((EntityLivingBase) entity).renderYawOffset - ((EntityLivingBase) entity).prevRenderYawOffset) * partialTick;
+
+                angleData.add(0);
+                angleData.add(bodyYaw);
+                angleData.add(0);
+                frame.add("body_rotation", angleData);
+            }
+
             entityFrameArray = this.entityData.getAsJsonArray(entity.getName());
 
             if (MinemaIntegration.isAvailable())
             {
-                if (Minema.instance.getConfig().heldFrames.get()>1)
+                if (Minema.instance.getConfig().heldFrames.get() > 1 && this.heldframesEntity > 1)
                 {
-                    this.heldframesEntity = (this.heldframesEntity<Minema.instance.getConfig().heldFrames.get()) ? this.heldframesEntity + 1 : 1;
+                    JsonObject prevFrame = entityFrameArray.get(entityFrameArray.size()-1).getAsJsonObject();
+                    JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
+                    JsonArray prevBodyRotationData = prevFrame.get("body_rotation").getAsJsonArray();
 
-                    if (this.heldframesEntity>1)
+                    boolean angleComparison = true;
+
+                    if (prevBodyRotationData != null && !prevBodyRotationData.equals(angleData))
                     {
-                        JsonObject prevFrame = entityFrameArray.get(entityFrameArray.size()-1).getAsJsonObject();
-                        JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
+                        angleComparison = false;
+                    }
 
-                        if (prevPositionData.equals(positionData))
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            this.heldframesEntity = 1;
-                        }
+                    if (prevPositionData.equals(positionData) && angleComparison)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        /*
+                         * expects that heldframes has the same effect on every entity each frame
+                         * (otherwise you would need individual heldframe checks for every entity - like an instance attached to it with this algorithm)
+                         */
+                        this.heldframesEntity = 1;
                     }
                 }
             }
@@ -264,10 +288,8 @@ public class CameraExporter
         if (selector != null && !selector.isEmpty() && FMLCommonHandler.instance().getSide() == Side.CLIENT)
         {
             String[] selectorArray = selector.split(" - ");
-            System.out.println(selectorArray);
 
             this.tryFindingEntityClient(selectorArray);
-            System.out.println(this.entities != null ? this.entities.size() : "null");
         }
     }
 
