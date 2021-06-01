@@ -6,7 +6,6 @@ import mchorse.aperture.camera.fixtures.DollyFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.panels.modules.GuiAngleModule;
 import mchorse.aperture.client.gui.panels.modules.GuiPointModule;
-import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
@@ -16,9 +15,9 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.framework.tooltips.InterpolationTooltip;
 import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.Icons;
-import mchorse.mclib.client.gui.utils.InterpolationRenderer;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.ColorUtils;
+import mchorse.mclib.utils.undo.CompoundUndo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 

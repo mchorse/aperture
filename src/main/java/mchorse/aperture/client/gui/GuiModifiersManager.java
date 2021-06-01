@@ -8,8 +8,6 @@ import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.values.ValueModifiers;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAbstractModifierPanel;
 import mchorse.aperture.client.gui.utils.undo.ModifierValueChangeUndo;
-import mchorse.aperture.utils.undo.CompoundUndo;
-import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
@@ -22,6 +20,8 @@ import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.ColorUtils;
+import mchorse.mclib.utils.undo.CompoundUndo;
+import mchorse.mclib.utils.undo.IUndo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 

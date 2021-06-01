@@ -6,7 +6,6 @@ import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiEnvelope;
 import mchorse.aperture.utils.APIcons;
-import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -16,6 +15,7 @@ import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.Value;
 import mchorse.mclib.utils.ColorUtils;
+import mchorse.mclib.utils.undo.IUndo;
 import net.minecraft.client.Minecraft;
 
 public abstract class GuiAbstractModifierPanel<T extends AbstractModifier> extends GuiElement

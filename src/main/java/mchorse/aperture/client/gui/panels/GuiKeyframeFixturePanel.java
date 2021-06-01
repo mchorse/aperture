@@ -7,14 +7,14 @@ import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
-import mchorse.aperture.utils.undo.CompoundUndo;
-import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
+import mchorse.mclib.utils.undo.CompoundUndo;
+import mchorse.mclib.utils.undo.IUndo;
 import net.minecraft.client.Minecraft;
 
 public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
