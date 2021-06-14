@@ -5,12 +5,10 @@ import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
-import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
-import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiMessageModal;
@@ -26,7 +24,6 @@ import net.minecraft.client.resources.I18n;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 public class GuiMinemaPanel extends GuiElement
 {
@@ -124,9 +121,9 @@ public class GuiMinemaPanel extends GuiElement
         this.right.setValue(profile == null ? 30 : profile.getDuration());
     }
 
-    private void switchMode(GuiButtonElement element)
+    private void switchMode(GuiCirculateElement b)
     {
-        this.recordingMode = RecordingMode.values()[this.mode.getValue()];
+        this.recordingMode = RecordingMode.values()[b.getValue()];
 
         this.leftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
         this.setLeftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
