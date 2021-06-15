@@ -384,5 +384,6 @@ public class CameraProfile extends StructureBase
         this.exists = true;
         this.fixtures.copy(profile.fixtures);
         this.modifiers.copy(profile.modifiers);
+        this.curves.copy(profile.curves);
     }
 }

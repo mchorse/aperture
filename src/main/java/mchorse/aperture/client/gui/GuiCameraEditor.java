@@ -649,7 +649,7 @@ public class GuiCameraEditor extends GuiBase
                 {
                     int offset = (int) panel.currentOffset();
 
-                    this.timeline.setValueFromScrub(offset);
+                    this.timeline.setValueFromScrub((int) (offset + duration));
                 }
 
                 this.timeline.index = this.getProfile().fixtures.indexOf(fixture);
@@ -1036,7 +1036,7 @@ public class GuiCameraEditor extends GuiBase
         EntityPlayer player = Minecraft.getMinecraft().player;
 
         this.position.set(player);
-        this.getProfile().applyCurves(tick, ticks);
+        this.getProfile().applyCurves(tick, this.lastPartialTick);
         this.getProfile().applyProfile(tick, ticks, this.lastPartialTick, this.position);
 
         this.position.apply(this.getCamera());
@@ -1316,6 +1316,7 @@ public class GuiCameraEditor extends GuiBase
         /* What the fuck, why is partial tick is always 0.32 on 1.12.2? */
         partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
 
+        this.lastPartialTick = 0;
         if (this.runner.isRunning())
         {
             this.lastPartialTick = partialTicks;
