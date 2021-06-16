@@ -323,7 +323,15 @@ public class CameraProfile extends StructureBase
 
         if (index >= this.size())
         {
-            return;
+            if (index == 0)
+            {
+                return;
+            }
+            else
+            {
+                index = this.size() - 1;
+                progress = this.fixtures.get(index).getDuration();
+            }
         }
 
         AbstractFixture fixture = this.fixtures.get(index);

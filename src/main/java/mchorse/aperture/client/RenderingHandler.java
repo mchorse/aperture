@@ -11,6 +11,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent.FOVModifier;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
@@ -132,6 +133,18 @@ public class RenderingHandler
                     Gui.drawRect(0, screenH - h, screenW, screenH, 0xff000000);
                 }
             }
+        }
+    }
+    
+    /**
+     * Disable FOV Modifier
+     */
+    @SubscribeEvent
+    public void onFOVModifier(FOVModifier event)
+    {
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
+        {
+            event.setFOV(mc.gameSettings.fovSetting);
         }
     }
 }
