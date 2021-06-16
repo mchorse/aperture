@@ -943,13 +943,16 @@ public class GuiCameraEditor extends GuiBase
             this.modifiers.cameraEditorOpened();
         }
 
-        Minecraft.getMinecraft().gameSettings.hideGUI = true;
+        Minecraft mc = Minecraft.getMinecraft();
+        mc.gameSettings.hideGUI = true;
         GuiIngameForge.renderHotbar = false;
         GuiIngameForge.renderCrosshairs = false;
 
         this.flight.setFlightEnabled(false);
         ClientProxy.control.cache();
         this.setAspectRatio(Aperture.editorLetterboxAspect.get());
+        mc.gameSettings.thirdPersonView = 0;
+        mc.setRenderViewEntity(player);
 
         if (Aperture.spectator.get() && !Aperture.outside.get())
         {
@@ -1291,11 +1294,11 @@ public class GuiCameraEditor extends GuiBase
     @Override
     protected void closeScreen()
     {
+        this.minema.stop();
         Minecraft.getMinecraft().gameSettings.hideGUI = false;
         ClientProxy.control.restore();
         GuiIngameForge.renderHotbar = true;
         GuiIngameForge.renderCrosshairs = true;
-        this.minema.stop();
 
         if (!this.runner.isRunning())
         {
