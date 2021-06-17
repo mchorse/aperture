@@ -72,8 +72,8 @@ public class Position
 
     public void apply(EntityPlayer player)
     {
-        player.setPositionAndRotation(this.point.x, this.point.y, this.point.z, this.angle.yaw, this.angle.pitch);
-        player.setLocationAndAngles(this.point.x, this.point.y, this.point.z, this.angle.yaw, this.angle.pitch);
+        player.setPositionAndRotation(this.point.x, this.point.y - player.getEyeHeight(), this.point.z, this.angle.yaw, this.angle.pitch);
+        player.setLocationAndAngles(this.point.x, this.point.y - player.getEyeHeight(), this.point.z, this.angle.yaw, this.angle.pitch);
         player.motionX = player.motionY = player.motionZ = 0;
         player.rotationYawHead = player.prevRotationYawHead = this.angle.yaw;
     }
