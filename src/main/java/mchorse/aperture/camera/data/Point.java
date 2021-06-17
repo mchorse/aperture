@@ -51,7 +51,7 @@ public class Point
 
     public void set(EntityPlayer player)
     {
-        this.set(player.posX, player.posY, player.posZ);
+        this.set(player.posX, player.posY + player.getEyeHeight(), player.posZ);
     }
 
     public void fromJSON(JsonObject element)
