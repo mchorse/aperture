@@ -7,6 +7,7 @@ import com.google.gson.JsonPrimitive;
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.MinemaAPI;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.minema.MinemaIntegration;
 import mchorse.aperture.utils.EntitySelector;
@@ -123,6 +124,13 @@ public class CameraExporter
         resolution.add(Minema.instance.getConfig().frameHeight.get());
 
         information.add("fps", new JsonPrimitive(Minema.instance.getConfig().frameRate.get()));
+
+        try //try whether Minema 3.6+ is used
+        {
+            information.add("motionblur_fps", new JsonPrimitive(Minema.instance.getConfig().getFrameRate()));
+        }
+        catch(Exception e) {}
+
         information.add("resolution", resolution);
         information.add("held_frames", new JsonPrimitive(Minema.instance.getConfig().heldFrames.get()));
 
