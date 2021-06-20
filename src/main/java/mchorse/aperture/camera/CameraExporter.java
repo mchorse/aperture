@@ -11,6 +11,7 @@ import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.minema.MinemaIntegration;
 import mchorse.aperture.utils.EntitySelector;
+import mchorse.aperture.utils.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -131,6 +132,7 @@ public class CameraExporter
         }
         catch(Exception e) {}
 
+        information.add("dynamic_fov", new JsonPrimitive(OptifineHelper.dynamicFov()));
         information.add("resolution", resolution);
         information.add("held_frames", new JsonPrimitive(Minema.instance.getConfig().heldFrames.get()));
 
