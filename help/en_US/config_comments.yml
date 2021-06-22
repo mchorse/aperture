@@ -29,6 +29,7 @@ aperture.config.comments:
         aspect_ratio: Aspect ratio for camera editor's letterbox feature
         hide_chat: When enabled, this option hides the chat, which could be quite distracting when adjusting camera angles
         seconds: When enabled, this option will use seconds, instead of ticks, for displaying and editing in camera editor
+        auto_save: This option allows to configure how often will a camera profile save automatically in seconds, 0 means disabled
 
     flight:
         forward: Moves the camera forward

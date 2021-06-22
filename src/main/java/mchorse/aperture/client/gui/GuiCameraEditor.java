@@ -102,6 +102,7 @@ public class GuiCameraEditor extends GuiBase
     public List<Integer> markers = new ArrayList<Integer>();
 
     private float lastPartialTick = 0;
+    private long lastSave = 0;
     public ResourceLocation overlayLocation;
 
     /**
@@ -906,6 +907,8 @@ public class GuiCameraEditor extends GuiBase
             this.timeline.index = profile.fixtures.indexOf(this.getFixture());
         }
 
+        this.lastSave = System.currentTimeMillis();
+
         return isSame;
     }
 
@@ -1358,6 +1361,28 @@ public class GuiCameraEditor extends GuiBase
             this.mc.player.motionX = 0;
             this.mc.player.motionY = 0;
             this.mc.player.motionZ = 0;
+        }
+
+        int autoSave = Aperture.editorAutoSave.get();
+
+        if (autoSave > 0)
+        {
+            long current = System.currentTimeMillis();
+
+            if (this.lastSave == 0)
+            {
+                this.lastSave = current;
+            }
+
+            if (current >= this.lastSave + autoSave * 1000)
+            {
+                if (this.getProfile().dirty && this.isFlightDisabled())
+                {
+                    this.saveProfile();
+                }
+
+                this.lastSave = current;
+            }
         }
 
         /* Loop fixture */

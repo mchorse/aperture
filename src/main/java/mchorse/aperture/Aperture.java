@@ -82,6 +82,7 @@ public class Aperture
     public static ValueString editorLetterboxAspect;
     public static ValueBoolean editorHideChat;
     public static ValueBoolean editorSeconds;
+    public static ValueInt editorAutoSave;
 
     public static ValueInt flightForward;
     public static ValueInt flightBackward;
@@ -161,6 +162,7 @@ public class Aperture
         editorLetterboxAspect = builder.getString("aspect_ratio", "21:9");
         editorHideChat = builder.getBoolean("hide_chat", true);
         editorSeconds = builder.getBoolean("seconds", false);
+        editorAutoSave = builder.getInt("auto_save", 0, 0, 600);
 
         builder.getCategory().markClientSide();
 
