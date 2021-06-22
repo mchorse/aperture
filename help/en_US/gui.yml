@@ -277,6 +277,8 @@ aperture.gui:
             previous: Toggle previous option
             record_manual: Start recording manual movement
 
+            toggle_keyframes: Toggle keyframe editor visibility
+
         context:
             look_coords: Get entity/block coordinates at cursor
             look_block: Get center block coordinates at cursor
