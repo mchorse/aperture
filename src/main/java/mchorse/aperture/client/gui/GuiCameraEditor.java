@@ -497,7 +497,7 @@ public class GuiCameraEditor extends GuiBase
             this.timeline.setValueFromScrub(cursor);
         }
 
-        if (min >= 0 && max >= 0)
+        if (min >= 0 && max >= 0 && min != max)
         {
             this.timeline.scale.view(min, max);
         }

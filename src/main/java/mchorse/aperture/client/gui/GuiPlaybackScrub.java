@@ -168,7 +168,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (profile != null && this.area.w != 0)
         {
-            this.scale.view(this.min, duration);
+            this.scale.view(this.min, duration <= 0 ? 30 : duration);
         }
 
         if (!same)
