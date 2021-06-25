@@ -3,7 +3,7 @@ aperture.info:
     camera:
         duration:
             fixture: "{f}O equipamento da câmera no índice %s{f} é executado por %s{f} ticks."
-            profile: "{f}O perfil da câmera é executado por %s{f} ticks e possui %s{f} acessórios para a câmera."
+            profile: "{f}O perfil da câmera é executado por %s{f} ticks e possui %s{f} suportes para a câmera."
         
         # Camera roll and fov
         fov: "{f}Seu campo de visão é de %s{f} graus."

@@ -1,61 +1,27 @@
 # Commands
 aperture.commands:
     # Load chunks command
-    load_chunks: 
-        |
-            {l}{6}/{r}load_chunks
-            
-            Este comando carrega todos os chunks na distância da renderização. Pode demorar um pouco
+    load_chunks: "Este comando carrega todos os pedaços na distância de renderização. Pode demorar um pouco..."
     
     # Aperture command
     aperture:
         help: 
             |
-                {r}{o}Comando de Servidor do Aperture{r}. Este comando pode ser usado para fazer com que um determinado jogador (por um seletor de entidade) comece a reproduzir o perfil da câmera.
+                {r}{o}Comando Aperture Server{r}. Este comando pode ser usado para fazer um determinado jogador (por um seletor de entidade) começar a usar o perfil da câmera.
                 
-                {l}{6}/{r}aperture {8}play{r} {7}<target|camera_profile> [camera_profile]{r}
+                {l}{6}/{r}aperture {8}play{r} {7}<camera_profile> [target]{r}
                 
-                {r}Se você passar apenas {7}<target|camera_profile>{r}, o perfil da câmera fornecido será reproduzido em você. Se você passar dois argumentos após o {8}play{r}, você poderá especificar o player (usando o nome de usuário ou o seletor de destino) e o perfil da câmera. 
+                {r}Se você transmitir apenas {7}<camera_profile>{r}, o perfil de câmera fornecido será reproduzido usando o jogador atual. Se você transmitir dois argumentos após {8}play{r}, você poderá especificar um {7}<camera_profile>{r} a ser reproduzido em determinado(s) jogador(es) usando o seletor de entidade {7}[target]{r}.
     
     # Camera's commands
     camera:
-        help: "{r}{o}Comando da câmera{r}. Fornece subcomandos para gerenciar o perfil da câmera e seus acessórios."
+        help: "{r}{o}Comando de Câmera{r}. Fornece subcomandos para gerenciar o perfil da câmera e seus acessórios de câmera."
         
-        start: 
-            |
-                {l}{6}/{r}camera {8}start{r} {7}[tick]{r}
-                
-                {r}Inicia um perfil de câmera. Opcionalmente a partir do devido {7}[tick]{r}.
-        stop: 
-            |
-                {l}{6}/{r}camera {8}stop{r}
-        
-                {r}Pára de executar o perfil da câmera atualmente
-
-        default:
-            |
-                {l}{6}/{r}camera {8}default{r}
-                
-                {r}Redefine o {7}campo de visão{r} da câmera e o{7}rolamento{r} para os valores padrão de ({7}70.0{r} e {7}0.0{r} graus).
-        fov: 
-            |
-                {l}{6}/{r}camera {8}fov{r} {7}[fov]{r}
-                
-                Definir ou obter a configuração do {l}campo de visão{r} ({8}fov{r}) da câmera no cliente.
-        roll: 
-            |
-                {l}{6}/{r}camera {8}roll{r} {7}[roll]{r}
-                
-                {r}Definir ou obter a câmera do cliente {7}[roll]{r} (rotação no {7}eixo-Z{r}).
-        
-        rotate:
-            |
-                {l}{6}/{r}camera {8}rotate{r} {7}[yaw] [pitch]{r}
-                
-                {r}Define o ângulo da câmera com base em valores absolutos ou relativos. Você pode definir o ângulo absoluto da câmera especificando números simples de ponto flutuante {6}/camera {8}rotate {7}90 90{r}. Ou você pode fornecer um valor relativo usando os sinais de {7}~+{r} ou {7}~-{r} {6}/camera {8}rotate {7}~0.5 ~-0.5{r}.
-        
-        step:
-            |
-                {l}{6}/{r}camera {8}step{r} {7}[x] [y] [z]{r}
-                
-                {r}Define a posição da câmera com base em valores absolutos ou relativos. Você pode definir a posição absoluta da câmera especificando números simples de ponto flutuante {6}/camera {8}step {7}0 4 0{r}. Ou você pode fornecer um valor relativo usando os sinais de {7}~+{r} ou {7}~-{r} {6}/camera {8}step {7}~0 ~0.1 ~0{r}. Funciona de forma semelhante ao comando {6}/tp{r}.
+        start: "{r}Inicia um perfil de câmera. Opcionalmente, a partir de {7}[tick]{r}."
+        stop: "{r}Para o perfil de câmera em execução atual."
+        default: "{r}Reiniciar Camera {7}Campo de visão{r} e {7}rolagem{r} para valores padrão ({7}70.0{r} e {7}0.0{r} degrees)."
+        fov: "Definir ou obter a configuração do {l}Campo de visão{r} ({8}FOV{r}) da câmera do cliente."
+        roll: "{r}Definir ou obter a câmera do cliente {7}[rolagem]{r} (rotação no {7}Eixo Z{r})."
+        rotate: "{r}Definir o ângulo da câmera com base em valores absolutos ou relativos. Você pode definir o ângulo absoluto da câmera especificando números de ponto flutuante simples {6}/camera {8}rotate {7}90 90{r}. Ou você pode fornecer um valor relativo usando os sinais {7}~+{r} ou {7}~-{r} - {6}/camera {8}rotate {7}~0.5 ~-0.5{r}."
+        step: "{r}Definir a posição da câmera com base em valores absolutos ou relativos. Você pode definir a posição absoluta da câmera especificando números de ponto flutuante simples {6}/camera {8}step {7}0 4 0{r}. Ou você pode fornecer um valor relativo usando os sinais {7}~+{r} or {7}~-{r} - {6}/camera {8}step {7}~0 ~0.1 ~0{r}. Funciona de forma semelhante ao comando {6}/tp{r}."
+        reload: "{r}Recarregar o editor de câmera."

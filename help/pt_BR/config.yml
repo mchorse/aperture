@@ -1,61 +1,88 @@
 # Config strings
 aperture.config:
-    camera:
-        title: Câmera
+    title: Aperture
+    
+    general:
+        title: Geral
         tooltip: Opções gerais da câmera
 
-        camera_duration_step: Etapa de duração
-        camera_duration: Duração padrão do aparelho
-        camera_interpolate_target: Alternar alvo dos acessórios
-        camera_interpolate_target_value: Valor alvo da interpolação
-        camera_spectator: Mudar para espectador
-        camera_step_factor: Fator de etapa da câmera
-        camera_rotate_factor: Fator de rotação da câmera
-        camera_minema: Minema
-        camera_path_default_interp: Interpolação de caminho padrão
-        camera_command_name: Nome do comando da câmera
-        camera_simulate_velocity: Simulação de velocidade
-        camera_first_tick_zero: Primeiro tick zero
-        camera_debug_ticks: Depuração de ticks
-        camera_profile_render: Renderizar perfil da câmera
-        camera_auto_save: Salvar perfis automaticamente
+        duration: Duração do suporte
+        spectator: Mudar para espectador
+        step_factor: Fator de etapa da câmera
+        rotate_factor: Fator de rotação da câmera
+        command_name: Nome do comando da câmera
+        debug_ticks: Depuração de ticks
+        profile_render: Renderizar perfil da câmera
+        auto_save: Salvar perfis automaticamente
+        essentials_tp: Usar /minecraft:tp
 
-        gui_render_mouse: Renderizar o cursor do mouse nas GUIs
-
-        minecrafttp_teleport: Usar /minecraft:tp
-        tp_teleport: Usar /tp
-        aspect_ratio: Proporção da tela
-
-    outside: 
+    outside:
         title: Modo externo
         tooltip: Opções de configuração relacionadas ao modo externo
         
-        camera_outside: Modo externo
-        camera_outside_hide_player: Ocultar jogador
-        camera_outside_sky: Consertar céu
-        camera_outside_hide_guis: Esconder GUIs
-        camera_outside_hide_overlays: Ocultar sobreposições
+        enabled: Modo externo
+        hide_player: Ocultar jogador
+        sky: Fixar céu
 
-    overlay:
-        title: Sobreposição do editor de câmera
-        tooltip: Permite configurar uma imagem de sobreposição que seria usada no editor de câmera
+    editor:
+        title: Editor de câmera
+        tooltip: Opções de configuração usadas no editor de câmera
         
-        camera_editor_overlay: Ativar sobreposição
-        camera_editor_overlay_rl: Caminho do recurso para sobrepor
-        camera_editor_f1_tooltip: F1 ocultar dica
+        sync: Modo de sincronização
+        loop: Loop do suporte
+        overlay: Ativar sobreposição
+        overlay_rl: Caminho de sobreposição
+        f1_tooltip: F1 ocultar dica
+        position: Exibir posição
+        rule_of_thirds: Regra dos terços
+        crosshair: Mira
+        letter_box: Caixa postal
+        aspect_ratio: Proporção da tela
+        hide_chat: Ocultar chat
+        seconds: Usar segundos
+
+    flight:
+        title: Modo de voo
+        tooltip: Esta categoria permite que você defina teclas de atalho para as teclas do modo de voo no editor de câmera
+
+        forward: Mover para Frente
+        backward: Mover para Trás
+        left: Mover para Esquerda
+        right: Mover para Direita
+        up: Mover para Cima
+        down: Mover para Baixo
+        camera_up: Inclinar para Cima
+        camera_down: Inclinar para Baixo
+        camera_left: Deslocar para Esquerda
+        camera_right: Deslocar para Direita
+        fov_minus: Diminuir FOV
+        fov_plus: Aumentar FOV
+        roll_minus: Rolar para Esquerda
+        roll_plus: Rolar para Direita
+        speed_minus: Diminuir Velocidade
+        speed_plus: Aumentar Velocidade
 
     smooth:
         title: Câmera suave
         tooltip: Opções de câmera suave
 
-        camera_smooth_clamp: Limite de inclinação
-
+        enabled: Câmera suave ativada
+        x_friction: Deslizamento do mouse X
+        y_friction: Deslizamento do mouse Y
+        clamp: Limite de inclinação
         roll_speed: Velocidade de rolagem
-        roll_friction: Atrito de rolagem
-
+        roll_friction: Deslizamento de rolagem
         fov_speed: Velocidade do FOV
-        fov_friction: Atrito do FOV
+        fov_friction: Deslizamento do FOV
 
-        smooth_enabled: Câmera suave ativada
-        mouse_x_friction: Atrito do mouse X
-        mouse_y_friction: Atrito do mouse Y
+    minema:
+        title: Minema
+        tooltip: Opções relacionadas à integração do Minema
+        
+        default_profile_name: Nome do perfil da Câmera
+
+op_access.config.aperture:
+    title: Aperture
+    tooltip: Opções de acesso OP do Aperture
+
+    camera_editor: Editor de Câmera
