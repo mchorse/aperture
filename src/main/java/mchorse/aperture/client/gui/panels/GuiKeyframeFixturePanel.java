@@ -30,12 +30,13 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public GuiButtonElement pitch;
     public GuiButtonElement roll;
     public GuiButtonElement fov;
+    public GuiButtonElement distance;
 
     public GuiCameraEditorKeyframesGraphEditor graph;
     public GuiCameraEditorKeyframesDopeSheetEditor dope;
 
-    public IKey[] titles = new IKey[8];
-    public int[] colors = new int[] {0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
+    public IKey[] titles = new IKey[9];
+    public int[] colors = new int[] {0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf, 0x777777};
 
     private IKey title = IKey.EMPTY;
     private GuiElement current;
@@ -56,10 +57,12 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.pitch = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.pitch"), (b) -> this.selectChannel(this.fixture.pitch, 5));
         this.roll = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.roll"), (b) -> this.selectChannel(this.fixture.roll, 6));
         this.fov = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.fov"), (b) -> this.selectChannel(this.fixture.fov, 7));
+        this.distance = new GuiButtonElement(mc, IKey.lang("aperture.gui.panels.distance"), (b) -> this.selectChannel(this.fixture.distance, 8));
 
         this.buttons.add(this.all);
         this.buttons.add(this.x, this.y, this.z);
         this.buttons.add(this.yaw, this.pitch, this.roll, this.fov);
+        this.buttons.add(this.distance);
 
         for (int i = 0; i < this.titles.length; i++)
         {
@@ -144,15 +147,28 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public void editFixture(Position position)
     {
         long tick = this.editor.timeline.value - this.currentOffset();
-
+        
+        double x = position.point.x;
+        double y = position.point.y;
+        double z = position.point.z;
+        float yaw = position.angle.yaw;
+        float pitch = position.angle.pitch;
+        float distance = this.fixture.distance.get().isEmpty() ? 0F : (float)this.fixture.distance.get().interpolate(tick) + 0.05F;
+        
+        y -= distance * Math.sin(Math.toRadians(pitch));
+        float distYaw = (float) (distance * Math.cos(Math.toRadians(pitch)));
+        x -= distYaw * Math.sin(Math.toRadians(yaw));
+        z += distYaw * Math.cos(Math.toRadians(yaw));
+        
         CompoundUndo<CameraProfile> undo = new CompoundUndo<CameraProfile>(
-            this.undoKeyframes(this.fixture.x, tick, position.point.x),
-            this.undoKeyframes(this.fixture.y, tick, position.point.y),
-            this.undoKeyframes(this.fixture.z, tick, position.point.z),
+            this.undoKeyframes(this.fixture.x, tick, x),
+            this.undoKeyframes(this.fixture.y, tick, y),
+            this.undoKeyframes(this.fixture.z, tick, z),
             this.undoKeyframes(this.fixture.yaw, tick, position.angle.yaw),
             this.undoKeyframes(this.fixture.pitch, tick, position.angle.pitch),
             this.undoKeyframes(this.fixture.roll, tick, position.angle.roll),
-            this.undoKeyframes(this.fixture.fov, tick, position.angle.fov)
+            this.undoKeyframes(this.fixture.fov, tick, position.angle.fov),
+            this.undoKeyframes(this.fixture.distance, tick, distance - 0.05F)
         );
 
         this.editor.postUndo(undo, false);

@@ -25,6 +25,7 @@ public class KeyframeFixture extends AbstractFixture
     public final ValueKeyframeChannel pitch = new ValueKeyframeChannel("pitch");
     public final ValueKeyframeChannel roll = new ValueKeyframeChannel("roll");
     public final ValueKeyframeChannel fov = new ValueKeyframeChannel("fov");
+    public final ValueKeyframeChannel distance = new ValueKeyframeChannel("distance");
 
     public ValueKeyframeChannel[] channels;
 
@@ -32,7 +33,7 @@ public class KeyframeFixture extends AbstractFixture
     {
         super(duration);
 
-        this.channels = new ValueKeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov};
+        this.channels = new ValueKeyframeChannel[] {this.x, this.y, this.z, this.yaw, this.pitch, this.roll, this.fov, this.distance};
 
         for (ValueKeyframeChannel channel : this.channels)
         {
@@ -61,18 +62,36 @@ public class KeyframeFixture extends AbstractFixture
         this.pitch.get().insert(0, pos.angle.pitch);
         this.roll.get().insert(0, pos.angle.roll);
         this.fov.get().insert(0, pos.angle.fov);
+        this.distance.get().insert(0, -0.05); // zNear
     }
 
     @Override
     public void applyFixture(long ticks, float partialTick, float previewPartialTick, CameraProfile profile, Position pos)
     {
         float t = ticks + previewPartialTick;
-
+        
         if (!this.x.get().isEmpty()) pos.point.x = this.x.get().interpolate(t);
         if (!this.y.get().isEmpty()) pos.point.y = this.y.get().interpolate(t);
         if (!this.z.get().isEmpty()) pos.point.z = this.z.get().interpolate(t);
         if (!this.yaw.get().isEmpty()) pos.angle.yaw = (float) this.yaw.get().interpolate(t);
         if (!this.pitch.get().isEmpty()) pos.angle.pitch = (float) this.pitch.get().interpolate(t);
+
+        double x = pos.point.x;
+        double y = pos.point.y;
+        double z = pos.point.z;
+        float yaw = pos.angle.yaw;
+        float pitch = pos.angle.pitch;
+        float distance = this.distance.get().isEmpty() ? 0F : (float)this.distance.get().interpolate(t) + 0.05F;
+        
+        y += distance * Math.sin(Math.toRadians(pitch));
+        distance *= Math.cos(Math.toRadians(pitch));
+        x += Math.sin(Math.toRadians(yaw)) * distance;
+        z -= Math.cos(Math.toRadians(yaw)) * distance;
+        
+        pos.point.x = x;
+        pos.point.y = y;
+        pos.point.z = z;
+        
         if (!this.roll.get().isEmpty()) pos.angle.roll = (float) this.roll.get().interpolate(t);
         if (!this.fov.get().isEmpty()) pos.angle.fov = (float) this.fov.get().interpolate(t);
     }
