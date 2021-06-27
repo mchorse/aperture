@@ -6,13 +6,10 @@ import mchorse.aperture.camera.CameraExporter;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
-import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
-import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
-import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiMessageModal;
@@ -214,9 +211,9 @@ public class GuiMinemaPanel extends GuiElement
         this.right.setValue(profile == null ? 30 : profile.getDuration());
     }
 
-    private void switchMode(GuiButtonElement element)
+    private void switchMode(GuiCirculateElement b)
     {
-        this.recordingMode = RecordingMode.values()[this.mode.getValue()];
+        this.recordingMode = RecordingMode.values()[b.getValue()];
 
         this.leftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
         this.setLeftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);

@@ -21,9 +21,6 @@ import mchorse.aperture.client.gui.utils.undo.FixtureAddRemoveUndo;
 import mchorse.aperture.client.gui.utils.undo.FixtureValueChangeUndo;
 import mchorse.aperture.events.CameraEditorEvent;
 import mchorse.aperture.utils.APIcons;
-import mchorse.aperture.utils.undo.CompoundUndo;
-import mchorse.aperture.utils.undo.IUndo;
-import mchorse.aperture.utils.undo.UndoManager;
 import mchorse.mclib.client.InputRenderer;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
@@ -36,6 +33,9 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.client.gui.utils.resizers.IResizer;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.Direction;
+import mchorse.mclib.utils.undo.CompoundUndo;
+import mchorse.mclib.utils.undo.IUndo;
+import mchorse.mclib.utils.undo.UndoManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -102,6 +102,7 @@ public class GuiCameraEditor extends GuiBase
     public List<Integer> markers = new ArrayList<Integer>();
 
     private float lastPartialTick = 0;
+    private long lastSave = 0;
     public ResourceLocation overlayLocation;
 
     /**
@@ -496,7 +497,7 @@ public class GuiCameraEditor extends GuiBase
             this.timeline.setValueFromScrub(cursor);
         }
 
-        if (min >= 0 && max >= 0)
+        if (min >= 0 && max >= 0 && min != max)
         {
             this.timeline.scale.view(min, max);
         }
@@ -905,6 +906,8 @@ public class GuiCameraEditor extends GuiBase
         {
             this.timeline.index = profile.fixtures.indexOf(this.getFixture());
         }
+
+        this.lastSave = System.currentTimeMillis();
 
         return isSame;
     }
@@ -1358,6 +1361,28 @@ public class GuiCameraEditor extends GuiBase
             this.mc.player.motionX = 0;
             this.mc.player.motionY = 0;
             this.mc.player.motionZ = 0;
+        }
+
+        int autoSave = Aperture.editorAutoSave.get();
+
+        if (autoSave > 0)
+        {
+            long current = System.currentTimeMillis();
+
+            if (this.lastSave == 0)
+            {
+                this.lastSave = current;
+            }
+
+            if (current >= this.lastSave + autoSave * 1000)
+            {
+                if (this.getProfile().dirty && this.isFlightDisabled())
+                {
+                    this.saveProfile();
+                }
+
+                this.lastSave = current;
+            }
         }
 
         /* Loop fixture */

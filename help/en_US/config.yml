@@ -40,6 +40,7 @@ aperture.config:
         aspect_ratio: Aspect ratio
         hide_chat: Hide the chat
         seconds: Use seconds
+        auto_save: Perioidic auto-save
 
     flight:
         title: Flight mode

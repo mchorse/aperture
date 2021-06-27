@@ -8,7 +8,6 @@ import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
 import mchorse.aperture.utils.TimeUtils;
-import mchorse.aperture.utils.undo.CompoundUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -17,6 +16,7 @@ import mchorse.mclib.client.gui.utils.Scale;
 import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
+import mchorse.mclib.utils.undo.CompoundUndo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -168,7 +168,7 @@ public class GuiPlaybackScrub extends GuiElement
 
         if (profile != null && this.area.w != 0)
         {
-            this.scale.view(this.min, duration);
+            this.scale.view(this.min, duration <= 0 ? 30 : duration);
         }
 
         if (!same)

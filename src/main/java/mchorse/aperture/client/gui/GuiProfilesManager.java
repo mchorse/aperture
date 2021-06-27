@@ -145,7 +145,11 @@ public class GuiProfilesManager extends GuiElement
             AbstractDestination destination = entry.getDestination();
             GuiPromptModal modal = new GuiPromptModal(this.mc, IKey.lang("aperture.gui.profiles.dupe_modal"), (name) ->
             {
-                if (!this.hasCameraProfile(destination))
+                AbstractDestination target = AbstractDestination.fromResourceLocation(destination.toResourceLocation());
+
+                target.setFilename(name);
+
+                if (!this.hasCameraProfile(target))
                 {
                     this.dupe(name);
                 }

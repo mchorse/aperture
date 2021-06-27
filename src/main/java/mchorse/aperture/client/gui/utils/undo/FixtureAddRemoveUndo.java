@@ -3,7 +3,7 @@ package mchorse.aperture.client.gui.utils.undo;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.client.gui.GuiCameraEditor;
-import mchorse.aperture.utils.undo.IUndo;
+import mchorse.mclib.utils.undo.IUndo;
 
 public class FixtureAddRemoveUndo extends CameraProfileUndo
 {

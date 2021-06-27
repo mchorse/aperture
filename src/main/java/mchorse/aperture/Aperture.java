@@ -1,7 +1,6 @@
 package mchorse.aperture;
 
-import mchorse.aperture.utils.undo.IUndo;
-import mchorse.aperture.utils.undo.UndoManager;
+import mchorse.aperture.commands.CommandAperture;
 import mchorse.mclib.McLib;
 import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;
@@ -11,16 +10,14 @@ import mchorse.mclib.config.values.ValueInt;
 import mchorse.mclib.config.values.ValueRL;
 import mchorse.mclib.config.values.ValueString;
 import mchorse.mclib.events.RegisterConfigEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.logging.log4j.Logger;
-
-import mchorse.aperture.commands.CommandAperture;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -85,6 +82,7 @@ public class Aperture
     public static ValueString editorLetterboxAspect;
     public static ValueBoolean editorHideChat;
     public static ValueBoolean editorSeconds;
+    public static ValueInt editorAutoSave;
 
     public static ValueInt flightForward;
     public static ValueInt flightBackward;
@@ -164,6 +162,7 @@ public class Aperture
         editorLetterboxAspect = builder.getString("aspect_ratio", "21:9");
         editorHideChat = builder.getBoolean("hide_chat", true);
         editorSeconds = builder.getBoolean("seconds", false);
+        editorAutoSave = builder.getInt("auto_save", 0, 0, 600);
 
         builder.getCategory().markClientSide();
 

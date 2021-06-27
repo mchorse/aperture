@@ -7,15 +7,16 @@ import mchorse.aperture.camera.values.ValueKeyframeChannel;
 import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesDopeSheetEditor;
 import mchorse.aperture.client.gui.utils.GuiCameraEditorKeyframesGraphEditor;
-import mchorse.aperture.utils.undo.CompoundUndo;
-import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.keyframes.KeyframeChannel;
+import mchorse.mclib.utils.undo.CompoundUndo;
+import mchorse.mclib.utils.undo.IUndo;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Keyboard;
 
 public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFixture>
 {
@@ -37,6 +38,7 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
     public int[] colors = new int[] {0xe51933, 0x19e533, 0x3319e5, 0x19cce5, 0xcc19e5, 0xe5cc19, 0xbfbfbf};
 
     private IKey title = IKey.EMPTY;
+    private GuiElement current;
 
     public GuiKeyframeFixturePanel(Minecraft mc, GuiCameraEditor editor)
     {
@@ -69,6 +71,17 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.dope.flex().relative(this).y(0.5F, 0).wh(1F, 0.5F);
 
         this.add(this.graph, this.dope, this.buttons);
+
+        this.keys().register(IKey.lang("aperture.gui.panels.keys.toggle_keyframes"), Keyboard.KEY_N, this::toggleKeyframes).category(CATEGORY);
+    }
+
+    private void toggleKeyframes()
+    {
+        if (this.current != null)
+        {
+            this.buttons.toggleVisible();
+            this.current.toggleVisible();
+        }
     }
 
     @Override
@@ -117,6 +130,9 @@ public class GuiKeyframeFixturePanel extends GuiAbstractFixturePanel<KeyframeFix
         this.title = this.titles[id];
         this.dope.setVisible(id == 0);
         this.graph.setVisible(id != 0);
+        this.buttons.setVisible(true);
+
+        this.current = id == 0 ? this.dope : this.graph;
 
         if (channel != null)
         {

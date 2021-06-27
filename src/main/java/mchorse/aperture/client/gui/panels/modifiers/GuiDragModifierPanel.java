@@ -5,9 +5,9 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.modifiers.DragModifier;
 import mchorse.aperture.client.gui.GuiModifiersManager;
 import mchorse.aperture.client.gui.panels.modifiers.widgets.GuiActiveWidget;
-import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.undo.IUndo;
 import net.minecraft.client.Minecraft;
 
 public class GuiDragModifierPanel extends GuiAbstractModifierPanel<DragModifier>

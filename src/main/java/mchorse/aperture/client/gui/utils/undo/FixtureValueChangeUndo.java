@@ -1,8 +1,8 @@
 package mchorse.aperture.client.gui.utils.undo;
 
 import mchorse.aperture.camera.CameraProfile;
-import mchorse.aperture.utils.undo.IUndo;
 import mchorse.mclib.config.values.Value;
+import mchorse.mclib.utils.undo.IUndo;
 
 public class FixtureValueChangeUndo extends CameraProfileUndo
 {
