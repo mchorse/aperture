@@ -4,3 +4,5 @@ aperture.misc:
     profile_info_current: "{6}目前是 %s \"%s\"（%st，%s 個關鍵點）"
     server: 伺服器
     client: 客戶端
+
+mclib.interpolations.circular: 圓弧

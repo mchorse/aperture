@@ -18,7 +18,7 @@ aperture.config.comments:
 
     editor:
         sync: 启用相机编辑器中的相机位置同步，用于预览当前的相机配置
-        loop: 循环播放当前被选中的相机关键点
+        loop: 循环播放当前被选中的相机关键点，或循环播放选区内容（可以通过 [ 和 ] 键进行选区操作，或在按住 Ctrl 的同时在时间轴上左键拖动进行选区）
         overlay: 启用相机编辑器附加层
         overlay_rl: 应用于附加层的材质的文件路径
         f1_tooltip: 在左下角显示如何返回 GUI 的提示
@@ -28,6 +28,8 @@ aperture.config.comments:
         letter_box: 显示画面黑边（硬黑边），用于缩小或或扩大相机的取景范围作为参考
         aspect_ratio: 相机编辑器画面黑边功能的纵横比
         hide_chat: 启用后，该选项会隐藏在你调整摄像头角度时，可能会分散注意力的聊天栏
+        seconds: 启用该选项后，相机编辑器将会以秒将单位进行编辑和显示，而不是以 Tick 为单位
+        auto_save: 该选项用于配置相机配置的自动保存频率，单位为秒， 0 表示禁用
 
     flight:
         forward: 向前移动相机
@@ -59,3 +61,6 @@ aperture.config.comments:
 
     minema:
         default_profile_name: 输出文件是否为相机配置的名称，否则为当前日志
+
+op_access.config.comments.aperture:
+    camera_editor: 非 OP 玩家是否可以使用相机编辑器？

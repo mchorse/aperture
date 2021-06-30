@@ -22,14 +22,14 @@ aperture.config:
 
         enabled: 分離相機模式
         hide_player: 隱藏玩家
-        sky: 修復天空
+        sky: 修覆天空
 
     editor:
         title: 相機編輯器
         tooltip: 應用於相機編輯器的選項
 
         sync: 同步模式
-        loop: 循環播放關鍵點
+        loop: 循環播放
         overlay: 啟用附加層
         overlay_rl: 附加層路徑
         f1_tooltip: 隱藏 F1 提示
@@ -39,6 +39,8 @@ aperture.config:
         letter_box: 畫面黑邊
         aspect_ratio: 縱橫比
         hide_chat: 隱藏聊天欄
+        seconds: 以秒為單位
+        auto_save: 自動保存周期
 
     flight:
         title: 飛行模式
@@ -56,7 +58,7 @@ aperture.config:
         camera_right: 右搖
         fov_minus: 縮小 FOV
         fov_plus: 增大 FOV
-        roll_minus: 左向翻滾
+        roll_minus: 向左翻滾
         roll_plus: 向右翻滾
         speed_minus: 降低速度
         speed_plus: 提升速度
@@ -79,3 +81,9 @@ aperture.config:
         tooltip: 與 Minema 相關的集成工作選項
 
         default_profile_name: 相機配置名稱
+
+op_access.config.aperture:
+    title: Aperture
+    tooltip: Aperture OP 訪問權限選項
+
+    camera_editor: 相機編輯器

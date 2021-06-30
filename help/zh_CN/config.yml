@@ -29,7 +29,7 @@ aperture.config:
         tooltip: 应用于相机编辑器的选项
 
         sync: 同步模式
-        loop: 循环播放关键点
+        loop: 循环播放
         overlay: 启用附加层
         overlay_rl: 附加层路径
         f1_tooltip: 隐藏 F1 提示
@@ -39,6 +39,8 @@ aperture.config:
         letter_box: 画面黑边
         aspect_ratio: 纵横比
         hide_chat: 隐藏聊天栏
+        seconds: 以秒为单位
+        auto_save: 自动保存周期
 
     flight:
         title: 飞行模式
@@ -56,7 +58,7 @@ aperture.config:
         camera_right: 右摇
         fov_minus: 缩小 FOV
         fov_plus: 增大 FOV
-        roll_minus: 左向翻滚
+        roll_minus: 向左翻滚
         roll_plus: 向右翻滚
         speed_minus: 降低速度
         speed_plus: 提升速度
@@ -79,3 +81,9 @@ aperture.config:
         tooltip: 与 Minema 相关的集成工作选项
 
         default_profile_name: 相机配置名称
+
+op_access.config.aperture:
+    title: Aperture
+    tooltip: Aperture OP 访问权限选项
+
+    camera_editor: 相机编辑器
