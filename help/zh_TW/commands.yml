@@ -1,7 +1,7 @@
 # Commands
 aperture.commands:
     # Load chunks command
-    load_chunks: "該命令會加載渲染範圍內的所有區塊。這需要壹些時間。"
+    load_chunks: "該命令會加載渲染範圍內的所有區塊。這需要花費一些時間..."
 
     # Aperture command
     aperture:
@@ -9,9 +9,9 @@ aperture.commands:
             |
                 {r}{o}Aperture 服務器命令{r}。該命令可用於讓指定的玩家（通過實體選擇器）播放相機配置。
 
-                {l}{6}/{r}aperture {8}play{r} {7}<target|camera_profile> [camera_profile]{r}
+                {l}{6}/{r}aperture {8}play{r} {7}<相機配置> [目標]{r}
 
-                {r}如果您只指定了 {7}<target|camera_profile>{r}，那麽被指定的相機配置會在您身上播放。如果您在。如果您在 {8}play{r} 後面指定了兩個參數，您便可以指定玩家（使用用戶名或者目標選擇器）和相機配置。
+                {r}如果您只指定了 {7}<相機配置>{r}，那麽被指定的相機配置會為當前執行命令的玩家播放。如果您在。如果您在 {8}play{r} 後面指定了兩個參數，您便可以使用 {7}[目標]{r} 選擇器讓給定的玩家播放一個指定的 {7}<相機配置>{r}。
 
     # Camera's commands
     camera:

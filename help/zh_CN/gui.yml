@@ -85,9 +85,9 @@ aperture.gui:
                 vertical: 开关垂直飞行模式
                 sync: 开关同步模式
                 ouside: 开关分离相机模式
-                looping: 开关循环播放关键点
+                looping: 开关循环播放
                 interactive: 开关交互添加关键点模式
-                
+
             editor:
                 title: 相机编辑器
 
@@ -99,6 +99,14 @@ aperture.gui:
                 prev_fixture: 跳至上一关键点
                 next: 跳至下一帧
                 prev: 跳至上一帧
+                undo: 撤销
+                redo: 重做
+
+            looping:
+                title: 循环播放
+
+                set_min: 设置循环开始（入点）位置
+                set_max: 设置循环结束（出点）位置
 
     fixtures:
         idle: 静止
@@ -160,7 +168,7 @@ aperture.gui:
             forward_tooltip: 该选项能使相机朝向运动矢量的方向，类似于过山车的效果
 
             factor: 线性系数（介于 0 到 1），数值越小，平滑程度越高
-            
+
             math: 数学表达式\n\n点击 "?" 按钮了解更多关于变量和函数的信息...
 
             keyframes: 启用关键帧
@@ -187,7 +195,7 @@ aperture.gui:
         add_tooltip: 添加一个配置
         dupe_tooltip: 复制配置
         remove_tooltip: 移除配置
-        
+
     minema:
         title: Minema
         output: 输出名称（用于代替随机生成的日期）
@@ -227,17 +235,22 @@ aperture.gui:
         circles: 圆圈
         distance: 长度
 
+        auto_center: 自适应中心点
+        circular_x: 中心点 X
+        circular_z: 中心点 Z
+
         path_points: 路径点
         position: 位置
         angle: 角度
         circle: 圆圈
+        circular: 圆弧
         selector: 实体目标选择器（您也可以输入实体的名称标签来代替目标选择器）\n\n点击 "?" 按钮了解更多关于语法的信息...
         use_speed: 速率控制
         use_speed_enable: 启用
 
         all: 全部
         previous: 上一关键点
-        
+
         manual:
             title: 手动
             shift: 回放位移，该属性如果为正，则延迟播放数据；如果为负，则削减录制数据的持续时间
@@ -249,7 +262,7 @@ aperture.gui:
             yaw: "滑轨在水平方向（偏航，以角度来衡量）上的移动"
             pitch: "滑轨在垂直方向（俯仰，以角度来衡量）上的移动"
             speed: "线性速度: %s 方块/s."
-            reverse: "互换开始与结束的位置，因要反转它"
+            reverse: "互换开始与结束的位置，也就是反转它"
 
         keys:
             title: 当前的关键点面板
@@ -257,12 +270,14 @@ aperture.gui:
             path_position: 循环选择位置的插值
             path_angle: 循环选择角度的插值
             velocity: 开关速率控制选项
-            
+
             graph_interp: 循环选择关键帧的插值
             graph_easing: 循环选择关键帧的缓入缓出
-            
+
             previous: 开关上一关键点选项
             record_manual: 开始录制手动动作
+
+            toggle_keyframes: 开关关键帧编辑器可见性
 
         context:
             look_coords: 获取当前准星处实体/方块的坐标

@@ -3,9 +3,9 @@
 aperture.gui:
     # General strings
     done: 完成
-    next: 下壹個
-    previous: 上壹個
-    restore: 恢復默認
+    next: 下一個
+    previous: 上一個
+    restore: 恢覆默認
     reset: 重置
     add: 添加
     edit: 編輯
@@ -13,7 +13,7 @@ aperture.gui:
     detach: 分離
     record: 錄制
     pick: 選擇偽裝...
-    duplicate: 復制
+    duplicate: 覆制
     search: 搜索...
     cancel: 取消
     break: 破壞
@@ -40,11 +40,11 @@ aperture.gui:
         pick_overlay: 選擇附加層
 
     tooltips:
-        jump_next_fixture: 跳至下壹關鍵點
-        jump_next_frame: 跳至下壹幀
+        jump_next_fixture: 跳至下一關鍵點
+        jump_next_frame: 跳至下一幀
         plause: 播放/暫停
-        jump_prev_frame: 跳至上壹幀
-        jump_prev_fixture: 跳至上壹關鍵點
+        jump_prev_frame: 跳至上一幀
+        jump_prev_fixture: 跳至上一關鍵點
 
         move_up: 前移關鍵點
         move_duration: 持續時間移至光標
@@ -59,7 +59,7 @@ aperture.gui:
         cut: 切割關鍵點
         creation: 交互添加關鍵點
         add: 添加關鍵點
-        dupe: 復制關鍵點
+        dupe: 覆制關鍵點
         replace: 替換選中的關鍵點
         remove: 移除選中的關鍵點
 
@@ -85,9 +85,9 @@ aperture.gui:
                 vertical: 開關垂直飛行模式
                 sync: 開關同步模式
                 ouside: 開關分離相機模式
-                looping: 開關循環播放關鍵點
+                looping: 開關循環播放
                 interactive: 開關交互添加關鍵點模式
-                
+
             editor:
                 title: 相機編輯器
 
@@ -95,10 +95,18 @@ aperture.gui:
                 modifiers: 開關調整器的彈出
                 save: 保存相機配置
                 plause: 播放/暫停
-                next_fixture: 跳至下壹關鍵點
-                prev_fixture: 跳至上壹關鍵點
-                next: 跳至下壹幀
-                prev: 跳至上壹幀
+                next_fixture: 跳至下一關鍵點
+                prev_fixture: 跳至上一關鍵點
+                next: 跳至下一幀
+                prev: 跳至上一幀
+                undo: 撤銷
+                redo: 重做
+
+            looping:
+                title: 循環播放
+
+                set_min: 設置循環開始（入點）位置
+                set_max: 設置循環結束（出點）位置
 
     fixtures:
         idle: 靜止
@@ -118,15 +126,15 @@ aperture.gui:
         math: 數學
         math_description: 允許使用數學表達式處理指定的相機屬性
         look: 看
-        look_description: 將相機朝向壹個或多個實體、方塊位置或（向前）運動
+        look_description: 將相機朝向一個或多個實體、方塊位置或（向前）運動
         follow: 跟蹤
-        follow_description: 將相機綁定於壹個或多個實體之上
+        follow_description: 將相機綁定於一個或多個實體之上
         translate: 平移
         translate_description: 以特定的數值移動相機位置
         angle: 角度
         angle_description: 以特定的數值旋轉相機角度
         orbit: 軌道
-        orbit_description: 將相機綁定於壹個或多個實體，但使用的是類似於軌道的控件
+        orbit_description: 將相機綁定於一個或多個實體，但使用的是類似於軌道的控件
         drag: 拖拽
         drag_description: 使用當前值與先前值之間的線性交錯，將已啟用的相機屬性進行平滑處理
         remapper: 重映射
@@ -154,13 +162,13 @@ aperture.gui:
             shake_amount: 數量值
 
             relative: 相對值
-            relative_tooltip: 應用於關鍵點或相機配置的相對動畫\n\n例如，如果妳有壹個從 90 度到 100 度的偏航動畫路徑，那麽將會有 10 度的動畫相對地應用於該調整器
+            relative_tooltip: 應用於關鍵點或相機配置的相對動畫\n\n例如，如果你有一個從 90 度到 100 度的偏航動畫路徑，那麽將會有 10 度的動畫相對地應用於該調整器
             at_block: 看向方塊
             forward: 向前看
             forward_tooltip: 該選項能使相機朝向運動矢量的方向，類似於過山車的效果
 
             factor: 線性系數（介於 0 到 1），數值越小，平滑程度越高
-            
+
             math: 數學表達式\n\n點擊 "?" 按鈕了解更多關於變量和函數的信息...
 
             keyframes: 啟用關鍵幀
@@ -179,15 +187,15 @@ aperture.gui:
 
         rename_modal: 輸入當前新相機配置的名稱。
         add_modal: 輸入新相機配置的名稱。
-        dupe_modal: 輸入復制後的相機配置名稱。
-        remove_modal: 您確定要移除這該機配置嗎（無法恢復）？
+        dupe_modal: 輸入覆制後的相機配置名稱。
+        remove_modal: 您確定要移除這該機配置嗎（無法恢覆）？
 
         convert_tooltip: 轉換配置
         rename_tooltip: 重命名配置
-        add_tooltip: 添加壹個配置
-        dupe_tooltip: 復制配置
+        add_tooltip: 添加一個配置
+        dupe_tooltip: 覆制配置
         remove_tooltip: 移除配置
-        
+
     minema:
         title: Minema
         output: 輸出名稱（用於代替隨機生成的日期）
@@ -211,7 +219,7 @@ aperture.gui:
     panels:
         name: 名字
         name_tooltip: 顯示將會在時間軸上顯示的名稱
-        color_tooltip: 自定義關鍵點的顏色，如果妳需要對它加以顏色上的區別的話
+        color_tooltip: 自定義關鍵點的顏色，如果你需要對它加以顏色上的區別的話
         duration: 關鍵點的持續時間（單位為 Tick，20 Tick 約等於 1 秒）
 
         x: X
@@ -227,17 +235,22 @@ aperture.gui:
         circles: 圓圈
         distance: 長度
 
+        auto_center: 自適應中心點
+        circular_x: 中心點 X
+        circular_z: 中心點 Z
+
         path_points: 路徑點
         position: 位置
         angle: 角度
         circle: 圓圈
+        circular: 圓弧
         selector: 實體目標選擇器（您也可以輸入實體的名稱標簽來代替目標選擇器）\n\n點擊 "?" 按鈕了解更多關於語法的信息...
         use_speed: 速率控制
         use_speed_enable: 啟用
 
         all: 全部
-        previous: 上壹關鍵點
-        
+        previous: 上一關鍵點
+
         manual:
             title: 手動
             shift: 回放位移，該屬性如果為正，則延遲播放數據；如果為負，則削減錄制數據的持續時間
@@ -249,7 +262,7 @@ aperture.gui:
             yaw: "滑軌在水平方向（偏航，以角度來衡量）上的移動"
             pitch: "滑軌在垂直方向（俯仰，以角度來衡量）上的移動"
             speed: "線性速度: %s 方塊/s."
-            reverse: "互換開始與結束的位置，因要反轉它"
+            reverse: "互換開始與結束的位置，也就是反轉它"
 
         keys:
             title: 當前的關鍵點面板
@@ -257,12 +270,14 @@ aperture.gui:
             path_position: 循環選擇位置的插值
             path_angle: 循環選擇角度的插值
             velocity: 開關速率控制選項
-            
+
             graph_interp: 循環選擇關鍵幀的插值
             graph_easing: 循環選擇關鍵幀的緩入緩出
-            
-            previous: 開關上壹關鍵點選項
+
+            previous: 開關上一關鍵點選項
             record_manual: 開始錄制手動動作
+
+            toggle_keyframes: 開關關鍵幀編輯器可見性
 
         context:
             look_coords: 獲取當前準星處實體/方塊的坐標
