@@ -1,6 +1,7 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/aperture",
     "1.12.2": {
+        "1.6": "This update is focused on adding Undo/Redo and limitations for non-OP users.",
         "1.5.2": "This patch update fixes a couple of bugs.",
         "1.5.1": "This decent patch update adds a couple of neat quality of life camera tweaks.",
         "1.5": "This update adds a couple of QoL tweaks and two new awesome features involving keyframes and modifiers.",
@@ -49,8 +50,8 @@
         "1.0": "First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
     },
     "promos": {
-        "1.12.2-latest": "1.5.2",
-        "1.12.2-recommended": "1.5.2",
+        "1.12.2-latest": "1.6",
+        "1.12.2-recommended": "1.6",
         "1.11.2-latest": "1.3.6",
         "1.11.2-recommended": "1.3.6",
         "1.10.2-latest": "1.3.6",

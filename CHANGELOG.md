@@ -1,11 +1,38 @@
+## Aperture 1.6
+
+This update is focused on adding Undo/Redo and limitations for non-OP users.
+
+**Compatible** with McLib `2.3` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+<a href="https://youtu.be/F6b_ScRB3gc"><img src="https://img.youtube.com/vi/F6b_ScRB3gc/0.jpg"></a> 
+
+* Added limiting of editing Aperture data (and opening camera editor) on the server to OP only
+* Added circular interpolation to path fixture
+* Added an option to display everything in seconds (suggested by zoombie)
+* Added playback of the scene possible with an empty camera profile
+* Added proper handling of fixtures during cutting (suggested by Andruxioid)
+* Added alphabetical sorting to camera profile list
+* Added **Undo/Redo** (`Ctrl + Z`/`Ctrl + Y`) to camera editor on per camera profile basis
+* Added loop region selection (suggested by Chunk7) controlled with:
+	* `[` (start) and `]` (end) keys
+	* Ctrl + left click to control left end point, Ctrl + right click to control right end point, and Ctrl + middle click to reset loop selection
+* Added a keybind to toggle keyframe editor visibility
+* Added periodic auto-save option
+* Changed `/aperture play` command's syntax to `/aperture play <camera_profile> [target]`
+* Changed `v` velocity variable to take in effect modifiers effects as well
+* Fixed `/camera step` and `/camera rotate` not accepting relative `~` values
+* Fixed timeline scaling issues
+* Fixed drag modifier jumping from 0,0,0 when toggling XYZ toggles
+* Fixed camera profiles are not checked when duplicating with existing camera profile name (reported by Andruxioid and Chunk7)
+
 ## Aperture 1.5.2
 
 This patch update fixes a couple of bugs.
 
 **Compatible** with McLib `2.2.1` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
 
-* Fix tick markers looking chaotic upon first load (reported by Ник)
-* Fix duration of playback defined upon start of playback, which disallows resizing last fixture during playback (reported by Ник and Andruxioid)
+* Fixed tick markers looking chaotic upon first load (reported by Ник)
+* Fixed duration of playback defined upon start of playback, which disallows resizing last fixture during playback (reported by Ник and Andruxioid)
 
 ## Aperture 1.5.1
 
