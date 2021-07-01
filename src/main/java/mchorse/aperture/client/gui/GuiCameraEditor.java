@@ -12,6 +12,7 @@ import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.fixtures.IdleFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
+import mchorse.aperture.client.KeyboardHandler;
 import mchorse.aperture.client.gui.config.GuiCameraConfig;
 import mchorse.aperture.client.gui.config.GuiConfigCameraOptions;
 import mchorse.aperture.client.gui.panels.GuiAbstractFixturePanel;
@@ -926,6 +927,8 @@ public class GuiCameraEditor extends GuiBase
      */
     public void updateCameraEditor(EntityPlayer player)
     {
+        KeyboardHandler.setSmoothCamera(false);
+
         this.maxScrub = 0;
         this.haveScrubbed = false;
 

@@ -8,6 +8,7 @@ import mchorse.aperture.client.gui.GuiCameraEditor;
 import mchorse.aperture.events.CameraProfileChangedEvent;
 import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
@@ -95,6 +96,20 @@ public class KeyboardHandler
         {}
 
         return false;
+    }
+
+    public static void setSmoothCamera(boolean enabled)
+    {
+        SmoothCamera camera = ClientProxy.renderer.smooth;
+
+        camera.enabled.set(enabled);
+
+        if (camera.enabled.get())
+        {
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
+
+            camera.set(player.rotationYaw, -player.rotationPitch);
+        }
     }
 
     /**
@@ -224,16 +239,7 @@ public class KeyboardHandler
 
         if (this.smoothCamera.isPressed())
         {
-            SmoothCamera camera = ClientProxy.renderer.smooth;
-
-            camera.enabled.set(!camera.enabled.get());
-
-            if (camera.enabled.get())
-            {
-                camera.set(player.rotationYaw, -player.rotationPitch);
-            }
-
-            camera.enabled.getConfig().save();
+            setSmoothCamera(!ClientProxy.renderer.smooth.enabled.get());
         }
     }
 
