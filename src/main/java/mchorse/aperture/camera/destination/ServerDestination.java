@@ -6,6 +6,7 @@ import mchorse.aperture.network.common.PacketCameraProfile;
 import mchorse.aperture.network.common.PacketLoadCameraProfile;
 import mchorse.aperture.network.common.PacketRemoveCameraProfile;
 import mchorse.aperture.network.common.PacketRenameCameraProfile;
+import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -53,6 +54,6 @@ public class ServerDestination extends AbstractDestination
     @Override
     public ResourceLocation toResourceLocation()
     {
-        return new ResourceLocation("server", this.filename);
+        return RLUtils.create("server", this.filename);
     }
 }

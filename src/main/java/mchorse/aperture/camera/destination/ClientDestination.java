@@ -4,6 +4,7 @@ import mchorse.aperture.Aperture;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.CameraUtils;
+import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
@@ -86,6 +87,6 @@ public class ClientDestination extends AbstractDestination
     @Override
     public ResourceLocation toResourceLocation()
     {
-        return new ResourceLocation("client", this.filename);
+        return RLUtils.create("client", this.filename);
     }
 }
