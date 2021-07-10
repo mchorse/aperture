@@ -598,6 +598,8 @@ public class GuiCameraEditor extends GuiBase
         if (this.runner.isRunning())
         {
             this.runner.ticks = value;
+
+            this.runner.skipUpdate = true;
         }
 
         if (fromScrub)
@@ -1436,7 +1438,10 @@ public class GuiCameraEditor extends GuiBase
         /* Update playback timeline */
         if (this.runner.isRunning())
         {
-            this.timeline.setValue((int) this.runner.ticks);
+            this.setFlight(false);
+            this.timeline.value = (int) this.runner.ticks;
+            this.timeline.setValue(this.timeline.value);
+            this.timeline.scale.shiftInto(this.timeline.value);
         }
 
         /* Rewind playback back to 0 */

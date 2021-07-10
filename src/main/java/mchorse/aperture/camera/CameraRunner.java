@@ -62,6 +62,9 @@ public class CameraRunner
     public float pitch = 0.0F;
     public Supplier<Long> duration;
 
+    /* Skip first tick update after scrub */
+    public boolean skipUpdate = false;
+
     /* Profile access methods */
 
     public boolean isRunning()
@@ -143,6 +146,7 @@ public class CameraRunner
         this.isRunning = true;
         this.ticks = start;
         this.duration = duration;
+        this.skipUpdate = false;
     }
 
     /**
@@ -161,6 +165,7 @@ public class CameraRunner
         this.isRunning = false;
         this.profile = null;
         this.duration = null;
+        this.skipUpdate = false;
 
         ClientProxy.control.resetRoll();
     }
@@ -329,7 +334,14 @@ public class CameraRunner
                 Aperture.LOGGER.info("Camera frame: " + this.ticks);
             }
 
-            this.ticks++;
+            if (this.skipUpdate)
+            {
+                this.skipUpdate = false;
+            }
+            else
+            {
+                this.ticks++;
+            }
         }
     }
 }
