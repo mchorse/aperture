@@ -64,5 +64,8 @@ aperture.config.comments:
     minema:
         default_profile_name: 輸出文件是否為相機配置的名稱，否則為當前日誌
 
+    optifine:
+        shader_option_curve: 是否允許Aperture相機曲綫修改光影包的選項。此功能可能無法與所有的光影包相容，並且會導致幀率小幅度下降
+
 op_access.config.comments.aperture:
     camera_editor: 非 OP 玩家是否可以使用相機編輯器？

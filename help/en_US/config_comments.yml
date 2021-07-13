@@ -64,5 +64,8 @@ aperture.config.comments:
     minema:
         default_profile_name: Whether the name of the output file should be the name of the camera profile, rather than current date
 
+    optifine:
+        shader_option_curve: Whether to allow the aperture camera to modify options of shaderpack. This function may not compatible with all shaderpacks and will cause a small drop in frame rate
+
 op_access.config.comments.aperture:
     camera_editor: Can non-OP players use camera editor?

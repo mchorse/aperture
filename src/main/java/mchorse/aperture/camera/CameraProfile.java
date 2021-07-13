@@ -1,5 +1,6 @@
 package mchorse.aperture.camera;
 
+import mchorse.aperture.ClientProxy;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.data.StructureBase;
 import mchorse.aperture.camera.destination.AbstractDestination;
@@ -279,12 +280,7 @@ public class CameraProfile extends StructureBase
     @SideOnly(Side.CLIENT)
     public void applyCurves(long progress, float partialTick)
     {
-        KeyframeChannel channel = this.curves.get("brightness");
-
-        if (channel != null && !channel.isEmpty())
-        {
-            Minecraft.getMinecraft().gameSettings.gammaSetting = (float) channel.interpolate(progress + partialTick);
-        }
+        ClientProxy.curveManager.applyCurves(this.curves, progress, partialTick);
     }
 
     public void applyProfile(long progress, float partialTick, Position position)

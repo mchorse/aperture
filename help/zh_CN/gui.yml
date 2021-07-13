@@ -167,6 +167,33 @@ aperture.gui:
             end_d: 缓出点
             interp: 选择包络的插值
 
+    curves:
+        sky_r: 天空颜色 R
+        sky_g: 天空颜色 G
+        sky_b: 天空颜色 B
+
+        cloud_r: 云颜色 R
+        cloud_g: 云颜色 G
+        cloud_b: 云颜色 B
+
+        fog_r: 雾颜色 R
+        fog_g: 雾颜色 G
+        fog_b: 雾颜色 B
+        fog_start: 雾起始点
+        fog_end: 雾消失点
+        fog_density: 雾浓度 （水下）
+
+        celestial_angle: 日月角度 （经度）
+
+        shader:
+            sun_path_rotation: 日月偏角 （纬度）
+            center_depth_smooth: 相机焦点
+            rain_strength: 降雨程度
+            wetness: 潮湿度
+            frame_time_counter: 帧时间动画
+            world_time: 世界时间动画
+            is_eye_in_water: 水下模式
+
     profiles:
         title: 配置
         rename: 重命名

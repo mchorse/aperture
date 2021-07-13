@@ -413,6 +413,17 @@ public class GuiProfilesManager extends GuiElement
         super.draw(context);
     }
 
+    @Override
+    public void setVisible(boolean visible)
+    {
+        super.setVisible(visible);
+
+        if (visible && this.curves.isVisible())
+        {
+            this.curves.update();
+        }
+    }
+
     /**
      * Search list of camera profiles 
      */

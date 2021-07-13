@@ -965,6 +965,13 @@ public class GuiCameraEditor extends GuiBase
         }
 
         this.runner.attachOutside();
+
+        ClientProxy.curveManager.refreshCurves();
+
+        if (this.profiles.curves.isVisible())
+        {
+            this.profiles.curves.update();
+        }
     }
 
     public CameraRunner getRunner()
@@ -1041,7 +1048,6 @@ public class GuiCameraEditor extends GuiBase
         EntityPlayer player = Minecraft.getMinecraft().player;
 
         this.position.set(player);
-        this.getProfile().applyCurves(tick, this.lastPartialTick);
         this.getProfile().applyProfile(tick, ticks, this.lastPartialTick, this.position);
 
         this.position.apply(this.getCamera());
@@ -1307,6 +1313,8 @@ public class GuiCameraEditor extends GuiBase
             this.runner.detachOutside();
         }
 
+        ClientProxy.curveManager.resetAll();
+
         super.closeScreen();
     }
 
@@ -1453,6 +1461,12 @@ public class GuiCameraEditor extends GuiBase
 
             this.postRewind(this.timeline.value);
             this.playing = false;
+        }
+        
+        /* Always apply curves */
+        if (!this.runner.isRunning())
+        {
+            this.getProfile().applyCurves(this.timeline.value, this.lastPartialTick);
         }
 
         /* Sync the player on current tick */

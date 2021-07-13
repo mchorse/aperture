@@ -39,7 +39,6 @@ public class CameraControl
     public int lastCounter;
     public float lastRoll;
     public float lastFov;
-    public float lastGamma;
     public int lastThirdPersonView;
     public GameType lastGameMode = GameType.NOT_SET;
 
@@ -52,7 +51,6 @@ public class CameraControl
             this.lastGameMode = EntityUtils.getGameMode();
             this.lastRoll = roll;
             this.lastFov = mc.gameSettings.fovSetting;
-            this.lastGamma = mc.gameSettings.gammaSetting;
             this.lastThirdPersonView = mc.gameSettings.thirdPersonView;
         }
 
@@ -69,7 +67,6 @@ public class CameraControl
 
             this.roll = this.lastRoll;
             mc.gameSettings.fovSetting = this.lastFov;
-            mc.gameSettings.gammaSetting = this.lastGamma;
             mc.gameSettings.thirdPersonView = this.lastThirdPersonView;
 
             if (this.lastGameMode != EntityUtils.getGameMode())
@@ -77,7 +74,7 @@ public class CameraControl
                 mc.player.sendChatMessage("/gamemode " + this.lastGameMode.getID());
             }
 
-            this.lastRoll = this.lastFov = this.lastGamma = 0F;
+            this.lastRoll = this.lastFov = 0F;
         }
     }
 
