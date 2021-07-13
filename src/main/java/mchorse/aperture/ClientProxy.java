@@ -3,6 +3,7 @@ package mchorse.aperture;
 import mchorse.aperture.camera.CameraControl;
 import mchorse.aperture.camera.CameraRenderer;
 import mchorse.aperture.camera.CameraRunner;
+import mchorse.aperture.camera.CurveManager;
 import mchorse.aperture.camera.FixtureRegistry;
 import mchorse.aperture.camera.FixtureRegistry.FixtureInfo;
 import mchorse.aperture.camera.ModifierRegistry;
@@ -47,7 +48,10 @@ import mchorse.aperture.client.gui.panels.modifiers.GuiShakeModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiTranslateModifierPanel;
 import mchorse.aperture.commands.CommandCamera;
 import mchorse.aperture.commands.CommandLoadChunks;
+import mchorse.aperture.utils.OptifineHelper;
+import mchorse.aperture.utils.mclib.ValueShaderOption;
 import mchorse.mclib.McLib;
+import mchorse.mclib.config.ConfigBuilder;
 import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
@@ -80,6 +84,7 @@ public class ClientProxy extends CommonProxy
     public static CameraRenderer renderer = new CameraRenderer();
     public static CameraControl control = new CameraControl();
     public static CameraRunner runner;
+    public static CurveManager curveManager = new CurveManager();
 
     public static KeyboardHandler keys;
 
@@ -261,5 +266,28 @@ public class ClientProxy extends CommonProxy
         String comment = I18n.format(key);
 
         return comment.equals(key) ? defaultComment : comment;
+    }
+
+    /**
+     * Register client only configuration
+     */
+    @Override
+    public void registerClientConfig(ConfigBuilder builder)
+    {
+        /* Minema integration */
+        Aperture.minemaDefaultProfileName = builder.category("minema").getBoolean("default_profile_name", false);
+
+        builder.getCategory().markClientSide();
+
+        /* Optifine */
+        Aperture.optifineShaderOptionCurve = builder.category("optifine").getBoolean("shader_option_curve", true);
+        Aperture.optifineShaderOptionCurve.invisible();
+        builder.register(new ValueShaderOption("option").clientSide());
+        builder.getCategory().markClientSide();
+        
+        if (!OptifineHelper.shaderpackSupported)
+        {
+            builder.getCategory().invisible();
+        }
     }
 }

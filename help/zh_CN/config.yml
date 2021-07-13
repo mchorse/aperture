@@ -84,6 +84,12 @@ aperture.config:
 
         default_profile_name: 相机配置名称
 
+    optifine:
+        title: Optifine
+        tooltip: 与 Optifine 相关选项
+
+        shader_option_curve: 光影包选项曲线
+
 op_access.config.aperture:
     title: Aperture
     tooltip: Aperture OP 访问权限选项

@@ -84,6 +84,12 @@ aperture.config:
 
         default_profile_name: Camera profile name
 
+    optifine:
+        title: Optifine
+        tooltip: Options related to Optifine
+
+        shader_option_curve: Curves of shader options
+
 op_access.config.aperture:
     title: Aperture
     tooltip: Aperture's OP access options

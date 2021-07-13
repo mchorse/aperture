@@ -5,12 +5,15 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.optifine.shaders.Shaders;
 
 import java.lang.reflect.Field;
 
 @SideOnly(Side.CLIENT)
 public class OptifineHelper
 {
+    public static final boolean shaderpackSupported;
+    
     public static Field ofCameraZoom;
     public static Field ofDynamicFov;
     public static KeyBinding ofCameraZoomKey;
@@ -35,6 +38,17 @@ public class OptifineHelper
 
             if (ofDynamicFov != null && ofCameraZoom != null) break;
         }
+        
+        boolean supported = false;
+        try
+        {
+            Class.forName("Config");
+            Class.forName("net.optifine.shaders.Shaders");
+            supported = true;
+        }
+        catch (ClassNotFoundException | SecurityException | IllegalArgumentException e)
+        {}
+        shaderpackSupported = supported;
     }
 
     public static boolean isZooming()
@@ -44,6 +58,16 @@ public class OptifineHelper
             return getKeybind().isKeyDown();
         }
 
+        return false;
+    }
+    
+    public static boolean isShaderLoaded()
+    {
+        if (shaderpackSupported)
+        {
+            return Shaders.shaderPackLoaded;
+        }
+        
         return false;
     }
 

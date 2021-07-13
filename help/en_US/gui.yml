@@ -167,6 +167,33 @@ aperture.gui:
             end_d: Fade out
             interp: Pick interpolation of the envelope
 
+    curves:
+        sky_r: Sky Color R
+        sky_g: Sky Color G
+        sky_b: Sky Color B
+
+        cloud_r: Cloud Color R
+        cloud_g: Cloud Color G
+        cloud_b: Cloud Color B
+
+        fog_r: Fog Color R
+        fog_g: Fog Color G
+        fog_b: Fog Color B
+        fog_start: Fog Start
+        fog_end: Fog End
+        fog_density: Fog Density (Under Water)
+
+        celestial_angle: Celestial Angle
+
+        shader:
+            sun_path_rotation: Sun Path Rotation
+            center_depth_smooth: Focus Point
+            rain_strength: Rain Strength
+            wetness: Wetness
+            frame_time_counter: Frame Time Animation
+            world_time: World Time Animation
+            is_eye_in_water: Under Water Mode
+
     profiles:
         title: Profiles
         rename: Rename

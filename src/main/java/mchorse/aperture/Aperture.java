@@ -1,6 +1,8 @@
 package mchorse.aperture;
 
 import mchorse.aperture.commands.CommandAperture;
+import mchorse.aperture.utils.OptifineHelper;
+import mchorse.aperture.utils.mclib.ValueShaderOption;
 import mchorse.mclib.McLib;
 import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;
@@ -17,6 +19,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
@@ -115,6 +119,8 @@ public class Aperture
     public static ValueFloat fovFactor;
 
     public static ValueBoolean minemaDefaultProfileName;
+    
+    public static ValueBoolean optifineShaderOptionCurve;
 
     @SubscribeEvent
     public void onConfigRegister(RegisterConfigEvent event)
@@ -204,10 +210,7 @@ public class Aperture
 
         builder.getCategory().markClientSide();
 
-        /* Minema integration */
-        minemaDefaultProfileName = builder.category("minema").getBoolean("default_profile_name", false);
-
-        builder.getCategory().markClientSide();
+        this.proxy.registerClientConfig(builder);
     }
 
     @EventHandler
