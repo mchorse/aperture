@@ -6,12 +6,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.MinemaAPI;
-import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.minema.MinemaIntegration;
 import mchorse.aperture.utils.EntitySelector;
 import mchorse.aperture.utils.OptifineHelper;
+import mchorse.mclib.utils.Interpolations;
+import mchorse.mclib.utils.MatrixUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,27 +21,30 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.vecmath.*;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
- * This is an exporter for the camera movement to a json file.
+ * This is an exporter for camera, entity and morph tracking data
  * @author Christian F. (known as Chryfi)
  */
 public class CameraExporter
 {
     private boolean relativeOrigin = false;
+    private boolean globalCoordinates = false;
     private JsonObject wrapper = new JsonObject();
     private JsonArray trackingData = new JsonArray();
     private JsonObject entityData = new JsonObject();
+    private JsonObject morphData = new JsonObject();
+    private HashMap<String, TrackingPacket> morphNames = new HashMap<>();
     private double[] trackingInitialPos = {0,0,0};
     private int heldframes = 0; //to determine double frames with minema's held frames
     private int heldframesEntity = 0; //to determine double frames with minema's held frames for entities (maybe redundant?)
     private List<Entity> entities = new ArrayList<>();
+    private static Matrix4f matrix = new Matrix4f();
+    private int frame = 0;
 
     public boolean building = false;
     public String selector; //for entities
@@ -49,6 +52,11 @@ public class CameraExporter
     public void setRelativeOrigin(boolean state)
     {
         this.relativeOrigin = state;
+    }
+
+    public void setGlobalCoordinates(boolean state)
+    {
+        this.globalCoordinates = state;
     }
 
     public void setOriginX(double x)
@@ -67,20 +75,52 @@ public class CameraExporter
     }
 
     /**
+     * @param tracker
+     * @return
+     */
+    public boolean addTracker(TrackingPacket tracker)
+    {
+        String number = "0";
+
+        while(this.morphNames.containsKey(tracker.name+((number.equals("0")) ? "" : "."+number)))
+        {
+            number = Integer.toString(Integer.valueOf(number)+1);
+        }
+
+        tracker.name += !number.equals("0") ? "."+number : "";
+
+        this.morphData.add(tracker.name, tracker.trackingData);
+        this.morphNames.put(tracker.name, tracker);
+
+        return true;
+    }
+
+    /**
      * reset the class variables to default values - standby for next export process
      */
     public void reset()
     {
         this.trackingData = new JsonArray();
         this.entityData = new JsonObject();
+        this.morphData = new JsonObject();
         this.wrapper = new JsonObject();
-        if(!this.relativeOrigin)
+
+        this.morphNames.forEach((key, value) ->
+        {
+            value.reset(); //let the morph know, to delete this tracker
+        });
+
+        this.morphNames.clear(); //avoid memory leak
+
+        if (!this.relativeOrigin)
         {
             this.trackingInitialPos[0] = 0;
             this.trackingInitialPos[1] = 0;
             this.trackingInitialPos[2] = 0;
         }
+
         this.building = false;
+        this.frame = 0;
         this.heldframes = 0;
         this.heldframesEntity = 0;
     }
@@ -88,24 +128,28 @@ public class CameraExporter
     @Optional.Method(modid = Minema.MODID)
     public void build(Position position, float partialTick)
     {
-        if (!building) //execute once at the beginning of making the json structure
+        this.building = true;
+
+        if (this.frame == 0) //execute once at the beginning of making the json structure
         {
             if (MinemaIntegration.isAvailable())
             {
                 this.wrapper.add("information", createCameraInformation());
             }
 
-            this.wrapper.add("camera-tracking", this.trackingData);
+            this.wrapper.add("camera_tracking", this.trackingData);
 
             if(!this.entities.isEmpty())
             {
-                this.wrapper.add("entities", this.entityData);
+                this.wrapper.add("entity_tracking", this.entityData);
             }
 
-            if (!this.relativeOrigin)
+            this.wrapper.add("morph_tracking", this.morphData);
+
+            if (!this.relativeOrigin && !this.globalCoordinates)
             {
                 this.trackingInitialPos[0] = position.point.x;
-                this.trackingInitialPos[1] = position.point.y;
+                this.trackingInitialPos[1] = position.point.y + 1.62;
                 this.trackingInitialPos[2] = position.point.z;
             }
         }
@@ -113,7 +157,7 @@ public class CameraExporter
         addCameraFrame(position);
         addEntitiesData(partialTick);
 
-        this.building = true;
+        this.frame = (this.heldframes == 1) ? this.frame + 1 : this.frame;
     }
 
     private JsonObject createCameraInformation()
@@ -139,6 +183,90 @@ public class CameraExporter
         return information;
     }
 
+    public void track(TrackingPacket tracker, EntityLivingBase entity, float partialTicks)
+    {
+        JsonObject frame = new JsonObject();
+        JsonArray positionData = new JsonArray();
+        JsonArray rotationData = new JsonArray();
+
+        MatrixUtils.Transformation modelView = MatrixUtils.extractTransformations(MatrixUtils.matrix, MatrixUtils.readModelView(matrix));
+
+        Vector3d pos = new Vector3d(modelView.getTranslation3f());
+        Matrix4f rotation = new Matrix4f();
+        Matrix4f rotTmp = new Matrix4f();
+        Matrix4f dummy = new Matrix4f();
+
+        rotTmp.setIdentity();
+        rotation.setIdentity();
+        dummy.setIdentity();
+
+        rotation.m00 = modelView.getRotation3f().m00;
+        rotation.m01 = modelView.getRotation3f().m01;
+        rotation.m02 = modelView.getRotation3f().m02;
+        rotation.m10 = modelView.getRotation3f().m10;
+        rotation.m11 = modelView.getRotation3f().m11;
+        rotation.m12 = modelView.getRotation3f().m12;
+        rotation.m20 = modelView.getRotation3f().m20;
+        rotation.m21 = modelView.getRotation3f().m21;
+        rotation.m22 = modelView.getRotation3f().m22;
+
+        /*convert minecraft to blender axis
+        rotTmp.rotZ((float)Math.toRadians(90));
+        rotTmp.rotX((float)Math.toRadians(90));
+        rotTmp.mul(rotation);
+        rotation.set(rotTmp);*/
+
+        MatrixUtils.Transformation transformation = new MatrixUtils.Transformation(dummy, rotation, dummy);
+        Vector3f rot = transformation.getRotation(MatrixUtils.Transformation.RotationOrder.ZYX);
+
+
+        pos.add(new Vector3d(Interpolations.lerp(entity.prevPosX, entity.posX, partialTicks),
+                             Interpolations.lerp(entity.prevPosY, entity.posY, partialTicks),
+                             Interpolations.lerp(entity.prevPosZ, entity.posZ, partialTicks)));
+
+        if (tracker.trackingData.size() == 0)
+        {
+            frame.addProperty("frame",  this.frame-1);
+        }
+
+        positionData.add(pos.x - this.trackingInitialPos[0]);
+        positionData.add(pos.y - this.trackingInitialPos[1]);
+        positionData.add(pos.z - this.trackingInitialPos[2]);
+
+        rotationData.add(rot.x);
+        rotationData.add(rot.y);
+        rotationData.add(rot.z);
+
+        frame.add("position", positionData);
+        frame.add("rotation", rotationData);
+
+        if (MinemaIntegration.isAvailable())
+        {
+            if (Minema.instance.getConfig().heldFrames.get()>1)
+            {
+                tracker.heldframes = (tracker.heldframes<Minema.instance.getConfig().heldFrames.get()) ? tracker.heldframes + 1 : 1;
+
+                if (tracker.heldframes>1)
+                {
+                    JsonObject prevFrame = tracker.trackingData.get(tracker.trackingData.size()-1).getAsJsonObject();
+                    JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
+                    JsonArray prevAngleData = prevFrame.get("rotation").getAsJsonArray();
+
+                    if (prevAngleData.equals(rotationData) && prevPositionData.equals(positionData))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        tracker.heldframes = 1;
+                    }
+                }
+            }
+        }
+
+        tracker.trackingData.add(frame);
+    }
+
     private void addEntitiesData(float partialTick)
     {
         if (this.checkForDead())
@@ -155,7 +283,7 @@ public class CameraExporter
         {
             JsonArray entityFrameArray = new JsonArray();
 
-            if (!building) //execute once at the beginning of exporting
+            if (this.frame == 0) //execute once at the beginning of exporting
             {
                 this.entityData.add(entity.getName(), entityFrameArray);
             }
@@ -208,7 +336,7 @@ public class CameraExporter
                     {
                         /*
                          * expects that heldframes has the same effect on every entity each frame
-                         * (otherwise you would need individual heldframe checks for every entity - like an instance attached to it with this algorithm)
+                         * (otherwise you would need individual heldframe checks for every entity
                          */
                         this.heldframesEntity = 1;
                     }
@@ -229,7 +357,7 @@ public class CameraExporter
         JsonArray angleData = new JsonArray();
 
         positionData.add(position.point.x - this.trackingInitialPos[0]);
-        positionData.add(position.point.y - this.trackingInitialPos[1] + (this.relativeOrigin ? 1.62 : 0 ));
+        positionData.add(position.point.y - this.trackingInitialPos[1] + 1.62);
         positionData.add(position.point.z - this.trackingInitialPos[2]);
 
         angleData.add(position.angle.fov);
@@ -346,5 +474,40 @@ public class CameraExporter
         }
 
         return this.entities.isEmpty();
+    }
+
+    public static class TrackingPacket
+    {
+        private String name;
+        private JsonArray trackingData = new JsonArray();
+        private boolean reset = false;
+        private int heldframes = 0; //to determine double frames with minema's held frames
+
+        public TrackingPacket(String name)
+        {
+            this.name = name;
+        }
+
+        public void reset()
+        {
+            this.trackingData = new JsonArray();
+            this.reset = true; //morph should check for this value to delete the packet
+        }
+
+        public boolean isReset()
+        {
+            return this.reset;
+        }
+
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public void addTrackingData(JsonElement element)
+        {
+            this.trackingData.add(element);
+        }
     }
 }

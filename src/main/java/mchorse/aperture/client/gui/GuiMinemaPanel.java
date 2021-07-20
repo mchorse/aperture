@@ -47,21 +47,28 @@ public class GuiMinemaPanel extends GuiElement
     public GuiButtonElement setLeft;
     public GuiButtonElement setRight;
     public GuiButtonElement movies;
-    public GuiToggleElement tracking;
+    public GuiToggleElement trackingButton;
+    public GuiElement trackingElementsWrapper;
+    public GuiElement trackingElements;
     public GuiToggleElement originButton;
+    public GuiToggleElement globalCoordButton;
     public GuiTrackpadElement originX;
     public GuiTrackpadElement originY;
     public GuiTrackpadElement originZ;
-    public GuiTextHelpElement selector;
+    public GuiElement originElementsWrapper;
     public GuiLabel originTitle;
     public GuiElement originRow;
     public GuiElement originElements;
     public GuiElement selectorElement;
-    public GuiElement trackingElements;
-    public GuiElement nestedTrackingElements;
+    public GuiTextHelpElement selector;
     public GuiButtonElement record;
+    public static final CameraExporter trackingExporter = new CameraExporter();
 
+    /** wrapper for custom recording mode elements */
+    private GuiElement customWrapper;
+    /** row for trackpads for start and end */
     private GuiElement leftRight;
+    /** row for set start and end buttons */
     private GuiElement setLeftRight;
 
     private RecordingMode recordingMode = RecordingMode.FULL;
@@ -69,7 +76,6 @@ public class GuiMinemaPanel extends GuiElement
     private boolean waiting;
     private int start;
     private int end;
-    private CameraExporter trackingExporter = new CameraExporter();
 
     private long lastUpdate;
     private String lastName;
@@ -84,9 +90,14 @@ public class GuiMinemaPanel extends GuiElement
         this.fields = new GuiElement(mc);
         this.name = new GuiTextElement(mc, (Consumer<String>) null).filename();
         this.name.tooltip(IKey.lang("aperture.gui.minema.output"));
-        this.mode = new GuiCirculateElement(mc, this::switchMode);
+        this.mode = new GuiCirculateElement(mc, (b) ->
+        {
+            this.switchMode(b);
+            this.updateButtons();
+        });
 
-        for (RecordingMode mode : RecordingMode.values()) {
+        for (RecordingMode mode : RecordingMode.values())
+        {
             this.mode.addLabel(IKey.lang("aperture.gui.minema.modes." + mode.id));
         }
 
@@ -104,42 +115,67 @@ public class GuiMinemaPanel extends GuiElement
         this.setRight.tooltip(IKey.lang("aperture.gui.minema.set_duration_tooltip"));
         this.record = new GuiButtonElement(mc, IKey.lang("aperture.gui.minema.record"), this::startRecording);
         this.movies = new GuiButtonElement(mc, IKey.lang("minema.gui.movies_folder"), this::openMovies);
-        this.tracking = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_button"), (b) ->
+
+        this.trackingButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_button"), (b) ->
         {
             this.updateButtons();
         });
-        this.tracking.tooltip(IKey.lang("aperture.gui.minema.tracking_tooltip"));
+        this.trackingButton.tooltip(IKey.lang("aperture.gui.minema.tracking_tooltip"));
 
         this.originButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_origin_title"), (b) ->
         {
             this.trackingExporter.setRelativeOrigin(b.isToggled());
-            if(b.isToggled())
+
+            if (b.isToggled())
             {
                 this.trackingExporter.setOriginX(this.originX.value);
                 this.trackingExporter.setOriginY(this.originY.value);
                 this.trackingExporter.setOriginZ(this.originZ.value);
             }
+            else
+            {
+                this.trackingExporter.setOriginX(0);
+                this.trackingExporter.setOriginY(0);
+                this.trackingExporter.setOriginZ(0);
+            }
         });
         this.originButton.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
-        this.nestedTrackingElements = new GuiElement(mc);
-        this.nestedTrackingElements.flex().column(2).stretch().vertical().height(3);
+        this.globalCoordButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_global_coordinates"), (b) ->
+        {
+            this.trackingExporter.setGlobalCoordinates(b.isToggled());
+
+            if (b.isToggled())
+            {
+                this.originButton.toggled(false);
+                this.originButton.callback.accept(this.originButton);
+            }
+
+            this.updateButtons();
+        });
+        this.globalCoordButton.tooltip(IKey.lang("aperture.gui.minema.tracking_global_coordinates_tooltip"));
+
+        this.trackingElementsWrapper = new GuiElement(mc);
+        this.trackingElementsWrapper.flex().column(4).stretch().vertical().height(3);
 
         this.trackingElements = new GuiElement(mc);
-        this.trackingElements.flex().column(2).stretch().vertical().height(3);
+        this.trackingElements.flex().column(4).stretch().vertical().height(3);
+        this.trackingElements.marginTop(10).marginBottom(10);
+
+        this.originElementsWrapper = new GuiElement(mc);
+        this.originElementsWrapper.flex().column(4).stretch().vertical().height(3);
 
         this.originElements = new GuiElement(mc);
-        this.originElements.flex().column(2).stretch().vertical().height(3);
+        this.originElements.flex().column(4).stretch().vertical().height(3);
+        this.originElements.marginTop(7).marginBottom(7);
+
+        this.originRow = Elements.row(mc,4);
 
         this.selectorElement = new GuiElement(mc);
-        this.selectorElement.flex().column(2).stretch().vertical().height(1);
+        this.selectorElement.flex().column(4).stretch().vertical().height(1);
 
-        this.selector = new GuiTextHelpElement(mc, 500, (str) ->
-        {
-            this.trackingExporter.selector = str;
-            this.trackingExporter.tryFindingEntity(str);
-        });
-        this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.minema.tracking_entity_selector"));
+        this.originTitle = Elements.label(IKey.lang("aperture.gui.minema.tracking_origin_title"), 20).anchor(0, 1F);
+        this.originTitle.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
         this.originX = new GuiTrackpadElement(mc, (value) ->
         {
@@ -159,26 +195,35 @@ public class GuiMinemaPanel extends GuiElement
         });
         this.originZ.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_z"));
 
-        this.originTitle = Elements.label(IKey.lang("aperture.gui.minema.tracking_origin_title"), 20).anchor(0, 1F);
-        this.originTitle.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
+        this.selector = new GuiTextHelpElement(mc, 500, (str) ->
+        {
+            this.trackingExporter.selector = str;
+            this.trackingExporter.tryFindingEntity(str);
+        });
+        this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.minema.tracking_entity_selector"));
 
-        this.originRow = Elements.row(mc,2, this.originX, this.originY, this.originZ);
-
+        this.originRow.add(this.originX, this.originY, this.originZ);
         this.originElements.add(this.originButton, this.originRow);
+        this.originElementsWrapper.add(this.originElements);
 
-        this.nestedTrackingElements.add(this.originElements, this.selector);
+        this.selectorElement.add(this.selector);
+        this.trackingElementsWrapper.add(this.globalCoordButton, this.originElementsWrapper, this.selectorElement);
 
-        this.trackingElements.add(this.tracking);
+        this.trackingElements.add(this.trackingButton);
+
+        this.customWrapper = new GuiElement(mc);
+        this.customWrapper.flex().column(4).stretch().vertical().height(2);
+
+        this.leftRight = Elements.row(mc, 5, 0, 20, this.left, this.right);
+        this.setLeftRight = Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight);
 
         this.fields.flex().relative(this.flex()).w(1F).column(5).vertical().stretch().height(20).padding(10);
         this.flex().hTo(this.fields.flex(), 1F);
 
         this.fields.add(Elements.label(IKey.lang("aperture.gui.minema.title"), 12).background());
-        this.fields.add(this.name, this.mode, this.trackingElements);
+        this.fields.add(this.name, this.mode);
 
-        this.fields.add(this.leftRight = Elements.row(mc, 5, 0, 20, this.left, this.right));
-        this.fields.add(this.setLeftRight = Elements.row(mc, 5, 0, 20, this.setLeft, this.setRight));
-        this.fields.add(Elements.row(mc, 5, 0, 20, this.movies, this.record));
+        this.fields.add(this.customWrapper, this.trackingElements, Elements.row(mc, 5, 0, 20, this.movies, this.record));
 
         this.add(this.fields);
         this.add(new GuiDrawable((context) ->
@@ -203,11 +248,25 @@ public class GuiMinemaPanel extends GuiElement
 
     private void updateButtons()
     {
-        this.nestedTrackingElements.removeFromParent();
+        this.trackingElementsWrapper.removeFromParent();
+        this.originElements.removeFromParent();
+        this.leftRight.removeFromParent();
+        this.setLeftRight.removeFromParent();
 
-        if (this.tracking.isToggled())
+        if (this.trackingButton.isToggled())
         {
-            this.trackingElements.add(this.nestedTrackingElements);
+            this.trackingElements.add(this.trackingElementsWrapper);
+        }
+
+        if (!this.globalCoordButton.isToggled())
+        {
+            this.originElementsWrapper.add(this.originElements);
+        }
+
+        if (this.recordingMode == RecordingMode.CUSTOM)
+        {
+            this.customWrapper.add(leftRight);
+            this.customWrapper.add(setLeftRight);
         }
 
         this.getParent().resize();
@@ -222,9 +281,6 @@ public class GuiMinemaPanel extends GuiElement
     private void switchMode(GuiCirculateElement b)
     {
         this.recordingMode = RecordingMode.values()[b.getValue()];
-
-        this.leftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
-        this.setLeftRight.setVisible(this.recordingMode == RecordingMode.CUSTOM);
     }
 
     public boolean isRecording()
@@ -380,7 +436,7 @@ public class GuiMinemaPanel extends GuiElement
 
             return;
         }
-        else if (this.tracking.isToggled() && this.isRunning())
+        else if (this.trackingButton.isToggled() && this.isRunning())
         {
             this.trackingExporter.build(this.editor.getRunner().getPosition(), partialTicks);
         }
