@@ -4,23 +4,24 @@ import mchorse.aperture.client.AsmShaderHandler;
 import net.minecraft.client.resources.I18n;
 import net.optifine.shaders.Shaders;
 
-public class ShaderSunPathRotationCurve extends AbstractCurve
+public class ShaderSunPathRotationCurve extends ShaderUniform1fCurve
 {
-    @Override
-    public String getTranslatedName()
+    public ShaderSunPathRotationCurve()
     {
-        return I18n.format("aperture.gui.curves.shader.sun_path_rotation");
+        super("sunPathRotation");
     }
 
     @Override
     public void apply(double value)
     {
+        super.apply(value);
         Shaders.sunPathRotation = (float) value;
     }
 
     @Override
     public void reset()
     {
+        super.reset();
         Shaders.sunPathRotation = AsmShaderHandler.sunPathRotation;
     }
 

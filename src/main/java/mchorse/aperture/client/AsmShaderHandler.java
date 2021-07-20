@@ -22,6 +22,7 @@ import net.optifine.shaders.IShaderPack;
 import net.optifine.shaders.Shaders;
 import net.optifine.shaders.config.ShaderOption;
 import net.optifine.shaders.config.ShaderOptionVariable;
+import net.optifine.shaders.config.ShaderOptionVariableConst;
 import net.optifine.shaders.config.ShaderPackParser;
 import net.optifine.shaders.uniform.ShaderUniform1f;
 import net.optifine.shaders.uniform.ShaderUniform1i;
@@ -211,6 +212,103 @@ public class AsmShaderHandler
         }
     }
 
+    public static void addOptionUniformConst(ShaderUniformConstOption option)
+    {
+        if (option.isUniform())
+        {
+            switch (option.type)
+            {
+                case "int":
+
+                    if (!option1i.containsKey(option.getName()))
+                    {
+                        option1i.put(option.getName(), new ShaderUniform1i(option.getName()));
+                    }
+                    break;
+
+                case "float":
+
+                    if (!option1f.containsKey(option.getName()))
+                    {
+                        option1f.put(option.getName(), new ShaderUniform1f(option.getName()));
+                    }
+                    break;
+            }
+        }
+    }
+
+    public static String getConstLine(String firstLine, BufferedReader reader) throws IOException
+    {
+        StringBuilder output = new StringBuilder();
+
+        String line = firstLine;
+        boolean end = false;
+        boolean comment = false;
+        int i = 0;
+
+        while (true)
+        {
+            for (; i < line.length(); i++)
+            {
+                char thisChar = line.charAt(i);
+                char lastChar = 0;
+                
+                if (i > 0)
+                {
+                    lastChar = line.charAt(i - 1);
+                }
+
+                if (comment)
+                {
+                    if (lastChar == '*' && thisChar == '/')
+                    {
+                        comment = false;
+                    }
+                }
+                else
+                {
+                    if (lastChar == '/' && thisChar == '/')
+                    {
+                        i = line.length();
+                        output.setLength(output.length() - 1);
+
+                        break;
+                    }
+                    else if (lastChar == '/' && thisChar == '*')
+                    {
+                        comment = true;
+                        output.setLength(output.length() - 1);
+                    }
+                    else if (thisChar == ';')
+                    {
+                        end = true;
+                    }
+
+                    if (!comment)
+                    {
+                        output.append(thisChar);
+                    }
+                }
+            }
+            
+            if (end)
+            {
+                break;
+            }
+            
+            String nextLine = reader.readLine();
+
+            if (nextLine == null)
+            {
+                break;
+            }
+
+            line += ' ' + nextLine.trim();
+        }
+        
+        return output.toString();
+    }
+
     /**
      * ASM hook which is used in {@link mchorse.aperture.core.transformers.ShadersTransformer}<br>
      * Called by {@link net.optifine.shaders.Shaders#createVertShader(net.optifine.shaders.Program, String)}<br>
@@ -237,6 +335,7 @@ public class AsmShaderHandler
 
             StringBuilder builder = new StringBuilder();
             List<ShaderUniformOption> uniformOptions = new ArrayList<ShaderUniformOption>();
+            List<ShaderUniformConstOption> uniformConstOptions = new ArrayList<ShaderUniformConstOption>();
             Set<String> uniforms = new HashSet<String>();
             Set<Pattern> constPatterns = new HashSet<Pattern>();
 
@@ -245,15 +344,27 @@ public class AsmShaderHandler
                 if (option instanceof ShaderUniformOption)
                 {
                     ShaderUniformOption uniform = (ShaderUniformOption) option;
+
                     if (uniform.isEnabled() && uniform.isUniform())
                     {
                         uniformOptions.add(uniform);
                         constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
                     }
                 }
+                else if (option instanceof ShaderUniformConstOption)
+                {
+                    ShaderUniformConstOption uniform = (ShaderUniformConstOption) option;
+
+                    if (uniform.isEnabled() && uniform.isUniform())
+                    {
+                        uniformConstOptions.add(uniform);
+                        constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
+                    }
+                }
             }
 
             ShaderUniformOption.doPatch = true;
+            ShaderUniformConstOption.doPatch = true;
             String line;
 
             while ((line = resolved.readLine()) != null)
@@ -278,23 +389,43 @@ public class AsmShaderHandler
 
                 if (!matched && PATTERN_CONST.matcher(line).find())
                 {
-                    String constVar = null;
-                    for (Pattern pattern : constPatterns)
+                    line = getConstLine(line, resolved);
+                    
+                    for (ShaderUniformConstOption uniform : uniformConstOptions)
                     {
-                        Matcher result = pattern.matcher(line);
-
-                        if (result.find())
+                        if (matched = uniform.matchesLine(line))
                         {
-                            constVar = result.group(1);
-                            line = line.replaceFirst("const\\s", "");
+                            line = uniform.getSourceLine();
+
+                            uniforms.add(String.format("uniform %s %s;\n/*\n%s\n*/\n", uniform.type, uniform.getName(), line));
+                            addOptionUniformConst(uniform);
+
+                            line = "";
 
                             break;
                         }
                     }
 
-                    if (constVar != null)
+                    if (!matched)
                     {
-                        constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", constVar)));
+                        String constVar = null;
+                        for (Pattern pattern : constPatterns)
+                        {
+                            Matcher result = pattern.matcher(line);
+
+                            if (result.find())
+                            {
+                                constVar = result.group(1);
+                                line = line.replaceFirst("const\\s", "");
+
+                                break;
+                            }
+                        }
+
+                        if (constVar != null)
+                        {
+                            constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", constVar)));
+                        }
                     }
                 }
 
@@ -303,6 +434,7 @@ public class AsmShaderHandler
 
             resolved.close();
             ShaderUniformOption.doPatch = false;
+            ShaderUniformConstOption.doPatch = false;
 
             int version = builder.indexOf("#version");
             int pos = builder.indexOf("#line", version);
@@ -426,6 +558,42 @@ public class AsmShaderHandler
             {
                 return false;
             }
+        }
+    }
+
+    /**
+     * ASM hook which is used in {@link mchorse.aperture.core.transformers.ShaderOptionVariableConstTransformer}<br>
+     * Called by {@link net.optifine.shaders.config.ShaderOptionVariableConst#parseOption(String, String)}
+     */
+    public static class ShaderUniformConstOption extends ShaderOptionVariableConst
+    {
+        public static boolean doPatch = false;
+
+        public final boolean isUniform;
+        public final String type;
+
+        public ShaderUniformConstOption(String name, String type, String description, String value, String[] values, String path)
+        {
+            super(name, type, description, value, values, path);
+
+            this.isUniform = "sunPathRotation".equals(name);
+            this.type = type;
+        }
+
+        @Override
+        public boolean matchesLine(String line)
+        {
+            if (this.isUniform() && !doPatch)
+            {
+                return false;
+            }
+
+            return super.matchesLine(line);
+        }
+
+        public boolean isUniform()
+        {
+            return this.isUniform && (Aperture.optifineShaderOptionCurve == null || Aperture.optifineShaderOptionCurve.get());
         }
     }
 }

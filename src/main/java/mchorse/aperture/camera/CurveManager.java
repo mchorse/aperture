@@ -102,7 +102,7 @@ public class CurveManager
         {
             ShaderOption option = Shaders.getShaderOption(key);
 
-            if (option != null && option.isVisible() == visible)
+            if (!"sunPathRotation".equals(key) && option != null && option.isVisible() == visible)
             {
                 list.add(key);
             }
