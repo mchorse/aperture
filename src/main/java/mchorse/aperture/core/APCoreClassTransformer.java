@@ -1,6 +1,7 @@
 package mchorse.aperture.core;
 
 import mchorse.aperture.core.transformers.GlStateManagerTransformer;
+import mchorse.aperture.core.transformers.ShaderOptionVariableConstTransformer;
 import mchorse.aperture.core.transformers.ShaderOptionVariableTransformer;
 import mchorse.aperture.core.transformers.ShaderPackParserTransformer;
 import mchorse.aperture.core.transformers.ShadersTransformer;
@@ -15,6 +16,7 @@ public class APCoreClassTransformer extends CoreClassTransformer
     private GlStateManagerTransformer manager = new GlStateManagerTransformer();
     private ShadersTransformer shaders = new ShadersTransformer();
     private ShaderOptionVariableTransformer option = new ShaderOptionVariableTransformer();
+    private ShaderOptionVariableConstTransformer constOption = new ShaderOptionVariableConstTransformer();
     private ShaderPackParserTransformer parser = new ShaderPackParserTransformer();
 
     @Override
@@ -54,6 +56,12 @@ public class APCoreClassTransformer extends CoreClassTransformer
             System.out.println("APCoreMod: Transforming ShaderOptionVariable class (" + name + ")");
 
             return this.option.transform(name, basicClass);
+        }
+        else if (name.equals("net.optifine.shaders.config.ShaderOptionVariableConst"))
+        {
+            System.out.println("APCoreMod: Transforming ShaderOptionVariableConst class (" + name + ")");
+
+            return this.constOption.transform(name, basicClass);
         }
         /* Optifine is non-debuggable. Uncomment it in the development environment */
         /* else if (name.equals("Config")) { return null; } */
