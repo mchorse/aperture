@@ -134,7 +134,7 @@ public class CameraExporter
         {
             if (MinemaIntegration.isAvailable())
             {
-                this.wrapper.add("information", createCameraInformation());
+                this.wrapper.add("information", getHeaderInformation());
             }
 
             this.wrapper.add("camera_tracking", this.trackingData);
@@ -160,7 +160,7 @@ public class CameraExporter
         this.frame = (this.heldframes == 1) ? this.frame + 1 : this.frame;
     }
 
-    private JsonObject createCameraInformation()
+    private JsonObject getHeaderInformation()
     {
         JsonObject information = new JsonObject();
         JsonArray resolution = new JsonArray();
@@ -179,6 +179,7 @@ public class CameraExporter
         information.add("dynamic_fov", new JsonPrimitive(OptifineHelper.dynamicFov()));
         information.add("resolution", resolution);
         information.add("held_frames", new JsonPrimitive(Minema.instance.getConfig().heldFrames.get()));
+        information.add("required_import_version", new JsonPrimitive(120));
 
         return information;
     }
