@@ -224,7 +224,7 @@ public class GuiEnvelope extends GuiElement
             this.undo(envelope.endX, this.getDuration() - envelope.endX.get())
         ));
 
-        this.endX.setValue(this.get().endX.get());
+        this.fillIntervals();
     }
 
     public long getDuration()
