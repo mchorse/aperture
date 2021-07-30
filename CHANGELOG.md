@@ -1,3 +1,12 @@
+## Aperture 1.6.1
+
+This patch update fixes a couple of bugs.
+
+**Compatible** with McLib `2.3` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Fixed relative toggle conversion outputting ticks when Use seconds enabled
+* Fixed CMDCam hogging camera's roll
+
 ## Aperture 1.6
 
 This update is focused on adding Undo/Redo and limitations for non-OP users.
