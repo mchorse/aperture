@@ -157,7 +157,7 @@ public class CameraExporter
         addCameraFrame(position);
         addEntitiesData(partialTick);
 
-        this.frame = (this.heldframes == 1 || this.heldframes == 0) ? this.frame + 1 : this.frame;
+        this.frame = (this.heldframes <= 1) ? this.frame + 1 : this.frame;
     }
 
     private JsonObject getHeaderInformation()
