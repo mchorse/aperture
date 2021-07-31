@@ -63,8 +63,6 @@ public class APCoreClassTransformer extends CoreClassTransformer
 
             return this.constOption.transform(name, basicClass);
         }
-        /* Optifine is non-debuggable. Uncomment it in the development environment */
-        /* else if (name.equals("Config")) { return null; } */
 
         return basicClass;
     }

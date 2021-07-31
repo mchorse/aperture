@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import mchorse.aperture.Aperture;
-import net.minecraft.entity.Entity;
 import net.optifine.shaders.IShaderPack;
 import net.optifine.shaders.Shaders;
 import net.optifine.shaders.config.ShaderOption;
