@@ -47,14 +47,14 @@ dependencies
 {
     compile files("run/libs/mclib-${mclib}-${project.minecraft.version}-dev.jar")
     compile files("run/libs/Minema-${minema}-${project.minecraft.version}-dev.jar")
-
-    provided files("run/libs/OptiFine_1.12.2_HD_U_G5.jar")
 }
 
 jar {
    manifest {
        attributes 'FMLCorePlugin': coremodPath, 'FMLCorePluginContainsFMLMod': 'true'
    }
+
+   exclude 'net/**'
 }
 
 eclipse
@@ -89,6 +89,8 @@ eclipse
 task deobfJar(type: Jar) {  
     from sourceSets.main.output 
     classifier = 'dev'  
+
+    exclude 'net/**'
 }   
 
 artifacts 
