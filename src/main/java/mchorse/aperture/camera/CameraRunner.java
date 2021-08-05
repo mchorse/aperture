@@ -146,7 +146,7 @@ public class CameraRunner
         this.isRunning = true;
         this.ticks = start;
         this.duration = duration;
-        this.skipUpdate = false;
+        this.skipUpdate = true;
     }
 
     /**
@@ -190,6 +190,12 @@ public class CameraRunner
         {
             this.outside.stop();
         }
+    }
+
+    public void setTick(long ticks)
+    {
+        this.ticks = ticks;
+        this.skipUpdate = this.isRunning ? true : false;
     }
 
     /**
