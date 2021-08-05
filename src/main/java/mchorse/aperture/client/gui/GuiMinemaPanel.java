@@ -72,7 +72,6 @@ public class GuiMinemaPanel extends GuiElement
 
     private RecordingMode recordingMode = RecordingMode.FULL;
     private boolean recording;
-    private boolean waiting;
     private int start;
     private int end;
 
@@ -347,6 +346,7 @@ public class GuiMinemaPanel extends GuiElement
         try
         {
             MinemaIntegration.toggleRecording(true);
+            this.editor.postOperation(() -> this.recording = true);
         }
         catch (Exception e)
         {
@@ -365,8 +365,12 @@ public class GuiMinemaPanel extends GuiElement
         this.editor.timeline.setValueFromScrub(this.start);
         this.editor.updatePlayer(this.start, 0);
 
+        if (!this.isRunning())
+        {
+            this.editor.togglePlayback();
+        }
+
         this.editor.root.setVisible(false);
-        this.recording = this.waiting = true;
     }
 
     public void stop()
@@ -385,7 +389,7 @@ public class GuiMinemaPanel extends GuiElement
             }
 
             this.editor.root.setVisible(true);
-            this.recording = this.waiting = false;
+            this.recording = false;
 
             if (this.trackingExporter.building)
             {
@@ -419,24 +423,14 @@ public class GuiMinemaPanel extends GuiElement
             this.trackingExporter.frameEnd(partialTicks);
         }
 
-        if (this.waiting)
+        if (this.isRunning() && ticks >= this.end)
         {
-            if (!this.isRunning() && partialTicks == 0)
-            {
-                this.editor.togglePlayback();
-                this.waiting = false;
-            }
+            this.editor.togglePlayback();
+            this.stop();
         }
-        else
+        else if (!this.isRunning())
         {
-            if (this.isRunning() && ticks >= this.end)
-            {
-                this.editor.togglePlayback();
-            }
-            else if (!this.isRunning())
-            {
-                this.stop();
-            }
+            this.stop();
         }
 
         if (Aperture.debugTicks.get())
