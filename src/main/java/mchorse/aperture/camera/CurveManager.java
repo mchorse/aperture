@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import mchorse.aperture.Aperture;
 import mchorse.aperture.camera.curves.*;
 import mchorse.aperture.camera.values.ValueCurves;
 import mchorse.aperture.client.AsmRenderingHandler.Curve;
@@ -32,7 +33,11 @@ public class CurveManager
 
         if (OptifineHelper.isShaderLoaded())
         {
-            this.curves.put("shader_sun_path_rotation", new ShaderSunPathRotationCurve());
+            if (Aperture.optifineShaderOptionCurve.get())
+            {
+                this.curves.put("shader_sun_path_rotation", new ShaderSunPathRotationCurve());
+            }
+
             this.curves.put("shader_center_depth", new ShaderCenterDepthCurve());
             this.curves.put("shader_rain_strength", new ShaderUniform1fCurve("rainStrength"));
             this.curves.put("shader_wetness", new ShaderUniform1fCurve("wetness"));
