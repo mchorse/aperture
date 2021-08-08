@@ -227,7 +227,7 @@ public class CameraExporter
 
         if (tracker.trackingData.size() == 0)
         {
-            frame.addProperty("frame",  this.frame-1);
+            frame.addProperty("frame",  this.frame);
         }
 
         positionData.add(pos.x - this.trackingInitialPos[0]);
