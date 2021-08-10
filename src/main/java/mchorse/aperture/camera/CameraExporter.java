@@ -80,19 +80,45 @@ public class CameraExporter
      */
     public boolean addTracker(TrackingPacket tracker)
     {
-        String number = "0";
-
-        while(this.morphNames.containsKey(tracker.name+((number.equals("0")) ? "" : "."+number)))
+        if (!tracker.combiningMorphs)
         {
-            number = Integer.toString(Integer.valueOf(number)+1);
+            tracker.name = this.checkDuplicateName(tracker.name);
+
+            this.morphData.add(tracker.name, tracker.trackingData);
+            this.morphNames.put(tracker.name, tracker);
+        }
+        else
+        {
+            if (!this.morphNames.containsKey(tracker.name))
+            {
+                this.morphData.add(tracker.name, tracker.trackingData);
+                this.morphNames.put(tracker.name, tracker);
+            }
+            else
+            {
+                tracker.trackingData = this.morphData.getAsJsonArray(tracker.name);
+            }
         }
 
-        tracker.name += !number.equals("0") ? "."+number : "";
-
-        this.morphData.add(tracker.name, tracker.trackingData);
-        this.morphNames.put(tracker.name, tracker);
-
         return true;
+    }
+
+    /**
+     * This method checks the morphNames map for duplicate name.
+     *
+     * @param name name of the morph
+     * @return It returns either an indexed name like "morph.2" if it found a duplicate. If it didn't find a duplicate it returns the original name
+     */
+    private String checkDuplicateName(String name)
+    {
+        int counter = 0;
+
+        while(this.morphNames.containsKey(name + ((counter == 0) ? "" : "."+counter)))
+        {
+            counter++;
+        }
+
+        return name + ((counter == 0) ? "" : "."+counter);
     }
 
     /**
@@ -483,10 +509,12 @@ public class CameraExporter
         private JsonArray trackingData = new JsonArray();
         private boolean reset = false;
         private int heldframes = 0; //to determine double frames with minema's held frames
+        private boolean combiningMorphs = false;
 
-        public TrackingPacket(String name)
+        public TrackingPacket(String name, boolean combiningMorphs)
         {
             this.name = name;
+            this.combiningMorphs = combiningMorphs;
         }
 
         public void reset()
