@@ -34,10 +34,10 @@ public class AsmShaderHandler
     public static final Pattern PATTERN_DEFINE = Pattern.compile("^\\s*#define\\s", Pattern.CASE_INSENSITIVE);
     public static final Pattern PATTERN_IF = Pattern.compile("^\\s*#(?:el)?(?:if)\\s", Pattern.CASE_INSENSITIVE);
     public static final Pattern PATTERN_CONST = Pattern.compile("^\\s*const\\s");
-    
+
     public static final Map<String, Integer> uniform1i = new HashMap<String, Integer>();
     public static final Map<String, Float> uniform1f = new HashMap<String, Float>();
-    
+
     public static final Map<String, ShaderUniform1i> option1i = new LinkedHashMap<>();
     public static final Map<String, ShaderUniform1f> option1f = new LinkedHashMap<>();
 
@@ -85,7 +85,7 @@ public class AsmShaderHandler
             entry.getValue().setProgram(Shaders.activeProgramID);
             setProgramUniform1i(entry.getValue(), Integer.parseInt(Shaders.getShaderOption(entry.getKey()).getValue()));
         }
-        
+
         for (Map.Entry<String, ShaderUniform1f> entry : option1f.entrySet())
         {
             entry.getValue().setProgram(Shaders.activeProgramID);
@@ -108,7 +108,7 @@ public class AsmShaderHandler
         {
             uniform.reset();
         }
-        
+
         sunPathRotation = Shaders.sunPathRotation;
     }
 
@@ -148,20 +148,22 @@ public class AsmShaderHandler
 
         return option;
     }
-    
+
     public static BufferedReader convert(Object obj) throws IOException
     {
-        /* It should be net.optifine.util.LineBuffer. This would be useful if Optifine has plans to release a G7 version for 1.12.2. */
+        /*
+         * It should be net.optifine.util.LineBuffer. This would be useful if Optifine has plans to release a G7 version for 1.12.2.
+         */
         if (obj instanceof Iterable)
         {
-            Iterator<String> iterator = ((Iterable<String>)obj).iterator();
+            Iterator<String> iterator = ((Iterable<String>) obj).iterator();
             StringBuilder builder = new StringBuilder();
-            
+
             while (iterator.hasNext())
             {
                 builder.append(iterator.next()).append('\n');
             }
-            
+
             return new BufferedReader(new StringReader(builder.toString()));
         }
         else
@@ -251,7 +253,7 @@ public class AsmShaderHandler
             {
                 char thisChar = line.charAt(i);
                 char lastChar = 0;
-                
+
                 if (i > 0)
                 {
                     lastChar = line.charAt(i - 1);
@@ -289,12 +291,12 @@ public class AsmShaderHandler
                     }
                 }
             }
-            
+
             if (end)
             {
                 break;
             }
-            
+
             String nextLine = reader.readLine();
 
             if (nextLine == null)
@@ -304,7 +306,7 @@ public class AsmShaderHandler
 
             line += ' ' + nextLine.trim();
         }
-        
+
         return output.toString();
     }
 
@@ -324,7 +326,7 @@ public class AsmShaderHandler
             {
                 return null;
             }
-            
+
             if (!Aperture.optifineShaderOptionCurve.get())
             {
                 return resolved;
@@ -336,6 +338,7 @@ public class AsmShaderHandler
             List<ShaderUniformOption> uniformOptions = new ArrayList<ShaderUniformOption>();
             List<ShaderUniformConstOption> uniformConstOptions = new ArrayList<ShaderUniformConstOption>();
             Set<String> uniforms = new HashSet<String>();
+            Set<Pattern> definePatterns = new HashSet<Pattern>();
             Set<Pattern> constPatterns = new HashSet<Pattern>();
 
             for (ShaderOption option : Shaders.getShaderPackOptions())
@@ -347,7 +350,8 @@ public class AsmShaderHandler
                     if (uniform.isEnabled() && uniform.isUniform())
                     {
                         uniformOptions.add(uniform);
-                        constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
+                        definePatterns.add(Pattern.compile(String.format("^\\s*#\\w+\\s+(\\S+)\\s+(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
+                        constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\S+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
                     }
                 }
                 else if (option instanceof ShaderUniformConstOption)
@@ -357,7 +361,8 @@ public class AsmShaderHandler
                     if (uniform.isEnabled() && uniform.isUniform())
                     {
                         uniformConstOptions.add(uniform);
-                        constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
+                        definePatterns.add(Pattern.compile(String.format("^\\s*#\\w+\\s+(\\S+)\\s+(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
+                        constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\S+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", option.getName())));
                     }
                 }
             }
@@ -384,12 +389,31 @@ public class AsmShaderHandler
                             break;
                         }
                     }
+
+                    if (!matched)
+                    {
+                        String defVar = null;
+                        for (Pattern pattern : definePatterns)
+                        {
+                            Matcher result = pattern.matcher(line);
+
+                            if (result.find())
+                            {
+                                defVar = result.group(1);
+
+                                definePatterns.add(Pattern.compile(String.format("^\\s*#\\w+\\s+(\\S+)\\s+(?:.*\\W)?%s(?:\\W.*)?$", defVar)));
+                                constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", defVar)));
+
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 if (!matched && PATTERN_CONST.matcher(line).find())
                 {
                     line = getConstLine(line, resolved);
-                    
+
                     for (ShaderUniformConstOption uniform : uniformConstOptions)
                     {
                         if (matched = uniform.matchesLine(line))
@@ -423,6 +447,7 @@ public class AsmShaderHandler
 
                         if (constVar != null)
                         {
+                            definePatterns.add(Pattern.compile(String.format("^\\s*#\\w+\\s+(\\S+)\\s+(?:.*\\W)?%s(?:\\W.*)?$", constVar)));
                             constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", constVar)));
                         }
                     }
@@ -438,7 +463,7 @@ public class AsmShaderHandler
             int version = builder.indexOf("#version");
             int pos = builder.indexOf("#line", version);
 
-            for (String uniform : uniforms) 
+            for (String uniform : uniforms)
             {
                 builder.insert(pos, uniform);
             }
@@ -448,7 +473,7 @@ public class AsmShaderHandler
 
         if (reader instanceof BufferedReader)
         {
-            ((BufferedReader)reader).close();
+            ((BufferedReader) reader).close();
         }
 
         listFiles.clear();
@@ -486,8 +511,8 @@ public class AsmShaderHandler
 
                 for (String val : values)
                 {
-                    isInteger = isInteger && checkInt(val);
-                    isFloat = isFloat && checkFloat(val);
+                    isInteger = isInteger && this.checkInt(val);
+                    isFloat = isFloat && this.checkFloat(val);
                 }
 
                 uniformType = isInteger ? INTEGER : (isFloat ? FLOAT : NOT_SUPPORT);
