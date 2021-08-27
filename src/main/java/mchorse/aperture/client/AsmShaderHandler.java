@@ -70,6 +70,10 @@ public class AsmShaderHandler
         {
             value = uniform1f.get(su.getName());
         }
+        else if ("sunPathRotation".equals(su.getName()) && sunPathRotation != value)
+        {
+            Shaders.sunPathRotation = sunPathRotation = value;
+        }
 
         su.setValue(value);
     }
