@@ -59,7 +59,15 @@ public class AsmRenderingHandler
     public static float getCelestialAngle(WorldProvider provider, long worldTime, float partialTicks)
     {
         double angle = getOption(Curve.CelestialAngle, provider.calculateCelestialAngle(worldTime, partialTicks) * 360.0);
-        return (float) MathHelper.wrapDegrees(angle) / 360.0f;
+
+        angle %= 360.0;
+
+        if (angle < 0)
+        {
+            angle += 360.0;
+        }
+
+        return (float) angle / 360.0f;
     }
 
     /**
