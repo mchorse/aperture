@@ -60,7 +60,7 @@ public class WorldTransformer extends ClassTransformer
                         break;
 
                     case "e":
-                        mnode.name = "getCloudColour";
+                        mnode.name = "getCloudColor";
                         break;
 
                     case "f":
