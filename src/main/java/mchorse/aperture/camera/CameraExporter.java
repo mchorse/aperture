@@ -215,41 +215,27 @@ public class CameraExporter
         JsonObject frame = new JsonObject();
         JsonArray positionData = new JsonArray();
         JsonArray rotationData = new JsonArray();
+        JsonArray scaleData = new JsonArray();
 
-        MatrixUtils.Transformation modelView = MatrixUtils.extractTransformations(MatrixUtils.matrix, MatrixUtils.readModelView(matrix));
+        Matrix4f parent = new Matrix4f(MatrixUtils.matrix);
 
-        Vector3d pos = new Vector3d(modelView.getTranslation3f());
-        Matrix4f rotation = new Matrix4f();
-        Matrix4f rotTmp = new Matrix4f();
-        Matrix4f dummy = new Matrix4f();
+        MatrixUtils.Transformation modelTransform = MatrixUtils.extractTransformations(parent, MatrixUtils.readModelView(matrix));
 
-        rotTmp.setIdentity();
-        rotation.setIdentity();
-        dummy.setIdentity();
-
-        rotation.m00 = modelView.getRotation3f().m00;
-        rotation.m01 = modelView.getRotation3f().m01;
-        rotation.m02 = modelView.getRotation3f().m02;
-        rotation.m10 = modelView.getRotation3f().m10;
-        rotation.m11 = modelView.getRotation3f().m11;
-        rotation.m12 = modelView.getRotation3f().m12;
-        rotation.m20 = modelView.getRotation3f().m20;
-        rotation.m21 = modelView.getRotation3f().m21;
-        rotation.m22 = modelView.getRotation3f().m22;
-
-        /*convert minecraft to blender axis
-        rotTmp.rotZ((float)Math.toRadians(90));
-        rotTmp.rotX((float)Math.toRadians(90));
-        rotTmp.mul(rotation);
-        rotation.set(rotTmp);*/
-
-        MatrixUtils.Transformation transformation = new MatrixUtils.Transformation(dummy, rotation, dummy);
-        Vector3f rot = transformation.getRotation(MatrixUtils.Transformation.RotationOrder.ZYX);
-
+        Vector3d pos = new Vector3d(modelTransform.getTranslation3f());
+        Vector3f rot = modelTransform.getRotation(MatrixUtils.Transformation.RotationOrder.ZYX);
 
         pos.add(new Vector3d(Interpolations.lerp(entity.prevPosX, entity.posX, partialTicks),
                              Interpolations.lerp(entity.prevPosY, entity.posY, partialTicks),
                              Interpolations.lerp(entity.prevPosZ, entity.posZ, partialTicks)));
+
+        parent.invert();
+        parent.mul(matrix);
+
+        Vector3d scale = new Vector3d();
+        scale.x = Math.sqrt(parent.m00 * parent.m00 + parent.m10 * parent.m10 + parent.m20 * parent.m20);
+        scale.y = Math.sqrt(parent.m01 * parent.m01 + parent.m11 * parent.m11 + parent.m21 * parent.m21);
+        scale.z = Math.sqrt(parent.m02 * parent.m02 + parent.m12 * parent.m12 + parent.m22 * parent.m22);
+
 
         if (tracker.trackingData.size() == 0)
         {
@@ -264,8 +250,13 @@ public class CameraExporter
         rotationData.add(rot.y);
         rotationData.add(rot.z);
 
+        scaleData.add(scale.x);
+        scaleData.add(scale.y);
+        scaleData.add(scale.z);
+
         frame.add("position", positionData);
         frame.add("rotation", rotationData);
+        frame.add("scale", scaleData);
 
         if (MinemaIntegration.isAvailable())
         {
@@ -278,8 +269,9 @@ public class CameraExporter
                     JsonObject prevFrame = tracker.trackingData.get(tracker.trackingData.size()-1).getAsJsonObject();
                     JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
                     JsonArray prevAngleData = prevFrame.get("rotation").getAsJsonArray();
+                    JsonArray prevScaleData = prevFrame.get("scale").getAsJsonArray();
 
-                    if (prevAngleData.equals(rotationData) && prevPositionData.equals(positionData))
+                    if (prevAngleData.equals(rotationData) && prevPositionData.equals(positionData) && prevScaleData.equals(scaleData))
                     {
                         return;
                     }
@@ -346,7 +338,7 @@ public class CameraExporter
                 {
                     JsonObject prevFrame = entityFrameArray.get(entityFrameArray.size()-1).getAsJsonObject();
                     JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
-                    JsonArray prevBodyRotationData = prevFrame.get("body_rotation").getAsJsonArray();
+                    JsonArray prevBodyRotationData = (prevFrame.get("body_rotation") != null) ? prevFrame.get("body_rotation").getAsJsonArray() : null;
 
                     boolean angleComparison = true;
 
