@@ -1,5 +1,6 @@
 package mchorse.aperture.camera.curves;
 
+import mchorse.aperture.utils.OptifineHelper;
 import net.minecraft.client.Minecraft;
 
 public class ShaderCenterDepthCurve extends ShaderUniform1fCurve
@@ -14,14 +15,24 @@ public class ShaderCenterDepthCurve extends ShaderUniform1fCurve
     {
         double near = 0.05;
         double far = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 32;
-        
-        if (far < 173)
+
+        if (OptifineHelper.isFogFancy())
         {
-            far = 173;
+            far *= 0.95F;
         }
-        
+
+        if (OptifineHelper.isFogFast())
+        {
+            far *= 0.83F;
+        }
+
+        if (far < 173F)
+        {
+            far = 173F;
+        }
+
         double depth = ((far + near) * value - 2 * near * far) / value / (far - near) * 0.5 + 0.5;
-        
+
         super.apply(depth);
     }
 }
