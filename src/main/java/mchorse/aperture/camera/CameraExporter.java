@@ -205,7 +205,7 @@ public class CameraExporter
         information.add("dynamic_fov", new JsonPrimitive(OptifineHelper.dynamicFov()));
         information.add("resolution", resolution);
         information.add("held_frames", new JsonPrimitive(Minema.instance.getConfig().heldFrames.get()));
-        information.add("required_import_version", new JsonPrimitive(120));
+        information.add("required_import_version", new JsonPrimitive(140));
 
         return information;
     }
@@ -218,41 +218,65 @@ public class CameraExporter
         JsonArray scaleData = new JsonArray();
 
         Matrix4f parent = new Matrix4f(MatrixUtils.matrix);
+        Matrix4f rotation = new Matrix4f();
+        MatrixUtils.Transformation modelTransform = MatrixUtils.extractTransformations(MatrixUtils.matrix, MatrixUtils.readModelView(matrix));
 
-        MatrixUtils.Transformation modelTransform = MatrixUtils.extractTransformations(parent, MatrixUtils.readModelView(matrix));
+        parent.invert();
+        parent.mul(matrix);
+
+        Vector4f rx = new Vector4f(parent.m00, parent.m10, parent.m20, 0);
+        Vector4f ry = new Vector4f(parent.m01, parent.m11, parent.m21, 0);
+        Vector4f rz = new Vector4f(parent.m02, parent.m12, parent.m22, 0);
+
+        rx.normalize();
+        ry.normalize();
+        rz.normalize();
+        rotation.setRow(0, rx);
+        rotation.setRow(1, ry);
+        rotation.setRow(2, rz);
 
         Vector3d pos = new Vector3d(modelTransform.getTranslation3f());
-        Vector3f rot = modelTransform.getRotation(MatrixUtils.Transformation.RotationOrder.ZYX);
 
         pos.add(new Vector3d(Interpolations.lerp(entity.prevPosX, entity.posX, partialTicks),
                              Interpolations.lerp(entity.prevPosY, entity.posY, partialTicks),
                              Interpolations.lerp(entity.prevPosZ, entity.posZ, partialTicks)));
 
-        parent.invert();
-        parent.mul(matrix);
+        positionData.add(pos.x - this.trackingInitialPos[0]);
+        positionData.add(pos.y - this.trackingInitialPos[1]);
+        positionData.add(pos.z - this.trackingInitialPos[2]);
 
         Vector3d scale = new Vector3d();
         scale.x = Math.sqrt(parent.m00 * parent.m00 + parent.m10 * parent.m10 + parent.m20 * parent.m20);
         scale.y = Math.sqrt(parent.m01 * parent.m01 + parent.m11 * parent.m11 + parent.m21 * parent.m21);
         scale.z = Math.sqrt(parent.m02 * parent.m02 + parent.m12 * parent.m12 + parent.m22 * parent.m22);
 
+        JsonArray ax = new JsonArray();
+        ax.add(rotation.m00);
+        ax.add(rotation.m01);
+        ax.add(rotation.m02);
+
+        JsonArray ay = new JsonArray();
+        ay.add(rotation.m10);
+        ay.add(rotation.m11);
+        ay.add(rotation.m12);
+
+        JsonArray az = new JsonArray();
+        az.add(rotation.m20);
+        az.add(rotation.m21);
+        az.add(rotation.m22);
+
+        rotationData.add(ax);
+        rotationData.add(ay);
+        rotationData.add(az);
+
+        scaleData.add(scale.x);
+        scaleData.add(scale.y);
+        scaleData.add(scale.z);
 
         if (tracker.trackingData.size() == 0)
         {
             frame.addProperty("frame",  this.frame);
         }
-
-        positionData.add(pos.x - this.trackingInitialPos[0]);
-        positionData.add(pos.y - this.trackingInitialPos[1]);
-        positionData.add(pos.z - this.trackingInitialPos[2]);
-
-        rotationData.add(rot.x);
-        rotationData.add(rot.y);
-        rotationData.add(rot.z);
-
-        scaleData.add(scale.x);
-        scaleData.add(scale.y);
-        scaleData.add(scale.z);
 
         frame.add("position", positionData);
         frame.add("rotation", rotationData);
@@ -501,7 +525,7 @@ public class CameraExporter
         private JsonArray trackingData = new JsonArray();
         private boolean reset = false;
         private int heldframes = 0; //to determine double frames with minema's held frames
-        private boolean combiningMorphs = false;
+        private boolean combiningMorphs;
 
         public TrackingPacket(String name, boolean combiningMorphs)
         {
