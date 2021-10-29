@@ -27,6 +27,8 @@ public class ShaderPackParserTransformer extends ClassMethodTransformer
         InsnList list = method.instructions;
         Iterator<AbstractInsnNode> it = list.iterator();
 
+        list.insertBefore(list.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC, AsmShaderHandler.owner, "collectShaderOptions", "()V", false));
+
         AbstractInsnNode target = null;
 
         while (it.hasNext())

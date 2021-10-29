@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import mchorse.aperture.Aperture;
+import mchorse.aperture.utils.CodelineParser;
 import net.optifine.shaders.IShaderPack;
 import net.optifine.shaders.Shaders;
 import net.optifine.shaders.config.ShaderOption;
@@ -34,6 +35,7 @@ public class AsmShaderHandler
     public static final Pattern PATTERN_DEFINE = Pattern.compile("^\\s*#define\\s", Pattern.CASE_INSENSITIVE);
     public static final Pattern PATTERN_IF = Pattern.compile("^\\s*#(?:el)?(?:if)\\s", Pattern.CASE_INSENSITIVE);
     public static final Pattern PATTERN_CONST = Pattern.compile("^\\s*const\\s");
+    public static final Pattern PATTERN_CASE = Pattern.compile("^\\s*case\\s");
 
     public static final Map<String, Integer> uniform1i = new HashMap<String, Integer>();
     public static final Map<String, Float> uniform1f = new HashMap<String, Float>();
@@ -43,6 +45,9 @@ public class AsmShaderHandler
 
     public static final Map<String, String> cachedShaders = new HashMap<>();
     public static final Map<String, List<String>> cachedIncludes = new HashMap<>();
+
+    public static CodelineParser caseParser = new CodelineParser(':');
+    public static CodelineParser constParser = new CodelineParser(';');
 
     public static float sunPathRotation;
 
@@ -132,20 +137,56 @@ public class AsmShaderHandler
      * ASM hook which is used in {@link mchorse.aperture.core.transformers.ShaderPackParserTransformer}<br>
      * Called by {@link net.optifine.shaders.config.ShaderPackParser#collectShaderOptions(IShaderPack, String, Map)}
      */
+    public static void collectShaderOptions()
+    {
+        caseParser.reset();
+    }
+
+    /**
+     * ASM hook which is used in {@link mchorse.aperture.core.transformers.ShaderPackParserTransformer}<br>
+     * Called by {@link net.optifine.shaders.config.ShaderPackParser#collectShaderOptions(IShaderPack, String, Map)}
+     */
     public static ShaderOption getShaderOption(String line, String path, ShaderOption option, Map<String, ShaderOption> mapOptions)
     {
-        if (option == null && (Aperture.optifineShaderOptionCurve == null || Aperture.optifineShaderOptionCurve.get()) && PATTERN_IF.matcher(line).find())
+        if (option == null && (Aperture.optifineShaderOptionCurve == null || Aperture.optifineShaderOptionCurve.get()))
         {
-            for (ShaderOption so : mapOptions.values())
+            if (PATTERN_IF.matcher(line).find())
             {
-                if (so instanceof ShaderUniformOption)
+                for (ShaderOption so : mapOptions.values())
                 {
-                    ShaderUniformOption uniform = (ShaderUniformOption) so;
-
-                    if (uniform.isUniform())
+                    if (so instanceof ShaderUniformOption)
                     {
-                        uniform.check(line);
+                        ShaderUniformOption uniform = (ShaderUniformOption) so;
+
+                        if (uniform.isUniform())
+                        {
+                            uniform.checkMacro(line);
+                        }
                     }
+                }
+            }
+            else if (caseParser.cache.length() > 0 || PATTERN_CASE.matcher(line).find())
+            {
+                caseParser.parseLine(line);
+
+                if (caseParser.isEnd)
+                {
+                    String caseLine = caseParser.cache.toString();
+
+                    for (ShaderOption so : mapOptions.values())
+                    {
+                        if (so instanceof ShaderUniformOption)
+                        {
+                            ShaderUniformOption uniform = (ShaderUniformOption) so;
+
+                            if (uniform.isUniform())
+                            {
+                                uniform.checkCase(caseLine);
+                            }
+                        }
+                    }
+
+                    caseParser.reset();
                 }
             }
         }
@@ -242,76 +283,28 @@ public class AsmShaderHandler
         }
     }
 
-    public static String getConstLine(String firstLine, BufferedReader reader) throws IOException
+    public static String getConstLine(String line, BufferedReader reader, StringBuilder origin) throws IOException
     {
-        StringBuilder output = new StringBuilder();
+        origin.setLength(0);
+        origin.append(line);
 
-        String line = firstLine;
-        boolean end = false;
-        boolean comment = false;
-        int i = 0;
+        constParser.reset();
+        constParser.parseLine(line);
 
-        while (true)
+        while (!constParser.isEnd)
         {
-            for (; i < line.length(); i++)
-            {
-                char thisChar = line.charAt(i);
-                char lastChar = 0;
+            line = reader.readLine();
 
-                if (i > 0)
-                {
-                    lastChar = line.charAt(i - 1);
-                }
-
-                if (comment)
-                {
-                    if (lastChar == '*' && thisChar == '/')
-                    {
-                        comment = false;
-                    }
-                }
-                else
-                {
-                    if (lastChar == '/' && thisChar == '/')
-                    {
-                        i = line.length();
-                        output.setLength(output.length() - 1);
-
-                        break;
-                    }
-                    else if (lastChar == '/' && thisChar == '*')
-                    {
-                        comment = true;
-                        output.setLength(output.length() - 1);
-                    }
-                    else if (thisChar == ';')
-                    {
-                        end = true;
-                    }
-
-                    if (!comment)
-                    {
-                        output.append(thisChar);
-                    }
-                }
-            }
-
-            if (end)
+            if (line == null)
             {
                 break;
             }
 
-            String nextLine = reader.readLine();
-
-            if (nextLine == null)
-            {
-                break;
-            }
-
-            line += ' ' + nextLine.trim();
+            constParser.parseLine(line);
+            origin.append('\n').append(line);
         }
 
-        return output.toString();
+        return constParser.cache.toString();
     }
 
     /**
@@ -374,6 +367,7 @@ public class AsmShaderHandler
             ShaderUniformOption.doPatch = true;
             ShaderUniformConstOption.doPatch = true;
             String line;
+            StringBuilder lineBuffer = new StringBuilder();
 
             while ((line = resolved.readLine()) != null)
             {
@@ -416,7 +410,7 @@ public class AsmShaderHandler
 
                 if (!matched && PATTERN_CONST.matcher(line).find())
                 {
-                    line = getConstLine(line, resolved);
+                    line = getConstLine(line, resolved, lineBuffer);
 
                     for (ShaderUniformConstOption uniform : uniformConstOptions)
                     {
@@ -436,6 +430,7 @@ public class AsmShaderHandler
                     if (!matched)
                     {
                         String constVar = null;
+
                         for (Pattern pattern : constPatterns)
                         {
                             Matcher result = pattern.matcher(line);
@@ -443,7 +438,7 @@ public class AsmShaderHandler
                             if (result.find())
                             {
                                 constVar = result.group(1);
-                                line = line.replaceFirst("const\\s", "");
+                                line = lineBuffer.toString().replaceFirst("const\\s", "");
 
                                 break;
                             }
@@ -453,6 +448,10 @@ public class AsmShaderHandler
                         {
                             definePatterns.add(Pattern.compile(String.format("^\\s*#\\w+\\s+(\\S+)\\s+(?:.*\\W)?%s(?:\\W.*)?$", constVar)));
                             constPatterns.add(Pattern.compile(String.format("^\\s*const\\s+\\w+\\s+(\\w+)\\s*=(?:.*\\W)?%s(?:\\W.*)?$", constVar)));
+                        }
+                        else
+                        {
+                            line = lineBuffer.toString();
                         }
                     }
                 }
@@ -499,6 +498,7 @@ public class AsmShaderHandler
         public static boolean doPatch = false;
 
         public final Pattern defineChecker;
+        public final Pattern caseChecker;
 
         public int uniformType;
 
@@ -507,6 +507,7 @@ public class AsmShaderHandler
             super(name, description, value, values, path);
 
             this.defineChecker = Pattern.compile(String.format(".*\\W%s(?:\\W.*)?", name));
+            this.caseChecker = Pattern.compile(String.format("^\\s*case\\s+%s\\s*:", name));
 
             if (value != null)
             {
@@ -554,9 +555,17 @@ public class AsmShaderHandler
             return this.uniformType != NOT_SUPPORT && (Aperture.optifineShaderOptionCurve == null || Aperture.optifineShaderOptionCurve.get());
         }
 
-        public void check(String line)
+        public void checkMacro(String line)
         {
             if (this.defineChecker.matcher(line).matches())
+            {
+                this.uniformType = NOT_SUPPORT;
+            }
+        }
+        
+        public void checkCase(String line)
+        {
+            if (this.caseChecker.matcher(line).find())
             {
                 this.uniformType = NOT_SUPPORT;
             }
