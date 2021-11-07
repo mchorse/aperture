@@ -33,7 +33,6 @@ import java.util.*;
 public class CameraExporter
 {
     private boolean relativeOrigin = false;
-    private boolean globalCoordinates = false;
     private JsonObject wrapper = new JsonObject();
     private JsonArray trackingData = new JsonArray();
     private JsonObject entityData = new JsonObject();
@@ -52,11 +51,6 @@ public class CameraExporter
     public void setRelativeOrigin(boolean state)
     {
         this.relativeOrigin = state;
-    }
-
-    public void setGlobalCoordinates(boolean state)
-    {
-        this.globalCoordinates = state;
     }
 
     public void setOriginX(double x)
@@ -172,7 +166,7 @@ public class CameraExporter
 
             this.wrapper.add("morph_tracking", this.morphData);
 
-            if (!this.relativeOrigin && !this.globalCoordinates)
+            if (!this.relativeOrigin)
             {
                 this.trackingInitialPos[0] = position.point.x;
                 this.trackingInitialPos[1] = position.point.y + 1.62;

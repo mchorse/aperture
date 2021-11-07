@@ -51,7 +51,6 @@ public class GuiMinemaPanel extends GuiElement
     public GuiElement trackingElementsWrapper;
     public GuiElement trackingElements;
     public GuiToggleElement originButton;
-    public GuiToggleElement globalCoordButton;
     public GuiTrackpadElement originX;
     public GuiTrackpadElement originY;
     public GuiTrackpadElement originZ;
@@ -132,28 +131,8 @@ public class GuiMinemaPanel extends GuiElement
                 this.trackingExporter.setOriginY(this.originY.value);
                 this.trackingExporter.setOriginZ(this.originZ.value);
             }
-            else
-            {
-                this.trackingExporter.setOriginX(0);
-                this.trackingExporter.setOriginY(0);
-                this.trackingExporter.setOriginZ(0);
-            }
         });
         this.originButton.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
-
-        this.globalCoordButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_global_coordinates"), (b) ->
-        {
-            this.trackingExporter.setGlobalCoordinates(b.isToggled());
-
-            if (b.isToggled())
-            {
-                this.originButton.toggled(false);
-                this.originButton.callback.accept(this.originButton);
-            }
-
-            this.updateButtons();
-        });
-        this.globalCoordButton.tooltip(IKey.lang("aperture.gui.minema.tracking_global_coordinates_tooltip"));
 
         this.trackingElementsWrapper = new GuiElement(mc);
         this.trackingElementsWrapper.flex().column(4).stretch().vertical().height(3);
@@ -207,7 +186,7 @@ public class GuiMinemaPanel extends GuiElement
         this.originElementsWrapper.add(this.originElements);
 
         this.selectorElement.add(this.selector);
-        this.trackingElementsWrapper.add(this.globalCoordButton, this.originElementsWrapper, this.selectorElement);
+        this.trackingElementsWrapper.add(this.originElementsWrapper, this.selectorElement);
 
         this.trackingElements.add(this.trackingButton);
 
@@ -249,18 +228,12 @@ public class GuiMinemaPanel extends GuiElement
     private void updateButtons()
     {
         this.trackingElementsWrapper.removeFromParent();
-        this.originElements.removeFromParent();
         this.leftRight.removeFromParent();
         this.setLeftRight.removeFromParent();
 
         if (this.trackingButton.isToggled())
         {
             this.trackingElements.add(this.trackingElementsWrapper);
-        }
-
-        if (!this.globalCoordButton.isToggled())
-        {
-            this.originElementsWrapper.add(this.originElements);
         }
 
         if (this.recordingMode == RecordingMode.CUSTOM)
