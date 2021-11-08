@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.MinemaAPI;
+import info.ata4.minecraft.minema.client.event.MinemaEventbus;
 import mchorse.aperture.camera.data.Position;
 import mchorse.aperture.camera.minema.MinemaIntegration;
 import mchorse.aperture.utils.EntitySelector;
@@ -20,10 +21,13 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.*;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.DoubleBuffer;
 import java.util.*;
 
 /**
@@ -32,7 +36,12 @@ import java.util.*;
  */
 public class CameraExporter
 {
-    private boolean relativeOrigin = false;
+    private final DoubleBuffer buffer = BufferUtils.createDoubleBuffer(16);
+    private final double[] doubles = new double[16];
+    private final Matrix4d modelview = new Matrix4d();
+    private final Matrix4d projection = new Matrix4d();
+    private final Matrix4d camera = new Matrix4d();
+
     private JsonObject wrapper = new JsonObject();
     private JsonArray trackingData = new JsonArray();
     private JsonObject entityData = new JsonObject();
@@ -40,18 +49,14 @@ public class CameraExporter
     private HashMap<String, TrackingPacket> morphNames = new HashMap<>();
     private double[] trackingInitialPos = {0,0,0};
     private int heldframes = 0; //to determine double frames with minema's held frames
-    private int heldframesEntity = 0; //to determine double frames with minema's held frames for entities (maybe redundant?)
+    //private int heldframesEntity = 0; //to determine double frames with minema's held frames for entities (maybe redundant?)
     private List<Entity> entities = new ArrayList<>();
-    private static Matrix4f matrix = new Matrix4f();
+    private CameraRunner runner;
     private int frame = 0;
 
+    public boolean relativeOrigin = false;
     public boolean building = false;
     public String selector; //for entities
-
-    public void setRelativeOrigin(boolean state)
-    {
-        this.relativeOrigin = state;
-    }
 
     public void setOriginX(double x)
     {
@@ -66,6 +71,58 @@ public class CameraExporter
     public void setOriginZ(double z)
     {
         this.trackingInitialPos[2] = z;
+    }
+
+    private void readMVP()
+    {
+        this.buffer.clear();
+
+        GL11.glGetDouble(2982, this.buffer);
+        this.buffer.get(this.doubles);
+        this.modelview.set(this.doubles);
+        this.modelview.transpose();
+
+        this.buffer.clear();
+
+        GL11.glGetDouble(2983, this.buffer);
+        this.buffer.get(this.doubles);
+        this.projection.set(this.doubles);
+        this.projection.transpose();
+    }
+
+    /**
+     * reset the class variables to default values - standby for next export process
+     */
+    public void reset()
+    {
+        this.buffer.clear();
+        this.modelview.setIdentity();
+        this.projection.setIdentity();
+        this.camera.setIdentity();
+
+        this.wrapper = new JsonObject();
+        this.trackingData = new JsonArray();
+        this.entityData = new JsonObject();
+        this.morphData = new JsonObject();
+
+        this.morphNames.forEach((key, value) ->
+        {
+            value.reset(); //let the morph know, to delete this tracker
+        });
+
+        this.morphNames.clear(); //avoid memory leak
+
+        if (!this.relativeOrigin)
+        {
+            this.trackingInitialPos[0] = 0;
+            this.trackingInitialPos[1] = 0;
+            this.trackingInitialPos[2] = 0;
+        }
+
+        this.building = false;
+        this.frame = 0;
+        this.heldframes = 0;
+        this.runner = null;
     }
 
     /**
@@ -116,68 +173,37 @@ public class CameraExporter
     }
 
     /**
-     * reset the class variables to default values - standby for next export process
+     * Execute this method at the end of a frame - in gui rendering
+     * @param partialTick
      */
-    public void reset()
+    public void frameEnd(float partialTick)
     {
-        this.trackingData = new JsonArray();
-        this.entityData = new JsonObject();
-        this.morphData = new JsonObject();
-        this.wrapper = new JsonObject();
-
-        this.morphNames.forEach((key, value) ->
-        {
-            value.reset(); //let the morph know, to delete this tracker
-        });
-
-        this.morphNames.clear(); //avoid memory leak
-
-        if (!this.relativeOrigin)
-        {
-            this.trackingInitialPos[0] = 0;
-            this.trackingInitialPos[1] = 0;
-            this.trackingInitialPos[2] = 0;
-        }
-
-        this.building = false;
-        this.frame = 0;
-        this.heldframes = 0;
-        this.heldframesEntity = 0;
-    }
-
-    @Optional.Method(modid = Minema.MODID)
-    public void build(Position position, float partialTick)
-    {
-        this.building = true;
-
-        if (this.frame == 0) //execute once at the beginning of making the json structure
-        {
-            if (MinemaIntegration.isAvailable())
-            {
-                this.wrapper.add("information", getHeaderInformation());
-            }
-
-            this.wrapper.add("camera_tracking", this.trackingData);
-
-            if(!this.entities.isEmpty())
-            {
-                this.wrapper.add("entity_tracking", this.entityData);
-            }
-
-            this.wrapper.add("morph_tracking", this.morphData);
-
-            if (!this.relativeOrigin)
-            {
-                this.trackingInitialPos[0] = position.point.x;
-                this.trackingInitialPos[1] = position.point.y + 1.62;
-                this.trackingInitialPos[2] = position.point.z;
-            }
-        }
-
-        addCameraFrame(position);
         addEntitiesData(partialTick);
 
         this.frame = (this.heldframes <= 1) ? this.frame + 1 : this.frame;
+    }
+
+    public void start(CameraRunner runner)
+    {
+        this.building = true;
+
+        if (MinemaIntegration.isAvailable())
+        {
+            this.wrapper.add("information", getHeaderInformation());
+        }
+
+        this.wrapper.add("camera_tracking", this.trackingData);
+
+        if(!this.entities.isEmpty())
+        {
+            this.wrapper.add("entity_tracking", this.entityData);
+        }
+
+        this.wrapper.add("morph_tracking", this.morphData);
+
+        this.runner = runner;
+
+        MinemaEventbus.cameraBUS.registerListener((e) -> addCameraFrame(this.runner.getPosition()));
     }
 
     private JsonObject getHeaderInformation()
@@ -206,21 +232,38 @@ public class CameraExporter
 
     public void track(TrackingPacket tracker, EntityLivingBase entity, float partialTicks)
     {
-        JsonObject frame = new JsonObject();
-        JsonArray positionData = new JsonArray();
-        JsonArray rotationData = new JsonArray();
-        JsonArray scaleData = new JsonArray();
+        if (this.heldframes > 1)
+        {
+            return;
+        }
 
-        Matrix4f parent = new Matrix4f(MatrixUtils.matrix);
-        Matrix4f rotation = new Matrix4f();
-        MatrixUtils.Transformation modelTransform = MatrixUtils.extractTransformations(MatrixUtils.matrix, MatrixUtils.readModelView(matrix));
+        this.readMVP();
+
+        Matrix4d parent = new Matrix4d(this.modelview);
+        Matrix4d rotation = new Matrix4d();
+        //MatrixUtils.Transformation modelTransform = MatrixUtils.extractTransformations(MatrixUtils.matrix, MatrixUtils.readModelView(matrix));
 
         parent.invert();
-        parent.mul(matrix);
+        parent.mul(this.camera);
 
-        Vector4f rx = new Vector4f(parent.m00, parent.m10, parent.m20, 0);
-        Vector4f ry = new Vector4f(parent.m01, parent.m11, parent.m21, 0);
-        Vector4f rz = new Vector4f(parent.m02, parent.m12, parent.m22, 0);
+        Matrix4d translation = new Matrix4d();
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity renderEntity = mc.getRenderViewEntity();
+
+        double x = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * mc.getRenderPartialTicks();
+        double y = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * mc.getRenderPartialTicks();
+        double z = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * mc.getRenderPartialTicks();
+
+        translation.setIdentity();
+        translation.setTranslation(new Vector3d(-x, -y, -z));
+        parent.mul(translation);
+        parent.invert();
+
+        Vector3d pos = new Vector3d(parent.m03, parent.m13, parent.m23);
+
+        Vector4d rx = new Vector4d(parent.m00, parent.m10, parent.m20, 0);
+        Vector4d ry = new Vector4d(parent.m01, parent.m11, parent.m21, 0);
+        Vector4d rz = new Vector4d(parent.m02, parent.m12, parent.m22, 0);
 
         rx.normalize();
         ry.normalize();
@@ -229,20 +272,23 @@ public class CameraExporter
         rotation.setRow(1, ry);
         rotation.setRow(2, rz);
 
-        Vector3d pos = new Vector3d(modelTransform.getTranslation3f());
-
-        pos.add(new Vector3d(Interpolations.lerp(entity.prevPosX, entity.posX, partialTicks),
-                             Interpolations.lerp(entity.prevPosY, entity.posY, partialTicks),
-                             Interpolations.lerp(entity.prevPosZ, entity.posZ, partialTicks)));
-
-        positionData.add(pos.x - this.trackingInitialPos[0]);
-        positionData.add(pos.y - this.trackingInitialPos[1]);
-        positionData.add(pos.z - this.trackingInitialPos[2]);
+        pos.add(new Vector3d(Interpolations.lerp(entity.lastTickPosX, entity.posX, partialTicks),
+                             Interpolations.lerp(entity.lastTickPosY, entity.posY, partialTicks),
+                             Interpolations.lerp(entity.lastTickPosZ, entity.posZ, partialTicks)));
 
         Vector3d scale = new Vector3d();
         scale.x = Math.sqrt(parent.m00 * parent.m00 + parent.m10 * parent.m10 + parent.m20 * parent.m20);
         scale.y = Math.sqrt(parent.m01 * parent.m01 + parent.m11 * parent.m11 + parent.m21 * parent.m21);
         scale.z = Math.sqrt(parent.m02 * parent.m02 + parent.m12 * parent.m12 + parent.m22 * parent.m22);
+
+        JsonObject frame = new JsonObject();
+        JsonArray positionData = new JsonArray();
+        JsonArray rotationData = new JsonArray();
+        JsonArray scaleData = new JsonArray();
+
+        positionData.add(pos.x - this.trackingInitialPos[0]);
+        positionData.add(pos.y - this.trackingInitialPos[1]);
+        positionData.add(pos.z - this.trackingInitialPos[2]);
 
         JsonArray ax = new JsonArray();
         ax.add(rotation.m00);
@@ -276,44 +322,19 @@ public class CameraExporter
         frame.add("rotation", rotationData);
         frame.add("scale", scaleData);
 
-        if (MinemaIntegration.isAvailable())
-        {
-            if (Minema.instance.getConfig().heldFrames.get()>1)
-            {
-                tracker.heldframes = (tracker.heldframes<Minema.instance.getConfig().heldFrames.get()) ? tracker.heldframes + 1 : 1;
-
-                if (tracker.heldframes>1)
-                {
-                    JsonObject prevFrame = tracker.trackingData.get(tracker.trackingData.size()-1).getAsJsonObject();
-                    JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
-                    JsonArray prevAngleData = prevFrame.get("rotation").getAsJsonArray();
-                    JsonArray prevScaleData = prevFrame.get("scale").getAsJsonArray();
-
-                    if (prevAngleData.equals(rotationData) && prevPositionData.equals(positionData) && prevScaleData.equals(scaleData))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        tracker.heldframes = 1;
-                    }
-                }
-            }
-        }
-
         tracker.trackingData.add(frame);
     }
 
     private void addEntitiesData(float partialTick)
     {
+        if (this.heldframes > 1)
+        {
+            return;
+        }
+
         if (this.checkForDead())
         {
             this.tryFindingEntity(this.selector);
-        }
-
-        if (!this.entities.isEmpty() && MinemaIntegration.isAvailable() && Minema.instance.getConfig().heldFrames.get() > 1)
-        {
-            this.heldframesEntity = (this.heldframesEntity < Minema.instance.getConfig().heldFrames.get()) ? this.heldframesEntity + 1 : 1;
         }
 
         for (Entity entity : this.entities)
@@ -350,36 +371,6 @@ public class CameraExporter
 
             entityFrameArray = this.entityData.getAsJsonArray(entity.getName());
 
-            if (MinemaIntegration.isAvailable())
-            {
-                if (Minema.instance.getConfig().heldFrames.get() > 1 && this.heldframesEntity > 1)
-                {
-                    JsonObject prevFrame = entityFrameArray.get(entityFrameArray.size()-1).getAsJsonObject();
-                    JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
-                    JsonArray prevBodyRotationData = (prevFrame.get("body_rotation") != null) ? prevFrame.get("body_rotation").getAsJsonArray() : null;
-
-                    boolean angleComparison = true;
-
-                    if (prevBodyRotationData != null && !prevBodyRotationData.equals(angleData))
-                    {
-                        angleComparison = false;
-                    }
-
-                    if (prevPositionData.equals(positionData) && angleComparison)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        /*
-                         * expects that heldframes has the same effect on every entity each frame
-                         * (otherwise you would need individual heldframe checks for every entity
-                         */
-                        this.heldframesEntity = 1;
-                    }
-                }
-            }
-
             if(entityFrameArray != null)
             {
                 entityFrameArray.add(frame);
@@ -387,15 +378,48 @@ public class CameraExporter
         }
     }
 
-    private void addCameraFrame(Position position)
+    public void addCameraFrame(Position position)
     {
+        if (!this.building) //dont track when it's not through aperture, at least at the moment
+        {
+            return;
+        }
+
+        this.readMVP();
+        this.camera.set(this.modelview);
+
+        Matrix4d translation = new Matrix4d();
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity renderEntity = mc.getRenderViewEntity();
+
+        double x = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * mc.getRenderPartialTicks();
+        double y = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * mc.getRenderPartialTicks();
+        double z = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * mc.getRenderPartialTicks();
+
+        translation.setIdentity();
+        translation.setTranslation(new Vector3d(-x, -y, -z));
+        this.modelview.mul(translation);
+        this.modelview.invert();
+
+        Vector3d pos = new Vector3d(this.modelview.m03, this.modelview.m13, this.modelview.m23);
+
+        if (this.frame == 0)
+        {
+            if (!this.relativeOrigin)
+            {
+                this.trackingInitialPos[0] = pos.x;
+                this.trackingInitialPos[1] = pos.y + 1.62;
+                this.trackingInitialPos[2] = pos.z;
+            }
+        }
+
         JsonObject frame = new JsonObject();
         JsonArray positionData = new JsonArray();
         JsonArray angleData = new JsonArray();
 
-        positionData.add(position.point.x - this.trackingInitialPos[0]);
-        positionData.add(position.point.y - this.trackingInitialPos[1] + 1.62);
-        positionData.add(position.point.z - this.trackingInitialPos[2]);
+        positionData.add(pos.x - this.trackingInitialPos[0]);
+        positionData.add(pos.y - this.trackingInitialPos[1] + 1.62);
+        positionData.add(pos.z - this.trackingInitialPos[2]);
 
         angleData.add(position.angle.fov);
         angleData.add(position.angle.roll);
@@ -407,13 +431,15 @@ public class CameraExporter
 
         if (MinemaIntegration.isAvailable())
         {
-            if (Minema.instance.getConfig().heldFrames.get()>1)
-            {
-                this.heldframes = (this.heldframes<Minema.instance.getConfig().heldFrames.get()) ? this.heldframes + 1 : 1;
+            int minemaHF = Minema.instance.getConfig().heldFrames.get();
 
-                if (this.heldframes>1)
+            if (minemaHF > 1)
+            {
+                this.heldframes = (this.heldframes < minemaHF) ? this.heldframes + 1 : 1;
+
+                if (this.heldframes > 1)
                 {
-                    JsonObject prevFrame = this.trackingData.get(this.trackingData.size()-1).getAsJsonObject();
+                    JsonObject prevFrame = this.trackingData.get(this.trackingData.size() - 1).getAsJsonObject();
                     JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
                     JsonArray prevAngleData = prevFrame.get("angle").getAsJsonArray();
 
@@ -432,7 +458,6 @@ public class CameraExporter
         this.trackingData.add(frame);
     }
 
-    @Optional.Method(modid = Minema.MODID)
     public void exportTrackingData(String filename)
     {
         if (MinemaIntegration.isAvailable())
