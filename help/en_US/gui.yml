@@ -205,7 +205,7 @@ aperture.gui:
         set_duration_tooltip: Move cursor in timeline, and click this button to set the duration (in ticks) of Minema clip
         record: Record
         tracking_button: Export tracking data
-        tracking_tooltip: "Export all the necessary information for Chryfi's Blender script to import the camera movement to blender.\n\nDisclaimer: the hitbox/eye height of your player needs to be the default minecraft hitbox!"
+        tracking_tooltip: "Export all the necessary information for Chryfi's Blender script to export camera, entity and morph tracking data to blender."
         tracking_origin_x: X origin
         tracking_origin_y: Y origin
         tracking_origin_z: Z origin

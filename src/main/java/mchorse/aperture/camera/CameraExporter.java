@@ -39,7 +39,6 @@ public class CameraExporter
     private final DoubleBuffer buffer = BufferUtils.createDoubleBuffer(16);
     private final double[] doubles = new double[16];
     private final Matrix4d modelview = new Matrix4d();
-    private final Matrix4d projection = new Matrix4d();
     private final Matrix4d camera = new Matrix4d();
 
     private JsonObject wrapper = new JsonObject();
@@ -81,13 +80,6 @@ public class CameraExporter
         this.buffer.get(this.doubles);
         this.modelview.set(this.doubles);
         this.modelview.transpose();
-
-        this.buffer.clear();
-
-        GL11.glGetDouble(2983, this.buffer);
-        this.buffer.get(this.doubles);
-        this.projection.set(this.doubles);
-        this.projection.transpose();
     }
 
     /**
@@ -97,7 +89,6 @@ public class CameraExporter
     {
         this.buffer.clear();
         this.modelview.setIdentity();
-        this.projection.setIdentity();
         this.camera.setIdentity();
 
         this.wrapper = new JsonObject();
@@ -183,6 +174,7 @@ public class CameraExporter
         this.frame = (this.heldframes <= 1) ? this.frame + 1 : this.frame;
     }
 
+    @Optional.Method(modid = Minema.MODID)
     public void start(CameraRunner runner)
     {
         this.building = true;
@@ -206,6 +198,7 @@ public class CameraExporter
         MinemaEventbus.cameraBUS.registerListener((e) -> addCameraFrame(this.runner.getPosition()));
     }
 
+    @Optional.Method(modid = Minema.MODID)
     private JsonObject getHeaderInformation()
     {
         JsonObject information = new JsonObject();
@@ -232,35 +225,29 @@ public class CameraExporter
 
     public void track(TrackingPacket tracker, EntityLivingBase entity, float partialTicks)
     {
-        if (this.heldframes > 1)
+        /* avoid duplicates with heldframes
+        * avoid tracking when not called through aperture rendering (for now) */
+        if (this.heldframes > 1 || !this.building)
         {
             return;
         }
 
         this.readMVP();
 
-        Matrix4d parent = new Matrix4d(this.modelview);
+        Matrix4d parent = new Matrix4d(MatrixUtils.matrix);
+
+        try
+        {
+            parent.invert(); //for some reason it can happen that the first frames (not used in footage) have no camera matrix
+        }
+        catch (Exception e)
+        {
+            return;
+        }
+
+        parent.mul(this.modelview);
+
         Matrix4d rotation = new Matrix4d();
-        //MatrixUtils.Transformation modelTransform = MatrixUtils.extractTransformations(MatrixUtils.matrix, MatrixUtils.readModelView(matrix));
-
-        parent.invert();
-        parent.mul(this.camera);
-
-        Matrix4d translation = new Matrix4d();
-        Minecraft mc = Minecraft.getMinecraft();
-        Entity renderEntity = mc.getRenderViewEntity();
-
-        double x = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * mc.getRenderPartialTicks();
-        double y = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * mc.getRenderPartialTicks();
-        double z = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * mc.getRenderPartialTicks();
-
-        translation.setIdentity();
-        translation.setTranslation(new Vector3d(-x, -y, -z));
-        parent.mul(translation);
-        parent.invert();
-
-        Vector3d pos = new Vector3d(parent.m03, parent.m13, parent.m23);
-
         Vector4d rx = new Vector4d(parent.m00, parent.m10, parent.m20, 0);
         Vector4d ry = new Vector4d(parent.m01, parent.m11, parent.m21, 0);
         Vector4d rz = new Vector4d(parent.m02, parent.m12, parent.m22, 0);
@@ -271,6 +258,8 @@ public class CameraExporter
         rotation.setRow(0, rx);
         rotation.setRow(1, ry);
         rotation.setRow(2, rz);
+
+        Vector3d pos = new Vector3d(parent.m03, parent.m13, parent.m23);
 
         pos.add(new Vector3d(Interpolations.lerp(entity.lastTickPosX, entity.posX, partialTicks),
                              Interpolations.lerp(entity.lastTickPosY, entity.posY, partialTicks),
@@ -286,10 +275,12 @@ public class CameraExporter
         JsonArray rotationData = new JsonArray();
         JsonArray scaleData = new JsonArray();
 
+        /* position data */
         positionData.add(pos.x - this.trackingInitialPos[0]);
         positionData.add(pos.y - this.trackingInitialPos[1]);
         positionData.add(pos.z - this.trackingInitialPos[2]);
 
+        /* rotation matrix data */
         JsonArray ax = new JsonArray();
         ax.add(rotation.m00);
         ax.add(rotation.m01);
@@ -309,6 +300,7 @@ public class CameraExporter
         rotationData.add(ay);
         rotationData.add(az);
 
+        /* scale data */
         scaleData.add(scale.x);
         scaleData.add(scale.y);
         scaleData.add(scale.z);
@@ -346,9 +338,9 @@ public class CameraExporter
                 this.entityData.add(entity.getName(), entityFrameArray);
             }
 
-            double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTick;
-            double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTick;
-            double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTick;
+            double x = Interpolations.lerp(entity.lastTickPosX, entity.posX, partialTick);
+            double y = Interpolations.lerp(entity.lastTickPosY, entity.posY, partialTick);
+            double z = Interpolations.lerp(entity.lastTickPosZ, entity.posZ, partialTick);
 
             JsonObject frame = new JsonObject();
             JsonArray positionData = new JsonArray();
@@ -378,6 +370,7 @@ public class CameraExporter
         }
     }
 
+    @Optional.Method(modid = Minema.MODID)
     public void addCameraFrame(Position position)
     {
         if (!this.building) //dont track when it's not through aperture, at least at the moment
@@ -392,9 +385,9 @@ public class CameraExporter
         Minecraft mc = Minecraft.getMinecraft();
         Entity renderEntity = mc.getRenderViewEntity();
 
-        double x = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * mc.getRenderPartialTicks();
-        double y = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * mc.getRenderPartialTicks();
-        double z = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * mc.getRenderPartialTicks();
+        double x = Interpolations.lerp(renderEntity.lastTickPosX, renderEntity.posX, mc.getRenderPartialTicks());
+        double y = Interpolations.lerp(renderEntity.lastTickPosY, renderEntity.posY, mc.getRenderPartialTicks());
+        double z = Interpolations.lerp(renderEntity.lastTickPosZ, renderEntity.posZ, mc.getRenderPartialTicks());
 
         translation.setIdentity();
         translation.setTranslation(new Vector3d(-x, -y, -z));
@@ -408,7 +401,7 @@ public class CameraExporter
             if (!this.relativeOrigin)
             {
                 this.trackingInitialPos[0] = pos.x;
-                this.trackingInitialPos[1] = pos.y + 1.62;
+                this.trackingInitialPos[1] = pos.y;
                 this.trackingInitialPos[2] = pos.z;
             }
         }
@@ -418,7 +411,7 @@ public class CameraExporter
         JsonArray angleData = new JsonArray();
 
         positionData.add(pos.x - this.trackingInitialPos[0]);
-        positionData.add(pos.y - this.trackingInitialPos[1] + 1.62);
+        positionData.add(pos.y - this.trackingInitialPos[1]);
         positionData.add(pos.z - this.trackingInitialPos[2]);
 
         angleData.add(position.angle.fov);
@@ -443,6 +436,7 @@ public class CameraExporter
                     JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
                     JsonArray prevAngleData = prevFrame.get("angle").getAsJsonArray();
 
+                    /* Could floating point precision ruin this???*/
                     if (prevAngleData.equals(angleData) && prevPositionData.equals(positionData))
                     {
                         return;
@@ -458,6 +452,7 @@ public class CameraExporter
         this.trackingData.add(frame);
     }
 
+    @Optional.Method(modid = Minema.MODID)
     public void exportTrackingData(String filename)
     {
         if (MinemaIntegration.isAvailable())
@@ -563,15 +558,9 @@ public class CameraExporter
             return this.reset;
         }
 
-
         public String getName()
         {
             return this.name;
-        }
-
-        public void addTrackingData(JsonElement element)
-        {
-            this.trackingData.add(element);
         }
     }
 }

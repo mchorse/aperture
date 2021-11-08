@@ -389,7 +389,7 @@ public class GuiMinemaPanel extends GuiElement
 
             if (this.trackingExporter.building)
             {
-                this.trackingExporter.exportTrackingData((this.getFilename().equals("") ? this.format.format(new Date(System.currentTimeMillis())) : this.getFilename())+ ".json");
+                this.trackingExporter.exportTrackingData((this.getFilename().isEmpty() ? this.format.format(new Date(System.currentTimeMillis())) : this.getFilename())+ ".json");
             }
 
             this.trackingExporter.reset();
