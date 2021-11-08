@@ -123,7 +123,7 @@ public class GuiMinemaPanel extends GuiElement
 
         this.originButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_origin_title"), (b) ->
         {
-            this.trackingExporter.setRelativeOrigin(b.isToggled());
+            this.trackingExporter.relativeOrigin = b.isToggled();
 
             if (b.isToggled())
             {
@@ -355,6 +355,11 @@ public class GuiMinemaPanel extends GuiElement
             return;
         }
 
+        if (this.trackingButton.isToggled())
+        {
+            this.trackingExporter.start(this.editor.getRunner());
+        }
+
         ClientProxy.EVENT_BUS.post(new CameraEditorEvent.Rewind(this.editor, this.start));
 
         this.editor.timeline.setValueFromScrub(this.start);
@@ -409,9 +414,9 @@ public class GuiMinemaPanel extends GuiElement
 
             return;
         }
-        else if (this.trackingButton.isToggled() && this.isRunning())
+        else if (this.trackingExporter.building && this.isRunning())
         {
-            this.trackingExporter.build(this.editor.getRunner().getPosition(), partialTicks);
+            this.trackingExporter.frameEnd(partialTicks);
         }
 
         if (this.waiting)
