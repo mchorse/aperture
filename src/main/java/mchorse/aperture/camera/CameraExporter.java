@@ -432,19 +432,7 @@ public class CameraExporter
 
                 if (this.heldframes > 1)
                 {
-                    JsonObject prevFrame = this.trackingData.get(this.trackingData.size() - 1).getAsJsonObject();
-                    JsonArray prevPositionData = prevFrame.get("position").getAsJsonArray();
-                    JsonArray prevAngleData = prevFrame.get("angle").getAsJsonArray();
-
-                    /* Could floating point precision ruin this???*/
-                    if (prevAngleData.equals(angleData) && prevPositionData.equals(positionData))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        this.heldframes = 1;
-                    }
+                    return;
                 }
             }
         }
