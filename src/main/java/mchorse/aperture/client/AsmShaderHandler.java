@@ -509,7 +509,7 @@ public class AsmShaderHandler
             this.defineChecker = Pattern.compile(String.format(".*\\W%s(?:\\W.*)?", name));
             this.caseChecker = Pattern.compile(String.format("^\\s*case\\s+%s\\s*:", name));
 
-            if (value != null)
+            if (value != null && !this.checkReversedName(name))
             {
                 boolean isInteger = true;
                 boolean isFloat = true;
@@ -595,6 +595,11 @@ public class AsmShaderHandler
             {
                 return false;
             }
+        }
+
+        private boolean checkReversedName(String name)
+        {
+            return name == null || name.contains("__") || name.toLowerCase().startsWith("gl_");
         }
     }
 
