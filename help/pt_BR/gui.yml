@@ -23,21 +23,6 @@ aperture.gui:
     config:
         title: Opções de Câmera
 
-        outside: Modo externo (O)
-        minema: Minema
-        spectator: Espectador
-        show_path: Mostrar caminho
-        sync: Sincronizar (S)
-        flight: Modo de Voo (F)
-        display_info: Mostrar posição
-        minecrafttp_teleport: Usar /minecraft:tp
-        tp_teleport: Usar /tp
-        rule_of_thirds: Regra dos terços
-        letter_box: Caixa de correio
-        repeat: Repetir acessório (R)
-        overlay: Habilitar sobreposição
-        pick_overlay: Escolher sobreposição
-
     tooltips:
         jump_next_fixture: Ir para o próximo acessório (Shift + Seta Direita)
         jump_next_frame: Ir para o próximo frame (Seta Direita)

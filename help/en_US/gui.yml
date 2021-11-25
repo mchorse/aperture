@@ -23,24 +23,6 @@ aperture.gui:
     config:
         title: Camera Options
 
-        outside: Outside mode
-        spectator: Spectator
-        show_path: Show path
-        sync: Sync
-        flight: Flight mode
-        flight_tooltip: Enables flight mode, which allows to control the camera within camera editor with WASD and mouse dragging (see Aperture's flight mode configuration for keybinds)
-        display_info: Display position
-        minecrafttp_teleport: Use /minecraft:tp
-        tp_teleport: Use /tp
-        guides_color: Guides color
-        rule_of_thirds: Rule of thirds
-        center_lines: Center lines
-        crosshair: Crosshair
-        letter_box: Letter box
-        repeat: Repeat fixture
-        overlay: Enable overlay
-        pick_overlay: Pick overlay
-
     tooltips:
         jump_next_fixture: Jump to next fixture
         jump_next_frame: Jump to next frame

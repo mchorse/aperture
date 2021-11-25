@@ -2,10 +2,13 @@ package mchorse.aperture;
 
 import mchorse.aperture.commands.CommandAperture;
 import mchorse.mclib.McLib;
-import mchorse.mclib.client.gui.utils.ValueColors;
 import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;
-import mchorse.mclib.config.values.*;
+import mchorse.mclib.config.values.ValueBoolean;
+import mchorse.mclib.config.values.ValueFloat;
+import mchorse.mclib.config.values.ValueInt;
+import mchorse.mclib.config.values.ValueRL;
+import mchorse.mclib.config.values.ValueString;
 import mchorse.mclib.events.RegisterConfigEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -157,7 +160,7 @@ public class Aperture
         editorOverlayRL = builder.getRL("overlay_rl", null);
         editorF1Tooltip = builder.getBoolean("f1_tooltip", true);
         editorDisplayPosition = builder.getBoolean("position", false);
-        editorGuidesColor = builder.getInt("guides_color",0xcccc0000);
+        editorGuidesColor = builder.getInt("guides_color", 0xcccc0000).colorAlpha();
         editorRuleOfThirds = builder.getBoolean("rule_of_thirds", false);
         editorCenterLines = builder.getBoolean("center_lines", false);
         editorCrosshair = builder.getBoolean("crosshair", false);

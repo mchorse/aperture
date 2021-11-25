@@ -23,7 +23,9 @@ aperture.config.comments:
         overlay_rl: Resource location path to the texture which will be used as overlay
         f1_tooltip: Show the tooltip in the bottom left corner which explains how to show back the GUI
         position: Show camera properties when sync mode enabled
+        guides_color: Color that will be used for rule of thirds and center lines (including transparency)
         rule_of_thirds: Show rule of thirds guides
+        center_lines: Center lines
         crosshair: Show a crosshair in the middle of the camera editor's screen
         letter_box: Show letter box (aka black bars) which narrow or widen the camera shot as a reference
         aspect_ratio: Aspect ratio for camera editor's letterbox feature

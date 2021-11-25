@@ -34,7 +34,9 @@ aperture.config:
         overlay_rl: Путь оверлэя
         f1_tooltip: Спрятать подсказку на F1
         position: Отображать позицию
+        guides_color: Цвет направляющих
         rule_of_thirds: Правило третей
+        center_lines: Центр экрана
         crosshair: Перекрестие
         letter_box: Каше
         aspect_ratio: Соотношение сторон

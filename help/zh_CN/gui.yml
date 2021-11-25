@@ -23,22 +23,6 @@ aperture.gui:
     config:
         title: 相机选项
 
-        outside: 分离相机模式
-        spectator: 观察者
-        show_path: 显示路径
-        sync: 同步
-        flight: 飞行模式
-        flight_tooltip: 启用飞行模式，可以在相机编辑器中使用 WASD 与鼠标拖拽来控制相机（请参见 Aperture 的飞行模式选项中的快捷键）
-        display_info: 显示位置
-        minecrafttp_teleport: 使用 /minecraft:tp
-        tp_teleport: 使用 /tp
-        rule_of_thirds: 三分法构图
-        crosshair: 十字准心
-        letter_box: 画面黑边
-        repeat: 循环播放关键点
-        overlay: 启用附加层
-        pick_overlay: 选择附加层
-
     tooltips:
         jump_next_fixture: 跳至下一关键点
         jump_next_frame: 跳至下一帧

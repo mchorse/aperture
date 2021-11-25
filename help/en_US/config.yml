@@ -34,7 +34,9 @@ aperture.config:
         overlay_rl: Overlay path
         f1_tooltip: F1 hide tooltip
         position: Display position
+        guides_color: Guides color
         rule_of_thirds: Rule of thirds
+        center_lines: Center lines
         crosshair: Crosshair
         letter_box: Letter box
         aspect_ratio: Aspect ratio

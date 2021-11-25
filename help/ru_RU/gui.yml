@@ -23,24 +23,6 @@ aperture.gui:
     config:
         title: Опции камеры
 
-        outside: Внешний режим
-        spectator: Наблюдатель
-        show_path: Показать траекторию
-        sync: Синхронизация
-        flight: Режим полёта
-        flight_tooltip: Включает режим полёта, который позволяет управлять камерой в редакторе камеры посредством клавиш WASD а также управлять вращением мыши (для настройки комбинаций клавиш, зайдите в конфигурацию режима полёда Аперчер)
-        display_info: Отобразить позицию
-        minecrafttp_teleport: Использовать /minecraft:tp
-        tp_teleport: Использовать /tp
-        guides_color: Цвет направляющих
-        rule_of_thirds: Правило третей
-        center_lines: Центр экрана
-        crosshair: Перекрестие
-        letter_box: Каше
-        repeat: Повторить клип
-        overlay: Добавить оверлей
-        pick_overlay: Выбрать оверлей
-
     tooltips:
         jump_next_fixture: Перейти к следующему клипу
         jump_next_frame: Перейти к следующему кадру

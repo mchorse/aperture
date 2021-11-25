@@ -1,7 +1,6 @@
 package mchorse.aperture.camera;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import info.ata4.minecraft.minema.Minema;
@@ -24,11 +23,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.*;
+import javax.vecmath.Matrix4d;
+import javax.vecmath.Vector3d;
+import javax.vecmath.Vector4d;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is an exporter for camera, entity and morph tracking data

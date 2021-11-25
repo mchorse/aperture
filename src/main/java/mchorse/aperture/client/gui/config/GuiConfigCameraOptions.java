@@ -11,7 +11,6 @@ import mchorse.mclib.client.gui.framework.elements.input.GuiColorElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTexturePicker;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
 
 public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
@@ -65,7 +64,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.displayPosition = new GuiToggleElement(mc, Aperture.editorDisplayPosition);
         this.essentialsTeleport = new GuiToggleElement(mc, Aperture.essentialsTeleport);
         this.guidesColor = new GuiColorElement(mc, Aperture.editorGuidesColor);
-        this.guidesColor.picker.editAlpha = true;
+        this.guidesColor.picker.editAlpha();
         this.ruleOfThirds = new GuiToggleElement(mc, Aperture.editorRuleOfThirds);
         this.centerLines = new GuiToggleElement(mc, Aperture.editorCenterLines);
         this.crosshair = new GuiToggleElement(mc, Aperture.editorCrosshair);
@@ -120,7 +119,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.flight.toggled(this.editor.flight.isFlightEnabled());
         this.displayPosition.toggled(Aperture.editorDisplayPosition.get());
         this.essentialsTeleport.toggled(Aperture.essentialsTeleport.get());
-        this.guidesColor.picker.color = new Color(Aperture.editorGuidesColor.get());
+        this.guidesColor.picker.setColor(Aperture.editorGuidesColor.get());
         this.ruleOfThirds.toggled(Aperture.editorRuleOfThirds.get());
         this.centerLines.toggled(Aperture.editorCenterLines.get());
         this.crosshair.toggled(Aperture.editorCrosshair.get());
