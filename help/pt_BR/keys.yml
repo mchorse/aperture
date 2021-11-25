@@ -40,6 +40,5 @@ key.aperture:
         title: Aperture Câmeras
 
         toggle: Alternar renderização de perfil de câmera
-        start: Iniciar perfil da câmera
-        stop: Parar o perfil da câmera
+        playback: Alternar reprodução da câmera
         point: Adicionar ponto de caminho

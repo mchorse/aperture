@@ -1,6 +1,8 @@
 # Miscellaneous
 aperture.misc:
-    profile_info: "{f}%s \"%s\" (%st, %s acessórios)"
-    profile_info_current: "{6}Current %s \"%s\" (%st, %s acessórios)"
+    profile_info: "{f}%s \"%s\" (%st, %s suportes)"
+    profile_info_current: "{6}Atual %s \"%s\" (%st, %s suportes)"
     server: Servidor
     client: Cliente
+
+mclib.interpolations.circular: Circular
