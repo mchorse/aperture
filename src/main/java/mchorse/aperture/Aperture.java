@@ -2,13 +2,10 @@ package mchorse.aperture;
 
 import mchorse.aperture.commands.CommandAperture;
 import mchorse.mclib.McLib;
+import mchorse.mclib.client.gui.utils.ValueColors;
 import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;
-import mchorse.mclib.config.values.ValueBoolean;
-import mchorse.mclib.config.values.ValueFloat;
-import mchorse.mclib.config.values.ValueInt;
-import mchorse.mclib.config.values.ValueRL;
-import mchorse.mclib.config.values.ValueString;
+import mchorse.mclib.config.values.*;
 import mchorse.mclib.events.RegisterConfigEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -76,7 +73,11 @@ public class Aperture
     public static ValueRL editorOverlayRL;
     public static ValueBoolean editorF1Tooltip;
     public static ValueBoolean editorDisplayPosition;
+
+    public static ValueInt editorGuidesColor;
     public static ValueBoolean editorRuleOfThirds;
+    public static ValueBoolean editorCenterLines;
+
     public static ValueBoolean editorCrosshair;
     public static ValueBoolean editorLetterbox;
     public static ValueString editorLetterboxAspect;
@@ -156,7 +157,9 @@ public class Aperture
         editorOverlayRL = builder.getRL("overlay_rl", null);
         editorF1Tooltip = builder.getBoolean("f1_tooltip", true);
         editorDisplayPosition = builder.getBoolean("position", false);
+        editorGuidesColor = builder.getInt("guides_color",0xcccc0000);
         editorRuleOfThirds = builder.getBoolean("rule_of_thirds", false);
+        editorCenterLines = builder.getBoolean("center_lines", false);
         editorCrosshair = builder.getBoolean("crosshair", false);
         editorLetterbox = builder.getBoolean("letter_box", false);
         editorLetterboxAspect = builder.getString("aspect_ratio", "21:9");

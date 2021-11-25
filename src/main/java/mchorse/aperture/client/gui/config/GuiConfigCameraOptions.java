@@ -7,9 +7,11 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
+import mchorse.mclib.client.gui.framework.elements.input.GuiColorElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTexturePicker;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
 
 public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
@@ -21,7 +23,9 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
     public GuiToggleElement flight;
     public GuiToggleElement displayPosition;
     public GuiToggleElement essentialsTeleport;
+    public GuiColorElement guidesColor;
     public GuiToggleElement ruleOfThirds;
+    public GuiToggleElement centerLines;
     public GuiToggleElement crosshair;
     public GuiToggleElement letterBox;
     public GuiTextElement aspectRatio;
@@ -60,7 +64,10 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
 
         this.displayPosition = new GuiToggleElement(mc, Aperture.editorDisplayPosition);
         this.essentialsTeleport = new GuiToggleElement(mc, Aperture.essentialsTeleport);
+        this.guidesColor = new GuiColorElement(mc, Aperture.editorGuidesColor);
+        this.guidesColor.picker.editAlpha = true;
         this.ruleOfThirds = new GuiToggleElement(mc, Aperture.editorRuleOfThirds);
+        this.centerLines = new GuiToggleElement(mc, Aperture.editorCenterLines);
         this.crosshair = new GuiToggleElement(mc, Aperture.editorCrosshair);
         this.letterBox = new GuiToggleElement(mc, Aperture.editorLetterbox);
         this.aspectRatio = new GuiTextElement(mc, Aperture.editorLetterboxAspect, this.editor::setAspectRatio);
@@ -86,7 +93,7 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.overlayPicker.flex().relative(this.editor.viewport).wh(1F, 1F);
         this.hideChat = new GuiToggleElement(mc, Aperture.editorHideChat);
 
-        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.ruleOfThirds, this.crosshair, this.letterBox, this.aspectRatio, this.loop, this.overlay, this.pickOverlay, this.hideChat);
+        this.add(this.outside, this.spectator, this.renderPath, this.sync, this.flight, this.displayPosition, this.guidesColor, this.ruleOfThirds, this.centerLines, this.crosshair, this.letterBox, this.aspectRatio, this.loop, this.overlay, this.pickOverlay, this.hideChat);
 
         if (!mc.isSingleplayer())
         {
@@ -113,7 +120,9 @@ public class GuiConfigCameraOptions extends GuiAbstractConfigOptions
         this.flight.toggled(this.editor.flight.isFlightEnabled());
         this.displayPosition.toggled(Aperture.editorDisplayPosition.get());
         this.essentialsTeleport.toggled(Aperture.essentialsTeleport.get());
+        this.guidesColor.picker.color = new Color(Aperture.editorGuidesColor.get());
         this.ruleOfThirds.toggled(Aperture.editorRuleOfThirds.get());
+        this.centerLines.toggled(Aperture.editorCenterLines.get());
         this.crosshair.toggled(Aperture.editorCrosshair.get());
         this.letterBox.toggled(Aperture.editorLetterbox.get());
         this.aspectRatio.setText(Aperture.editorLetterboxAspect.get());

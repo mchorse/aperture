@@ -1604,13 +1604,19 @@ public class GuiCameraEditor extends GuiBase
 
         if (Aperture.editorRuleOfThirds.get())
         {
-            int color = 0xcccc0000;
+            int color = Aperture.editorGuidesColor.get();
 
             Gui.drawRect(rx + rw / 3 - 1, ry, rx + rw / 3, ry + rh, color);
             Gui.drawRect(rx + rw - rw / 3, ry, rx + rw - rw / 3 + 1, ry + rh, color);
 
             Gui.drawRect(rx, ry + rh / 3 - 1, rx + rw, ry + rh / 3, color);
             Gui.drawRect(rx, ry + rh - rh / 3, rx + rw, ry + rh - rh / 3 + 1, color);
+        }
+        if(Aperture.editorCenterLines.get())
+        {
+            int color = Aperture.editorGuidesColor.get();
+            this.drawHorizontalLine(0,this.width,this.height/2,color);
+            this.drawVerticalLine(this.width/2,0,this.height,color);
         }
 
         if (Aperture.editorCrosshair.get())
