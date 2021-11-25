@@ -32,7 +32,9 @@ aperture.gui:
         display_info: Отобразить позицию
         minecrafttp_teleport: Использовать /minecraft:tp
         tp_teleport: Использовать /tp
+        guides_color: Цвет направляющих
         rule_of_thirds: Правило третей
+        center_lines: Центр экрана
         crosshair: Перекрестие
         letter_box: Каше
         repeat: Повторить клип
