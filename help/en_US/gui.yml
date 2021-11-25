@@ -32,7 +32,9 @@ aperture.gui:
         display_info: Display position
         minecrafttp_teleport: Use /minecraft:tp
         tp_teleport: Use /tp
+        guides_color: Guides color
         rule_of_thirds: Rule of thirds
+        center_lines: Center lines
         crosshair: Crosshair
         letter_box: Letter box
         repeat: Repeat fixture
