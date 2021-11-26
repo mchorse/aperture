@@ -126,6 +126,8 @@ aperture.gui:
         drag_description: 使用當前值與先前值之間的線性交錯，將已啟用的相機屬性進行平滑處理
         remapper: 重映射
         remapper_description: 基於給定的表達式或關鍵幀重新映射關鍵點的路徑
+        dolly_zoom: 滑動變焦
+        dolly_zoom_description: 基於指定起始焦點，自動根據FOV調整相機位置
 
         enabled: 啟用
 
@@ -159,6 +161,8 @@ aperture.gui:
             math: 數學表達式\n\n點擊 "?" 按鈕瞭解更多關於變量和函數的信息...
 
             keyframes: 啟用關鍵幀
+
+            focus: 焦點
 
         envelopes:
             start_x: 起始點

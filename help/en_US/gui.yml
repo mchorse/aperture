@@ -126,6 +126,8 @@ aperture.gui:
         drag_description: Smooths out enabled camera properties using linear interpoaltion between current and previous value
         remapper: Remapper
         remapper_description: Remaps fixture's progression based on given expression or keyframes
+        dolly_zoom: Dolly Zoom
+        dolly_zoom_description: Automatically adjusts camera position to FOV based on specified starting focus
 
         enabled: Enabled
 
@@ -159,6 +161,8 @@ aperture.gui:
             math: Math expression\n\nClick "?" button for more information about variables and functions...
 
             keyframes: Enable keyframes
+
+            focal: Focal point
 
         envelopes:
             start_x: Starting point

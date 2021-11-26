@@ -10,6 +10,7 @@ import mchorse.aperture.camera.fixtures.ManualFixture;
 import mchorse.aperture.camera.fixtures.NullFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AngleModifier;
+import mchorse.aperture.camera.modifiers.DollyZoomModifier;
 import mchorse.aperture.camera.modifiers.DragModifier;
 import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
@@ -66,6 +67,7 @@ public class CommonProxy
         ModifierRegistry.register("orbit", OrbitModifier.class);
         ModifierRegistry.register("math", MathModifier.class);
         ModifierRegistry.register("remapper", RemapperModifier.class);
+        ModifierRegistry.register("dolly_zoom", DollyZoomModifier.class);
     }
 
     /**
