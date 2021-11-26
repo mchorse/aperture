@@ -126,6 +126,8 @@ aperture.gui:
         drag_description: 使用当前值与先前值之间的线性交错，将已启用的相机属性进行平滑处理
         remapper: 重映射
         remapper_description: 基于给定的表达式或关键帧重新映射关键点的路径
+        dolly_zoom: 滑动变焦
+        dolly_zoom_description: 基于指定起始焦点，自动根据FOV调整相机位置
 
         enabled: 启用
 
@@ -159,6 +161,8 @@ aperture.gui:
             math: 数学表达式\n\n点击 "?" 按钮了解更多关于变量和函数的信息...
 
             keyframes: 启用关键帧
+
+            focus: 焦点
 
         envelopes:
             start_x: 起始点

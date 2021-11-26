@@ -18,6 +18,7 @@ import mchorse.aperture.camera.fixtures.NullFixture;
 import mchorse.aperture.camera.fixtures.PathFixture;
 import mchorse.aperture.camera.modifiers.AbstractModifier;
 import mchorse.aperture.camera.modifiers.AngleModifier;
+import mchorse.aperture.camera.modifiers.DollyZoomModifier;
 import mchorse.aperture.camera.modifiers.DragModifier;
 import mchorse.aperture.camera.modifiers.FollowModifier;
 import mchorse.aperture.camera.modifiers.LookModifier;
@@ -38,6 +39,7 @@ import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiNullFixturePanel;
 import mchorse.aperture.client.gui.panels.GuiPathFixturePanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiAngleModifierPanel;
+import mchorse.aperture.client.gui.panels.modifiers.GuiDollyZoomModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiDragModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiFollowModifierPanel;
 import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
@@ -221,6 +223,7 @@ public class ClientProxy extends CommonProxy
         GuiModifiersManager.PANELS.put(OrbitModifier.class, GuiOrbitModifierPanel.class);
         GuiModifiersManager.PANELS.put(DragModifier.class, GuiDragModifierPanel.class);
         GuiModifiersManager.PANELS.put(RemapperModifier.class, GuiRemapperModifierPanel.class);
+        GuiModifiersManager.PANELS.put(DollyZoomModifier.class, GuiDollyZoomModifierPanel.class);
 
         ModifierRegistry.registerClient(ShakeModifier.class, "aperture.gui.modifiers.shake", new Color(0.085F, 0.62F, 0.395F));
         ModifierRegistry.registerClient(MathModifier.class, "aperture.gui.modifiers.math", new Color(0.408F, 0.128F, 0.681F));
@@ -231,6 +234,7 @@ public class ClientProxy extends CommonProxy
         ModifierRegistry.registerClient(OrbitModifier.class, "aperture.gui.modifiers.orbit", new Color(0.874F, 0.184F, 0.625F));
         ModifierRegistry.registerClient(DragModifier.class, "aperture.gui.modifiers.drag", new Color(0.298F, 0.690F, 0.972F));
         ModifierRegistry.registerClient(RemapperModifier.class, "aperture.gui.modifiers.remapper", new Color().set(0x111111));
+        ModifierRegistry.registerClient(DollyZoomModifier.class, "aperture.gui.modifiers.dolly_zoom", new Color().set(0x222222));
 
         super.load(event);
 
