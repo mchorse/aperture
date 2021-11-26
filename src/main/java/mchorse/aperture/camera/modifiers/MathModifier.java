@@ -104,16 +104,16 @@ public class MathModifier extends ComponentModifier
 
             if (fixture != null)
             {
-                fixture.applyFixture(offset, partialTick, previewPartialTick, profile, current);
-                AbstractModifier.applyModifiers(profile, fixture, ticks, offset, partialTick, previewPartialTick, this, current);
-
                 fixture.applyFixture(offset + step, partialTick, previewPartialTick, profile, position);
                 AbstractModifier.applyModifiers(profile, fixture, ticks + step, offset + step, partialTick, previewPartialTick, this, position);
+
+                fixture.applyFixture(offset, partialTick, previewPartialTick, profile, current);
+                AbstractModifier.applyModifiers(profile, fixture, ticks, offset, partialTick, previewPartialTick, this, current);
             }
             else
             {
-                profile.applyProfile(ticks, partialTick, previewPartialTick, current, true, this);
                 profile.applyProfile(ticks + step, partialTick, previewPartialTick, position, true, this);
+                profile.applyProfile(ticks, partialTick, previewPartialTick, current, true, this);
             }
 
             double dx = current.point.x - position.point.x;
