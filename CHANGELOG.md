@@ -1,3 +1,19 @@
+## Aperture 1.7
+
+This update was made by Chryfi, and it features a groundbreaking feature which would allow combining CGI and Minecraft footage much much easier using Minema mod and Blender, by exporting tracking data in an importable format.
+
+**Compatible** with McLib `2.3.6` and Minema `3.5` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+<a href="https://youtu.be/v_OpT704Sp8"><img src="https://img.youtube.com/vi/v_OpT704Sp8/0.jpg"></a> 
+
+* Added tracking exporter, it exports:
+    * Metadata like FPS, video resolution, and more...
+    * Camera tracking data (position, rotation, FOV)
+    * Entity tracking data (position, body yaw)
+    * Morph tracking data (position, rotation, scale)
+    * Compatible with motion blur and held frames Minema options
+    * Needs [Blender import script](https://github.com/Chryfi/io_import_aperture_tracking) (it has multiple import options for further control)
+
 ## Aperture 1.6.1
 
 This patch update fixes a couple of bugs.
@@ -23,8 +39,8 @@ This update is focused on adding Undo/Redo and limitations for non-OP users.
 * Added alphabetical sorting to camera profile list
 * Added **Undo/Redo** (`Ctrl + Z`/`Ctrl + Y`) to camera editor on per camera profile basis
 * Added loop region selection (suggested by Chunk7) controlled with:
-	* `[` (start) and `]` (end) keys
-	* Ctrl + left click to control left end point, Ctrl + right click to control right end point, and Ctrl + middle click to reset loop selection
+    * `[` (start) and `]` (end) keys
+    * Ctrl + left click to control left end point, Ctrl + right click to control right end point, and Ctrl + middle click to reset loop selection
 * Added a keybind to toggle keyframe editor visibility
 * Added periodic auto-save option
 * Changed `/aperture play` command's syntax to `/aperture play <camera_profile> [target]`

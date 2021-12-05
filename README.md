@@ -1,4 +1,4 @@
-**ATTENTION**: This mod is **no longer being developed**, and it's maintained (bugs and crash fixes) until August/September of 2021. If you wish to continue the mod, feel free to check out the [source code](https://github.com/mchorse/aperture).  
+**ATTENTION**: This mod is **no longer being developed nor maintained by McHorse**. If you wish to continue the mod, feel free to check out the [source code](https://github.com/mchorse/aperture).  
 
 ![Aperture](https://i.imgur.com/Wras78u.png)
 
@@ -38,7 +38,7 @@ This playlist is a **tutorial series**. It should teach you how to use Aperture 
 
 Meanwhile, this playlist contains a list of videos about **Aperture's updates**. These are so-called **change log** videos, which showcase new changes added to Aperture mod.
 
-<a href="https://youtu.be/F6b_ScRB3gc?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/F6b_ScRB3gc/0.jpg"></a> 
+<a href="https://youtu.be/v_OpT704Sp8?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/v_OpT704Sp8/0.jpg"></a> 
 
 ## Bug reports
 
