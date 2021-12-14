@@ -102,7 +102,7 @@ public class LookModifier extends EntityModifier
         z += point.z;
 
         double dX = x - pos.point.x;
-        double dY = (y - 1.62) - pos.point.y;
+        double dY = y - pos.point.y;
         double dZ = z - pos.point.z;
 
         if (forward)
