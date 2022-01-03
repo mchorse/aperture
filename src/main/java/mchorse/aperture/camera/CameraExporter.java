@@ -173,7 +173,7 @@ public class CameraExporter
      */
     public void frameEnd(float partialTick)
     {
-        addEntitiesData(partialTick);
+        this.addEntitiesData(partialTick);
 
         this.frame = (this.heldframes <= 1) ? this.frame + 1 : this.frame;
     }
@@ -181,25 +181,25 @@ public class CameraExporter
     @Optional.Method(modid = Minema.MODID)
     public void start(CameraRunner runner)
     {
-        this.building = true;
-
         if (MinemaIntegration.isAvailable())
         {
+            this.building = true;
+
             this.wrapper.add("information", getHeaderInformation());
+
+            this.wrapper.add("camera_tracking", this.trackingData);
+
+            if(!this.entities.isEmpty())
+            {
+                this.wrapper.add("entity_tracking", this.entityData);
+            }
+
+            this.wrapper.add("morph_tracking", this.morphData);
+
+            this.runner = runner;
+
+            MinemaEventbus.cameraBUS.registerListener((e) -> this.addCameraFrame(this.runner.getPosition()));
         }
-
-        this.wrapper.add("camera_tracking", this.trackingData);
-
-        if(!this.entities.isEmpty())
-        {
-            this.wrapper.add("entity_tracking", this.entityData);
-        }
-
-        this.wrapper.add("morph_tracking", this.morphData);
-
-        this.runner = runner;
-
-        MinemaEventbus.cameraBUS.registerListener((e) -> addCameraFrame(this.runner.getPosition()));
     }
 
     @Optional.Method(modid = Minema.MODID)
