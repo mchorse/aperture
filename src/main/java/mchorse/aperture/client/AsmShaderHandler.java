@@ -36,6 +36,7 @@ public class AsmShaderHandler
     public static final Pattern PATTERN_IF = Pattern.compile("^\\s*#(?:el)?(?:if)\\s", Pattern.CASE_INSENSITIVE);
     public static final Pattern PATTERN_CONST = Pattern.compile("^\\s*const\\s");
     public static final Pattern PATTERN_CASE = Pattern.compile("^\\s*case\\s");
+    public static final Pattern PATTERN_ARRAY = Pattern.compile("\\[\\s*[_A-Za-z].*\\s*\\]");
 
     public static final Map<String, Integer> uniform1i = new HashMap<String, Integer>();
     public static final Map<String, Float> uniform1f = new HashMap<String, Float>();
@@ -187,6 +188,21 @@ public class AsmShaderHandler
                     }
 
                     caseParser.reset();
+                }
+            }
+            else if (PATTERN_ARRAY.matcher(line).find())
+            {
+                for (ShaderOption so : mapOptions.values())
+                {
+                    if (so instanceof ShaderUniformOption)
+                    {
+                        ShaderUniformOption uniform = (ShaderUniformOption) so;
+
+                        if (uniform.isUniform())
+                        {
+                            uniform.checkArray(line);
+                        }
+                    }
                 }
             }
         }
@@ -499,6 +515,7 @@ public class AsmShaderHandler
 
         public final Pattern defineChecker;
         public final Pattern caseChecker;
+        public final Pattern arrayChecker;
 
         public int uniformType;
 
@@ -508,6 +525,7 @@ public class AsmShaderHandler
 
             this.defineChecker = Pattern.compile(String.format(".*\\W%s(?:\\W.*)?", name));
             this.caseChecker = Pattern.compile(String.format("^\\s*case\\s+%s\\s*:", name));
+            this.arrayChecker = Pattern.compile(String.format("\\[(?:.*\\W)?%s(?:\\W.*)?\\]", name));
 
             if (value != null && !this.checkReversedName(name))
             {
@@ -562,10 +580,18 @@ public class AsmShaderHandler
                 this.uniformType = NOT_SUPPORT;
             }
         }
-        
+
         public void checkCase(String line)
         {
             if (this.caseChecker.matcher(line).find())
+            {
+                this.uniformType = NOT_SUPPORT;
+            }
+        }
+
+        public void checkArray(String line)
+        {
+            if (this.arrayChecker.matcher(line).find())
             {
                 this.uniformType = NOT_SUPPORT;
             }
