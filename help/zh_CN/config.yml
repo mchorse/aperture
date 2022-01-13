@@ -34,7 +34,9 @@ aperture.config:
         overlay_rl: 附加层路径
         f1_tooltip: 隐藏 F1 提示
         position: 显示位置信息
-        rule_of_thirds: 三分法构图
+        guides_color: 辅助线颜色
+        rule_of_thirds: 三分法构图辅助线
+        center_lines: 中心构图辅助线
         crosshair: 十字准心
         letter_box: 画面黑边
         aspect_ratio: 纵横比

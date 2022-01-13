@@ -22,6 +22,9 @@ aperture.gui:
 
     config:
         title: 相机选项
+        flight: 飞行模式
+        flight_tooltip: 启用飞行模式，可以在相机编辑器中使用 WASD 与鼠标拖拽来控制相机（请参见 Aperture 的飞行模式选项中的快捷键）
+        pick_overlay: 选择附加层
 
     tooltips:
         jump_next_fixture: 跳至下一关键点
@@ -188,6 +191,14 @@ aperture.gui:
         set_duration: 设定持续时间
         set_duration_tooltip: 移动时间轴上的光标，随后点击该按钮来设定 Minema 片段的持续时间（单位为 Tick）
         record: 录制
+        tracking_button: 导出追踪数据
+        tracking_tooltip: "导出所有 Chryfi's Blender 脚本所必须的相机、实体和伪装跟踪数据。"
+        tracking_origin_x: X 原点
+        tracking_origin_y: Y 原点
+        tracking_origin_z: Z 原点
+        tracking_origin_title: 相对原点
+        tracking_origin_title_tooltip: "定义用于计算相机相对位置的原点。若停用，则会使用相机的第一个位置来作为相对原点。"
+        tracking_entity_selector: 实体目标选择器用于导出实体的运动。使用 " - " 分隔多个实体。（除了使用目标选择器，你也可以输入实体的名称标签）。
         premature_stop: "Minema 提前终止了录制！\n\n请退出相机编辑器并查看聊天栏以获取更多信息..."
 
         minema_not_installed: Minema mod 未安装。请安装 Minema 3.5 或更高的版本...
