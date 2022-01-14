@@ -2,7 +2,7 @@
 aperture.misc:
     profile_info: "{f}%s \"%s\"（%st，%s 個關鍵點）"
     profile_info_current: "{6}目前是 %s \"%s\"（%st，%s 個關鍵點）"
-    server: 伺服器
+    server: 服務器
     client: 客戶端
 
 mclib.interpolations.circular: 圓弧

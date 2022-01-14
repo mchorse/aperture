@@ -11,11 +11,12 @@ aperture.info:
 
     # General command infos
     commands:
-        load_chunks: "{f}已加載在渲染範圍裏的已創建區塊。"
+        load_chunks: "{f}已加載在渲染範圍裡的已創建區塊。"
+
 
     # Camera profile
     profile:
-        new: "{f}已創建壹個新的相機配置文件, 命名為 %s{f}。"
+        new: "{f}已創建一個新的相機配置文件, 命名為 %s{f}。"
         loaded: "{f}名稱為 %s{f} 的相機配置文件已被加載!"
         start: "{f}目前的相機配置已經在運行。"
         stop: "{f}目前運行的相機配置已停止。"
