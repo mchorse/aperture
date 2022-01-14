@@ -2,7 +2,7 @@ aperture.success:
     profile:
         clear: "{f}當前的相機配置已清除。"
         save: "{f}當前的相機配置已經保存在 %s{f}。"
-        load: "{f}當前的相機配置已經從 %s{f} 載入。"
+        load: "{f}當前的相機配置已經從 %s{f} 加載。"
 
         client_save: "{f}客戶端上的相機配置已保存到 %s{f}。"
         client_load: "{f}客戶端上的相機配置已讀取為 %s{f}。"

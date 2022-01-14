@@ -3,10 +3,10 @@ aperture.config.comments:
     general:
         duration: 關鍵點的默認時長有多長（單位為 Tick）
         spectator: 當開始播放相機回放時切換至旁觀模式
-        step_factor: 位移按鍵的相機位移系數
+        step_factor: 位移按鍵的相機位移係數
         rotate_factor: 旋轉按鍵的相機旋轉系數
         command_name: 允許您重新綁定相機命令的名稱（重啟遊戲生效）
-        debug_ticks: 將當前相機播放的 Tick 寫入日志
+        debug_ticks: 將當前相機播放的 Tick 寫入日誌
         profile_render: 是否在世界中渲染相機配置？
         auto_save: 在退出世界時保存所有相機配置
         essentials_tp: 在多人遊戲中啟動相機回放時，使用 /minecraft:tp 進行傳送（適用於裝有 Essentials 的服務器）
@@ -14,7 +14,7 @@ aperture.config.comments:
     outside:
        enabled: 相機是否會使用相機分離開來播放（會讓玩家成為一個真實的演員）
        hide_player: 在啟用分離相機模式並播放相機回放時，玩家是否是否會被隱藏
-       sky: 若啟用，則會修覆天空，但這會禁用方塊選區（因為存在 BUG）
+       sky: 若啟用，則會修復天空，但這會禁用方塊選區（因為存在 BUG）
 
     editor:
         sync: 啟用相機編輯器中的相機位置同步，用於預覽當前的相機配置
@@ -29,7 +29,7 @@ aperture.config.comments:
         crosshair: 在相機編輯器的中央顯示十字準心
         letter_box: 顯示畫面黑邊（硬黑邊），用於縮小或或擴大相機的取景範圍作為參考
         aspect_ratio: 相機編輯器畫面黑邊功能的縱橫比
-        hide_chat: 啟用後，該選項會隱藏在你調整攝像頭角度時，可能會分散註意力的聊天欄
+        hide_chat: 啟用後，該選項會隱藏在你調整攝像頭角度時，可能會分散注意力的聊天欄
         seconds: 啟用該選項後，相機編輯器將會以秒將單位進行編輯和顯示，而不是以 Tick 為單位
         auto_save: 該選項用於配置相機配置的自動保存頻率，單位為秒， 0 表示禁用
 
@@ -48,8 +48,8 @@ aperture.config.comments:
         fov_plus: 增大角視場（FOV）
         roll_minus: 逆時針方向翻滾
         roll_plus: 順時針方向翻滾
-        speed_minus: 降低全局速度系數（區別於向下滾動鼠標滾輪）
-        speed_plus: 提升全局速度系數（區別於向上滾動鼠標滾輪）
+        speed_minus: 降低全局速度係數（區別於向下滾動鼠標滾輪）
+        speed_plus: 提升全局速度係數（區別於向上滾動鼠標滾輪）
 
     smooth:
         enabled: 啟用平滑相機
@@ -62,7 +62,7 @@ aperture.config.comments:
         fov_friction: FOV 加速度的摩擦力（慢下來有多快）
 
     minema:
-        default_profile_name: 輸出文件是否為相機配置的名稱，否則為當前日志
+        default_profile_name: 輸出文件是否為相機配置的名稱，否則為當前日誌
 
 op_access.config.comments.aperture:
     camera_editor: 非 OP 玩家是否可以使用相機編輯器？

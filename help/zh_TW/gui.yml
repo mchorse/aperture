@@ -5,15 +5,15 @@ aperture.gui:
     done: 完成
     next: 下一個
     previous: 上一個
-    restore: 恢覆默認
+    restore: 恢復默認
     reset: 重置
     add: 添加
     edit: 編輯
     remove: 移除
     detach: 分離
-    record: 錄制
+    record: 錄製
     pick: 選擇偽裝...
-    duplicate: 覆制
+    duplicate: 複製
     search: 搜索...
     cancel: 取消
     break: 破壞
@@ -23,7 +23,7 @@ aperture.gui:
     config:
         title: 相機選項
         flight: 飛行模式
-        flight_tooltip: 啟用飛行模式，可以在相機編輯器中使用 WASD 與鼠標拖拽來控製相機（請參見 Aperture 的飛行模式選項中的快捷鍵）
+        flight_tooltip: 啟用飛行模式，可以在相機編輯器中使用 WASD 與鼠標拖拽來控制相機（請參見 Aperture 的飛行模式選項中的快捷鍵）
         pick_overlay: 選擇附加層
 
     tooltips:
@@ -46,7 +46,7 @@ aperture.gui:
         cut: 切割關鍵點
         creation: 交互添加關鍵點
         add: 添加關鍵點
-        dupe: 覆制關鍵點
+        dupe: 複製關鍵點
         replace: 替換選中的關鍵點
         remove: 移除選中的關鍵點
 
@@ -109,7 +109,7 @@ aperture.gui:
         global: 全局調整器
 
         shake: 搖晃
-        shake_description: 為已啟用的相機屬性中添加簡單的搖晃效果（基於正弦和余弦函數）
+        shake_description: 為已啟用的相機屬性中添加簡單的搖晃效果（基於正弦和餘弦函數）
         math: 數學
         math_description: 允許使用數學表達式處理指定的相機屬性
         look: 看
@@ -149,21 +149,21 @@ aperture.gui:
             shake_amount: 數量值
 
             relative: 相對值
-            relative_tooltip: 應用於關鍵點或相機配置的相對動畫\n\n例如，如果你有一個從 90 度到 100 度的偏航動畫路徑，那麽將會有 10 度的動畫相對地應用於該調整器
+            relative_tooltip: 應用於關鍵點或相機配置的相對動畫\n\n例如，如果你有一個從 90 度到 100 度的偏航動畫路徑，那麼將會有 10 度的動畫相對地應用於該調整器
             at_block: 看向方塊
             forward: 向前看
             forward_tooltip: 該選項能使相機朝向運動矢量的方向，類似於過山車的效果
 
-            factor: 線性系數（介於 0 到 1），數值越小，平滑程度越高
+            factor: 線性係數（介於 0 到 1），數值越小，平滑程度越高
 
-            math: 數學表達式\n\n點擊 "?" 按鈕了解更多關於變量和函數的信息...
+            math: 數學表達式\n\n點擊 "?" 按鈕瞭解更多關於變量和函數的信息...
 
             keyframes: 啟用關鍵幀
 
         envelopes:
             start_x: 起始點
             start_d: 緩入點
-            end_x: 結束點（如果啟用了“相對值”，那麽此處為持續時間的終點，否則從起點開始計算）
+            end_x: 結束點（如果啟用了“相對值”，那麼此處為持續時間的終點，否則從起點開始計算）
             end_d: 緩出點
             interp: 選擇包絡的插值
 
@@ -174,13 +174,13 @@ aperture.gui:
 
         rename_modal: 輸入當前新相機配置的名稱。
         add_modal: 輸入新相機配置的名稱。
-        dupe_modal: 輸入覆制後的相機配置名稱。
-        remove_modal: 您確定要移除這該機配置嗎（無法恢覆）？
+        dupe_modal: 輸入複製後的相機配置名稱。
+        remove_modal: 您確定要移除這該機配置嗎（無法恢復）？
 
         convert_tooltip: 轉換配置
         rename_tooltip: 重命名配置
         add_tooltip: 添加一個配置
-        dupe_tooltip: 覆制配置
+        dupe_tooltip: 複製配置
         remove_tooltip: 移除配置
 
     minema:
@@ -190,7 +190,7 @@ aperture.gui:
         set_start_tooltip: 移動時間軸上的光標，隨後點擊該按鈕來設定 Minema 片段的開始 Tick
         set_duration: 設定持續時間
         set_duration_tooltip: 移動時間軸上的光標，隨後點擊該按鈕來設定 Minema 片段的持續時間（單位為 Tick）
-        record: 錄制
+        record: 錄製
         tracking_button: 導出追蹤數據
         tracking_tooltip: "導出所有 Chryfi's Blender 腳本所必須的相機、實體和偽裝跟蹤數據。"
         tracking_origin_x: X 原點
@@ -199,13 +199,13 @@ aperture.gui:
         tracking_origin_title: 相對原點
         tracking_origin_title_tooltip: "定義用於計算相機相對位置的原點。若停用，則會使用相機的第一個位置來作為相對原點。"
         tracking_entity_selector: 實體目標選擇器用於導出實體的運動。使用 " - " 分隔多個實體。（除了使用目標選擇器，你也可以輸入實體的名稱標籤）。
-        premature_stop: "Minema 提前終止了錄制！\n\n請退出相機編輯器並查看聊天欄以獲取更多信息..."
+        premature_stop: "Minema 提前終止了錄製！\n\n請退出相機編輯器並查看聊天欄以獲取更多信息..."
 
         minema_not_installed: Minema mod 未安裝。請安裝 Minema 3.5 或更高的版本...
         minema_wrong_version: Minema mod 已安裝，但版本已過時！該功能需要 Minema 3.5 或更高的版本...
 
         modes:
-            tooltip: 錄制模式定義了開始和結束的 Tick
+            tooltip: 錄製模式定義了開始和結束的 Tick
 
             full: 完整相機配置
             fixture: 僅選中的關鍵點
@@ -239,7 +239,7 @@ aperture.gui:
         angle: 角度
         circle: 圓圈
         circular: 圓弧
-        selector: 實體目標選擇器（您也可以輸入實體的名稱標簽來代替目標選擇器）\n\n點擊 "?" 按鈕了解更多關於語法的信息...
+        selector: 實體目標選擇器（您也可以輸入實體的名稱標籤來代替目標選擇器）\n\n點擊 "?" 按鈕瞭解更多關於語法的信息...
         use_speed: 速率控制
         use_speed_enable: 啟用
 
@@ -248,9 +248,9 @@ aperture.gui:
 
         manual:
             title: 手動
-            shift: 回放位移，該屬性如果為正，則延遲播放數據；如果為負，則削減錄制數據的持續時間
-            speed: 回放速度，由於回放使用的是原始錄制的數據，因此可以考慮使用拖動調整器來平滑運動
-            record: 通過此按鈕，您就可以錄制相機的手動運動了！
+            shift: 回放位移，該屬性如果為正，則延遲播放數據；如果為負，則削減錄製數據的持續時間
+            speed: 回放速度，由於回放使用的是原始錄製的數據，因此可以考慮使用拖動調整器來平滑運動
+            record: 通過此按鈕，您就可以錄製相機的手動運動了！
 
         dolly:
             distance: "距離決定了在指定的時間內，滑軌沿指定方向移動的方塊距離"
@@ -270,10 +270,10 @@ aperture.gui:
             graph_easing: 循環選擇關鍵幀的緩入緩出
 
             previous: 開關上一關鍵點選項
-            record_manual: 開始錄制手動動作
+            record_manual: 開始錄製手動動作
 
             toggle_keyframes: 開關關鍵幀編輯器可見性
 
         context:
-            look_coords: 獲取當前準星處實體/方塊的坐標
-            look_block: 獲取當前準星處方塊的中心點坐標
+            look_coords: 獲取當前準星處實體/方塊的座標
+            look_block: 獲取當前準星處方塊的中心點座標

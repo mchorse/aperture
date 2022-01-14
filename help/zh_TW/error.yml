@@ -16,7 +16,7 @@ aperture.error:
         empty_filename: "{f}該相機配置文件沒有名稱！ 要解決此問題，請指定參數 {7}[filename]{f} 。"
         cant_save: "{f}無法以 %s{f} 的文件名保存相機配置。"
         cant_load: "{f}無法以 %s{f} 的文件名加載相機配置。"
-        cant_move: "{f}無法將關鍵點從 %s{f} 移動到 %s{f}，因為其中的某壹指數超出了範圍！"
+        cant_move: "{f}無法將關鍵點從 %s{f} 移動到 %s{f}，因為其中的某一指數超出了範圍！"
         
         not_path: "{f}索引為 %s{f} 的關鍵點不是路徑關鍵點！"
         not_exists: "{f}當前相機配置文件中的 %s{f} 索引處沒有相機關鍵點！"
