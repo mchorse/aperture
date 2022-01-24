@@ -337,7 +337,7 @@ public class CameraRenderer
         BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
         GlStateManager.disableTexture2D();
-        builder.setTranslation(-this.playerX, this.mc.player.eyeHeight - this.playerY, -this.playerZ);
+        builder.setTranslation(-this.playerX, -this.playerY, -this.playerZ);
         builder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
         if (fixture instanceof DollyFixture)
@@ -424,7 +424,7 @@ public class CameraRenderer
         double z = position.point.z - this.playerZ;
 
         GL11.glNormal3f(0, 1, 0);
-        GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
+        GlStateManager.translate(x, y, z);
 
         if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
         {
@@ -493,7 +493,7 @@ public class CameraRenderer
         BufferBuilder vb = Tessellator.getInstance().getBuffer();
 
         GlStateManager.disableTexture2D();
-        vb.setTranslation(-this.playerX, this.mc.player.eyeHeight - this.playerY, -this.playerZ);
+        vb.setTranslation(-this.playerX, -this.playerY, -this.playerZ);
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
         for (int i = 0; i < circles; i += 5)
@@ -535,7 +535,7 @@ public class CameraRenderer
         double z = pos.point.z - this.playerZ;
 
         GL11.glNormal3f(0, 1, 0);
-        GlStateManager.translate(x, y + this.mc.player.eyeHeight, z);
+        GlStateManager.translate(x, y, z);
 
         if (Minecraft.getMinecraft().currentScreen instanceof GuiCameraEditor)
         {
