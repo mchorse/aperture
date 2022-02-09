@@ -41,6 +41,7 @@ minecraft
     
     replace "%VERSION%", project.version
     replace "%MCLIB%", project.mclib
+    replace "%MINEMA%", project.minema
 }
 
 dependencies 
