@@ -8,7 +8,7 @@ aperture.config:
 
         duration: 關鍵點持續時間
         spectator: 切換至旁觀者模式
-        step_factor: 相機位移系數
+        step_factor: 相機位移係數
         rotate_factor: 相機旋轉系數
         command_name: 相機命令名稱
         debug_ticks: 調試 Ticks
@@ -22,7 +22,7 @@ aperture.config:
 
         enabled: 分離相機模式
         hide_player: 隱藏玩家
-        sky: 修覆天空
+        sky: 修復天空
 
     editor:
         title: 相機編輯器
@@ -34,13 +34,15 @@ aperture.config:
         overlay_rl: 附加層路徑
         f1_tooltip: 隱藏 F1 提示
         position: 顯示位置信息
-        rule_of_thirds: 三分法構圖
+        guides_color: 輔助線顏色
+        rule_of_thirds: 三分法構圖輔助線
+        center_lines: 中心構圖輔助線
         crosshair: 十字準心
         letter_box: 畫面黑邊
         aspect_ratio: 縱橫比
         hide_chat: 隱藏聊天欄
         seconds: 以秒為單位
-        auto_save: 自動保存周期
+        auto_save: 自動保存週期
 
     flight:
         title: 飛行模式

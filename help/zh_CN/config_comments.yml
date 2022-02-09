@@ -23,7 +23,9 @@ aperture.config.comments:
         overlay_rl: 应用于附加层的材质的文件路径
         f1_tooltip: 在左下角显示如何返回 GUI 的提示
         position: 启用同步模式时显示相机位置信息
+        guides_color: 应用于三分法构图辅助线和中心构图辅助线的颜色（包含透明度）
         rule_of_thirds: 显示三分法构图辅助线
+        center_lines: 中心构图辅助线
         crosshair: 在相机编辑器的中央显示十字准心
         letter_box: 显示画面黑边（硬黑边），用于缩小或或扩大相机的取景范围作为参考
         aspect_ratio: 相机编辑器画面黑边功能的纵横比
