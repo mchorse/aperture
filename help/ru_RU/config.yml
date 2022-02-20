@@ -41,6 +41,8 @@ aperture.config:
         letter_box: Каше
         aspect_ratio: Соотношение сторон
         hide_chat: Спрятать чат
+        seconds: Использовать секунды
+        auto_save: Периодическое автосохранение
 
     flight:
         title: Режим полёта
@@ -81,3 +83,9 @@ aperture.config:
         tooltip: Опции, касающиеся интеграции минемы
 
         default_profile_name: Название профиля камеры
+
+op_access.config.aperture:
+    title: Aperture
+    tooltip: Настройки ОП-доступа Aperture
+
+    camera_editor: Редактор камеры
