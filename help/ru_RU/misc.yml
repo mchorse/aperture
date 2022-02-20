@@ -4,3 +4,5 @@ aperture.misc:
     profile_info_current: "{6}В данный момент %s \"%s\" (%st, %s клипов)"
     server: Сервер
     client: Клиент
+
+mclib.interpolations.circular: Круговая
