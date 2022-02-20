@@ -162,7 +162,7 @@ aperture.gui:
 
             keyframes: Enable keyframes
 
-            focal: Focal point
+            focus: Focal point
 
         envelopes:
             start_x: Starting point
