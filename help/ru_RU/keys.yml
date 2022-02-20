@@ -1,15 +1,15 @@
 # Keys localization
 key.aperture:
     # Categories
-    misc: Аперчер
-    camera: Крен и поле зрения Аперчер
+    misc: Aperture
+    camera: Крен и поле зрения Aperture
     
     camera_editor: Редактор камеры
     smooth_camera: Гладкое движение камеры
 
     # Camera control
     control: 
-        title: Управление Аперчер
+        title: Управление Aperture
         
         stepUp: Шаг вверх
         stepDown: Шаг вниз
@@ -37,7 +37,7 @@ key.aperture:
 
     # Profile management keys
     profile:
-        title: Камеры Аперчер
+        title: Камеры Aperture
         
         toggle: Включить отображение профиля камеры
         playback: Включить воспроизведение камеры
