@@ -34,7 +34,7 @@ public class DollyZoomModifier extends AbstractModifier
 
         fixture.applyFixture(0, 0F, profile, this.position);
 
-        double dist = this.focus.get() - this.focus.get() * Math.tan(Math.toRadians(this.position.angle.fov / 2.0)) / Math.tan(Math.toRadians(pos.angle.fov / 2.0));
+        double dist = this.focus.get() - this.focus.get() * Math.tan(Math.toRadians(Math.max(this.position.angle.fov, 0.01F) / 2.0)) / Math.tan(Math.toRadians(Math.max(pos.angle.fov, 0.01F) / 2.0));
 
         pos.point.x += dist * Math.cos(Math.toRadians(pos.angle.pitch)) * Math.sin(Math.toRadians(-pos.angle.yaw));
         pos.point.y -= dist * Math.sin(Math.toRadians(pos.angle.pitch));
