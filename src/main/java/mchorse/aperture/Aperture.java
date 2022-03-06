@@ -33,7 +33,7 @@ import org.lwjgl.input.Keyboard;
  *
  * This mod provides a lot of tools related to camera.
  */
-@Mod(modid = Aperture.MOD_ID, name = Aperture.MODNAME, version = Aperture.VERSION, dependencies = "required-after:mclib@[%MCLIB%,)", updateJSON = "https://raw.githubusercontent.com/mchorse/aperture/1.12/version.json")
+@Mod(modid = Aperture.MOD_ID, name = Aperture.MODNAME, version = Aperture.VERSION, dependencies = "after:minema@[%MINEMA%,);required-after:mclib@[%MCLIB%,)", updateJSON = "https://raw.githubusercontent.com/mchorse/aperture/1.12/version.json")
 public class Aperture
 {
     /* Mod info */

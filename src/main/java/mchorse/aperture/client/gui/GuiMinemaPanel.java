@@ -6,7 +6,6 @@ import mchorse.aperture.camera.CameraExporter;
 import mchorse.aperture.camera.CameraProfile;
 import mchorse.aperture.camera.fixtures.AbstractFixture;
 import mchorse.aperture.camera.minema.MinemaIntegration;
-import mchorse.aperture.capabilities.camera.Camera;
 import mchorse.aperture.client.gui.panels.modifiers.GuiLookModifierPanel;
 import mchorse.aperture.client.gui.utils.GuiTextHelpElement;
 import mchorse.aperture.events.CameraEditorEvent;
@@ -30,10 +29,6 @@ import net.minecraft.client.resources.I18n;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
 
 public class GuiMinemaPanel extends GuiElement
 {
@@ -122,7 +117,7 @@ public class GuiMinemaPanel extends GuiElement
 
         this.originButton = new GuiToggleElement(mc, IKey.lang("aperture.gui.minema.tracking_origin_title"), (b) ->
         {
-            this.trackingExporter.relativeOrigin = b.isToggled();
+            this.trackingExporter.setRelativeOrigin(b.isToggled());
 
             if (b.isToggled())
             {
@@ -175,8 +170,7 @@ public class GuiMinemaPanel extends GuiElement
 
         this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
-            this.trackingExporter.selector = str;
-            this.trackingExporter.tryFindingEntity(str);
+            this.trackingExporter.setEntitiesSelector(str);
         });
         this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.minema.tracking_entity_selector"));
 
@@ -375,6 +369,11 @@ public class GuiMinemaPanel extends GuiElement
 
     public void stop()
     {
+        this.stop(false);
+    }
+
+    public void stop(boolean prematureStop)
+    {
         if (this.recording)
         {
             try
@@ -391,7 +390,7 @@ public class GuiMinemaPanel extends GuiElement
             this.editor.root.setVisible(true);
             this.recording = false;
 
-            if (this.trackingExporter.building)
+            if (!prematureStop && this.trackingExporter.isTracking())
             {
                 this.trackingExporter.exportTrackingData((this.getFilename().isEmpty() ? this.format.format(new Date(System.currentTimeMillis())) : this.getFilename())+ ".json");
             }
@@ -412,15 +411,11 @@ public class GuiMinemaPanel extends GuiElement
 
         if (!MinemaIntegration.isRecording())
         {
-            this.stop();
+            this.stop(true);
 
             GuiModal.addFullModal(this, () -> new GuiMessageModal(this.mc, IKey.lang("aperture.gui.minema.premature_stop")));
 
             return;
-        }
-        else if (this.trackingExporter.building && this.isRunning())
-        {
-            this.trackingExporter.frameEnd(partialTicks);
         }
 
         if (this.isRunning() && ticks >= this.end)
