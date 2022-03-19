@@ -59,7 +59,7 @@ public class MinemaIntegration
     @Optional.Method(modid = Minema.MODID)
     public static void openMovies()
     {
-        GuiUtils.openWebLink(MinemaAPI.getCapturePath().toURI());
+        GuiUtils.openFolder(MinemaAPI.getCapturePath().getAbsolutePath());
     }
 
     @Optional.Method(modid = Minema.MODID)
