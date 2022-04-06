@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4d;
@@ -125,7 +126,7 @@ public class CameraExporter
     {
         this.buffer.clear();
 
-        GL11.glGetDouble(2982, this.buffer);
+        GL11.glGetDouble(GL11.GL_MODELVIEW_MATRIX, this.buffer);
         this.buffer.get(this.doubles);
         this.modelview.set(this.doubles);
         this.modelview.transpose();
@@ -321,10 +322,6 @@ public class CameraExporter
             return;
         }
 
-        Matrix4d identity = new Matrix4d();
-
-        identity.setIdentity();
-
         /* only track morph if the camera was tracked first */
         if (!this.trackedCamera)
         {
@@ -333,7 +330,7 @@ public class CameraExporter
 
         this.readMVP();
 
-        Matrix4d parent = new Matrix4d(MatrixUtils.matrix);
+        Matrix4d parent = new Matrix4d(this.camera);
 
         try
         {
@@ -344,7 +341,22 @@ public class CameraExporter
             return;
         }
 
-        parent.mul(this.modelview);
+        parent.mul(parent, this.modelview);
+
+        Entity cameraEntity = Minecraft.getMinecraft().getRenderViewEntity();
+        double cameraX = cameraEntity.lastTickPosX + (cameraEntity.posX - cameraEntity.lastTickPosX) * Minecraft.getMinecraft().getRenderPartialTicks();
+        double cameraY = cameraEntity.lastTickPosY + (cameraEntity.posY - cameraEntity.lastTickPosY) * Minecraft.getMinecraft().getRenderPartialTicks();
+        double cameraZ = cameraEntity.lastTickPosZ + (cameraEntity.posZ - cameraEntity.lastTickPosZ) * Minecraft.getMinecraft().getRenderPartialTicks();
+
+        Matrix4d cameraTrans = new Matrix4d();
+
+        cameraTrans.setIdentity();
+
+        cameraTrans.m03 = cameraX;
+        cameraTrans.m13 = cameraY;
+        cameraTrans.m23 = cameraZ;
+
+        parent.mul(cameraTrans, parent);
 
         Matrix4d rotation = new Matrix4d();
         Vector4d rx = new Vector4d(parent.m00, parent.m10, parent.m20, 0);
@@ -359,10 +371,6 @@ public class CameraExporter
         rotation.setRow(2, rz);
 
         Vector3d pos = new Vector3d(parent.m03, parent.m13, parent.m23);
-
-        pos.add(new Vector3d(Interpolations.lerp(entity.lastTickPosX, entity.posX, partialTicks),
-                             Interpolations.lerp(entity.lastTickPosY, entity.posY, partialTicks),
-                             Interpolations.lerp(entity.lastTickPosZ, entity.posZ, partialTicks)));
 
         Vector3d scale = new Vector3d();
         scale.x = Math.sqrt(parent.m00 * parent.m00 + parent.m10 * parent.m10 + parent.m20 * parent.m20);
