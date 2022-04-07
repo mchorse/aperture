@@ -11,7 +11,6 @@ import info.ata4.minecraft.minema.client.event.MinemaEventbus;
 import info.ata4.minecraft.minema.client.modules.modifiers.TimerModifier;
 import info.ata4.minecraft.minema.client.modules.video.vr.CubeFace;
 import mchorse.aperture.utils.EntitySelector;
-import mchorse.aperture.utils.OptifineHelper;
 import mchorse.mclib.utils.Interpolations;
 import mchorse.mclib.utils.MatrixUtils;
 import net.minecraft.client.Minecraft;
@@ -23,12 +22,10 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
-import javax.vecmath.Vector4d;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
@@ -248,17 +245,6 @@ public class CameraExporter
         return name + ((counter == 0) ? "" : "." + counter);
     }
 
-    /**
-     * Checks if the current frame should be skipped.
-     * @return true if this is not building or heldframes > 1 or !TimerModifier.isFirstFrame() && !TimerModifier.canRecord() (for motionblur frames)
-     */
-    public boolean skipFrame()
-    {
-        boolean ignoreMotionblurFrame = this.frame % ((int) this.motionblurFrames) != 0;
-
-        return !this.building || this.heldframes > 1 || ignoreMotionblurFrame || TimerModifier.getCubeFace() != CubeFace.FRONT;
-    }
-
     @Optional.Method(modid = Minema.MODID)
     public void start(CameraRunner runner)
     {
@@ -284,14 +270,39 @@ public class CameraExporter
     }
 
     /**
+     * Checks if the current frame should be skipped.
+     * @return true if this is not building or heldframes > 1 or !TimerModifier.isFirstFrame() && !TimerModifier.canRecord() (for motionblur frames)
+     */
+    @Optional.Method(modid = Minema.MODID)
+    public boolean skipFrame()
+    {
+        boolean ignoreMotionblurFrame = this.frame % ((int) this.motionblurFrames) != 0;
+
+        return !this.building || this.heldframes < Minema.instance.getConfig().heldFrames.get() || ignoreMotionblurFrame || TimerModifier.getCubeFace() != CubeFace.FRONT;
+    }
+
+    /**
      * Execute this method at the end of a frame
      * It updates the frame counter and tracks entities.
      */
+    @Optional.Method(modid = Minema.MODID)
     public void frameEnd()
     {
         this.addEntitiesData(Minecraft.getMinecraft().getRenderPartialTicks());
 
-        this.frame = (this.heldframes <= 1) ? this.frame + 1 : this.frame;
+        this.frame = (this.heldframes >= Minema.instance.getConfig().heldFrames.get()) ? this.frame + 1 : this.frame;
+    }
+
+    /**
+     * Update the heldframes counter. Do this at the beginning of a frame.
+     * A frame should be rendered at the last heldframe.
+     */
+    @Optional.Method(modid = Minema.MODID)
+    private void updateHeldFrames()
+    {
+        int minemaHF = Minema.instance.getConfig().heldFrames.get();
+
+        this.heldframes = (this.heldframes < minemaHF) ? this.heldframes + 1 : 1;
     }
 
     @Optional.Method(modid = Minema.MODID)
@@ -328,54 +339,21 @@ public class CameraExporter
             return;
         }
 
-        this.readMVP();
-
-        Matrix4d parent = new Matrix4d(this.camera);
-
-        try
-        {
-            parent.invert(); //for some reason it can happen that the first frames (not used in footage) have no camera matrix
-        }
-        catch (Exception e)
-        {
-            return;
-        }
-
-        parent.mul(parent, this.modelview);
-
-        Entity cameraEntity = Minecraft.getMinecraft().getRenderViewEntity();
-        double cameraX = cameraEntity.lastTickPosX + (cameraEntity.posX - cameraEntity.lastTickPosX) * Minecraft.getMinecraft().getRenderPartialTicks();
-        double cameraY = cameraEntity.lastTickPosY + (cameraEntity.posY - cameraEntity.lastTickPosY) * Minecraft.getMinecraft().getRenderPartialTicks();
-        double cameraZ = cameraEntity.lastTickPosZ + (cameraEntity.posZ - cameraEntity.lastTickPosZ) * Minecraft.getMinecraft().getRenderPartialTicks();
-
-        Matrix4d cameraTrans = new Matrix4d();
-
-        cameraTrans.setIdentity();
-
-        cameraTrans.m03 = cameraX;
-        cameraTrans.m13 = cameraY;
-        cameraTrans.m23 = cameraZ;
-
-        parent.mul(cameraTrans, parent);
-
-        Matrix4d rotation = new Matrix4d();
-        Vector4d rx = new Vector4d(parent.m00, parent.m10, parent.m20, 0);
-        Vector4d ry = new Vector4d(parent.m01, parent.m11, parent.m21, 0);
-        Vector4d rz = new Vector4d(parent.m02, parent.m12, parent.m22, 0);
-
-        rx.normalize();
-        ry.normalize();
-        rz.normalize();
-        rotation.setRow(0, rx);
-        rotation.setRow(1, ry);
-        rotation.setRow(2, rz);
-
-        Vector3d pos = new Vector3d(parent.m03, parent.m13, parent.m23);
-
+        Matrix4d rotation;
+        Vector3d pos = new Vector3d();
         Vector3d scale = new Vector3d();
-        scale.x = Math.sqrt(parent.m00 * parent.m00 + parent.m10 * parent.m10 + parent.m20 * parent.m20);
-        scale.y = Math.sqrt(parent.m01 * parent.m01 + parent.m11 * parent.m11 + parent.m21 * parent.m21);
-        scale.z = Math.sqrt(parent.m02 * parent.m02 + parent.m12 * parent.m12 + parent.m22 * parent.m22);
+
+        Matrix4d[] transformation = MatrixUtils.getTransformation();
+
+        pos.x = transformation[0].m03;
+        pos.y = transformation[0].m13;
+        pos.z = transformation[0].m23;
+
+        rotation = transformation[1];
+
+        scale.x = transformation[2].m00;
+        scale.y = transformation[2].m11;
+        scale.z = transformation[2].m22;
 
         JsonObject frame = new JsonObject();
         JsonArray positionData = new JsonArray();
@@ -498,17 +476,6 @@ public class CameraExporter
         }
 
         return frameArray;
-    }
-
-    @Optional.Method(modid = Minema.MODID)
-    private void updateHeldFrames()
-    {
-        int minemaHF = Minema.instance.getConfig().heldFrames.get();
-
-        if (minemaHF > 1)
-        {
-            this.heldframes = (this.heldframes < minemaHF) ? this.heldframes + 1 : 1;
-        }
     }
 
     @Optional.Method(modid = Minema.MODID)
