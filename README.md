@@ -1,4 +1,5 @@
-**ATTENTION**: This mod is **no longer being developed nor maintained by McHorse**. If you wish to continue the mod, feel free to check out the [source code](https://github.com/mchorse/aperture).  
+**ATTENTION**: This mod is **no longer being maintained by McHorse. It is now maintained by Chryfi.**
+ There are **still going to be official updates by Chryfi and other contributors** and there have been task forces that are investigating on porting it. **If you also want to contribute to official updates**, or to the porting effort, please **join the official [McHorse's Discord server](https://discord.gg/qfxrqUF), so we can communicate with you.** Check out the [source code](https://github.com/mchorse/aperture). 
 
 ![Aperture](https://i.imgur.com/Wras78u.png)
 
@@ -39,6 +40,10 @@ This playlist is a **tutorial series**. It should teach you how to use Aperture 
 Meanwhile, this playlist contains a list of videos about **Aperture's updates**. These are so-called **change log** videos, which showcase new changes added to Aperture mod.
 
 <a href="https://youtu.be/v_OpT704Sp8?list=PL6UPd2Tj65nFLGMBqKaeKOPNp2HOO86Uw"><img src="https://img.youtube.com/vi/v_OpT704Sp8/0.jpg"></a> 
+
+There is also a **stream archive** that showcases most of features (even those that weren't covered in the tutorial serires above). It's the **most up-to-date** tutorial (using `1.7` as a base):
+
+<a href="https://youtu.be/yaBi3Ky6c60"><img src="https://img.youtube.com/vi/yaBi3Ky6c60/0.jpg"></a> 
 
 ## Bug reports
 
