@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import info.ata4.minecraft.minema.CaptureSession;
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.MinemaAPI;
 import info.ata4.minecraft.minema.client.event.MinemaEventbus;
@@ -26,9 +27,12 @@ import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
-import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -542,7 +546,7 @@ public class CameraExporter
     {
         try
         {
-            FileWriter file = new FileWriter(MinemaAPI.getCapturePath().toURI().getPath() + filename);
+            BufferedWriter file = Files.newBufferedWriter(Paths.get(CaptureSession.singleton.getCaptureDir().toUri().toString().replace("file:///", "") + filename), StandardCharsets.UTF_8);
 
             file.write(this.wrapper.toString());
             file.close();
