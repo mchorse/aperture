@@ -67,8 +67,8 @@ This update is focused on adding Undo/Redo and limitations for non-OP users.
 * Added alphabetical sorting to camera profile list
 * Added **Undo/Redo** (`Ctrl + Z`/`Ctrl + Y`) to camera editor on per camera profile basis
 * Added loop region selection (suggested by Chunk7) controlled with:
-    * `[` (start) and `]` (end) keys
-    * Ctrl + left click to control left end point, Ctrl + right click to control right end point, and Ctrl + middle click to reset loop selection
+	* `[` (start) and `]` (end) keys
+	* Ctrl + left click to control left end point, Ctrl + right click to control right end point, and Ctrl + middle click to reset loop selection
 * Added a keybind to toggle keyframe editor visibility
 * Added periodic auto-save option
 * Changed `/aperture play` command's syntax to `/aperture play <camera_profile> [target]`
