@@ -1,6 +1,7 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/aperture",
     "1.12.2": {
+        "1.8": "This huge update was made by MiaoNLI, exceptions are mentioned at the respective items. It features groundbreaking things like the ability to animate any shader variable and more.",
         "1.7": "This update was made by Chryfi, and it features a groundbreaking feature which would allow combining CGI and Minecraft footage much much easier using Minema mod and Blender, by exporting tracking data in an importable format.",
         "1.6.1": "This patch update fixes a couple of bugs.",
         "1.6": "This update is focused on adding Undo/Redo and limitations for non-OP users.",
