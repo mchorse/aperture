@@ -1,3 +1,31 @@
+## Aperture 1.8
+
+This huge update was made by MiaoNLI, exceptions are mentioned at the respective items. It features groundbreaking things like the ability to animate any shader variable.
+
+**Compatible** with McLib `2.4` and Minema `3.6.2` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Camera
+    * Use eye position instand of feet position
+    * Preventing players from entering the void
+* Camera Editor
+    * Added more keyframes about rendering and Optifine shaderpack
+    * Added Dolly Zoom Modifier
+    * Added a Distance channel to the keyframe fixture similar to the circular fixture
+    * Fixed bug that Math Modifier may skip frames
+    * Right-click a fixture no longer jumps to the beginning of the fixture
+    * Disabled vanilla fov modifier
+    * Change to fps mode when opening
+* File Encoding
+    * UTF-8 file encoding is used by default
+* Aperture Tracking System (by Chryfi)
+    * Multiple equal entity names for entity tracking with the entity selector are now possible. It will remap the names to indexed names likes “name, name.1, name.2”
+    * Changed the functionality of combine tracker morphs. It is now the option “automatic append”. If the tracker morph’s name already was tracked, it will check if this tracker starts at the next frame where the original tracker has stopped. If it continues at the next frame, it then appends this tracking data to the original one.
+    * Motion Blur frames are now internally ignored. The tracking data only includes the actual video frames now.
+    * Fixed heldframes - the tracker now tracks the last heldframe which fixes tracking inconsistencies when using for example drag modifier
+    * Fixed morph trackers not working when use target is not enabled
+    * Made tracking file encode in UTF-8
+* Added Minema as optional dependency with a required minimum version. The required minimum version is 3.6.2 (by Chryfi)
+
 ## Aperture 1.7
 
 This update was made by Chryfi, and it features a groundbreaking feature which would allow combining CGI and Minecraft footage much much easier using Minema mod and Blender, by exporting tracking data in an importable format.
