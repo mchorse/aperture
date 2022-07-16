@@ -6,13 +6,14 @@ import com.google.gson.JsonObject;
 import mchorse.aperture.ClientProxy;
 import mchorse.aperture.client.gui.panels.GuiManualFixturePanel;
 import mchorse.aperture.utils.OptifineHelper;
+import mchorse.mclib.utils.ICopy;
 import mchorse.mclib.utils.Interpolations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RenderFrame
+public class RenderFrame implements ICopy<RenderFrame>
 {
     public double x;
     public double y;
@@ -77,15 +78,22 @@ public class RenderFrame
         }
     }
 
+    @Override
     public RenderFrame copy()
     {
         RenderFrame frame = new RenderFrame();
 
-        frame.position(this.x, this.y, this.z);
-        frame.angle(this.yaw, this.pitch, this.roll, this.fov);
-        frame.pt = this.pt;
+        frame.copy(this);
 
         return frame;
+    }
+
+    @Override
+    public void copy(RenderFrame origin)
+    {
+        this.position(origin.x, origin.y, origin.z);
+        this.angle(origin.yaw, origin.pitch, origin.roll, origin.fov);
+        this.pt = origin.pt;
     }
 
     public void fromJSON(JsonElement element)
