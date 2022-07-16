@@ -204,10 +204,10 @@ public class GuiEnvelope extends GuiElement
     {
         Envelope envelope = this.get();
 
-        this.startX.setValue(TimeUtils.toTime((int) envelope.startX.get()));
-        this.startD.setValue(TimeUtils.toTime((int) envelope.startDuration.get()));
-        this.endX.setValue(TimeUtils.toTime((int) envelope.endX.get()));
-        this.endD.setValue(TimeUtils.toTime((int) envelope.endDuration.get()));
+        this.startX.setValue(TimeUtils.toTime(envelope.startX.get().intValue()));
+        this.startD.setValue(TimeUtils.toTime(envelope.startDuration.get().intValue()));
+        this.endX.setValue(TimeUtils.toTime(envelope.endX.get().intValue()));
+        this.endD.setValue(TimeUtils.toTime(envelope.endDuration.get().intValue()));
     }
 
     public void updateDuration()
