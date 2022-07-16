@@ -6,6 +6,8 @@ import mchorse.aperture.camera.data.RenderFrame;
 import mchorse.aperture.camera.values.ValueRenderFrames;
 import mchorse.mclib.config.values.ValueFloat;
 import mchorse.mclib.config.values.ValueInt;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.entity.Render;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class ManualFixture extends AbstractFixture
     public final ValueInt shift = new ValueInt("shift", 0);
     public final ValueRenderFrames frames = new ValueRenderFrames("frames");
 
-    public List<RenderFrame> recorded = new ArrayList<RenderFrame>();
+    private List<RenderFrame> recorded = new ArrayList<RenderFrame>();
 
     public ManualFixture(long duration)
     {
@@ -25,6 +27,21 @@ public class ManualFixture extends AbstractFixture
         this.register(this.speed);
         this.register(this.shift);
         this.register(this.frames);
+    }
+
+    /**
+     * Add a {@link RenderFrame}, constructed with the provided player and partialTicks,
+     * to this {@link #recorded} list.
+     * @param player the player from which the frame should be recorded
+     * @param partialTicks
+     */
+    public void recordFrame(EntityPlayerSP player, float partialTicks)
+    {
+        RenderFrame frame = new RenderFrame(player, partialTicks);
+
+        frame.y += player.eyeHeight;
+
+        this.recorded.add(frame);
     }
 
     /**

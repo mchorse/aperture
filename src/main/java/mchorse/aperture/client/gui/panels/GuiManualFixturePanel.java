@@ -150,6 +150,6 @@ public class GuiManualFixturePanel extends GuiAbstractFixturePanel<ManualFixture
 
     public void recordFrame(EntityPlayerSP player, float partialTicks)
     {
-        this.fixture.recorded.add(new RenderFrame(player, partialTicks));
+        this.fixture.recordFrame(player, partialTicks);
     }
 }
