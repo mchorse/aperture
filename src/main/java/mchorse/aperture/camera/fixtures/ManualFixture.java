@@ -39,7 +39,7 @@ public class ManualFixture extends AbstractFixture
     {
         RenderFrame frame = new RenderFrame(player, partialTicks);
 
-        frame.y += player.eyeHeight;
+        frame.y += player.getEyeHeight();
 
         this.recorded.add(frame);
     }
