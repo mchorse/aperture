@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -546,7 +547,7 @@ public class CameraExporter
     {
         try
         {
-            BufferedWriter file = Files.newBufferedWriter(Paths.get(CaptureSession.singleton.getCaptureDir().toUri().toString().replace("file:///", "") + filename), StandardCharsets.UTF_8);
+            BufferedWriter file = Files.newBufferedWriter(CaptureSession.singleton.getCaptureDir().resolve(Paths.get(filename)), StandardCharsets.UTF_8);
 
             file.write(this.wrapper.toString());
             file.close();
