@@ -1,6 +1,7 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/aperture",
     "1.12.2": {
+        "1.8.1": "This update was made by Chryfi and it fixes some issues.",
         "1.8": "This huge update was made by MiaoNLI, exceptions are mentioned at the respective items. It features groundbreaking things like the ability to animate any shader variable and more.",
         "1.7": "This update was made by Chryfi, and it features a groundbreaking feature which would allow combining CGI and Minecraft footage much much easier using Minema mod and Blender, by exporting tracking data in an importable format.",
         "1.6.1": "This patch update fixes a couple of bugs.",
@@ -53,8 +54,8 @@
         "1.0": "First release of Aperture mod. This release has everything Blockbuster cameras had but more. It includes its own camera editor, and stuff that other camera mods has. Its all features are frame based, meaning this camera mod would work perfectly with Minema mod and without it."
     },
     "promos": {
-        "1.12.2-latest": "1.8",
-        "1.12.2-recommended": "1.8",
+        "1.12.2-latest": "1.8.1",
+        "1.12.2-recommended": "1.8.1",
         "1.11.2-latest": "1.3.6",
         "1.11.2-recommended": "1.3.6",
         "1.10.2-latest": "1.3.6",
