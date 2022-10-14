@@ -1,3 +1,12 @@
+## Aperture 1.8.1
+
+This update was made by Chryfi.
+
+**Compatible** with McLib `2.4.1` and Minema `3.7` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Fix tracking file paths not working properly with spaces in the path
+* Fix manual fixture y coordinate not being recalculated for the player eye height
+
 ## Aperture 1.8
 
 This huge update was made by MiaoNLI, exceptions are mentioned at the respective items. It features groundbreaking things like the ability to animate any shader variable.
