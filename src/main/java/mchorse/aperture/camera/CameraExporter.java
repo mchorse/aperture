@@ -331,7 +331,7 @@ public class CameraExporter
         return information;
     }
 
-    public void track(TrackingPacket tracker, EntityLivingBase entity, float partialTicks)
+    public void track(TrackingPacket tracker)
     {
         if (this.skipFrame())
         {
