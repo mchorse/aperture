@@ -6,8 +6,7 @@ import mchorse.aperture.camera.data.RenderFrame;
 import mchorse.aperture.camera.values.ValueRenderFrames;
 import mchorse.mclib.config.values.ValueFloat;
 import mchorse.mclib.config.values.ValueInt;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class ManualFixture extends AbstractFixture
      * @param player the player from which the frame should be recorded
      * @param partialTicks
      */
-    public void recordFrame(EntityPlayerSP player, float partialTicks)
+    public void recordFrame(EntityPlayer player, float partialTicks)
     {
         RenderFrame frame = new RenderFrame(player, partialTicks);
 
