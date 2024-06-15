@@ -227,6 +227,7 @@ aperture.gui:
         tracking_origin_x: X origin
         tracking_origin_y: Y origin
         tracking_origin_z: Z origin
+        tracking_origin_generate: Generate coordinates
         tracking_origin_title: Relative origin
         tracking_origin_title_tooltip: "Define the origin from which the relative position of the camera is calculated. If deactivated it uses the first position of the camera as relative origin."
         tracking_entity_selector: Entity target selector to export movement of entities. Separate multiple entities by " - ". (you can also enter the name tag of the entity instead of target selector)\n\nClick "?" button for more information about syntax...

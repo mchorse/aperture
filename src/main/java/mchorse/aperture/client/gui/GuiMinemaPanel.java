@@ -13,6 +13,8 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiCirculateElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
+import mchorse.mclib.client.gui.framework.elements.context.GuiContextMenu;
+import mchorse.mclib.client.gui.framework.elements.context.GuiSimpleContextMenu;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiMessageModal;
@@ -22,10 +24,20 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDrawable;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.Elements;
+import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
@@ -46,12 +58,9 @@ public class GuiMinemaPanel extends GuiElement
     public GuiElement trackingElementsWrapper;
     public GuiElement trackingElements;
     public GuiToggleElement originButton;
-    public GuiTrackpadElement originX;
-    public GuiTrackpadElement originY;
-    public GuiTrackpadElement originZ;
     public GuiElement originElementsWrapper;
     public GuiLabel originTitle;
-    public GuiElement originRow;
+    public GuiRelativeOriginTransformation originRow;
     public GuiElement originElements;
     public GuiElement selectorElement;
     public GuiTextHelpElement selector;
@@ -121,9 +130,9 @@ public class GuiMinemaPanel extends GuiElement
 
             if (b.isToggled())
             {
-                this.trackingExporter.setOriginX(this.originX.value);
-                this.trackingExporter.setOriginY(this.originY.value);
-                this.trackingExporter.setOriginZ(this.originZ.value);
+                this.trackingExporter.setOriginX(this.originRow.originX.value);
+                this.trackingExporter.setOriginY(this.originRow.originY.value);
+                this.trackingExporter.setOriginZ(this.originRow.originZ.value);
             }
         });
         this.originButton.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
@@ -142,7 +151,7 @@ public class GuiMinemaPanel extends GuiElement
         this.originElements.flex().column(4).stretch().vertical().height(3);
         this.originElements.marginTop(7).marginBottom(7);
 
-        this.originRow = Elements.row(mc,4);
+        this.originRow = new GuiRelativeOriginTransformation(mc);
 
         this.selectorElement = new GuiElement(mc);
         this.selectorElement.flex().column(4).stretch().vertical().height(1);
@@ -150,31 +159,12 @@ public class GuiMinemaPanel extends GuiElement
         this.originTitle = Elements.label(IKey.lang("aperture.gui.minema.tracking_origin_title"), 20).anchor(0, 1F);
         this.originTitle.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_title_tooltip"));
 
-        this.originX = new GuiTrackpadElement(mc, (value) ->
-        {
-            this.trackingExporter.setOriginX(value.doubleValue());
-        });
-        this.originX.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_x"));
-
-        this.originY = new GuiTrackpadElement(mc,  (value) ->
-        {
-            this.trackingExporter.setOriginY(value.doubleValue());
-        });
-        this.originY.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_y"));
-
-        this.originZ = new GuiTrackpadElement(mc,  (value) ->
-        {
-            this.trackingExporter.setOriginZ(value.doubleValue());
-        });
-        this.originZ.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_z"));
-
         this.selector = new GuiTextHelpElement(mc, 500, (str) ->
         {
             this.trackingExporter.setEntitiesSelector(str);
         });
         this.selector.link(GuiLookModifierPanel.TARGET_SELECTOR_HELP).tooltip(IKey.lang("aperture.gui.minema.tracking_entity_selector"));
 
-        this.originRow.add(this.originX, this.originY, this.originZ);
         this.originElements.add(this.originButton, this.originRow);
         this.originElementsWrapper.add(this.originElements);
 
@@ -463,6 +453,96 @@ public class GuiMinemaPanel extends GuiElement
         private RecordingMode(String id)
         {
             this.id = id;
+        }
+    }
+
+    protected class GuiRelativeOriginTransformation extends GuiElement
+    {
+        public GuiTrackpadElement originX;
+        public GuiTrackpadElement originY;
+        public GuiTrackpadElement originZ;
+
+        public GuiRelativeOriginTransformation(Minecraft mc)
+        {
+            super(mc);
+
+            this.originX = new GuiTrackpadElement(mc, GuiMinemaPanel.this.trackingExporter::setOriginX);
+            this.originX.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_x"));
+
+            this.originY = new GuiTrackpadElement(mc, GuiMinemaPanel.this.trackingExporter::setOriginY);
+            this.originY.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_y"));
+
+            this.originZ = new GuiTrackpadElement(mc, GuiMinemaPanel.this.trackingExporter::setOriginZ);
+            this.originZ.tooltip(IKey.lang("aperture.gui.minema.tracking_origin_z"));
+
+            this.add(this.originX, this.originY, this.originZ);
+            this.flex().column(4).vertical().stretch();
+        }
+
+        @Override
+        public GuiContextMenu createContextMenu(GuiContext context)
+        {
+            GuiSimpleContextMenu menu = new GuiSimpleContextMenu(context.mc);
+
+            NBTTagList transforms = null;
+
+            try
+            {
+                NBTTagCompound tag = JsonToNBT.getTagFromJson("{Transforms:" + GuiScreen.getClipboardString() + "}");
+                NBTTagList list = tag.getTagList("Transforms", Constants.NBT.TAG_DOUBLE);
+
+                if (list.tagCount() >= 3)
+                {
+                    transforms = list;
+                }
+            }
+            catch (Exception e) {}
+
+            menu.action(Icons.COPY, IKey.lang("mclib.gui.transforms.context.copy"), this::copyTransformations);
+
+            if (transforms != null)
+            {
+                final NBTTagList innerList = transforms;
+
+                menu.action(Icons.PASTE, IKey.lang("mclib.gui.transforms.context.paste"), () -> {
+                    this.pasteTransformations(innerList);
+                });
+            }
+
+            menu.action(Icons.REFRESH, IKey.lang("aperture.gui.minema.tracking_origin_generate"), this::setRelativeOriginCoordinates);
+            menu.action(Icons.CLOSE, IKey.lang("mclib.gui.transforms.context.reset"), this::resetTransformations);
+
+            return menu;
+        }
+
+        private void resetTransformations()
+        {
+            this.originX.setValue(0);
+            this.originY.setValue(0);
+            this.originZ.setValue(0);
+        }
+
+        private void setRelativeOriginCoordinates() {
+            DecimalFormat df = new DecimalFormat("#.##");
+            df.setRoundingMode(RoundingMode.CEILING);
+
+            this.originX.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.x)));
+            this.originY.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.y)));
+            this.originZ.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.z)));
+        }
+
+        private void copyTransformations() {
+            NBTTagList list = new NBTTagList();
+            list.appendTag(new NBTTagDouble(this.originX.value));
+            list.appendTag(new NBTTagDouble(this.originY.value));
+            list.appendTag(new NBTTagDouble(this.originZ.value));
+            GuiScreen.setClipboardString(list.toString());
+        }
+
+        private void pasteTransformations(NBTTagList list) {
+            this.originX.setValue(list.getDoubleAt(0));
+            this.originY.setValue(list.getDoubleAt(1));
+            this.originZ.setValue(list.getDoubleAt(2));
         }
     }
 }
