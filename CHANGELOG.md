@@ -1,3 +1,12 @@
+## Aperture 1.8.2
+
+This update was made by Chryfi.
+
+**Compatible** with McLib `2.4.2` and Minema `3.7` (optionally). It doesn't mean that future versions of McLib (or Minema) would be incompatible, but older versions are most likely incompatible.
+
+* Added right click context menu to tracking relative origin coordinates. It allows to copy, paste and reset transformations and geenerate the coordinates from the current camera position.
+* Fixed a crash on server side because of manual camera fixture
+
 ## Aperture 1.8.1
 
 This update was made by Chryfi.
