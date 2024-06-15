@@ -524,7 +524,7 @@ public class GuiMinemaPanel extends GuiElement
 
         private void setRelativeOriginCoordinates() {
             DecimalFormat df = new DecimalFormat("#.##");
-            df.setRoundingMode(RoundingMode.CEILING);
+            df.setRoundingMode(RoundingMode.HALF_UP);
 
             this.originX.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.x)));
             this.originY.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.y)));
