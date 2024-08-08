@@ -517,18 +517,18 @@ public class GuiMinemaPanel extends GuiElement
 
         private void resetTransformations()
         {
-            this.originX.setValue(0);
-            this.originY.setValue(0);
-            this.originZ.setValue(0);
+            this.originX.setValueAndNotify(0);
+            this.originY.setValueAndNotify(0);
+            this.originZ.setValueAndNotify(0);
         }
 
         private void setRelativeOriginCoordinates() {
             DecimalFormat df = new DecimalFormat("#.##");
             df.setRoundingMode(RoundingMode.HALF_UP);
 
-            this.originX.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.x)));
-            this.originY.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.y)));
-            this.originZ.setValue(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.z)));
+            this.originX.setValueAndNotify(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.x)));
+            this.originY.setValueAndNotify(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.y)));
+            this.originZ.setValueAndNotify(Double.parseDouble(df.format(GuiMinemaPanel.this.editor.position.point.z)));
         }
 
         private void copyTransformations() {
@@ -540,9 +540,9 @@ public class GuiMinemaPanel extends GuiElement
         }
 
         private void pasteTransformations(NBTTagList list) {
-            this.originX.setValue(list.getDoubleAt(0));
-            this.originY.setValue(list.getDoubleAt(1));
-            this.originZ.setValue(list.getDoubleAt(2));
+            this.originX.setValueAndNotify(list.getDoubleAt(0));
+            this.originY.setValueAndNotify(list.getDoubleAt(1));
+            this.originZ.setValueAndNotify(list.getDoubleAt(2));
         }
     }
 }
